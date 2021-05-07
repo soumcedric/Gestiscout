@@ -1,0 +1,356 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('assets/vendor/sweetalert/sweetalert.css') }}">
+    <style>
+    .bd-example-modal-lg .modal-dialog{
+    display: table;
+    position: relative;
+    margin: 0 auto;
+    top: calc(50% - 24px);
+  }
+
+  .bd-example-modal-lg .modal-dialog .modal-content{
+    background-color: transparent;
+    border: none;
+  }
+</style>
+{% endblock %}
+{% block titre %} Ajouter un responsable {% endblock %}
+
+{% block body %}
+
+
+
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+{#                <h1>Color Table</h1>#}
+                <nav aria-label="breadcrumb">
+{#
+                </nav>
+            </div>
+{#            <div class="col-md-6 col-sm-12 text-right hidden-xs">#}
+{#                <a href="javascript:void(0);" class="btn btn-sm btn-primary" title="">Ajouter un responsable</a>#}
+{#            </div>#}
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2 class="text-center" >Ajouter un responsable</h2>
+                        </div>
+                        <div class="body">
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <form id="basic-form" method="post" novalidate>
+                                        <div class="form-group">
+                                            <label>Nom</label>
+                                            <input type="text" class="form-control" required id="Nom">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Prénoms</label>
+                                            <input type="text" class="form-control" required id="prenoms">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Date de naissance</label>
+                                            <input type="date" class="form-control" required id="dob" max="">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Fonction</label>
+                                            <select id="fonction" class="form-control"></select>
+                                        </div>
+
+
+
+                                        <br>
+
+                                    </form>
+                                </div>
+                                <div class="col-lg-6">
+                                    <form id="basic-form" method="post" novalidate>
+                                        <div class="form-group">
+                                            <label>Genre</label>
+                                            <select id="genre" class="form-control"></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Lieu d'habitation</label>
+                                            <input type="text" class="form-control" required id="habitation">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Occupation</label>
+                                            <input type="text" class="form-control" required id="occupation">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Téléphone</label>
+                                            <input type="text" class="form-control" required id="telephone">
+                                        </div>
+
+{#                                        <div class="form-group">#}
+{#                                            <label>Groupe</label>#}
+{#                                            <select id="groupe" class="form-control"></select>#}
+{#                                        </div>#}
+
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-success" id="save">Enregistrer</button>
+                                <button type="button" class="btn btn-danger" id="reset">Annuler</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="width: 48px">
+            <span class="fa fa-spinner fa-spin fa-3x"></span>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+    <script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/sweetalert/sweetalert.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function(){
+debugger
+            let currentdate = CurrentDate();
+            document.getElementById("dob").setAttribute("max", currentdate);
+            reset();
+            loadFonction();
+            function loading()
+            {
+                   $('.modal').modal('show');
+
+            }
+              function loadingClose()
+            {
+                   $('.modal').modal('hide');
+
+            }
+            function CurrentDate(){
+                let today = new Date();
+                let dd = String(today.getDate()).padStart(2, '0');
+                let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                let yyyy = today.getFullYear();
+                today = yyyy + '-' + mm + '-' + dd;
+                return today;
+            }
+            debugger
+            let date = compareDate();
+            function compareDate(chosenDate){
+                let currentDate = new Date();
+                let SelectedDate = new Date(chosenDate);
+                return currentDate;
+            }
+            function reset(){
+                $("#Nom").val('');
+                $("#prenoms").val('');
+                $("#dob").val('');
+                $("#habitation").val('');
+                $("#occupation").val('');
+                $("#telephone").val('');
+                loadFonction();
+                loadGroupe();
+            }
+            $("#save").click(function(){
+                //alert("hello");
+debugger
+                var  responsable={
+                    nom : $("#Nom").val(),
+                    prenoms : $("#prenoms").val(),
+                    dob : $("#dob").val(),
+                    occupation : $("#occupation").val(),
+                    habitation : $("#habitation").val(),
+                    telephone : $("#telephone").val(),
+                    fonction : $("#fonction").val(),
+                    groupe: $("#groupe").val(),
+                    genre: $("#genre").val()
+                };
+
+                if (responsable.nom=='' || responsable.prenoms=='' || responsable.dob=='' ||responsable.telephone=='')
+                    {
+                            swal({
+                            type:"warning",
+                            title:"RESPONSABLE",
+                            text:"Certains champs sont vides. Veuillez les remplir svp"
+                            });
+                    }
+                else{
+                      loading();
+                      $.ajax({
+                    type:"POST",
+                    async: true,
+                    dataType: 'json',
+                    url:"{{ path('AddResponsable') }}",
+                    data: {value : responsable},
+                    success:function(res){
+                        debugger;
+                        if (res==1){
+
+                            swal({
+                                type:"success",
+                                title:"RESPONSABLE",
+                                text:"Enregistrement effectué avec succès"
+                            },function (){
+                                loadingClose();
+                                reset();
+                            });
+                        }
+                    },
+                    error: function(res){
+                        debugger
+                        swal({
+                            type:"error",
+                            title:"RESPONSABLE",
+                            text:"Echec de l'opération"
+                        },function (){
+                            loadingClose();
+                            //reset();
+                        });
+                    }
+
+                });
+                     loadingClose();
+                }
+
+
+            });
+            $("#reset").click(function(){
+
+                swal({
+                    title: 'Annulation',
+                    text: "Etes-vous sûr de vouloir annuler ?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Oui annuler!',
+                    cancelButtonText:"Non"
+                },function(res){
+                    debugger
+                    if(res==true)
+                        reset();
+
+                });
+
+
+
+                //    reset();
+            });
+            function loadFonction(){
+                $.ajax({
+                    type:"GET",
+                    url:"{{ path("GetListeFonction") }}",
+                    success:function(res){
+                        debugger
+                        var liste = JSON.parse(res);
+                        if (liste.length>0){
+                            $("#fonction").empty();
+                            var defaultline="<option value=selected>---Choisir une fonction---</option>";
+                            $("#fonction").append(defaultline);
+                            $.each(liste,function(i,n) {
+                                debugger
+                                var option = "<option value="+n.id+">"+n.Code+"</option>";
+                                $("#fonction").append(option);
+                            });
+                        }else{
+
+                        }
+
+                            },
+                    error:function(){
+
+                    }
+
+                });
+            }
+
+            function loadGroupe(){
+                $.ajax({
+                    type:"GET",
+                    url:"{{ path("GetListGroupe") }}",
+                    success:function(res){
+                        debugger
+                        var liste = JSON.parse(res);
+                        if (liste.length>0){
+                            $("#groupe").empty();
+                            var defaultline="<option value=selected>---Choisir un groupe---</option>";
+                            $("#groupe").append(defaultline);
+                            $.each(liste,function(i,n) {
+                                debugger
+                                var option = "<option value="+n.id+">"+n.Nom+"</option>";
+                                $("#groupe").append(option);
+                            });
+                        }else{
+
+                        }
+
+                    },
+                    error:function(){
+
+                    }
+
+                });
+            }
+
+            $.ajax({
+                type:"GET",
+                url:"{{ path("GetListeGenre")}}",
+                success:function(resp){
+                    debugger
+                    var defaultline = '<option value=selected>---selectionner genre---</option>';
+                    $("#genre").append(defaultline);
+                    var liste = JSON.parse(resp);
+                    $.each(liste,function(i,n){
+                        debugger
+                        var line = '<option value='+n.id+'>'+n.Libelle+'</option>';
+                        $("#genre").append(line);
+
+                    });
+                }
+            });
+
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,287 @@
+{% extends 'base.html.twig' %}
+
+{% block titre %}ANNEE PASTORALE {% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
+{% endblock %}
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+    <div class="container-fluid">
+           
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="header">
+                        <h2 class="text-center">CONFIGURER L'ANNEE PASTORALE</h2>
+                    </div>
+                    <div class="body">
+                        <div class="row">
+                      <div class="col-md-6">
+                            <div class="form-group">
+                                <label>CODE ANNEE</label>
+                                <input type="text" class="form-control" required id="code">
+                                <input type="hidden" id="idAnnee">
+                            </div>
+                            <div class="form-group">
+                                <label>Date Debut</label>
+                                <input type="date" class="form-control" required id="datedebut">
+                            </div>
+
+                           
+                      </div>
+                  
+                      <div class="col-md-6">
+                       
+                      
+                        <div class="form-group">
+                            <label>Date fin</label>
+                            <input type="date" class="form-control" required id="datefin">
+                        </div>
+                          <div class="form-group">
+                              <label class="controle-inline fancy-checkbox mt-4">
+
+                                  <input type="checkbox" name="EstActif" id="EstActif" >
+                                  <span>Est Actif</span>
+                              </label>
+                          </div>
+                  </div>
+                        </div>
+                        <div class="text-center"> 
+                            <button type="submit" class="btn btn-success" id="valider">Valider</button>
+                            <button type="submit" class="btn btn-danger" id="annuler">Annuler</button>
+                        </div>
+                            
+                        
+                    </div>
+                </div>
+            </div>
+          
+        </div>
+        
+    </div>
+    
+<div class="col-lg-12">
+    <div class="card">
+        <div class="header">
+            <h2>Liste des jeunes</h2>
+        </div>
+        <div class="body">
+            <div class="table-responsive">
+                <table class="table" id="tbAnnee">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Code Année</th>
+                            <th>Date Debut</th>
+                            <th>Date Fin</th>
+                            <th>Actif</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                   <tbody>
+
+                   </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+
+<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
+
+
+    <script src="{{ asset("assets/bundles/datatablescripts.bundle.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/dataTables.buttons.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.bootstrap4.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.colVis.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.html5.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.print.min.js") }}"></script>
+<script>
+    $(document).ready(function(){
+        debugger
+      var table = $("#tbAnnee").DataTable({
+          language: {
+              processing: "Traitement en cours...",
+              search: "Rechercher&nbsp;:",
+              lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
+              info: "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+              infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+              infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+              infoPostFix: "",
+              loadingRecords: "Chargement en cours...",
+              zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
+              emptyTable: "Aucune donnée disponible dans le tableau",
+              paginate: {
+                  first: "Premier",
+                  previous: "Pr&eacute;c&eacute;dent",
+                  next: "Suivant",
+                  last: "Dernier"
+              }
+          },
+          columns: [
+              { "data": "ID" },
+              { "data": "CODE" },
+              { "data": "DEBUT" },
+              { "data": "FIN" },
+              { "data": "ACTIF" },
+              { "data": "ACTION" }
+          ],
+          // columnDefs: [
+          //     {
+          //         targets: 0,
+          //         visible: false
+          //     }],
+          data: [],
+          rowCallback: function (row, data) { },
+          filter: true,
+          info: true,
+          ordering: false,
+          processing: false,
+          retrieve: true
+      });
+        debugger
+        loadData();
+        function loadData(){
+            $.ajax({
+                type:"GET",
+                url:"{{ path("GetListeAnnee")}}",
+                success:function(resp){
+                    debugger
+                    var liste = JSON.parse(resp);
+                    $.each(liste,function(i,n){
+                        debugger
+                        var actif;
+                        if(n.bActif==true)
+                            actif="<a><span><i class='fa fa-check fa-2x'></i></span></a>";
+                        else
+                            actif="<a><span><i class='fa fa-ban fa-2x'></i></span></a>";
+
+                        //alert(n.Nom);
+                        table.rows.add([{
+                            "ID":n.id,
+                            "CODE":n.CodeAnnee,
+                            "DEBUT":n.DateDebut ,
+                            "FIN" : n.DateFin,
+                            "ACTIF" : actif,
+                            "ACTION" :"<a id='update'><span><i class='fa fa-pencil fa-2x'></i></span></a>|<a><span><i class='fa fa-trash fa-2x'></i></span></a>"
+
+                        }]).draw();
+                    });
+                }
+            });
+
+        }
+
+        $("#valider").click(function(){
+            debugger
+            var AnneeP = {
+                Code : $("#code").val(),
+                Debut : $("#datedebut").val(),
+                Fin : $("#datefin").val(),
+                bActif : true
+            };
+
+            if(AnneeP.Code=='' || AnneeP.Debut =='' || AnneeP.Fin==''){
+                swal({
+                    type:'warning',
+                    title: "ANNEE PASTORALE",
+                    text:"Veuillez remplir tous les champs svp!"
+                })
+            }else{
+                $.ajax({
+                    type: "POST",
+                    url:"{{ path("AddAnnee") }}",
+                    dataType:"json",
+                    data:{"value" : AnneeP},
+                    success:function(res){
+                        debugger
+                        swal({
+                            type:"success",
+                            title:"ANNEE PASTORALE",
+                            text:"Enregistrement effectué avec succès"
+                        },function(){
+                            $("#code").val('');
+                            $("#datefin").val('');
+                            $("#datedebut").val('');
+                            loadData();
+                        });
+                    },
+                    error:function(res){
+                        debugger
+                    }
+
+                });
+            }
+
+
+        });
+
+        $("#annuler").click(function(){
+           swal({
+              type:"Question",
+              title: "ANNEE PASTORALE",
+               text:"Etes vous sûr de vouloir annuler ?"
+
+           });
+        });
+
+        $("#tbAnnee").on('click','tbody > tr > td > a[id=update]',function (){
+            debugger
+            var row = table.row().data();
+            var ID = row.ID;
+            $.ajax({
+                type:"GET",
+                url:"{{ path("GetAnneePastoraleUnique") }}",
+                data:{"value":ID},
+                success:function(res){
+                    debugger
+                    var anneeP = JSON.parse(res);
+                   // $("#code").val(anneeP.CodeAnnee);
+                    $.each(anneeP,function (i,n){
+                        $("#code").val(n.CodeAnnee);
+                        $("#datefin").val(n.DateFin);
+                        $("#datedebut").val(n.DateDebut);
+                        $("#idAnnee").val(anneeP.id);
+                    });
+
+
+                },
+                error:function(res){
+
+                }
+
+            });
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    });
+</script>
+{% endblock %}

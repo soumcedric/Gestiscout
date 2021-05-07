@@ -1,0 +1,310 @@
+{% extends 'base.html.twig' %}
+
+{% block titre %}ANNEE PASTORALE {% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+{% endblock %}
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+    <div class="container-fluid">
+           
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="header">
+                        <h2 class="text-center">CONFIGURER LES GROUPES</h2>
+                    </div>
+                    <div class="body">
+                        <div class="row">
+                      <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Nom</label>
+                                <input type="text" class="form-control" required id="nom" placeholder="Nom du groupe">
+                            </div>
+                      </div>
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label>NickName</label>
+                                <input type="text" class="form-control" required id="nickname" placeholder="nom amérindien du groupe">
+                            </div>
+
+                        </div>
+
+                    </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Region</label>
+                                    <input type="text" class="form-control" required id="region" placeholder="région">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label>Paroisse</label>
+                                    <input type="text" class="form-control" required id="paroisse" placeholder="paroisse">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Téléphone1</label>
+                                    <input type="tel" class="form-control" required id="phone1" placeholder="numero de téléphone">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label>Téléphone2</label>
+                                    <input type="tel" class="form-control" required id="phone2" placeholder="numéro de téléphone">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>email</label>
+                                    <input type="email" class="form-control" required id="email" placeholder="email du groupe">
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Logo</label>
+                                    <input type="file" class="form-control" required id="logo" placeholder="choisir le logo">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                  <img src="" id="image" width="150" height="150">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="text-center"> 
+                            <button type="submit" class="btn btn-success" id="valider">Valider</button>
+                            <button type="submit" class="btn btn-danger">Annuler</button>
+                        </div>
+                            
+                        
+                    </div>
+                </div>
+            </div>
+          
+        </div>
+        
+    </div>
+    
+<div class="col-lg-12">
+    <div class="card">
+        <div class="header">
+            <h2>Liste des jeunes</h2>
+        </div>
+        <div class="body">
+            <div class="table-responsive">
+                <table class="table" id="tbFonction">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>NOM</th>
+                            <th>NICKNAME</th>
+                            <th>REGION</th>
+                            <th>PAROISSE</th>
+                            <th>TELEPHONE</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                   <tbody>
+
+                   </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
+<script>
+    $(document).ready(function(){
+        debugger
+      var table = $("#tbFonction").DataTable({
+          language: {
+              processing: "Traitement en cours...",
+              search: "Rechercher&nbsp;:",
+              lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
+              info: "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+              infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+              infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+              infoPostFix: "",
+              loadingRecords: "Chargement en cours...",
+              zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
+              emptyTable: "Aucune donnée disponible dans le tableau",
+              paginate: {
+                  first: "Premier",
+                  previous: "Pr&eacute;c&eacute;dent",
+                  next: "Suivant",
+                  last: "Dernier"
+              }
+          },
+          columns: [
+              { "data": "ID" },
+              { "data": "NOM" },
+              { "data": "NICKNAME" },
+              { "data": "REGION" },
+              { "data": "PAROISSE" },
+              { "data": "TELEPHONE" },
+              { "data": "ACTION" }
+          ],
+          // columnDefs: [
+          //     {
+          //         targets: 0,
+          //         visible: false
+          //     }],
+          data: [],
+          rowCallback: function (row, data) { },
+          filter: true,
+          info: true,
+          ordering: false,
+          processing: false,
+          retrieve: true
+      });
+        debugger
+         loadData();
+
+        function loadData(){
+            $.ajax({
+                type:"GET",
+                url:"{{ path("GetListGroupe")}}",
+                success:function(resp){
+                    debugger
+                    var liste = JSON.parse(resp);
+                    $.each(liste,function(i,n){
+
+                        debugger
+                        //alert(n.Nom);
+                        table.rows.add([{
+                            "ID":n.id,
+                            "NOM":n.Nom,
+                            "NICKNAME":n.NickName ,
+                            "REGION":n.Region,
+                            "PAROISSE":n.Paroisse,
+                            "TELEPHONE":n.Telephone1,
+                            "ACTION" :"<button><span><i class='fa fa-trash'></i></span></button><button><span><i class='fa fa-pencil'></i></span></button><button><span><i class='fa fa-eye'></i></span></button>"
+
+                        }]).draw();
+                    });
+                }
+            });
+        }
+
+$("#logo").change(function(){
+    debugger
+    readURL(this);
+});
+
+
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $('#image').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]); // convert to base64 string
+            }
+        }
+
+
+        $("#valider").click(function (){
+            debugger
+            var filename = $('input[type=file]').val().split('\\').pop();
+            var formdata = new FormData();
+           // formdata.append('img',filename);
+            formdata.append('test','dfdf');
+           Groupe={
+               nom : $("#nom").val(),
+               nickname : $("#nickname").val(),
+               region : $("#region").val(),
+               paroisse : $("#paroisse").val(),
+               phone1: $("#phone1").val(),
+               phone2: $("#phone2").val(),
+               mail : $("#email").val()
+               //logo : formdata
+           };
+
+           if(Groupe.nom=='' || Groupe.nickname=='' || Groupe.region =='' || Groupe.paroisse=='' || Groupe.phone1==''){
+               swal({
+                   type:"warning",
+                   title:"GROUPE",
+                   text:"Veuillez remplir les champs obligatoire svp!"
+               });
+           }else{
+
+               $.ajax({
+                   type: "POST",
+                   url:"{{ path("AddGroupe") }}",
+                   dataType:"json",
+                   data: {"value": Groupe},
+                   success:function(res){
+                       debugger
+                       if (res===1){
+                           swal({
+                               title:"GROUPE",
+                               text:"Enregistrement effectué avec succès",
+                               type:"success"
+
+                           },function (){
+                               debugger
+                           });
+                       }else {
+                           swal({
+                               type:"error",
+                               title:"GROUPE",
+                               text:"Problème pendant l'opération"
+                           });
+                       }
+
+                   },
+                   error:function(res){
+                       debugger
+                   }
+
+               });
+            }
+        });
+    });
+</script>
+{% endblock %}

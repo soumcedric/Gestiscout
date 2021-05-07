@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}"/>
+{% endblock %}
+{% block titre %} Liste des jeunes {% endblock %}
+
+{% block body %}
+
+
+
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="header">
+            <h2>Basic Table <small>Basic example without any additional modification classes</small></h2>                            
+        </div>
+        <div class="body">
+            <div class="table-responsive">
+                <table class="table" id="tbjeune">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>NOM</th>
+                            <th>PRENOMS</th>
+                            <th>DATE DE NAISSANCE</th>
+                            <th>TELEPHONE</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                   <tbody>
+
+                   </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block javascripts %}
+<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+<script>
+    $(document).ready(function(){
+        debugger
+      var table = $("#tbjeune").DataTable({
+          "ajax": {
+              "url": "{{ path("ListeJeune"}}",
+              "type": "POST"
+          },
+      });
+        debugger
+
+
+    });
+</script>
+{% endblock %}

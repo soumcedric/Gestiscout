@@ -1,0 +1,1035 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:master" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fa88eed9-97a0-423b-a6a5-deaa9d4620b5" name="Default Changelist" comment="duplicate key resolved 06.05.2021">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Upload/fichier modele jeune.xls" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/fichier modele jeune.xls" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/jeune/AddJeune.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/jeune/AddJeune.html.twig" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
+    <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
+    <execution />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="composer.json" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="district" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="PhpDebugGeneral" xdebug_show_addresses="true" break_at_first_line="true" show_user_defined_constants="false" />
+  <component name="PhpServers">
+    <servers>
+      <server host="localhost" id="aba35af5-8721-495a-b6b0-b3a88a96be2e" name="Unnamed" port="8000" use_path_mappings="true" />
+      <server host="127.0.0.1:8000" id="d194f8d1-21f3-46a8-ad8d-8308ef924e60" name="127.0.0.1:8000" port="8000" />
+      <server host="localhost:8000" id="8da0b553-0911-4de2-94ab-5378296738d0" name="localhost:8000" port="8000" />
+      <server host="192.168.1.104:8000" id="a1f1a04e-b803-4421-ba78-1d8749daa714" name="192.168.1.104:8000" port="8000" />
+      <server host="192.168.1.103:8000" id="c164fa4f-ae7a-4fe3-8f44-62023bc534b7" name="192.168.1.103:8000" port="8000" />
+      <server host="192.168.1.105:8000" id="8d70f94e-6934-4ace-96d8-28f93fa692fb" name="192.168.1.105:8000" port="8000" />
+      <server host="192.168.1.102:8000" id="68e90717-f2cb-4142-a9d7-4fd6ae110ae8" name="192.168.1.102:8000" port="8000" />
+      <server host="192.168.2.71:8000" id="58547ee2-be5f-47bd-b796-1b71d04c8093" name="192.168.2.71:8000" port="8000" />
+      <server host="192.168.2.78:8000" id="f866c322-6d31-4553-9e28-8c94a59ad55d" name="192.168.2.78:8000" port="8000" />
+      <server host="192.168.1.101:8000" id="6f865428-f7b7-4e3e-8e3e-a7d3424d5bc7" name="192.168.1.101:8000" port="8000" />
+      <server host="192.168.2.68:8000" id="98fa76ea-08a3-43f6-bf08-b6b681a4764e" name="192.168.2.68:8000" port="8000" />
+    </servers>
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP 8.0">
+    <include_path>
+      <path value="$PROJECT_DIR$/vendor/monolog/monolog" />
+      <path value="$PROJECT_DIR$/vendor/egulias/email-validator" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/lexer" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/event-manager" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/instantiator" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/dbal" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/cache" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/orm" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/sql-formatter" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/doctrine-bundle" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/collections" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/persistence" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/annotations" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/inflector" />
+      <path value="$PROJECT_DIR$/vendor/webmozart/assert" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/migrations" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/doctrine-migrations-bundle" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/common" />
+      <path value="$PROJECT_DIR$/vendor/psr/link" />
+      <path value="$PROJECT_DIR$/vendor/psr/event-dispatcher" />
+      <path value="$PROJECT_DIR$/vendor/psr/cache" />
+      <path value="$PROJECT_DIR$/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/vendor/psr/container" />
+      <path value="$PROJECT_DIR$/vendor/friendsofphp/proxy-manager-lts" />
+      <path value="$PROJECT_DIR$/vendor/laminas/laminas-eventmanager" />
+      <path value="$PROJECT_DIR$/vendor/laminas/laminas-zendframework-bridge" />
+      <path value="$PROJECT_DIR$/vendor/laminas/laminas-code" />
+      <path value="$PROJECT_DIR$/vendor/twig/twig" />
+      <path value="$PROJECT_DIR$/vendor/twig/extra-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/cache-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/vendor/symfony/deprecation-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/form" />
+      <path value="$PROJECT_DIR$/vendor/symfony/var-exporter" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-grapheme" />
+      <path value="$PROJECT_DIR$/vendor/symfony/monolog-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/cache" />
+      <path value="$PROJECT_DIR$/vendor/symfony/security-core" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php80" />
+      <path value="$PROJECT_DIR$/vendor/symfony/property-info" />
+      <path value="$PROJECT_DIR$/vendor/symfony/property-access" />
+      <path value="$PROJECT_DIR$/vendor/symfony/event-dispatcher-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/proxy-manager-bridge" />
+      <path value="$PROJECT_DIR$/vendor/symfony/security-csrf" />
+      <path value="$PROJECT_DIR$/vendor/symfony/stopwatch" />
+      <path value="$PROJECT_DIR$/vendor/symfony/flex" />
+      <path value="$PROJECT_DIR$/vendor/symfony/options-resolver" />
+      <path value="$PROJECT_DIR$/vendor/symfony/event-dispatcher" />
+      <path value="$PROJECT_DIR$/vendor/symfony/var-dumper" />
+      <path value="$PROJECT_DIR$/vendor/symfony/http-foundation" />
+      <path value="$PROJECT_DIR$/vendor/symfony/framework-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/validator" />
+      <path value="$PROJECT_DIR$/vendor/symfony/translation-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/service-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/web-link" />
+      <path value="$PROJECT_DIR$/vendor/symfony/translation" />
+      <path value="$PROJECT_DIR$/vendor/symfony/security-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/finder" />
+      <path value="$PROJECT_DIR$/vendor/symfony/routing" />
+      <path value="$PROJECT_DIR$/vendor/symfony/intl" />
+      <path value="$PROJECT_DIR$/vendor/symfony/http-client" />
+      <path value="$PROJECT_DIR$/vendor/symfony/http-client-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/monolog-bridge" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-normalizer" />
+      <path value="$PROJECT_DIR$/vendor/symfony/doctrine-bridge" />
+      <path value="$PROJECT_DIR$/vendor/symfony/dependency-injection" />
+      <path value="$PROJECT_DIR$/vendor/symfony/config" />
+      <path value="$PROJECT_DIR$/vendor/symfony/security-http" />
+      <path value="$PROJECT_DIR$/vendor/symfony/mailer" />
+      <path value="$PROJECT_DIR$/vendor/symfony/mime" />
+      <path value="$PROJECT_DIR$/vendor/symfony/twig-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/error-handler" />
+      <path value="$PROJECT_DIR$/vendor/symfony/filesystem" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php73" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-idn" />
+      <path value="$PROJECT_DIR$/vendor/symfony/console" />
+      <path value="$PROJECT_DIR$/vendor/symfony/security-guard" />
+      <path value="$PROJECT_DIR$/vendor/symfony/http-kernel" />
+      <path value="$PROJECT_DIR$/vendor/symfony/notifier" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-icu" />
+      <path value="$PROJECT_DIR$/vendor/symfony/string" />
+      <path value="$PROJECT_DIR$/vendor/symfony/yaml" />
+      <path value="$PROJECT_DIR$/vendor/symfony/twig-bridge" />
+      <path value="$PROJECT_DIR$/vendor/symfony/serializer" />
+      <path value="$PROJECT_DIR$/vendor/symfony/process" />
+      <path value="$PROJECT_DIR$/vendor/symfony/dotenv" />
+      <path value="$PROJECT_DIR$/vendor/symfony/asset" />
+      <path value="$PROJECT_DIR$/vendor/symfony/expression-language" />
+      <path value="$PROJECT_DIR$/vendor/sensio/framework-extra-bundle" />
+      <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-docblock" />
+      <path value="$PROJECT_DIR$/vendor/phpdocumentor/type-resolver" />
+      <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-common" />
+      <path value="$PROJECT_DIR$/vendor/phpoffice/phpspreadsheet" />
+      <path value="$PROJECT_DIR$/vendor/ezyang/htmlpurifier" />
+      <path value="$PROJECT_DIR$/vendor/psr/simple-cache" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-client" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-factory" />
+      <path value="$PROJECT_DIR$/vendor/myclabs/php-enum" />
+      <path value="$PROJECT_DIR$/vendor/maennchen/zipstream-php" />
+      <path value="$PROJECT_DIR$/vendor/markbaker/complex" />
+      <path value="$PROJECT_DIR$/vendor/markbaker/matrix" />
+      <path value="$PROJECT_DIR$/vendor/symfony/apache-pack" />
+      <path value="$PROJECT_DIR$/vendor/symfony/requirements-checker" />
+      <path value="$PROJECT_DIR$/vendor/symfony/debug-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/phpunit-bridge" />
+      <path value="$PROJECT_DIR$/vendor/symfony/web-profiler-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/maker-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/css-selector" />
+      <path value="$PROJECT_DIR$/vendor/symfony/browser-kit" />
+      <path value="$PROJECT_DIR$/vendor/symfony/dom-crawler" />
+      <path value="$PROJECT_DIR$/vendor/nikic/php-parser" />
+    </include_path>
+  </component>
+  <component name="ProjectId" id="1mLzdiE7Hx4SJz1b43koSjwQaZN" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="js.buildTools.grunt.grunt-cli.package" value="" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/templates/district" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\CODES SOURCES\GestiScoutWeb\templates\district" />
+      <recent name="D:\CODES SOURCES\GestiScoutWeb\templates" />
+      <recent name="D:\CODES SOURCES\GestiScoutWeb\templates\connexion" />
+      <recent name="D:\CODES SOURCES\GestiScoutWeb\templates\jeune" />
+      <recent name="D:\CODES SOURCES\GestiScoutWeb\templates\cotisation" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\CODES SOURCES\GestiScoutWeb\config\packages\prod" />
+    </key>
+  </component>
+  <component name="RunManager" selected="PHP Web Page.test">
+    <configuration name="test" type="PhpWebAppRunConfigurationType" factoryName="PHP Web Application" server_name="Unnamed">
+      <method v="2" />
+    </configuration>
+    <configuration name="xedebug" type="PhpWebAppRunConfigurationType" factoryName="PHP Web Application" server_name="Unnamed">
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="PHP Web Page.test" />
+      <item itemvalue="PHP Web Page.xedebug" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fa88eed9-97a0-423b-a6a5-deaa9d4620b5" name="Default Changelist" comment="" />
+      <created>1609287758225</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1609287758225</updated>
+      <workItem from="1609287764249" duration="2067000" />
+      <workItem from="1609289903429" duration="224000" />
+      <workItem from="1609581379443" duration="344000" />
+      <workItem from="1609583558335" duration="6707000" />
+      <workItem from="1609590878152" duration="17275000" />
+      <workItem from="1609714344253" duration="5148000" />
+      <workItem from="1609801192217" duration="5295000" />
+      <workItem from="1609806749498" duration="6308000" />
+      <workItem from="1609871856424" duration="5359000" />
+      <workItem from="1609882158575" duration="998000" />
+      <workItem from="1609883951681" duration="3443000" />
+      <workItem from="1609961243985" duration="2332000" />
+      <workItem from="1609970139537" duration="2208000" />
+      <workItem from="1610058956109" duration="12111000" />
+      <workItem from="1610273226656" duration="10241000" />
+      <workItem from="1610293710528" duration="13480000" />
+      <workItem from="1610571646365" duration="8964000" />
+      <workItem from="1610635930751" duration="8364000" />
+      <workItem from="1610660192961" duration="8851000" />
+      <workItem from="1610733950657" duration="719000" />
+      <workItem from="1610736515599" duration="7727000" />
+      <workItem from="1610753487575" duration="284000" />
+      <workItem from="1610753797619" duration="4911000" />
+      <workItem from="1610822039669" duration="5610000" />
+      <workItem from="1610834597009" duration="1022000" />
+      <workItem from="1610837631350" duration="9633000" />
+      <workItem from="1610958849761" duration="2375000" />
+      <workItem from="1610961855574" duration="8881000" />
+      <workItem from="1611093402678" duration="3108000" />
+      <workItem from="1611119536444" duration="5438000" />
+      <workItem from="1611178763197" duration="5822000" />
+      <workItem from="1611265480366" duration="378000" />
+      <workItem from="1611265987281" duration="10689000" />
+      <workItem from="1611480153156" duration="1739000" />
+      <workItem from="1611483299065" duration="18493000" />
+      <workItem from="1611702051027" duration="5749000" />
+      <workItem from="1611839435827" duration="3484000" />
+      <workItem from="1611874691109" duration="1176000" />
+      <workItem from="1612018971452" duration="486000" />
+      <workItem from="1612019593710" duration="4758000" />
+      <workItem from="1612030808836" duration="170000" />
+      <workItem from="1612033202965" duration="384000" />
+      <workItem from="1612129377221" duration="1657000" />
+      <workItem from="1612131060984" duration="1338000" />
+      <workItem from="1612132955684" duration="1988000" />
+      <workItem from="1612135043136" duration="539000" />
+      <workItem from="1612136443147" duration="169000" />
+      <workItem from="1612136661610" duration="777000" />
+      <workItem from="1612158217137" duration="1688000" />
+      <workItem from="1612160130827" duration="1220000" />
+      <workItem from="1612204557318" duration="1570000" />
+      <workItem from="1612206207803" duration="1783000" />
+      <workItem from="1612208029679" duration="1660000" />
+      <workItem from="1612215762859" duration="1695000" />
+      <workItem from="1612217495564" duration="1780000" />
+      <workItem from="1612219308580" duration="1808000" />
+      <workItem from="1612221147783" duration="1782000" />
+      <workItem from="1612222964915" duration="2017000" />
+      <workItem from="1612225083395" duration="1785000" />
+      <workItem from="1612226990004" duration="1342000" />
+      <workItem from="1612292290566" duration="1674000" />
+      <workItem from="1612294017247" duration="1782000" />
+      <workItem from="1612295922419" duration="757000" />
+      <workItem from="1612304181363" duration="184000" />
+      <workItem from="1612304434074" duration="1778000" />
+      <workItem from="1612306266529" duration="1427000" />
+      <workItem from="1612308116393" duration="15000" />
+      <workItem from="1612394690067" duration="1604000" />
+      <workItem from="1612396346966" duration="25000" />
+      <workItem from="1612460381455" duration="1659000" />
+      <workItem from="1612462081985" duration="1906000" />
+      <workItem from="1612464296667" duration="1832000" />
+      <workItem from="1612466223634" duration="1783000" />
+      <workItem from="1612468035976" duration="1128000" />
+      <workItem from="1612478569801" duration="1947000" />
+      <workItem from="1612480626989" duration="1804000" />
+      <workItem from="1612482495235" duration="1783000" />
+      <workItem from="1612484379113" duration="1781000" />
+      <workItem from="1612486209154" duration="706000" />
+      <workItem from="1612546152613" duration="1761000" />
+      <workItem from="1612547952029" duration="1788000" />
+      <workItem from="1612549810149" duration="1788000" />
+      <workItem from="1612551642265" duration="1789000" />
+      <workItem from="1612553523794" duration="1787000" />
+      <workItem from="1612555358398" duration="86000" />
+      <workItem from="1612565658766" duration="1675000" />
+      <workItem from="1612567372338" duration="538000" />
+      <workItem from="1612607198439" duration="1782000" />
+      <workItem from="1612609013924" duration="1899000" />
+      <workItem from="1612610951779" duration="1778000" />
+      <workItem from="1612612772030" duration="1345000" />
+      <workItem from="1612616095677" duration="1785000" />
+      <workItem from="1612617944299" duration="1399000" />
+      <workItem from="1612619379072" duration="1155000" />
+      <workItem from="1612621215120" duration="1803000" />
+      <workItem from="1612623058655" duration="537000" />
+      <workItem from="1612822711997" duration="1603000" />
+      <workItem from="1612824385275" duration="1781000" />
+      <workItem from="1612826193163" duration="1431000" />
+      <workItem from="1612894613754" duration="1649000" />
+      <workItem from="1612896319700" duration="1787000" />
+      <workItem from="1612898184570" duration="1766000" />
+      <workItem from="1612979090333" duration="1120000" />
+      <workItem from="1612980948179" duration="1797000" />
+      <workItem from="1612982779671" duration="1127000" />
+      <workItem from="1612997111366" duration="1645000" />
+      <workItem from="1612998926767" duration="1791000" />
+      <workItem from="1613000746857" duration="1814000" />
+      <workItem from="1613002585510" duration="1795000" />
+      <workItem from="1613004410030" duration="1790000" />
+      <workItem from="1613006234512" duration="1549000" />
+      <workItem from="1613086153471" duration="1201000" />
+      <workItem from="1613153366759" duration="1619000" />
+      <workItem from="1613155213617" duration="694000" />
+      <workItem from="1613157290049" duration="1614000" />
+      <workItem from="1613426415345" duration="716000" />
+      <workItem from="1613513398968" duration="1780000" />
+      <workItem from="1613515207822" duration="1759000" />
+      <workItem from="1613517023413" duration="230000" />
+      <workItem from="1613584137738" duration="1579000" />
+      <workItem from="1613585768053" duration="1677000" />
+      <workItem from="1613587604983" duration="1782000" />
+      <workItem from="1613589424622" duration="981000" />
+      <workItem from="1613599052742" duration="1644000" />
+      <workItem from="1613600743080" duration="1785000" />
+      <workItem from="1613602554889" duration="1784000" />
+      <workItem from="1613604370771" duration="849000" />
+      <workItem from="1613849386451" duration="1501000" />
+      <workItem from="1613851110910" duration="394000" />
+      <workItem from="1613854291740" duration="1787000" />
+      <workItem from="1613856107009" duration="1784000" />
+      <workItem from="1613857933495" duration="1851000" />
+      <workItem from="1613859813917" duration="1790000" />
+      <workItem from="1613861635183" duration="1784000" />
+      <workItem from="1613863453643" duration="1792000" />
+      <workItem from="1613865272341" duration="1807000" />
+      <workItem from="1613867140186" duration="1790000" />
+      <workItem from="1613869088285" duration="1785000" />
+      <workItem from="1613870943765" duration="1200000" />
+      <workItem from="1613898720608" duration="591000" />
+      <workItem from="1613899444891" duration="1791000" />
+      <workItem from="1613901331542" duration="2510000" />
+      <workItem from="1613903875762" duration="1785000" />
+      <workItem from="1613905687563" duration="1748000" />
+      <workItem from="1613907535065" duration="1542000" />
+      <workItem from="1613909444380" duration="1574000" />
+      <workItem from="1613911615989" duration="1787000" />
+      <workItem from="1613913429666" duration="2519000" />
+      <workItem from="1613915987264" duration="1803000" />
+      <workItem from="1613917835237" duration="1786000" />
+      <workItem from="1613919667539" duration="198000" />
+      <workItem from="1613925682917" duration="42000" />
+      <workItem from="1613925835517" duration="1769000" />
+      <workItem from="1613928122568" duration="1781000" />
+      <workItem from="1613929943991" duration="1784000" />
+      <workItem from="1613931761409" duration="1788000" />
+      <workItem from="1613933573465" duration="1795000" />
+      <workItem from="1613935390673" duration="1792000" />
+      <workItem from="1613937206154" duration="1965000" />
+      <workItem from="1613939202119" duration="1823000" />
+      <workItem from="1614020106381" duration="1471000" />
+      <workItem from="1614032117788" duration="1653000" />
+      <workItem from="1614033848274" duration="2008000" />
+      <workItem from="1614035904565" duration="1789000" />
+      <workItem from="1614037719847" duration="448000" />
+      <workItem from="1614107180350" duration="1698000" />
+      <workItem from="1614108918657" duration="467000" />
+      <workItem from="1614121187012" duration="1567000" />
+      <workItem from="1614189947712" duration="1643000" />
+      <workItem from="1614191798501" duration="1788000" />
+      <workItem from="1614193636444" duration="194000" />
+      <workItem from="1614206051867" duration="1758000" />
+      <workItem from="1614207881818" duration="1786000" />
+      <workItem from="1614209692408" duration="1626000" />
+      <workItem from="1614278025194" duration="1528000" />
+      <workItem from="1614279639222" duration="1038000" />
+      <workItem from="1614281049358" duration="455000" />
+      <workItem from="1614289925249" duration="1600000" />
+      <workItem from="1614291634505" duration="1062000" />
+      <workItem from="1614363014929" duration="1476000" />
+      <workItem from="1614364544760" duration="1786000" />
+      <workItem from="1614366375870" duration="1791000" />
+      <workItem from="1614368194698" duration="1789000" />
+      <workItem from="1614370009565" duration="579000" />
+      <workItem from="1614762195698" duration="1699000" />
+      <workItem from="1614764100432" duration="1796000" />
+      <workItem from="1614765950107" duration="1000000" />
+      <workItem from="1614767762831" duration="1812000" />
+      <workItem from="1614769597372" duration="1923000" />
+      <workItem from="1614812247176" duration="1340000" />
+      <workItem from="1614814292118" duration="1795000" />
+      <workItem from="1614816142619" duration="1786000" />
+      <workItem from="1614817980408" duration="313000" />
+      <workItem from="1614883919982" duration="1675000" />
+      <workItem from="1614885809002" duration="1665000" />
+      <workItem from="1615488302589" duration="1507000" />
+      <workItem from="1615490115006" duration="1614000" />
+      <workItem from="1615491831244" duration="266000" />
+      <workItem from="1615652803535" duration="1785000" />
+      <workItem from="1615654726764" duration="1358000" />
+      <workItem from="1615657277649" duration="1685000" />
+      <workItem from="1615659008022" duration="1669000" />
+      <workItem from="1615661388149" duration="911000" />
+      <workItem from="1615663226226" duration="411000" />
+      <workItem from="1615739863050" duration="1211000" />
+      <workItem from="1615741559627" duration="873000" />
+      <workItem from="1615747010583" duration="1920000" />
+      <workItem from="1615748965176" duration="1538000" />
+      <workItem from="1615750821414" duration="1595000" />
+      <workItem from="1615844441079" duration="1696000" />
+      <workItem from="1615846173492" duration="2017000" />
+      <workItem from="1615848922277" duration="900000" />
+      <workItem from="1615921029437" duration="442000" />
+      <workItem from="1615921680821" duration="19000" />
+      <workItem from="1615921769064" duration="35000" />
+      <workItem from="1615921850384" duration="59000" />
+      <workItem from="1615921927858" duration="174000" />
+      <workItem from="1615922130984" duration="18000" />
+      <workItem from="1615922240729" duration="16000" />
+      <workItem from="1615922275995" duration="74000" />
+      <workItem from="1615922371734" duration="3000" />
+      <workItem from="1615922861508" duration="18000" />
+      <workItem from="1615922904157" duration="350000" />
+      <workItem from="1615923958773" duration="715000" />
+      <workItem from="1615932348944" duration="3057000" />
+      <workItem from="1616238828331" duration="2423000" />
+      <workItem from="1616449143018" duration="110000" />
+      <workItem from="1616449350989" duration="9676000" />
+      <workItem from="1616520867711" duration="4863000" />
+      <workItem from="1616535086389" duration="6104000" />
+      <workItem from="1616541326000" duration="44000" />
+      <workItem from="1616610226847" duration="4243000" />
+      <workItem from="1617044805562" duration="3180000" />
+      <workItem from="1617821366739" duration="266000" />
+      <workItem from="1617822686180" duration="2763000" />
+      <workItem from="1617908519749" duration="3748000" />
+      <workItem from="1618265204911" duration="3636000" />
+      <workItem from="1618288842368" duration="4382000" />
+      <workItem from="1618349968690" duration="5405000" />
+      <workItem from="1618525420777" duration="5827000" />
+      <workItem from="1618822086392" duration="5238000" />
+      <workItem from="1618829827210" duration="808000" />
+      <workItem from="1619043529105" duration="8329000" />
+      <workItem from="1619203540212" duration="3387000" />
+      <workItem from="1619220586489" duration="1482000" />
+      <workItem from="1619253883814" duration="54000" />
+      <workItem from="1619259971932" duration="14311000" />
+      <workItem from="1619297350590" duration="2560000" />
+      <workItem from="1619372773557" duration="621000" />
+      <workItem from="1619373620074" duration="7000" />
+      <workItem from="1619373764362" duration="1565000" />
+      <workItem from="1619376195185" duration="754000" />
+      <workItem from="1619378010920" duration="549000" />
+      <workItem from="1619379778345" duration="2165000" />
+      <workItem from="1619389833133" duration="289000" />
+      <workItem from="1619390781195" duration="9468000" />
+      <workItem from="1619472251967" duration="6321000" />
+      <workItem from="1619560008522" duration="2271000" />
+      <workItem from="1619647658127" duration="3308000" />
+      <workItem from="1619652377420" duration="50000" />
+      <workItem from="1619652545188" duration="377000" />
+      <workItem from="1619732340979" duration="5951000" />
+      <workItem from="1619807790102" duration="2175000" />
+      <workItem from="1619858284914" duration="3560000" />
+      <workItem from="1619863834443" duration="582000" />
+      <workItem from="1619916621656" duration="5585000" />
+      <workItem from="1619948854453" duration="7217000" />
+      <workItem from="1619957513500" duration="1952000" />
+      <workItem from="1619975745329" duration="9345000" />
+      <workItem from="1619996674055" duration="3902000" />
+      <workItem from="1620339646052" duration="6058000" />
+      <workItem from="1620423507407" duration="3942000" />
+    </task>
+    <task id="LOCAL-00001" summary="suppression d'un jeune">
+      <created>1612209599592</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1612209599592</updated>
+    </task>
+    <task id="LOCAL-00002" summary="affichage des responsables">
+      <created>1613939279077</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1613939279078</updated>
+    </task>
+    <task id="LOCAL-00003" summary="commit district 23.03.2021">
+      <created>1616457853818</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1616457853818</updated>
+    </task>
+    <task id="LOCAL-00004" summary="DISTRICT 23.03.2021">
+      <created>1616541629012</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1616541629012</updated>
+    </task>
+    <task id="LOCAL-00005" summary="duplicate key resolved 06.05.2021">
+      <created>1620345639029</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1620345639029</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="suppression d'un jeune" />
+    <MESSAGE value="ajout du menu sur le dashboard&#10;ajout des infos de l'utilisateur connecté" />
+    <MESSAGE value="ajout de la requete GetTotalJeuneParGroupe" />
+    <MESSAGE value="cotisation jeune" />
+    <MESSAGE value="affichage des responsables" />
+    <MESSAGE value="commit 04.03.2021" />
+    <MESSAGE value="commit 16.03.2021" />
+    <MESSAGE value="commit 16.03.2021 2" />
+    <MESSAGE value="commit district 23.03.2021" />
+    <MESSAGE value="DISTRICT 23.03.2021" />
+    <MESSAGE value="duplicate key resolved 06.05.2021" />
+    <option name="LAST_COMMIT_MESSAGE" value="duplicate key resolved 06.05.2021" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="413" y="111" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1619560633866">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="413" y="111" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.728@0.0.1366.728" timestamp="1619560633866" />
+    <state width="647" height="466" key="DebuggerActiveHint" timestamp="1619204650677">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="647" height="466" key="DebuggerActiveHint/0.0.1366.728@0.0.1366.728" timestamp="1619204650677" />
+    <state width="1323" height="164" key="GridCell.Tab.0.bottom" timestamp="1619376896311">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="164" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1619376896311" />
+    <state width="1323" height="164" key="GridCell.Tab.0.center" timestamp="1619376896311">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="164" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1619376896311" />
+    <state width="1323" height="164" key="GridCell.Tab.0.left" timestamp="1619376896310">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="164" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1619376896310" />
+    <state width="1323" height="164" key="GridCell.Tab.0.right" timestamp="1619376896311">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="164" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1619376896311" />
+    <state width="1323" height="164" key="GridCell.Tab.1.bottom" timestamp="1619376896361">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="164" key="GridCell.Tab.1.bottom/0.0.1366.728@0.0.1366.728" timestamp="1619376896361" />
+    <state width="1323" height="164" key="GridCell.Tab.1.center" timestamp="1619376896360">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="164" key="GridCell.Tab.1.center/0.0.1366.728@0.0.1366.728" timestamp="1619376896360" />
+    <state width="1323" height="164" key="GridCell.Tab.1.left" timestamp="1619376896311">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="164" key="GridCell.Tab.1.left/0.0.1366.728@0.0.1366.728" timestamp="1619376896311" />
+    <state width="1323" height="164" key="GridCell.Tab.1.right" timestamp="1619376896361">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="164" key="GridCell.Tab.1.right/0.0.1366.728@0.0.1366.728" timestamp="1619376896361" />
+    <state width="1323" height="164" key="GridCell.Tab.2.bottom" timestamp="1619376896362">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="164" key="GridCell.Tab.2.bottom/0.0.1366.728@0.0.1366.728" timestamp="1619376896362" />
+    <state width="1323" height="164" key="GridCell.Tab.2.center" timestamp="1619376896361">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="164" key="GridCell.Tab.2.center/0.0.1366.728@0.0.1366.728" timestamp="1619376896361" />
+    <state width="1323" height="164" key="GridCell.Tab.2.left" timestamp="1619376896361">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="164" key="GridCell.Tab.2.left/0.0.1366.728@0.0.1366.728" timestamp="1619376896361" />
+    <state width="1323" height="164" key="GridCell.Tab.2.right" timestamp="1619376896361">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="164" key="GridCell.Tab.2.right/0.0.1366.728@0.0.1366.728" timestamp="1619376896361" />
+    <state x="404" y="105" width="570" height="524" key="StructurePopup" timestamp="1616522419033">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="404" y="105" width="570" height="524" key="StructurePopup/0.0.1366.728@0.0.1366.728" timestamp="1616522419033" />
+    <state width="498" height="446" key="SwitcherDM" timestamp="1619046143997">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="498" height="446" key="SwitcherDM/0.0.1366.728@0.0.1366.728" timestamp="1619046143997" />
+    <state x="275" y="97" key="Vcs.Push.Dialog.v2" timestamp="1620423607453">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="275" y="97" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1620423607453" />
+    <state width="691" height="372" key="XDebugger.FullValuePopup" timestamp="1619047858982">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="691" height="372" key="XDebugger.FullValuePopup/0.0.1366.728@0.0.1366.728" timestamp="1619047858982" />
+    <state x="470" y="265" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1616457998357">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="470" y="265" key="git4idea.remote.GitConfigureRemotesDialog/0.0.1366.728@0.0.1366.728" timestamp="1616457998357" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/ConfigurationController.php</url>
+          <line>55</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/ConfigurationController.php</url>
+          <line>93</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/ConfigurationController.php</url>
+          <line>148</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/templates/configuration/Groupe.html.twig</url>
+          <line>256</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/ConfigurationController.php</url>
+          <line>179</line>
+          <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/ConfigurationController.php</url>
+          <line>205</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/ConfigurationController.php</url>
+          <line>43</line>
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/ConfigurationController.php</url>
+          <line>206</line>
+          <option name="timeStamp" value="36" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Repository/AnneePastoraleRepository.php</url>
+          <line>68</line>
+          <option name="timeStamp" value="37" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/templates/configuration/ListeBranche.html.twig</url>
+          <line>125</line>
+          <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Entity/Responsable.php</url>
+          <line>4</line>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Security/LoginFormAuthAuthenticator.php</url>
+          <line>127</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/vendor/symfony/security-http/Util/TargetPathTrait.php</url>
+          <line>36</line>
+          <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/vendor/symfony/security-http/Util/TargetPathTrait.php</url>
+          <line>35</line>
+          <option name="timeStamp" value="56" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Security/LoginFormAuthAuthenticator.php</url>
+          <line>131</line>
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/ResponsableController.php</url>
+          <line>138</line>
+          <option name="timeStamp" value="65" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/ResponsableController.php</url>
+          <line>171</line>
+          <option name="timeStamp" value="67" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/templates/base.html.twig</url>
+          <line>176</line>
+          <option name="timeStamp" value="75" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Security/LoginFormAuthAuthenticator.php</url>
+          <line>136</line>
+          <option name="timeStamp" value="81" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Entity/User.php</url>
+          <line>98</line>
+          <option name="timeStamp" value="82" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/templates/base.html.twig</url>
+          <line>250</line>
+          <option name="timeStamp" value="83" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/templates/base.html.twig</url>
+          <line>243</line>
+          <option name="timeStamp" value="85" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/templates/base.html.twig</url>
+          <line>59</line>
+          <option name="timeStamp" value="88" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/ResponsableController.php</url>
+          <line>128</line>
+          <option name="timeStamp" value="92" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/RapportController.php</url>
+          <line>31</line>
+          <option name="timeStamp" value="102" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Repository/JEUNERepository.php</url>
+          <line>88</line>
+          <option name="timeStamp" value="103" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Repository/JEUNERepository.php</url>
+          <line>149</line>
+          <option name="timeStamp" value="110" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/CotisationController.php</url>
+          <line>82</line>
+          <option name="timeStamp" value="111" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/CotisationController.php</url>
+          <line>97</line>
+          <option name="timeStamp" value="114" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/CotisationController.php</url>
+          <line>128</line>
+          <option name="timeStamp" value="115" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/CotisationController.php</url>
+          <line>84</line>
+          <option name="timeStamp" value="121" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/CotisationController.php</url>
+          <line>86</line>
+          <option name="timeStamp" value="122" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/CotisationController.php</url>
+          <line>150</line>
+          <option name="timeStamp" value="126" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/CotisationController.php</url>
+          <line>166</line>
+          <option name="timeStamp" value="127" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/CotisationController.php</url>
+          <line>196</line>
+          <option name="timeStamp" value="128" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/CotisationController.php</url>
+          <line>199</line>
+          <option name="timeStamp" value="129" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/UtilisateurController.php</url>
+          <line>42</line>
+          <option name="timeStamp" value="131" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/templates/base.html.twig</url>
+          <line>234</line>
+          <option name="timeStamp" value="133" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/JeuneController.php</url>
+          <line>337</line>
+          <option name="timeStamp" value="144" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/JeuneController.php</url>
+          <line>334</line>
+          <option name="timeStamp" value="147" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/ConnexionController.php</url>
+          <line>58</line>
+          <option name="timeStamp" value="148" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/templates/jeune/AddJeune.html.twig</url>
+          <line>57</line>
+          <option name="timeStamp" value="152" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/DistrictController.php</url>
+          <line>86</line>
+          <option name="timeStamp" value="154" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/DistrictController.php</url>
+          <line>109</line>
+          <option name="timeStamp" value="156" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Classes/QueryClass.php</url>
+          <line>395</line>
+          <option name="timeStamp" value="157" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/ConnexionController.php</url>
+          <line>159</line>
+          <option name="timeStamp" value="161" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/DistrictController.php</url>
+          <line>133</line>
+          <option name="timeStamp" value="162" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/DistrictController.php</url>
+          <line>153</line>
+          <option name="timeStamp" value="163" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/JeuneController.php</url>
+          <line>161</line>
+          <option name="timeStamp" value="165" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/JeuneController.php</url>
+          <line>242</line>
+          <option name="timeStamp" value="166" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/JeuneController.php</url>
+          <line>266</line>
+          <option name="timeStamp" value="167" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Classes/QueryClass.php</url>
+          <line>305</line>
+          <option name="timeStamp" value="168" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Classes/QueryClass.php</url>
+          <line>59</line>
+          <option name="timeStamp" value="170" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/templates/cotisation/CotisationJeune.html.twig</url>
+          <line>89</line>
+          <option name="timeStamp" value="171" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/templates/base.html.twig</url>
+          <line>366</line>
+          <option name="timeStamp" value="173" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/ConnexionController.php</url>
+          <line>72</line>
+          <option name="timeStamp" value="174" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Classes/QueryClass.php</url>
+          <line>306</line>
+          <option name="timeStamp" value="175" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/DistrictController.php</url>
+          <line>70</line>
+          <option name="timeStamp" value="176" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Controller/CotisationController.php</url>
+          <line>150</line>
+          <option name="timeStamp" value="178" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/templates/cotisation/CotisationResponsable.html.twig</url>
+          <line>136</line>
+          <option name="timeStamp" value="179" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/src/Repository/UserRepository.php</url>
+          <line>27</line>
+          <properties>
+            <option name="className" value="\App\Repository\UserRepository" />
+            <option name="methodName" value="upgradePassword" />
+          </properties>
+          <option name="timeStamp" value="87" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/src/Entity/JEUNE.php</url>
+          <line>381</line>
+          <properties>
+            <option name="className" value="\App\Entity\JEUNE" />
+            <option name="methodName" value="removeInscription" />
+          </properties>
+          <option name="timeStamp" value="96" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/DistrictController.php</url>
+          <line>68</line>
+          <properties>
+            <option name="className" value="\App\Controller\DistrictController" />
+            <option name="methodName" value="RechercheJeuneByCriteria" />
+          </properties>
+          <option name="timeStamp" value="153" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/src/Classes/QueryClass.php</url>
+          <line>56</line>
+          <properties>
+            <option name="className" value="\App\Classes\QueryClass" />
+            <option name="methodName" value="GetJeuneNonCotise" />
+          </properties>
+          <option name="timeStamp" value="169" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/config/packages/prod/Controller/CotisationController.php</url>
+          <line>93</line>
+          <properties>
+            <option name="className" value="\App\Controller\CotisationController" />
+            <option name="methodName" value="SaveCotisation" />
+          </properties>
+          <option name="timeStamp" value="172" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/src/Controller/DistrictController.php</url>
+          <line>24</line>
+          <properties>
+            <option name="className" value="\App\Controller\DistrictController" />
+            <option name="methodName" value="index" />
+          </properties>
+          <option name="timeStamp" value="177" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/src/Controller/DistrictController.php</url>
+          <line>99</line>
+          <properties>
+            <option name="className" value="\App\Controller\DistrictController" />
+            <option name="methodName" value="RechercheCotiseDistrictByCriteria" />
+          </properties>
+          <option name="timeStamp" value="180" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

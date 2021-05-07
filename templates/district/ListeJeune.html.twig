@@ -1,0 +1,286 @@
+{% extends 'base_district.html.twig' %}
+
+{% block titre %}LISTE DES JEUNES {% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}"/>
+    {#    <link rel="stylesheet" href="{{ asset('assets/vendor/font-awesome/css/font-awesome.min.css') }}"/>#}
+    <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
+    <style>
+        .bd-example-modal-lg .modal-dialog{
+            display: table;
+            position: relative;
+            margin: 0 auto;
+            top: calc(50% - 24px);
+        }
+
+        .bd-example-modal-lg .modal-dialog .modal-content{
+            background-color: transparent;
+            border: none;
+        }
+
+    </style>
+{% endblock %}
+{% block body %}
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
+    <div class="container-fluid">
+
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="header">
+                        <h2 class="text-center">Recherche des jeunes par critère</h2>
+                    </div>
+                    <div class="body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Groupe</label>
+                                    <select id="groupe" class="form-control"></select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label>Branche</label>
+                                    <select id="branche" class="form-control"></select>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success" id="valider">Rechercher</button>
+                            <button type="submit" class="btn btn-danger">Annuler</button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="header text-center">
+                <h2>Résultat de la recherche</h2>
+            </div>
+            <div class="body">
+                <div class="table-responsive">
+                    <table class="table" id="tbjeune">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>NOM</th>
+                            <th>PRENOMS</th>
+
+                            <th>GROUPE</th>
+                            <th>TELEPHONE</th>
+{#                            <th>ACTION</th>#}
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content" style="width: 48px">
+                <span class="fa fa-spinner fa-spin fa-3x"></span>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
+
+
+    <script src="{{ asset("assets/bundles/datatablescripts.bundle.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/dataTables.buttons.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.bootstrap4.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.colVis.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.html5.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.print.min.js") }}"></script>
+
+    <script>
+        $(document).ready(function(){
+            debugger
+            var table = $("#tbjeune").DataTable({
+                language: {
+                    processing: "Traitement en cours...",
+                    search: "Rechercher&nbsp;:",
+                    lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
+                    info: "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+                    infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+                    infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+                    infoPostFix: "",
+                    loadingRecords: "Chargement en cours...",
+                    zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
+                    emptyTable: "Aucune donnée disponible dans le tableau",
+                    paginate: {
+                        first: "Premier",
+                        previous: "Pr&eacute;c&eacute;dent",
+                        next: "Suivant",
+                        last: "Dernier"
+                    }
+                },
+                columns: [
+                    { "data": "ID" },
+                    { "data": "NOM" },
+                    { "data": "PRENOMS" },
+                  //  { "data": "DATE DE NAISSANCE" },
+                    { "data": "GROUPE" },
+                    { "data": "TELEPHONE" },
+                    // { "data": "ACTION" }
+                ],
+                // columnDefs: [
+                //     {
+                //         targets: 0,
+                //         visible: false
+                //     }],
+                data: [],
+                rowCallback: function (row, data) { },
+                filter: true,
+                info: true,
+                ordering: false,
+                processing: false,
+                retrieve: true
+            });
+            debugger
+            function loading()
+            {
+                $('.modal').modal('show');
+
+            }
+            function loadingClose()
+            {
+                $('.modal').modal('hide');
+
+            }
+            $.ajax({
+                type:"GET",
+                url:"{{ path("GetListBranche")}}",
+                success:function(resp){
+                    debugger
+                    $("#brache").empty();
+                    var defaultline = "<option selected='selected' value='-1'>---selectionner branche---</option>";
+                    $("#branche").append(defaultline);
+                    var liste = JSON.parse(resp);
+                    $.each(liste,function(i,n){
+                        debugger
+                        var line = "<option value="+n.id+">"+n.Libelle+"</option>";
+                        $("#branche").append(line);
+
+                    });
+                }
+            });
+            $.ajax({
+                type:"GET",
+                url:"{{ path("GetListGroupe")}}",
+                success:function(resp){
+                    debugger
+                    $("#groupe").empty();
+                    var defaultline = "<option selected=selected value='-1'>---selectionner groupe---</option>";
+                    $("#groupe").append(defaultline);
+                    var liste = JSON.parse(resp);
+                    $.each(liste,function(i,n){
+                        debugger
+                        var line = "<option value="+n.id+">"+n.Nom+"</option>";
+                        $("#groupe").append(line);
+
+                    });
+                }
+            });
+
+
+
+
+
+            $("#valider").click(function (){
+                debugger
+                loading();
+                let branche = $("#branche").val();
+                let groupe = $("#groupe").val();
+                if ( branche=='-1' || groupe=='-1')
+                {
+
+                    swal({
+                        type:"warning",
+                        title: "",
+                        text:"Veuillez faire un choix correct"
+                    },function () {
+                        loadingClose();
+                    });
+                }
+                else
+                {
+
+
+                    $.ajax({
+                        type:"GET",
+                        url:"{{ path("RechercheJeuneByCriteria") }}",
+                        data:{ branche : branche, groupe : groupe},
+                        success:function(res){
+                            debugger
+                            loadingClose();
+                            table.clear().draw();
+                            if(res=="")
+                            {
+                                swal({
+                                    title:"",
+                                    text:"Auncun enregistrement trouvé"
+                                });
+                            }
+                            else
+                            {
+
+                                var liste = JSON.parse(res);
+                                $.each(liste,function(i,n){
+                                    table.rows.add([{
+                                        "ID":n.id,
+                                        "NOM":n.Nom,
+                                        "PRENOMS":n.Prenoms ,
+                                        "GROUPE": n.nomgroupe,
+                                        "TELEPHONE" :n.Telephone
+
+
+                                    }]).draw();
+                                });
+                            }
+
+                        },
+                        error: function(){
+                            loadingClose();
+                        }
+                    });
+                }
+
+
+            });
+        });
+    </script>
+{% endblock %}

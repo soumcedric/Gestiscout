@@ -1,0 +1,415 @@
+{% extends 'base_district.html.twig' %}
+
+
+
+
+
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="{{ asset('assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}"/>
+{% endblock %}
+{% block titre %} Tableau de bord {% endblock %}
+
+{% block body %}
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+                <h1>Tableau de bord</h1>
+
+
+            </div>
+            <div class="col-md-6 col-sm-12 text-right hidden-xs">
+                <h1 style="color=red;">année pastorale</h1>
+{#                <a href="javascript:void(0);" class="btn btn-sm btn-primary" title="">Create Campaign</a>#}
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card w_card3">
+                    <div class="body">
+                        <div class="text-center"><i class="fa fa-bars"></i>
+                            <h5 class="m-t-20 mb-0">{{ nbreJeuneSsm}} Jeune(s)</h5>
+                            <p class="text-muted">LES MOHICANS</p>
+                            <a href="javascript:void(0);" class="btn btn-primary btn-round">Consulter liste</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card w_card3">
+                    <div class="body">
+                        <div class="text-center"><i class="fa fa-bars"></i>
+                            <h5 class="m-t-20 mb-0">{{ NbreJeuneLionKing }} Jeune(s)</h5>
+                            <p class="text-muted">LION KING</p>
+                            <a href="javascript:void(0);" class="btn btn-primary btn-round">Consulter liste</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card w_card3">
+                    <div class="body">
+                        <div class="text-center"><i class="fa fa-bars"></i>
+                            <h5 class="m-t-20 mb-0">{{ nbreJeuneLesPetroliers }} Jeune(s)</h5>
+                            <p class="text-muted">LES PETROLIERS</p>
+                            <a href="javascript:void(0);" class="btn btn-primary btn-round">Consulter liste</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card w_card3">
+                    <div class="body">
+                        <div class="text-center"><i class="fa fa-bars"></i>
+                            <h5 class="m-t-20 mb-0">{{ nbreJeuneSma }} Jeune(s)</h5>
+                            <p class="text-muted">SMA</p>
+                            <a href="javascript:void(0);" class="btn btn-primary btn-round">Consulter liste</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card w_card3">
+                    <div class="body">
+                        <div class="text-center"><i class="fa fa-bars"></i>
+                            <h5 class="m-t-20 mb-0">{{ nbreJeuneNda }} Jeune(s)</h5>
+                            <p class="text-muted">KOTHE SCARABEE</p>
+                            <a href="javascript:void(0);" class="btn btn-primary btn-round">Consulter liste</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card">
+                    <div class="body top_counter">
+                        <div class="icon bg-warning text-white"><i class="fa fa-building"></i> </div>
+                        <div class="content">
+                            <span>Cotisés MOHICANS</span>
+                            <h5 class="number mb-0">{{ nbreTotalCotiseSSM }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card">
+                    <div class="body top_counter">
+                        <div class="icon bg-warning text-white"><i class="fa fa-building"></i> </div>
+                        <div class="content">
+                            <span>Cotisés LION KING</span>
+                            <h5 class="number mb-0">{{ nbreTotalCotiseSM }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card">
+                    <div class="body top_counter">
+                        <div class="icon bg-warning text-white"><i class="fa fa-building"></i> </div>
+                        <div class="content">
+                            <span>Cotisés LES PETROLIERS</span>
+                            <h5 class="number mb-0">{{ nbreTotalCotiseJMV }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card">
+                    <div class="body top_counter">
+                        <div class="icon bg-warning text-white"><i class="fa fa-building"></i> </div>
+                        <div class="content">
+                            <span>Cotisés SMA</span>
+                            <h5 class="number mb-0">{{ nbreTotalCotiseSMA }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card">
+                    <div class="body top_counter">
+                        <div class="icon bg-warning text-white"><i class="fa fa-building"></i> </div>
+                        <div class="content">
+                            <span>Cotisés KOTHE SCARABEE</span>
+                            <h5 class="number mb-0">{{ nbreTotalCotiseNDA }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+{#    <div class="container-fluid">#}
+
+
+{#        {% if is_granted('ROLE_ADMIN') %}#}
+
+{#            <div class="row clearfix">#}
+{#                <div class="col-lg-3 col-md-6">#}
+{#                    <div class="card">#}
+{#                        <div class="body">#}
+{#                            <div class="w_summary">#}
+
+{#                                <div class="s_detail">#}
+{#                                    <h2 class="font700 mb-0">{{ TotalJeuneGroupe }}</h2>#}
+{#                                    <span><i class="fa fa-level-up text-success"></i> Total Jeune</span>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-lg-3 col-md-6">#}
+{#                    <div class="card">#}
+{#                        <div class="body">#}
+{#                            <div class="w_summary">#}
+{#                                #}{#                            <div class="s_chart">#}
+{#                                #}{#                                <span class="chart">6,3,2,5,8,9,5,4,2,3</span>#}
+{#                                #}{#                            </div>#}
+{#                                <div class="s_detail">#}
+{#                                    <h2 class="font700 mb-0">{{ TotalResponsable }}</h2>#}
+{#                                    <span> <i class="fa fa-level-up text-success"></i> Total chefs</span>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-lg-3 col-md-6">#}
+{#                    <div class="card">#}
+{#                        <div class="body">#}
+{#                            <div class="w_summary">#}
+{#                                #}{#                            <div class="s_chart">#}
+{#                                #}{#                                <span class="chart">3,5,1,6,2,4,8,5,3,2</span>#}
+{#                                #}{#                            </div>#}
+{#                                <div class="s_detail">#}
+{#                                    <h2 class="font700 mb-0">{{ TotalJeuneGarcon }}</h2>#}
+{#                                    <span><i class="fa fa-level-up text-success"></i>Total Jeune Garcon</span>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-lg-3 col-md-6">#}
+{#                    <div class="card">#}
+{#                        <div class="body">#}
+{#                            <div class="w_summary">#}
+{#                                #}{#                            <div class="s_chart">#}
+{#                                #}{#                                <span class="chart">8,5,2,9,6,3,4,5,6,7</span>#}
+{#                                #}{#                            </div>#}
+{#                                <div class="s_detail">#}
+{#                                    <h2 class="font700 mb-0">{{ TotalJeuneFille }}</h2>#}
+{#                                    <span><i class="fa fa-level-up text-success"></i>Total Jeune Fille</span>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="row clearfix">#}
+{#                <div class="col-lg-3 col-md-6">#}
+{#                    <div class="card" style="background-color:yellow;">#}
+{#                        <div class="body">#}
+{#                            <div class="w_summary" >#}
+
+{#                                <div class="s_detail">#}
+{#                                    <h2 class="font700 mb-0">{{ TotalLouveteau }}</h2>#}
+{#                                    <span><i class="fa fa-level-up text-success"></i> Total Louveteau</span>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-lg-3 col-md-6">#}
+{#                    <div class="card bg-green">#}
+{#                        <div class="body">#}
+{#                            <div class="w_summary">#}
+
+{#                                <div class="s_detail">#}
+{#                                    <h2 class="font700 mb-0">{{ TotalEclaireur }}</h2>#}
+{#                                    <span> <i class="fa fa-level-up text-success"></i> Total Eclaireur</span>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-lg-3 col-md-6">#}
+{#                    <div class="card bg-orange">#}
+{#                        <div class="body">#}
+{#                            <div class="w_summary">#}
+
+{#                                <div class="s_detail">#}
+{#                                    <h2 class="font700 mb-0">{{ TotalCheminot }}</h2>#}
+{#                                    <span><i class="fa fa-level-up text-success"></i>Total Cheminot</span>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-lg-3 col-md-6">#}
+{#                    <div class="card bg-red">#}
+{#                        <div class="body">#}
+{#                            <div class="w_summary">#}
+
+{#                                <div class="s_detail">#}
+{#                                    <h2 class="font700 mb-0">{{ TotalRoutier }}</h2>#}
+{#                                    <span><i class="fa fa-level-up text-success"></i>Total Routier</span>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="row clearfix">#}
+{#                <div class="col-lg-3 col-md-6">#}
+{#                    <div class="card bg-info">#}
+{#                    <div class="body">#}
+{#                        <div class="w_summary" >#}
+
+{#                            <div class="s_detail">#}
+{#                                <h2 class="font700 mb-0">{{ TotalJeuneCotiseGroupe }}</h2>#}
+{#                                <span><i class="fa fa-level-up text-success"></i> Total Jeunes Cotisés</span>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-lg-3 col-md-6">#}
+{#                    <div class="card bg-info">#}
+{#                    <div class="body">#}
+{#                        <div class="w_summary" >#}
+
+{#                            <div class="s_detail">#}
+{#                                <h2 class="font700 mb-0">{{ TotalChefCotiseGroupe }}</h2>#}
+{#                                <span><i class="fa fa-level-up text-success"></i> Total Chefs Cotisés</span>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    </div>#}
+{#                </div>#}
+
+{#            </div>#}
+
+{#        {% endif %}#}
+
+{#        {% if is_granted('ROLE_SUPERADMIN') %}#}
+{#            <div class="row">#}
+{#                <div class="col-md-6"><div class="card">#}
+{#                        <div class="body top_counter">#}
+{#                            <div class="icon bg-warning text-white"><i class="fa fa-building"></i> </div>#}
+{#                            <div class="content">#}
+{#                                <span>Total Jeune</span>#}
+{#                                <h5 class="number mb-0">{{ NbreTotalJeuneDistrict }}</h5>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div></div>#}
+{#                <div class="col-md-6"><div class="card">#}
+{#                        <div class="body top_counter">#}
+{#                            <div class="icon bg-warning text-white"><i class="fa fa-building"></i> </div>#}
+{#                            <div class="content">#}
+{#                                <span>Total Chef</span>#}
+{#                                <h5 class="number mb-0">{{ TotalChefDistrict }}</h5>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div></div>#}
+{#            </div>#}
+
+{#            jeune par groupe#}
+{#            <h4>Jeune par groupe</h4>#}
+{#            <hr>#}
+{#        <div class="row">#}
+{#            {% for groupe in TotalJeuneByGroupe %}#}
+
+{#                <div class="col-md-3"><div class="card">#}
+{#                        <div class="body top_counter">#}
+{#                            <div class="icon bg-warning text-white"><i class="fa fa-building"></i> </div>#}
+{#                            <div class="content">#}
+{#                                <span>{{ groupe["Nom"] }}</span>#}
+{#                                <h5 class="number mb-0">{{ groupe["NbreJeune"] }} jeunes</h5>#}
+{#                            </div>#}
+{#                        </div>#}
+
+{#                    </div>#}
+
+{#                </div>#}
+
+
+{#            {% endfor %}#}
+{#        </div>#}
+{#jeune par groupe#}
+
+
+
+
+
+
+
+{#            #}{#            jeune par branche#}
+{#            <h4>Jeune par branche</h4>#}
+{#            <hr>#}
+{#            <div class="row">#}
+{#                {% for groupe in TotalJeuneByGroupe %}#}
+
+{#                    <div class="col-md-3"><div class="card">#}
+{#                            <div class="body top_counter">#}
+{#                                <div class="icon bg-warning text-white"><i class="fa fa-building"></i> </div>#}
+{#                                <div class="content">#}
+{#                                    <span>{{ groupe["Nom"] }}</span>#}
+{#                                    <h5 class="number mb-0">{{ groupe["NbreJeune"] }} jeunes</h5>#}
+{#                                </div>#}
+{#                            </div>#}
+
+{#                        </div>#}
+
+{#                    </div>#}
+
+
+{#                {% endfor %}#}
+{#            </div>#}
+{#            #}{#jeune par groupe#}
+
+
+
+{#        {% endif %}#}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#        </div>#}
+
+    </div>
+
+{% endblock %}

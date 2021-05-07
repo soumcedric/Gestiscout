@@ -1,0 +1,510 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}"/>
+{#    <link rel="stylesheet" href="{{ asset('assets/vendor/font-awesome/css/font-awesome.min.css') }}"/>#}
+    <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
+    <style>
+        .bd-example-modal-lg .modal-dialog{
+            display: table;
+            position: relative;
+            margin: 0 auto;
+            top: calc(50% - 24px);
+        }
+
+        .bd-example-modal-lg .modal-dialog .modal-content{
+            background-color: transparent;
+            border: none;
+        }
+    </style>
+{% endblock %}
+{% block titre %} Liste des jeunes {% endblock %}
+
+{% block body %}
+
+
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+{#                <h1>Color Table</h1>#}
+{#                <nav aria-label="breadcrumb">#}
+{#                    <ol class="breadcrumb">#}
+{#                        <li class="breadcrumb-item"><a href="#"><i class="fa fa-cube"></i></a></li>#}
+{#                        <li class="breadcrumb-item"><a href="#">Tables</a></li>#}
+{#                        <li class="breadcrumb-item active" aria-current="page">Color Table</li>#}
+{#                    </ol>#}
+{#                </nav>#}
+            </div>
+{#            <div class="col-md-6 col-sm-12 text-right hidden-xs">#}
+{#                <a href="javascript:void(0);" class="btn btn-sm btn-primary" title="">Create Campaign</a>#}
+{#            </div>#}
+        </div>
+    </div>
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="header">
+            <h2 class="text-center">Liste des jeunes</h2>
+        </div>
+        <div class="body">
+            <div class="table-responsive">
+                <table class="table" id="tbjeune">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>NOM</th>
+                            <th>PRENOMS</th>
+                            <th>DATE DE NAISSANCE</th>
+                            <th>TELEPHONE</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                   <tbody>
+
+                   </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+    <div class="modal fade" id="modalmodif" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modifications du Jeune</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <input type="hidden" id="respoId">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <form id="basic-form" method="post" novalidate>
+                                <input type="hidden" id="jeuneId"/>
+                                <div class="form-group">
+                                    <label>Nom</label>
+                                    <input type="text" class="form-control" required id="Nom">
+                                </div>
+                                <div class="form-group">
+                                    <label>Prénoms</label>
+                                    <input type="text" class="form-control" required id="prenoms">
+                                </div>
+                                <div class="form-group">
+                                    <label>Date de naissance</label>
+                                    <input type="date" class="form-control" required id="dob">
+                                </div>
+                                <div class="form-group">
+                                    <label>Lieu d'habitation</label>
+                                    <input type="text" class="form-control" required id="habitation">
+                                </div>
+                                <div class="form-group">
+                                    <label>Occupation</label>
+                                    <input type="text" class="form-control" required id="occupation">
+                                </div>
+                                <div class="form-group">
+                                    <label>Téléphone</label>
+                                    <input type="tel" id="phone" class="form-control"/>
+                                </div>
+
+                                <br>
+
+                            </form>
+                        </div>
+                        <div class="col-lg-6">
+                            <form id="basic-form" method="post" novalidate>
+                                <div class="form-group">
+                                    <label>Nom Père</label>
+                                    <input type="text" class="form-control" required id="NomPere">
+                                </div>
+                                <div class="form-group">
+                                    <label>Numéro Père</label>
+                                    <input type="tel" class="form-control" required id="NumPere">
+                                </div>
+                                <div class="form-group">
+                                    <label>Nom Mère</label>
+                                    <input type="text" class="form-control" required id="NomMere">
+                                </div>
+                                <div class="form-group">
+                                    <label>Numéro Mère</label>
+                                    <input type="tel" class="form-control" required id="NumMere">
+                                </div>
+                                <div class="form-group">
+                                    <label>Branche</label>
+                                    <select id="branche" class="form-control" disabled></select>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="footer">
+                    <button type="button" class="btn btn-round btn-default btnaction" data-dismiss="modal">Annuler</button>
+                    <button type="button" id="saveModif" class="btnaction btn btn-round btn-primary">Enregistrer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal modal_load fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content" style="width: 48px">
+                <span class="fa fa-spinner fa-spin fa-3x"></span>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
+
+
+    <script src="{{ asset("assets/bundles/datatablescripts.bundle.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/dataTables.buttons.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.bootstrap4.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.colVis.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.html5.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.print.min.js") }}"></script>
+<script>
+    $(document).ready(function(){
+        debugger
+
+        var table = $("#tbjeune").DataTable({
+          language: {
+              processing: "Traitement en cours...",
+              search: "Rechercher&nbsp;:",
+              lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
+              info: "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+              infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+              infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+              infoPostFix: "",
+              loadingRecords: "Chargement en cours...",
+              zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
+              emptyTable: "Aucune donnée disponible dans le tableau",
+              paginate: {
+                  first: "Premier",
+                  previous: "Pr&eacute;c&eacute;dent",
+                  next: "Suivant",
+                  last: "Dernier"
+              }
+          },
+          columns: [
+              { "data": "ID" },
+              { "data": "NOM" },
+              { "data": "PRENOMS" },
+              { "data": "DOB" },
+              { "data": "TELEPHONE" },
+              { "data": "ACTION" }
+          ],
+          // columnDefs: [
+          //     {
+          //         targets: 0,
+          //         visible: false
+          //     }],
+          data: [],
+          rowCallback: function (row, data) { },
+          filter: true,
+          info: true,
+          ordering: false,
+          processing: false,
+          retrieve: true
+      });
+        debugger
+        loadData();
+        function loading()
+        {
+            $('.modal_load').modal('show');
+
+        }
+        function loadingClose()
+        {
+            $('.modal_load').modal('hide');
+
+        }
+        function loadData(){
+            loading();
+            $.ajax({
+                type:"GET",
+                url:"{{ path("ListeJeune")}}",
+                success:function(resp){
+                    debugger
+                    loadingClose();
+                    table.clear().draw();
+                    var liste = JSON.parse(resp);
+                    $.each(liste,function(i,n){
+
+                        debugger
+                        //alert(n.Nom);
+                        table.rows.add([{
+                            "ID":n.id,
+                            "NOM":n.Nom,
+                            "PRENOMS":n.Prenoms ,
+                            "DOB": n.DateNaiss,
+                            "TELEPHONE" :n.Telephone,
+                            "ACTION" :"<a id='update'><span><i class='fa fa-pencil fa-2x'></i></span></a><a id='consult'><span><i class='fa fa-eye fa-2x'></i></span></a><a id='delete'><span><i class='fa fa-trash fa-2x'></i></span></a>"
+
+                        }]).draw();
+
+                    });
+                }
+            });
+
+        }
+        $.ajax({
+            type:"GET",
+            url:"{{ path("GetListBranche")}}",
+            success:function(resp){
+                debugger
+                $("#branche").empty();
+                var defaultline = '<option value=selected>---selectionner branche---</option>';
+                $("#branche").append(defaultline);
+                var liste = JSON.parse(resp);
+                $.each(liste,function(i,n){
+                    debugger
+                    var line = '<option value='+n.id+'>'+n.Libelle+'</option>';
+                    $("#branche").append(line);
+
+                });
+            }
+        });
+
+
+        $("#tbjeune tbody").on('click',' tr > td > a[id=delete]',function (){
+            debugger
+            var row = table.row( $(this).parents('tr') ).data();
+            var ID = row.ID;
+            swal({
+                type:"warning",
+                title:"JEUNE",
+                text:"Voulez vous vraiment supprimer ce Jeune ?",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Non',
+                confirmButtonText: 'Oui, supprimer!'
+            },(function (res){
+                debugger
+                if (res==false)return;
+                else{
+                    $.ajax({
+                        type:"GET",
+                        url:"{{ path('DeleteJeune') }}",
+                        data:{id: ID},
+                        success:function(res){
+                            debugger
+                            if(res==="success"){
+                                swal({
+                                    type:"success",
+                                    title:"JEUNE",
+                                    text: "Jeune supprimé avec succès"
+                                },function(){
+                                    loadData();
+
+                                });
+
+                            }
+                            else{
+                                swal({
+                                    type:"error",
+                                    title:"JEUNE",
+                                    text: "Echec de l'opération"
+                                },function(){
+                                    loadData();
+
+                                });
+                            }
+                        },
+                        error: function (res){
+debugger
+                        }
+                    })
+                }
+            }));
+        });
+
+        $("#tbjeune tbody").on('click',' tr > td > a[id=update]',function (){
+            debugger
+            loadingClose();
+            var row = table.row( $(this).parents('tr') ).data();
+            var ID = row.ID;
+            loading();
+            $.ajax({
+                type:"GET",
+                url:"{{ path("GetJeuneUnique") }}",
+                data: {id : ID},
+                success:function(res){
+                    loadingClose();
+                    debugger
+                    if (res!==null){
+                    var JeuneUnique = JSON.parse(res);
+
+                    var branche = JeuneUnique.branche[0];
+                    $("#jeuneId").val(JeuneUnique.id);
+                    $("#Nom").val(JeuneUnique.Nom);
+                    $("#prenoms").val(JeuneUnique.Prenoms);
+                    $("#NomPere").val(JeuneUnique.NomPere);
+                    $("#NumPere").val(JeuneUnique.NumPere);
+                    $("#habitation").val(JeuneUnique.LieuHabitation);
+                    $("#occupation").val(JeuneUnique.Occupation);
+                    $("#phone").val(JeuneUnique.Telephone);
+                    $("#NumMere").val(JeuneUnique.NumMere);
+                    $("#NomMere").val(JeuneUnique.NomMere);
+                    $("#branche").val(JeuneUnique.brancheId);
+                    $("#dob").val(JeuneUnique.DateNaiss);
+                    $("#modalmodif").modal('show');
+                    //$(".footer").show();
+
+                        $("#Nom").removeAttr('readonly');
+                        $("#prenoms").removeAttr('readonly');
+                        $("#NomPere").removeAttr('readonly');
+                        $("#NumPere").removeAttr('readonly');
+                        $("#habitation").removeAttr('readonly');
+                        $("#occupation").removeAttr('readonly');
+                        $("#phone").removeAttr('readonly');
+                        $("#NumMere").removeAttr('readonly');
+                        $("#NomMere").removeAttr('readonly');
+                        $("#branche").removeAttr('readonly');
+                        $("#groupe").removeAttr('readonly');
+                        $("#dob").removeAttr('readonly');
+                        $(".btnaction").removeAttr('readonly');
+                    }else{
+                        loadingClose();
+                    }
+                }
+            });
+        });
+        $("#saveModif").click(function(){
+
+            var  jeune={
+                id:$("#jeuneId").val(),
+                nom : $("#Nom").val(),
+                prenoms : $("#prenoms").val(),
+                dob : $("#dob").val(),
+                occupation : $("#occupation").val(),
+                habitation : $("#habitation").val(),
+                NomPere : $("#NomPere").val(),
+                NumPere: $("#NumPere").val(),
+                NomMere : $("#NomMere").val(),
+                NumMere : $("#NumMere").val(),
+                branche : $("#branche").val(),
+                phone : $("#phone").val()
+            };
+            $.ajax({
+                type:"POST",
+                url:"{{ path("ModifierJeune") }}",
+                data:{ value : jeune },
+                success:function(res){
+                    debugger
+                    if (res=="1"){
+                        swal({
+                           type:"success",
+                           title: "JEUNE",
+                           text: "Opération effectuée avec succès"
+                        },function(){
+                            debugger
+                            loadData();
+                            reset();
+                        });
+                    }else{
+                        swal({
+                            type:"error",
+                            title: "JEUNE",
+                            text: "Echec de l'opération"
+                        },function(){
+
+                        });
+                    }
+                },
+                error: function(res){
+
+                }
+            });
+
+        });
+        function reset(){
+    $("#Nom").val('');
+    $("#prenoms").val('');
+    $("#dob").val('');
+    $("#habitation").val('');
+    $("#occupation").val();
+    $("#phone").val('');
+    $("#NomPere").val('');
+    $("#NumPere").val('');
+    $("#NomMere").val('');
+    $("#NumMere").val('');
+    $("#modalmodif").modal('hide');
+}
+        $("#tbjeune tbody").on('click',' tr > td > a[id=consult]',function (){
+            debugger
+            loading();
+            var row = table.row( $(this).parents('tr') ).data();
+            var ID = row.ID;
+            $.ajax({
+                type:"GET",
+                url:"{{ path("GetJeuneUnique") }}",
+                data: {id : ID},
+                success:function(res){
+                    debugger
+                    loadingClose();
+                    $("#modalmodif").modal('show');
+                    if (res!==null){
+                        var JeuneUnique = JSON.parse(res);
+                        $("#jeuneId").val(JeuneUnique.id);
+                        $("#Nom").val(JeuneUnique.Nom);
+                        $("#prenoms").val(JeuneUnique.Prenoms);
+                        $("#NomPere").val(JeuneUnique.NomPere);
+                        $("#NumPere").val(JeuneUnique.NumPere);
+                        $("#habitation").val(JeuneUnique.LieuHabitation);
+                        $("#occupation").val(JeuneUnique.Occupation);
+                        $("#phone").val(JeuneUnique.Telephone);
+                        $("#NumMere").val(JeuneUnique.NumMere);
+                        $("#NomMere").val(JeuneUnique.NomMere);
+                        $("#branche").val(JeuneUnique.brancheId);
+                        $("#dob").val(JeuneUnique.DateNaiss);
+
+                        $("#Nom").attr('readonly','readonly');
+                        $("#prenoms").attr('readonly','readonly');
+                        $("#NomPere").attr('readonly','readonly');
+                        $("#NumPere").attr('readonly','readonly');
+                        $("#habitation").attr('readonly','readonly');
+                        $("#occupation").attr('readonly','readonly');
+                        $("#phone").attr('readonly','readonly');
+                        $("#NumMere").attr('readonly','readonly');
+                        $("#NomMere").attr('readonly','readonly');
+                        $("#branche").attr('readonly','readonly');
+                        $("#groupe").attr('readonly','readonly');
+                        $("#dob").attr('readonly','readonly');
+                        $(".btnaction").attr('disabled','disabled');
+
+                        $("#exampleModalLabel").text("Détails du jeunes");
+                       // loadingClose();
+
+                        //$(".footer").hide();
+                    }else{
+                        loadingClose();
+                    }
+                }
+            });
+        });
+
+
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,203 @@
+{% extends 'base.html.twig' %}
+
+{% block titre %}ANNEE PASTORALE {% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+{% endblock %}
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+    <div class="container-fluid">
+           
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="header">
+                        <h2 class="text-center">CONFIGURER LES BRANCHES</h2>
+                    </div>
+                    <div class="body">
+                        <div class="row">
+                      <div class="col-md-6">
+                            <div class="form-group">
+                                <label>LIBELLE</label>
+                                <input type="text" class="form-control" required id="libelle" placeholder="ex: Louveteau / Eclaireur">
+                            </div>
+                      </div>
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label>Tranche d'âge</label>
+                                <input type="text" class="form-control" required id="age" placeholder="Tranche d'âge">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                        <div class="text-center"> 
+                            <button type="submit" class="btn btn-success" id="valider">Valider</button>
+                            <button type="button" class="btn btn-danger" id="annuler">Annuler</button>
+                        </div>
+                            
+                        
+                    </div>
+                </div>
+            </div>
+          
+        </div>
+        
+    </div>
+    
+<div class="col-lg-12">
+    <div class="card">
+        <div class="header">
+            <h2>Liste des branches</h2>
+        </div>
+        <div class="body">
+            <div class="table-responsive">
+                <table class="table" id="tbBranche">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Libelle</th>
+                            <th>Tranche d'âge</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                   <tbody>
+
+                   </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
+<script>
+    $(document).ready(function(){
+        debugger
+      var table = $("#tbBranche").DataTable({
+          language: {
+              processing: "Traitement en cours...",
+              search: "Rechercher&nbsp;:",
+              lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
+              info: "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+              infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+              infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+              infoPostFix: "",
+              loadingRecords: "Chargement en cours...",
+              zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
+              emptyTable: "Aucune donnée disponible dans le tableau",
+              paginate: {
+                  first: "Premier",
+                  previous: "Pr&eacute;c&eacute;dent",
+                  next: "Suivant",
+                  last: "Dernier"
+              }
+          },
+          columns: [
+              { "data": "ID" },
+              { "data": "CODE" },
+              { "data": "LIBELLE" },
+              { "data": "ACTION" }
+          ],
+          // columnDefs: [
+          //     {
+          //         targets: 0,
+          //         visible: false
+          //     }],
+          data: [],
+          rowCallback: function (row, data) { },
+          filter: true,
+          info: true,
+          ordering: false,
+          processing: false,
+          retrieve: true
+      });
+        debugger
+        loadData();
+
+        function loadData(){
+            $.ajax({
+                type:"GET",
+                url:"{{ path("GetListBranche")}}",
+                success:function(resp){
+                    debugger
+                    var liste = JSON.parse(resp);
+                    $.each(liste,function(i,n){
+
+                        debugger
+                        //alert(n.Nom);
+                        table.rows.add([{
+                            "ID":n.id,
+                            "CODE":n.Libelle,
+                            "LIBELLE":n.Libelle ,
+                            "ACTION" :"<button><span><i class='fa fa-trash'></i></span></button><button><span><i class='fa fa-pencil'></i></span></button><button><span><i class='fa fa-eye'></i></span></button>"
+
+                        }]).draw();
+                    });
+                }
+            });
+        }
+
+
+        $("#valider").click(function(){
+            debugger
+            var Fonction = {
+                Libelle : $("#libelle").val(),
+                Age : $("#age").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url:"{{ path("AddBranche") }}",
+                dataType:"json",
+                data:{"value" : Fonction},
+                success:function(res){
+debugger
+                    if (res===1){
+                        swal({
+                            title:"BRANCHE",
+                            text:"Enregistrement effectué avec succès",
+                            type:"success"
+
+                        },function (){
+                            debugger
+                            loadData();
+                        });
+                    }else {
+                        swal({
+                            type:"error",
+                            title:"FONCTON",
+                            text:"Problème pendant l'opération"
+                        });
+                    }
+
+                },
+                error:function(res){
+                    debugger
+                }
+
+            });
+        });
+        $("#annuler").click(function(){
+            debugger
+           swal({
+               type:"question",
+               title:"Branche",
+               text:"Etes vous sûr de vouloir annuler ?",
+               // ConfirmButtonText:"Oui Annuler",
+               // CancelButtonText:"Non"
+           });
+        });
+
+    });
+</script>
+{% endblock %}
