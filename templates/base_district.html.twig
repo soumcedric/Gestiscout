@@ -33,7 +33,7 @@
 <div class="page-loader-wrapper">
     <div class="loader">
         <div class="m-t-30"><i class="fa fa-cube font-25"></i></div>
-        <p>Please wait...</p>        
+        <p>Veuillez patienter svp...</p>
     </div>
 </div>
 
@@ -229,7 +229,7 @@
                     <nav class="sidebar-nav sidebar-scroll">
                         <ul class="metismenu">
                             <li class=><img src="{{ asset("/img_logo/LOGO.jpg") }}" class="img-fluid" WIDTH="170" height="150"></li>
-                            <li class="active"><a href="{{ path("DistrictDash") }}"><i class="icon-speedometer"></i><span>Dashboard</span></a></li>
+                            <li class="active"><a href="{{ path("DistrictDash") }}"><i class="fa fa-dashboard"></i><span>Dashboard</span></a></li>
 
 
 
@@ -239,7 +239,7 @@
                             <li><a href="{{ path("ListeJeuneDistrict") }}"><i class="fa fa-bars"></i><span>Liste des jeunes</span></a></li>
 
 
-                            <li class="header">Responsables</li>
+                            <li class="header">Responsables </li>
                             <li><a href="{{ path("ListeResponsableDistrict") }}"><i class="fa fa-bars"></i><span>Liste des responsables</span></a></li>
                              <li class="header">Cotisation</li>
                              <li><a href="{{ path("JeuneCotiseDistrict") }}"><i class="fa fa-bars"></i><span> jeunes cotisés</span></a></li>
@@ -257,10 +257,13 @@
 
 
 
-                            {% if is_granted('ROLE_DISTRICT_SUPER') %}
+                            {% if is_granted('ROLE_DISTRICT_CONFIG') %}
                                 <li class="header">Responsable district</li>
                                 <li><a href="{{ path("AddResponsableDistrict") }}"><i class="fa fa-bars"></i><span>Insérer Responsable</span></a></li>
                                 <li><a href="{{ path("ListeResponsable_District") }}"><i class="fa fa-bars"></i><span>Liste Responsable</span></a></li>
+                                <li class="header">Responsable Groupe</li>
+                                <li><a href="{{ path("AjouterRespocg") }}"><i class="fa fa-bars"></i><span>Insérer Responsable</span></a></li>
+                                <li><a href="{{ path("ListeRespoCg") }}"><i class="fa fa-bars"></i><span>Liste Responsable</span></a></li>
 
                             {% endif %}
 

@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_district.html.twig' %}
 
 {% block titre %}LISTE DES RESPONSABLES {% endblock %}
 {% block stylesheets %}
@@ -293,12 +293,12 @@
                         extend: 'pdfHtml5',
                         orientation: 'portrait',
                         pageSize: 'LEGAL',
-                        title:'Liste des Responsables',
+                        title:'Liste des Jeunes',
                         exportOptions:{
                             columns:[0,1,2,3,4]
                         },
                         customize: function(doc) {
-                            //doc.content[1].margin = [ 100, 0, 100, 0 ] //left, top, right, bottom
+                            doc.content[1].margin = [ 100, 0, 100, 0 ] //left, top, right, bottom
                         }
                     }
 
@@ -333,7 +333,7 @@
                 loading();
                 $.ajax({
                     type:"GET",
-                    url:"{{ path("GetListResponsable")}}",
+                    url:"{{ path("GetListResponsableDistrict")}}",
                     success:function(resp){
                         debugger
                         loadingClose();
@@ -493,7 +493,7 @@ $("#saveuser").click(function(){
             user.roles.push($("#role").val());
             $.ajax({
                 type:"POST",
-                url:"{{ path("Addutilisateur") }}",
+                url:"{{ path("AddUserFromDistrict") }}",
                 data: { 'value' : user},
                 success:function(res)
                 {

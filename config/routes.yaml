@@ -1,3 +1,229 @@
 index:
     path: /
     controller: App\Controller\SecurityController::loginn
+configuration:
+    path: /configuration
+    controller: App\Controller\ConfigurationController::index
+ListeAnnePastorale:
+    path: /ListeAnnePastorale
+    controller: App\Controller\ConfigurationController::ListeAnnePastorale
+GetListeAnnee:
+    path: /GetListeAnnee
+    controller: App\Controller\ConfigurationController::GetListeAnnee
+AddAnnee:
+    path: /AddAnnee
+    controller: App\Controller\ConfigurationController::AddAnnee
+ListeFonction:
+    path: /ListeFonction
+    controller: App\Controller\ConfigurationController::ListeFonction
+AddFonction:
+    path: /AddFonction
+    controller: App\Controller\ConfigurationController::AddFonction
+GetListeFonction:
+    path: /GetListeFonction
+    controller: App\Controller\ConfigurationController::GetListeFonction
+GetListBranche:
+    path: /GetListBranche
+    controller: App\Controller\ConfigurationController::GetListBranche
+ListeBranche:
+    path: /ListeBranche
+    controller: App\Controller\ConfigurationController::ListeBranche
+AddBranche:
+    path: /AddBranche
+    controller: App\Controller\ConfigurationController::AddBranche
+Groupe:
+    path: /Groupe
+    controller: App\Controller\ConfigurationController::Groupe
+AddGroupe:
+    path: /AddGroupe
+    controller: App\Controller\ConfigurationController::AddGroupe
+GetAnneePastoraleUnique:
+    path: /GetAnneePastoraleUnique
+    controller: App\Controller\ConfigurationController::GetAnneePastoraleUnique
+GetListGroupe:
+    path: /GetListGroupe
+    controller: App\Controller\ConfigurationController::GetListGroupe
+GetListeGenre:
+    path: /GetListeGenre
+    controller: App\Controller\ConfigurationController::GetListeGenre
+connexion:
+    path: /connexion
+    controller: App\Controller\ConnexionController::index
+Dashboard:
+    path: /Dashboard
+    controller: App\Controller\ConnexionController::Dashboard
+Login:
+    path: /Login
+    controller: App\Controller\ConnexionController::Login
+DistrictDash:
+    path: /DistrictDash
+    controller: App\Controller\ConnexionController::DashboardDistrict
+cotisation:
+    path: /cotisation
+    controller: App\Controller\CotisationController::index
+cotisationResponsable:
+    path: /cotisationResponsable
+    controller: App\Controller\CotisationController::indexCotisationResponsable
+ViewJeuneCotise:
+    path: /ViewJeuneCotise
+    controller: App\Controller\CotisationController::ViewJeuneCotise
+ViewResponsableCotise:
+    path: /ViewResponsableCotise
+    controller: App\Controller\CotisationController::ViewResponsableCotise
+cotisationJeune:
+    path: /cotisationJeune
+    controller: App\Controller\CotisationController::CotisationJeune
+SaveCotisation:
+    path: /SaveCotisation
+    controller: App\Controller\CotisationController::SaveCotisation
+GetListJeuneCotise:
+    path: /GetListJeuneCotise
+    controller: App\Controller\CotisationController::GetListJeuneCotise
+GetListeJeuneCotiseParGroupe:
+    path: /GetListeJeuneCotiseParGroupe
+    controller: App\Controller\CotisationController::GetListeJeuneCotiseParGroupe
+GetListeRespoNonCotise:
+    path: /GetListeRespoNonCotise
+    controller: App\Controller\CotisationController::GetListeRespoNonCotise
+SaveCotisationResponsable:
+    path: /SaveCotisationResponsable
+    controller: App\Controller\CotisationController::SaveCotisationResponsable
+GetListeRespoCotise:
+    path: /GetListeRespoCotise
+    controller: App\Controller\CotisationController::GetListeRespoCotise
+district:
+    path: /district
+    controller: App\Controller\DistrictController::index
+VueEnregistrement:
+    path: /VueEnregistrement
+    controller: App\Controller\DistrictController::VueEnregistrement
+ListeJeuneDistrict:
+    path: /ListeJeuneDistrict
+    controller: App\Controller\DistrictController::ListeJeuneDistrict
+ListeResponsableDistrict:
+    path: /ListeResponsableDistrict
+    controller: App\Controller\DistrictController::ListeResponsableDistrict
+JeuneCotiseDistrict:
+    path: /ListeJeuneCotise
+    controller: App\Controller\DistrictController::ListeJeuneCotise
+RechercheJeuneByCriteria:
+    path: /RechercheJeuneByCriteria
+    controller: App\Controller\DistrictController::RechercheJeuneByCriteria
+RechercheResponsable:
+    path: /RechercheResponsable
+    controller: App\Controller\DistrictController::RechercheResponsableByCriteria
+RechercheCotise:
+    path: /RechercheCotise
+    controller: App\Controller\DistrictController::RechercheCotiseDistrictByCriteria    
+ListeResponsable_District:
+    path: /ListeResponsable_District
+    controller: App\Controller\DistrictController::ListeResponsable_District        
+ListeResponsableCotiseDistrict:
+    path: /ListeResponsableCotiseDistrict
+    controller: App\Controller\DistrictController::ListeResponsableCotiseDistrict        
+ListeMembreDistrict:
+    path: /ListeMembreDistrict
+    controller: App\Controller\DistrictController::ListeMembreDistrict    
+AddResponsableDistrict:
+    path: /AddResponsableDistrict
+    controller: App\Controller\DistrictController::AddResponsableDistrict    
+InsertRespoDistrict:
+    path: /InsertRespoDistrict
+    controller: App\Controller\DistrictController::InsertRespoDistrict    
+jeune:
+    path: /jeune
+    controller: App\Controller\JeuneController::index        
+ListeJeunes:
+    path: /ListeJeunes
+    controller: App\Controller\JeuneController::ListeJeunes   
+success:
+    path: /success
+    controller: App\Controller\JeuneController::success   
+error:
+    path: /error
+    controller: App\Controller\JeuneController::error   
+ListeJeune:
+    path: /ListeJeune
+    controller: App\Controller\JeuneController::ListeJeune   
+ListeJeuneNonCotise:
+    path: /ListeJeuneNonCotise
+    controller: App\Controller\JeuneController::ListeJeuneNonCotise
+AddJeune:
+    path: /AddJeune
+    controller: App\Controller\JeuneController::AddJeune
+AddJeuneFunction:
+    path: /AddJeuneFunction
+    controller: App\Controller\JeuneController::AddJeuneFunction
+DeleteJeune:
+    path: /DeleteJeune
+    controller: App\Controller\JeuneController::DeleteJeune
+GetJeuneUnique:
+    path: /GetJeuneUnique
+    controller: App\Controller\JeuneController::GetJeuneUnique
+ModifierJeune:
+    path: /ModifierJeune
+    controller: App\Controller\JeuneController::ModifierJeune
+ImportData:
+    path: /ImportData
+    controller: App\Controller\JeuneController::ImportData
+ImportJeune:
+    path: /ImportJeune
+    controller: App\Controller\JeuneController::ImportationJeune
+rapport:
+    path: /rapport
+    controller: App\Controller\RapportController::rapport
+# TotalJeuneByGroupe:
+#     path: /TotalJeuneByGroupe
+#     controller: App\Controller\RapportController::GetTotalJeune
+# TotalJeuneByGroupe:
+#     path: /TotalJeuneByGroupe
+#     controller: App\Controller\RapportController::GetTotalJeuneByGroupe    
+responsable:
+    path: /responsable
+    controller: App\Controller\ResponsableController::index    
+AjouterRespoView:
+    path: /AjouterRespoView
+    controller: App\Controller\ResponsableController::AjouterRespoView    
+GetListResponsable:
+    path: /GetListResponsable
+    controller: App\Controller\ResponsableController::GetListResponsable 
+GetListResponsableDistrict:
+    path: /GetListResponsableDistrict
+    controller: App\Controller\ResponsableController::GetListResponsableDistrictActif 
+AddResponsable:
+    path: /AddResponsable
+    controller: App\Controller\ResponsableController::AddResponsable 
+supprimerResponsable:
+    path: /supprimerResponsable
+    controller: App\Controller\ResponsableController::supprimerResponsable 
+GetRespoUnique:
+    path: /GetRespoUnique
+    controller: App\Controller\ResponsableController::GetRespoUnique 
+ModifRespo:
+    path: /ModifRespo
+    controller: App\Controller\ResponsableController::ModifRespo 
+AjouterRespocg:
+    path: /AjouterRespocg
+    controller: App\Controller\ResponsableController::AjouterRespocg 
+ListeRespoCg:
+    path: /ListeRespoCg
+    controller: App\Controller\ResponsableController::ListeRespoCg 
+utilisateur:
+    path: /utilisateur
+    controller: App\Controller\UtilisateurController::index 
+Addutilisateur:
+    path: /Addutilisateur
+    controller: App\Controller\UtilisateurController::Addutilisateur 
+AddUserFromDistrict:
+    path: /AddUserFromDistrict
+    controller: App\Controller\UtilisateurController::AddUserFromDistrict 
+CreateActivite:
+    path: /CreateActivite
+    controller: App\Controller\ActiviteController::CreateActivite 
+Activites:
+    path: /Activites
+    controller: App\Controller\ActiviteController::ListActivite 
+# ListActivites:
+#     path: /ListActivites
+#     controller: App\Controller\ActiviteController::ListActivites 
+

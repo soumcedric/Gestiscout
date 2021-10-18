@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block titre %}LISTE DES RESPONSABLES {% endblock %}
+{% block titre %}LISTE DES ACTIVITES {% endblock %}
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
 {#    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">#}
@@ -49,18 +49,19 @@
                 <div class="col-lg-12">
         <div class="card">
             <div class="header">
-                <h2 class="text-center">Liste des responsables</h2>
+                <h2 class="text-center">Liste des activités</h2>
             </div>
             <div class="body">
                 <div class="table-responsive">
-                    <table class="table" id="tbrespo">
+                    <table class="table" id="tbactivites">
                         <thead class="thead-light">
                         <tr>
                             <th>ID</th>
-                            <th>Nom & Prénoms</th>
-                            <th>Date de naissance</th>
-                            <th>Téléphone</th>
-                            <th>Fonction</th>
+                            <th>Libelle</th>
+                            <th>Groupe</th>
+                            <th>Branche</th>
+                            <th>Date Debut</th>
+                            <th>Date Fin</th>
                             <th>ACTION</th>
                         </tr>
                         </thead>
@@ -246,7 +247,7 @@
     <script>
         $(document).ready(function(){
             debugger
-            var table = $("#tbrespo").DataTable({
+            var table = $("#tbactivites").DataTable({
                 language: {
                     processing: "Traitement en cours...",
                     search: "Rechercher&nbsp;:",
@@ -267,10 +268,11 @@
                 },
                 columns: [
                     { "data": "ID" },
-                    { "data": "NOMPRENOMS" },
-                    { "data": "DOB" },
-                    { "data": "TELEPHONE" },
-                    { "data": "FONCTION" },
+                    { "data": "LIBELLE" },
+                    { "data": "GROUPE" },
+                    { "data": "BRANCHE" },
+                    { "data": "DEBUT" },
+                    { "data": "FIN" },
                     { "data": "ACTION" }
                 ],
                 // columnDefs: [
@@ -311,235 +313,32 @@
                 processing: false,
                 retrieve: true
             });
-            var respoId = null;
-            debugger
+         
+
+         $.ajax({
+             type:"GET",
+             url:"{{path("ListActivites")}}",
+             success:function(res){
+                 debugger
+                 if (res.ok == true) {
+                     $.each(res.data,function(i,n){
+                         table.rows.add([{
+                    "ID" :n.id,
+                   "LIBELLE":n.Nom,
+                    "GROUPE" :"",
+                    "BRANCHE" :"",
+                     "DEBUT" :"",
+                     "FIN" :"",
+                    "ACTION" :""
+                         }]).draw();
+                     })
+                 }
+             }
+         })
+
+     
 
 
-            function loading()
-            {
-                $('.modal_load').modal('show');
-
-            }
-            function loadingClose()
-            {
-                $('.modal_load').modal('hide');
-
-            }
-
-
-
-            loadData();
-            function loadData(){
-                loading();
-                $.ajax({
-                    type:"GET",
-                    url:"{{ path("GetListResponsable")}}",
-                    success:function(resp){
-                        debugger
-                        loadingClose();
-                        table.clear().draw();
-                        var liste = JSON.parse(resp);
-                        $.each(liste,function(i,n){
-                            debugger
-
-                            //alert(n.Nom);
-                            table.rows.add([{
-                                "ID":n.id,
-                                "NOMPRENOMS":n.Nom + " " + n.Prenoms,
-                                "DOB":n.dateNaiss ,
-                                "TELEPHONE" : n.Telephone,
-                                "FONCTION" : n.fonctionLibelle,
-                                // "ACTION" :"<a id='update'><span><i class='fa fa-pencil fa-2x'></i></span></a>|<a id='delete'><span><i class='fa fa-trash fa-2x'></i></span></a>|<a id='add'><span><i class='fa fa-plus fa-2x'></i></span></a>"
-                                "ACTION" :"<a id='delete'><span><i class='fa fa-trash fa-2x'></i></span></a>|<a id='add'><span><i class='fa fa-plus fa-2x'></i></span></a>"
-
-                            }]).draw();
-
-                        });
-                    },
-                    error: function(resp){
-                        loadingClose();
-                    }
-                });
-              //  loadingClose();
-            }
-
-
-            $("#annuler").click(function(){
-                swal({
-                    type:"Question",
-                    title: "ANNEE PASTORALE",
-                    text:"Etes vous sûr de vouloir annuler ?"
-
-                });
-            });
-
-
-$("#tbrespo tbody").on('click', ' tr > td > a[id=update]', function(){
-    debugger
-    var row = table.row( $(this).parents('tr') ).data();
-    //var row = table.row().data();
-    var ID = row.ID;
-    loading();
-    $.ajax({
-        type:"GET",
-        url:"{{ path("GetRespoUnique") }}",
-        data:{ value : ID},
-        success: function(res){
-            debugger
-            if(res!=null){
-                loadingClose();
-                var liste = JSON.parse(res);
-             //   var date = Date.parse(liste.Dob);
-                $("#respoId").val(liste.id);
-                $("#Nom").val(liste.Nom);
-                $("#prenoms").val(liste.Prenoms);
-                $("#dob").val(liste.dateNaiss);
-                $("#occupation").val(liste.Occupation);
-                $("#telephone").val(liste.Telephone);
-                $("#habitation").val(liste.Habitation);
-                $("#fonction").val(liste.fonctionId);
-                $("#modalmodif").modal('show');
-            }
-        },
-        error: function(){
-            
-        }
-    });
-
-
-});
-$.ajax({
-                type:"GET",
-                url:"{{ path("GetListeFonction")}}",
-                success:function(resp){
-                    debugger
-                    $("#fonction").empty();
-                    var liste = JSON.parse(resp);
-                    $.each(liste,function(i,n){
-                        debugger
-                        var line = "<option value="+n.id+">"+n.Code+"</option>";
-                        $("#fonction").append(line);
-                    });
-                }
-            });
-$("#tbrespo tbody").on('click',' tr > td > a[id=delete]',function (){
-                debugger
-                var row = table.row( $(this).parents('tr') ).data();
-                var ID = row.ID;
-                swal({
-                    type:"warning",
-                    title:"RESPONSABLE",
-                    text:"Voulez vous vraiment supprimer ce chef ?",
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText:"Non",
-                    confirmButtonText: 'Oui, Supprimer!',
-                    confirmCancelText: 'Non!'
-                },(function (res){
-                    debugger
-                    if (res==false)return;
-                    else{
-                        loading();
-                        $.ajax({
-                            type:"GET",
-                            url:"{{ path('supprimerResponsable') }}",
-                            data:{id: ID},
-                            success:function(res){
-debugger
-                                loadingClose();
-                                if(res="succes"){
-                                    swal({
-                                        type:"success",
-                                        title:"RESPONSABLE",
-                                        text: "Responsable supprimé avec succès"
-                                    },function(){
-                                       loadData();
-
-                                    });
-
-                                }
-                            },
-                            error: function (res){
-
-                            }
-                        })
-
-                    }
-                }));
-            });
-$("#saveuser").click(function(){
-    debugger
-                var user = {
-                    username : $("#Username").val(),
-                    roles : [],
-                    password : $("#password").val(),
-                    confirmpass : $("#confirmpass").val(),
-                    respoid : respoId
-                };
-
-    if (user.username =="" || user.password=="" || user.confirmpass=="" || $("#role").val()==0)
-    {
-        swal({
-           type:"warning",
-           title:"",
-           text: "Certains champs sont vide!"
-        });
-    }
-    else
-    {
-        if (user.password == user.confirmpass)
-        {
-            user.roles.push($("#role").val());
-            $.ajax({
-                type:"POST",
-                url:"{{ path("Addutilisateur") }}",
-                data: { 'value' : user},
-                success:function(res)
-                {
-                    debugger
-                    if (res=='success')
-                    {
-                        swal({
-                            type:"success",
-                            title:"",
-                            text:"Opération effectuée avec succès"
-                        });
-                    }else{
-                        swal({
-                            type:"error",
-                            title:"",
-                            text: res
-                        });
-                    }
-                },
-                error: function(res)
-                {
-
-                }
-            });
-        }
-        else
-        {
-            swal({
-                type:"error",
-                title:"",
-                text:"Les mots de passes ne concordent pas"
-            });
-        }
-    }
-
-
-
-
-            });
-$("#tbrespo tbody").on('click',' tr > td > a[id=add]',function (){
-                debugger
-                $("#modalcompte").modal("show");
-                var row = table.row( $(this).parents('tr') ).data();
-                respoId = row.ID;
-
-            });
         });
     </script>
 {% endblock %}

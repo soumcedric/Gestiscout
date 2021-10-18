@@ -57,9 +57,21 @@ class Branche
      */
     private $jeunes;
 
+    /**
+     * @ORM\OneToMany(targetEntity=DETAILS::class, mappedBy="Branche")
+     */
+    private $Details;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ACTIVITES::class, mappedBy="Branche")
+     */
+    private $Activities;
+
     public function __construct()
     {
         $this->jeunes = new ArrayCollection();
+        $this->Details = new ArrayCollection();
+        $this->Activities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -163,6 +175,66 @@ class Branche
             // set the owning side to null (unless already changed)
             if ($jeune->getBranche() === $this) {
                 $jeune->setBranche(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|DETAILS[]
+     */
+    public function getDetails(): Collection
+    {
+        return $this->Details;
+    }
+
+    public function addDetail(DETAILS $detail): self
+    {
+        if (!$this->Details->contains($detail)) {
+            $this->Details[] = $detail;
+            $detail->setBranche($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDetail(DETAILS $detail): self
+    {
+        if ($this->Details->removeElement($detail)) {
+            // set the owning side to null (unless already changed)
+            if ($detail->getBranche() === $this) {
+                $detail->setBranche(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ACTIVITES[]
+     */
+    public function getActivities(): Collection
+    {
+        return $this->Activities;
+    }
+
+    public function addActivity(ACTIVITES $activity): self
+    {
+        if (!$this->Activities->contains($activity)) {
+            $this->Activities[] = $activity;
+            $activity->setBranche($this);
+        }
+
+        return $this;
+    }
+
+    public function removeActivity(ACTIVITES $activity): self
+    {
+        if ($this->Activities->removeElement($activity)) {
+            // set the owning side to null (unless already changed)
+            if ($activity->getBranche() === $this) {
+                $activity->setBranche(null);
             }
         }
 

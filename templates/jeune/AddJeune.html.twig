@@ -1,7 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block stylesheets %}
 <link rel="stylesheet" href="{{ asset('assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}"/>
-<link rel="stylesheet" href="{{ asset('assets/vendor/sweetalert/sweetalert.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/vendor/sweetalert/sweetalert.css') }}"/>
+
     <style>
         .bd-example-modal-lg .modal-dialog{
             display: table;
@@ -22,6 +23,7 @@
 
 {% block body %}
 
+    <input type="hidden" value="{{groupeid}}" id="gr" disabled> 
     <div class="block-header">
         <div class="row clearfix">
             <div class="col-md-6 col-sm-12">
@@ -119,7 +121,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Groupe</label>
-                                            <select id="groupe" class="form-control"></select>
+                                            <select id="groupe" class="form-control" readonly></select>
                                         </div>
                                     </form>
                                 </div>
@@ -146,7 +148,6 @@
 
 
 
-
 {% endblock %}
 
 
@@ -157,6 +158,7 @@
 <script>
     $(document).ready(function(){
         debugger
+        
         let currentdate = CurrentDate();
         document.getElementById("dob").setAttribute("max", currentdate);
         function CurrentDate(){
@@ -220,6 +222,7 @@ reset();
                         $("#groupe").append(line);
 
                     });
+                    $("#groupe").val($("#gr").val());
                 }
             });
                      $.ajax({
@@ -328,4 +331,5 @@ loadingClose();
 
     });
 </script>
+
 {% endblock %}

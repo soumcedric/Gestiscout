@@ -2,6 +2,19 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}"/>
     <link rel="stylesheet" href="{{ asset('assets/vendor/sweetalert/sweetalert.css') }}">
+    <style>
+    .bd-example-modal-lg .modal-dialog{
+    display: table;
+    position: relative;
+    margin: 0 auto;
+    top: calc(50% - 24px);
+  }
+
+  .bd-example-modal-lg .modal-dialog .modal-content{
+    background-color: transparent;
+    border: none;
+  }
+</style>
 {% endblock %}
 {% block titre %} Ajouter un responsable {% endblock %}
 
@@ -13,13 +26,9 @@
     <div class="block-header">
         <div class="row clearfix">
             <div class="col-md-6 col-sm-12">
-
+{#                <h1>Color Table</h1>#}
                 <nav aria-label="breadcrumb">
-{#                    <ol class="breadcrumb">#}
-{#                        <li class="breadcrumb-item"><a href="#"><i class="fa fa-cube"></i></a></li>#}
-{#                        <li class="breadcrumb-item"><a href="#">Ajouter un responsable</a></li>#}
-{#                        <li class="breadcrumb-item active" aria-current="page">Color Table</li>#}
-{#                    </ol>#}
+{#
                 </nav>
             </div>
 {#            <div class="col-md-6 col-sm-12 text-right hidden-xs">#}
@@ -49,7 +58,10 @@
                                             <label>Prénoms</label>
                                             <input type="text" class="form-control" required id="prenoms">
                                         </div>
-
+                                        <div class="form-group">
+                                            <label>Date de naissance</label>
+                                            <input type="date" class="form-control" required id="dob" max="">
+                                        </div>
                                         <div class="form-group">
                                             <label>Fonction</label>
                                             <select id="fonction" class="form-control"></select>
@@ -63,15 +75,26 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <form id="basic-form" method="post" novalidate>
-
+                                        <div class="form-group">
+                                            <label>Genre</label>
+                                            <select id="genre" class="form-control"></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Lieu d'habitation</label>
+                                            <input type="text" class="form-control" required id="habitation">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Occupation</label>
+                                            <input type="text" class="form-control" required id="occupation">
+                                        </div>
                                         <div class="form-group">
                                             <label>Téléphone</label>
                                             <input type="text" class="form-control" required id="telephone">
                                         </div>
 
-                                      <div class="form-group">
-                                            <label>Date de naissance</label>
-                                            <input type="date" class="form-control" required id="dob">
+                                        <div class="form-group">
+                                            <label>Groupe</label>
+                                            <select id="groupe" class="form-control"></select>
                                         </div>
 
                                     </form>
@@ -103,7 +126,13 @@
 
 
 
-
+<div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="width: 48px">
+            <span class="fa fa-spinner fa-spin fa-3x"></span>
+        </div>
+    </div>
+</div>
 
 
 
@@ -124,33 +153,76 @@
 
     <script>
         $(document).ready(function(){
+debugger
+            let currentdate = CurrentDate();
+            document.getElementById("dob").setAttribute("max", currentdate);
             reset();
             loadFonction();
+            function loading()
+            {
+                   $('.modal').modal('show');
+
+            }
+              function loadingClose()
+            {
+                   $('.modal').modal('hide');
+
+            }
+            function CurrentDate(){
+                let today = new Date();
+                let dd = String(today.getDate()).padStart(2, '0');
+                let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                let yyyy = today.getFullYear();
+                today = yyyy + '-' + mm + '-' + dd;
+                return today;
+            }
+            debugger
+            let date = compareDate();
+            function compareDate(chosenDate){
+                let currentDate = new Date();
+                let SelectedDate = new Date(chosenDate);
+                return currentDate;
+            }
             function reset(){
                 $("#Nom").val('');
                 $("#prenoms").val('');
                 $("#dob").val('');
+                $("#habitation").val('');
+                $("#occupation").val('');
                 $("#telephone").val('');
                 loadFonction();
-
+                loadGroupe();
             }
             $("#save").click(function(){
                 //alert("hello");
-
+debugger
                 var  responsable={
                     nom : $("#Nom").val(),
                     prenoms : $("#prenoms").val(),
                     dob : $("#dob").val(),
+                    occupation : $("#occupation").val(),
+                    habitation : $("#habitation").val(),
                     telephone : $("#telephone").val(),
-                    fonction : $("#fonction").val()
-
+                    fonction : $("#fonction").val(),
+                    groupe: $("#groupe").val(),
+                    genre: $("#genre").val()
                 };
 
-                $.ajax({
+                if (responsable.nom=='' || responsable.prenoms=='' || responsable.dob=='' ||responsable.telephone=='')
+                    {
+                            swal({
+                            type:"warning",
+                            title:"RESPONSABLE",
+                            text:"Certains champs sont vides. Veuillez les remplir svp"
+                            });
+                    }
+                else{
+                      loading();
+                      $.ajax({
                     type:"POST",
                     async: true,
                     dataType: 'json',
-                    url:"{{ path('InsertRespoDistrict') }}",
+                    url:"{{ path('AddResponsable') }}",
                     data: {value : responsable},
                     success:function(res){
                         debugger;
@@ -161,6 +233,7 @@
                                 title:"RESPONSABLE",
                                 text:"Enregistrement effectué avec succès"
                             },function (){
+                                loadingClose();
                                 reset();
                             });
                         }
@@ -172,11 +245,14 @@
                             title:"RESPONSABLE",
                             text:"Echec de l'opération"
                         },function (){
+                            loadingClose();
                             //reset();
                         });
                     }
 
                 });
+                     loadingClose();
+                }
 
 
             });

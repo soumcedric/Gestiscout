@@ -72,6 +72,32 @@ class ResponsableController extends AbstractController
         return new Response($result,200);
 
     }
+
+
+
+    #[Route('/GetListResponsableDistrict', name: 'GetListResponsableDistrict')]
+    public function GetListResponsableDistrictActif(SessionInterface $session,ExercerFonctionRepository  $exercerRepo,ResponsableRepository  $repoResponsable, SerializerInterface $serializer,AnneePastoraleRepository $anneerepo, FONCTIONRepository $fonctionrepo)
+    {
+        $Idgroupe = $session->get('groupeid');
+        $ActiveYear = $this->AnneeLayer->findActiveYear();
+        $qCls = new QueryClass($this->em);
+        $ListResponsable =$qCls->GetListResponsableDistrictActif("",$ActiveYear[0]->getId());
+        foreach ($ListResponsable as $respo)
+        {
+            $dateOfBirth = $respo->getDob();
+            $respo->setDateNaiss($dateOfBirth->format('d-m-Y'));
+        }
+
+
+
+
+        $result = $serializer->serialize($ListResponsable,'json',   ['groups' => 'show_chef']);
+        return new Response($result,200);
+
+    }
+
+
+
     #[Route('/AddResponsable', name: 'AddResponsable')]
     public function AddResponsable(GenreRepository $genrerepo,SessionInterface $session,Request $value,ResponsableRepository $repoRespo, FONCTIONRepository $repoFonction, AnneePastoraleRepository $repoAnnee,GroupeRepository  $groupeRepo)
     {
@@ -80,19 +106,32 @@ class ResponsableController extends AbstractController
         {
 
 
-        $groupeId= $session->get('groupeid');
-        $connectedGroupe = $groupeRepo->findGroupeById($groupeId->getId());
 
-        $fromJson=$value->request->get('value');
+            $lastid = $repoRespo->findBy(array(),array('id'=>'DESC'),1,0);
 
+            $id=0;
+            if($lastid == null)
+            {
+                $id = 1;
+            }
+            else
+            {
+                $id =  $lastid[0]->getId()+1;
+            }
+            $fromJson=$value->request->get('value');
+          
+            if ($fromJson['groupe'] == null){
 
-        $responsable = new Responsable();
-        $ExerciceFonction = new ExercerFonction();
-        $idFonction = $fromJson["fonction"];
-            $genre =  $genrerepo->findOneBy(["id"=>$fromJson["genre"]]);
+                $groupeId= $session->get('groupeid');
+                $connectedGroupe = $groupeRepo->findGroupeById($groupeId->getId());
+                $responsable = new Responsable();
+                $ExerciceFonction = new ExercerFonction();
+                $idFonction = $fromJson["fonction"];
+                $genre =  $genrerepo->findOneBy(["id"=>$fromJson["genre"]]);
 
-        $date = new \DateTime($fromJson["dob"]);
-        $responsable->setNom($fromJson["nom"])
+                $date = new \DateTime($fromJson["dob"]);
+                $responsable->setNom($fromJson["nom"])
+                    ->setId($id)
                     ->setPrenoms($fromJson["prenoms"])
                     ->setHabitation($fromJson["habitation"])
                     ->setOccupation($fromJson["occupation"])
@@ -105,28 +144,72 @@ class ResponsableController extends AbstractController
                     ->setStatut(1)
                     ->setGroupe($connectedGroupe[0]);
 
-        $fonction = $repoFonction->findById($idFonction);
-        $anneePastorale = $repoAnnee->findActiveYear();
-        $ExerciceFonction->setFonction($fonction[0])
-                         ->setAnneePastorale($anneePastorale[0])
-                         ->setDateCreation(new \DateTime())
-                         ->setDateDebut(new \DateTime())
-                         ->setDateFin(new \DateTime())
-                         ->setUserModification("Admin")
-                         ->setUserCreation("Admin");
+                $fonction = $repoFonction->findById($idFonction);
+                $anneePastorale = $repoAnnee->findActiveYear();
+                $ExerciceFonction->setFonction($fonction[0])
+                    ->setAnneePastorale($anneePastorale[0])
+                    ->setDateCreation(new \DateTime())
+                    ->setDateDebut(new \DateTime())
+                    ->setDateFin(new \DateTime())
+                    ->setUserModification("Admin")
+                    ->setUserCreation("Admin");
 
-        $responsable->addExercerFonction($ExerciceFonction);
+                $responsable->addExercerFonction($ExerciceFonction);
 
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($responsable);
-        $manager->flush();
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($responsable);
+                $manager->flush();
+           }
+           else{
+                //get concerned group
+               $chosenGroup=$groupeRepo->findOneBy(["id"=>$fromJson['groupe']]);
+                $responsable = new Responsable();
+                $ExerciceFonction = new ExercerFonction();
+                $idFonction = $fromJson["fonction"];
+                $genre =  $genrerepo->findOneBy(["id"=>$fromJson["genre"]]);
+
+                $date = new \DateTime($fromJson["dob"]);
+                $responsable->setNom($fromJson["nom"])
+                    ->setId($id)
+                    ->setPrenoms($fromJson["prenoms"])
+                    ->setHabitation($fromJson["habitation"])
+                    ->setOccupation($fromJson["occupation"])
+                    ->setTelephone($fromJson["telephone"])
+                    ->setDateCreation(new \DateTime())
+                    ->setDob($date)
+                    ->setGenre($genre)
+                    ->setUserCreation("Admin")
+                    ->setUserModification("Admin")
+                    ->setStatut(1)
+                    ->setGroupe($chosenGroup);
+
+                $fonction = $repoFonction->findById($idFonction);
+                $anneePastorale = $repoAnnee->findActiveYear();
+                $ExerciceFonction->setFonction($fonction[0])
+                    ->setAnneePastorale($anneePastorale[0])
+                    ->setDateCreation(new \DateTime())
+                    ->setDateDebut(new \DateTime())
+                    ->setDateFin(new \DateTime())
+                    ->setUserModification("Admin")
+                    ->setUserCreation("Admin");
+
+                $responsable->addExercerFonction($ExerciceFonction);
+
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($responsable);
+                $manager->flush();
+
+
+           }
+
         return  new \Symfony\Component\HttpFoundation\Response(true,200);
 
 
         }
         catch (\Exception $e)
         {
-            return  new \Symfony\Component\HttpFoundation\Response(false,200);
+            //var_dump($e);
+           return  new \Symfony\Component\HttpFoundation\Response(false,200);
         }
 
     }
@@ -222,6 +305,23 @@ class ResponsableController extends AbstractController
 
         return new Response("success",200);
     }
+
+    #[Route('/AjouterRespocg', name: 'AjouterRespocg')]
+    public function AjouterRespocg(): Response
+    {
+        return $this->render('responsable/AddResponsableGroupe.html.twig', [
+            'controller_name' => 'ResponsableController',
+        ]);
+    }
+
+    #[Route('/ListeRespoCg', name: 'ListeRespoCg')]
+    public function ListeRespoCg(): Response
+    {
+        return $this->render('responsable/indexrespoGroupe.html.twig', [
+            'controller_name' => 'ResponsableController',
+        ]);
+    }
+
 
 
 

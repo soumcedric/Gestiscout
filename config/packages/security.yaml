@@ -47,13 +47,23 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
          - { path: /responsable, roles: [ROLE_USER,ROLE_ADMIN] }
-         - { path: /Dashboard, roles: [ROLE_CONSULT,ROLE_SUPERADMIN,ROLE_ADMIN] }
+         - { path: /Dashboard, roles: [ROLE_CONSULT,ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_USER] }
          - { path: /ListeAnnePastorale, roles: [ROLE_USER,ROLE_SUPERADMIN] }
          - { path: /Groupe , roles: [ROLE_SUPERADMIN]}
-         - { path: /ListeJeunes, roles: [ROLE_CONSULT,ROLE_ADMIN] }
+         - { path: /ListeJeunes, roles: [ROLE_CONSULT,ROLE_ADMIN,ROLE_CONSULTANT] }
          - { path: /ListeJeunesDistrict, roles: [ROLE_DISTRICT_USER] }
          - { path: ListeResponsableDistrict, roles: [ROLE_DISTRICT_USER]}
-         - { path: ListeResponsableDistrict, roles: [ROLE_DISTRICT_SUPER]}
-         - { path: /DistrictDash, roles: [ROLE_DISTRICT_USER,ROLE_DISTRICT_SUPER]}
+         - { path: ListeResponsableDistrict, roles: [ROLE_DISTRICT_CONFIG]}
+         - { path: /DistrictDash, roles: [ROLE_DISTRICT_CONFIG,ROLE_DISTRICT_USER]}
+         - { path: /ListeAnnePastorale, roles: [ROLE_DISTRICT_CONFIG]}
+         - { path: /GetListeAnnee, roles: [ROLE_DISTRICT_CONFIG]}
+         - { path: /ListeFonction, roles: [ROLE_DISTRICT_CONFIG]}
+#         - { path: /GetListeFonction, roles: [ROLE_DISTRICT_CONFIG]}
+#         - { path: /GetListBranche, roles: [ROLE_DISTRICT_CONFIG,ROLE_DISTRICT_USER]}
+         - { path: /ListeBranche, roles: [ROLE_DISTRICT_CONFIG]}
+         - { path: /AddResponsableDistrict, roles: [ROLE_DISTRICT_CONFIG]}
+         - { path: /DeleteJeune, roles: [ROLE_DISTRICT_CONFIG,ROLE_USER,ROLE_ADMIN]}
+
+
 
 

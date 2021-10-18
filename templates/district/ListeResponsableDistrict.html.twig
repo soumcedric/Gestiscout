@@ -122,11 +122,11 @@
 
 
                 ],
-                // columnDefs: [
-                //     {
-                //         targets: 0,
-                //         visible: false
-                //     }],
+                columnDefs: [
+                    {
+                        targets: 0,
+                        visible: false
+                    }],
                 data: [],
                 rowCallback: function (row, data) { },
                 filter: true,
@@ -149,7 +149,7 @@
          $.get(
              "{{ path('ListeMembreDistrict') }}",
              function (res) {
-debugger
+                debugger
                  table.clear().draw();
                  var liste = JSON.parse(res);
                  $.each(liste,function(i,n){

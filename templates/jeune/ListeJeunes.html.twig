@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block stylesheets %}
-<link rel="stylesheet" href="{{ asset('assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}"/>
+
 {#    <link rel="stylesheet" href="{{ asset('assets/vendor/font-awesome/css/font-awesome.min.css') }}"/>#}
     <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
 
@@ -51,7 +51,7 @@
         </div>
         <div class="body">
             <div class="table-responsive">
-                <table class="table" id="tbjeune">
+                <table class="table dataTable js-exportable" id="tbjeune">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -70,7 +70,6 @@
         </div>
     </div>
 </div>
-
 
 
 
@@ -141,7 +140,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Branche</label>
-                                    <select id="branche" class="form-control" disabled></select>
+                                    <select id="branche" class="form-control"></select>
                                 </div>
 
                             </form>
@@ -172,16 +171,17 @@
 
 
 {% block javascripts %}
-<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
-
-
     <script src="{{ asset("assets/bundles/datatablescripts.bundle.js") }}"></script>
     <script src="{{ asset("assets/vendor/jquery-datatable/buttons/dataTables.buttons.min.js") }}"></script>
     <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.bootstrap4.min.js") }}"></script>
     <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.colVis.min.js") }}"></script>
     <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.html5.min.js") }}"></script>
     <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.print.min.js") }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+
 <script>
     $(document).ready(function(){
         debugger
@@ -213,11 +213,36 @@
               { "data": "TELEPHONE" },
               { "data": "ACTION" }
           ],
-          // columnDefs: [
-          //     {
-          //         targets: 0,
-          //         visible: false
-          //     }],
+          columnDefs: [
+              {
+                  targets: 0,
+                  visible: false
+              }],
+            dom:'Bfrtip',
+            buttons: [
+
+                {
+                    extend: 'print',
+                    text:'Imprimer',
+                    messageTop: function () {
+                        return 'LISTE DES JEUNES'
+                    },
+                    messageBottom: null
+                },
+                {
+                    extend: 'pdfHtml5',
+                    orientation: 'portrait',
+                    pageSize: 'LEGAL',
+                    title:'Liste des Jeunes',
+                    exportOptions:{
+                        columns:[0,1,2,3,4]
+                    },
+                    // customize: function(doc) {
+                    //     doc.content[1].margin = [ 100, 0, 100, 0 ] //left, top, right, bottom
+                    // }
+                }
+
+            ],
           data: [],
           rowCallback: function (row, data) { },
           filter: true,
@@ -247,6 +272,19 @@
                     debugger
                     loadingClose();
                     table.clear().draw();
+                       if(resp=="[]"){
+                        //   var dd= table.language.zeroRecords
+                            loadingClose();
+                            table.clear().draw();
+                            swal({
+                                title:'',
+                                text:'Aucun enregistrement trouvé'
+                            },function(){
+                                loadingClose()
+                            });
+                        }else{
+
+                     
                     var liste = JSON.parse(resp);
                     $.each(liste,function(i,n){
 
@@ -263,6 +301,7 @@
                         }]).draw();
 
                     });
+                       }
                 }
             });
 
@@ -278,10 +317,10 @@
                 var liste = JSON.parse(resp);
                 $.each(liste,function(i,n){
                     debugger
-                    var line = '<option value='+n.id+'>'+n.Libelle+'</option>';
-                    $("#branche").append(line);
+                   var line = '<option value='+n.id+'>'+n.Libelle+'</option>';
+                   $("#branche").append(line);
 
-                });
+               });
             }
         });
 
@@ -383,7 +422,7 @@ debugger
                         $("#branche").removeAttr('readonly');
                         $("#groupe").removeAttr('readonly');
                         $("#dob").removeAttr('readonly');
-                        $(".btnaction").removeAttr('readonly');
+                        //$(".btnaction").removeAttr('disabled');
                     }else{
                         loadingClose();
                     }

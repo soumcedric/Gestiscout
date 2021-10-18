@@ -20,64 +20,40 @@
 
 {% block body %}
 
-    <div class="block-header">
-        <div class="row clearfix">
-            <div class="col-md-6 col-sm-12">
-                <h1>Color Table</h1>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#"><i class="fa fa-cube"></i></a></li>
-                        <li class="breadcrumb-item"><a href="#">Liste des responsables</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Color Table</li>
-                    </ol>
-                </nav>
-            </div>
-            <div class="col-md-6 col-sm-12 text-right hidden-xs">
-                <a href="javascript:void(0);" class="btn btn-sm btn-primary" title="">Ajouter un responsable</a>
-            </div>
+
+
+
+{#    {% for message in app.session.flashbag.get('success') %}#}
+{#        <div class="alert alert-info alert-dismissible" role="alert">#}
+{#            <i class="fa fa-check-circle"></i>  {{ message }}#}
+{#        </div>#}
+{#    {% endfor %}#}
+
+<br>
+<br>
+<br>
+<div class="container-fluid">
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="header text-center">
+                    <h2>IMPORTATION DES JEUNES</h2>
+                </div>
+                <div class="body text-center">
+                    <form action="{{  path("ImportData") }}" method="post" enctype="multipart/form-data">
+                        <input type="file" id="fichier" name="fichier">
+                        <button type="submit">envoyer</button>
+
+                    </form>
+
+                </div>
         </div>
     </div>
+</div>
 
+    {% block javascripts %}
 
-{#    <div class="container-fluid">#}
-{#        <div class="row clearfix">#}
-{#            <div class="col-lg-12">#}
-{#                <div class="col-lg-12">#}
-{#                    <div class="card">#}
-{#                        <div class="header">#}
-{#                            <h2>Importation</h2>#}
-{#                        </div>#}
-{#                        <form method="post" action="{{ path("ImportData") }}">#}
-{#                            <div class="body">#}
-
-{#                                <div class="row">#}
-{#                                    <div class="col-lg-12 form-control">#}
-{#                                        <label>Importer le fichier</label>#}
-{#                                        <input type="file" class="form-control">#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                                <div class="text-center">#}
-{#                                    <button type="submit" class="btn btn-success" id="">Enregistrer</button>#}
-{#                                    <button type="button" class="btn btn-danger" id="reset">Annuler</button>#}
-{#                                </div>#}
-
-{#                            </div>#}
-{#                        </form>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-
-
-
-    <form action="{{  path("ImportData") }}" method="post" enctype="multipart/form-data">
-        <input type="file" id="fichier" name="fichier">
-        <button type="submit">envoyer</button>
-
-    </form>
-
-
+    {% endblock %}
 
 
 

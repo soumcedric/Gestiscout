@@ -8,10 +8,25 @@
 {% block stylesheets %}
 
     <link rel="stylesheet" href="{{ asset('assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}"/>
+
+    <link rel="stylesheet" href="{{ asset("c3n/c3.css") }}"/>
 {% endblock %}
 {% block titre %} Tableau de bord {% endblock %}
 
 {% block body %}
+
+
+
+    <input type="hidden" id="louvc" value="{{ nbreCotiseLouveteau }}">
+    <input type="hidden" id="eclaic" value="{{ nbreCotiseEclaireur }}">
+    <input type="hidden" id="chemc" value="{{ nbreCotiseCheminot }}">
+    <input type="hidden" id="routc" value="{{ nbreCotiseRoutier }}">
+    <input type="hidden" id="louv" value="{{ TotalLouveteau }}"/>
+    <input type="hidden" id="ecl" value="{{ TotalEclaireur }}">
+    <input type="hidden" id="chem" value="{{ TotalCheminot }}">
+    <input type="hidden" id="rout" value="{{ TotalRoutier }}">
+    <input type="hidden" id="chefcotise" value="{{TotalChefCotiseGroupe }}"/>
+    <input type="hidden" id="respo" value="{{TotalResponsable}}"/>
 
     <div class="block-header">
         <div class="row clearfix">
@@ -22,7 +37,7 @@
             </div>
             <div class="col-md-6 col-sm-12 text-right hidden-xs">
                 <h1 style="color=red;">{{ Annee }}</h1>
-{#                <a href="javascript:void(0);" class="btn btn-sm btn-primary" title="">Create Campaign</a>#}
+
             </div>
         </div>
     </div>
@@ -32,8 +47,8 @@
 
         {% if is_granted('ROLE_ADMIN') %}
 
-            <div class="row clearfix">
-                <div class="col-lg-3 col-md-6">
+            <div class="row">
+                <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="body">
                             <div class="w_summary">
@@ -46,28 +61,24 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="body">
                             <div class="w_summary">
-                                {#                            <div class="s_chart">#}
-                                {#                                <span class="chart">6,3,2,5,8,9,5,4,2,3</span>#}
-                                {#                            </div>#}
+                          
                                 <div class="s_detail">
-                                    <h2 class="font700 mb-0">{{ TotalResponsable }}</h2>
+                                    <h2 class="font700 mb-0" id="">{{ TotalResponsable }}</h2>
                                     <span> <i class="fa fa-level-up text-success"></i> Total chefs</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="body">
                             <div class="w_summary">
-                                {#                            <div class="s_chart">#}
-                                {#                                <span class="chart">3,5,1,6,2,4,8,5,3,2</span>#}
-                                {#                            </div>#}
+                             
                                 <div class="s_detail">
                                     <h2 class="font700 mb-0">{{ TotalJeuneGarcon }}</h2>
                                     <span><i class="fa fa-level-up text-success"></i>Total Jeune Garcon</span>
@@ -76,13 +87,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="body">
                             <div class="w_summary">
-                                {#                            <div class="s_chart">#}
-                                {#                                <span class="chart">8,5,2,9,6,3,4,5,6,7</span>#}
-                                {#                            </div>#}
+                               
                                 <div class="s_detail">
                                     <h2 class="font700 mb-0">{{ TotalJeuneFille }}</h2>
                                     <span><i class="fa fa-level-up text-success"></i>Total Jeune Fille</span>
@@ -92,62 +101,9 @@
                     </div>
                 </div>
             </div>
-            <div class="row clearfix">
-                <div class="col-lg-3 col-md-6">
-                    <div class="card" style="background-color:yellow;">
-                        <div class="body">
-                            <div class="w_summary" >
 
-                                <div class="s_detail">
-                                    <h2 class="font700 mb-0">{{ TotalLouveteau }}</h2>
-                                    <span><i class="fa fa-level-up text-success"></i> Total Louveteau</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card bg-green">
-                        <div class="body">
-                            <div class="w_summary">
-
-                                <div class="s_detail">
-                                    <h2 class="font700 mb-0">{{ TotalEclaireur }}</h2>
-                                    <span> <i class="fa fa-level-up text-success"></i> Total Eclaireur</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card bg-orange">
-                        <div class="body">
-                            <div class="w_summary">
-
-                                <div class="s_detail">
-                                    <h2 class="font700 mb-0">{{ TotalCheminot }}</h2>
-                                    <span><i class="fa fa-level-up text-success"></i>Total Cheminot</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card bg-red">
-                        <div class="body">
-                            <div class="w_summary">
-
-                                <div class="s_detail">
-                                    <h2 class="font700 mb-0">{{ TotalRoutier }}</h2>
-                                    <span><i class="fa fa-level-up text-success"></i>Total Routier</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row clearfix">
-                <div class="col-lg-3 col-md-6">
+            <div class="row">
+                <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 col-12">
                     <div class="card bg-info">
                     <div class="body">
                         <div class="w_summary" >
@@ -160,13 +116,13 @@
                     </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 col-12">
                     <div class="card bg-info">
                     <div class="body">
                         <div class="w_summary" >
 
                             <div class="s_detail">
-                                <h2 class="font700 mb-0">{{ TotalChefCotiseGroupe }}</h2>
+                                <h2 class="font700 mb-0" id="">{{ TotalChefCotiseGroupe }}</h2>
                                 <span><i class="fa fa-level-up text-success"></i> Total Chefs Cotisés</span>
                             </div>
                         </div>
@@ -186,6 +142,7 @@
                             <div class="content">
                                 <span>Total Jeune</span>
                                 <h5 class="number mb-0">{{ NbreTotalJeuneDistrict }}</h5>
+
                             </div>
                         </div>
                     </div></div>
@@ -200,7 +157,7 @@
                     </div></div>
             </div>
 
-{#            jeune par groupe#}
+
             <h4>Jeune par groupe</h4>
             <hr>
         <div class="row">
@@ -222,15 +179,7 @@
 
             {% endfor %}
         </div>
-{#jeune par groupe#}
 
-
-
-
-
-
-
-            {#            jeune par branche#}
             <h4>Jeune par branche</h4>
             <hr>
             <div class="row">
@@ -252,11 +201,28 @@
 
                 {% endfor %}
             </div>
-            {#jeune par groupe#}
+   
 
 
 
         {% endif %}
+        <div class="row">
+            <div class="col-lg-6 col-md-12 col-sm-12 col-sx-12 col-12">
+                <div class="card">
+                    <div class="body">
+                        <canvas id="myChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 col-sx-12 col-12">
+                <div class="card">
+                    <div class="body">
+                        <p align="text-center">Nombre de cotisés</p>
+                        <canvas id="cotisation" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
@@ -291,5 +257,101 @@
         </div>
 
     </div>
+
+{% endblock %}
+{% block javascripts %}
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        
+        var louv = document.getElementById("louv").value;
+        var eclaireur = document.getElementById("ecl").value;
+        var cheminot = document.getElementById("chem").value;
+        var routier = document.getElementById("rout").value;
+        var respo = document.getElementById("respo").value;
+       // var respo = 0;
+        var louvc = document.getElementById("louvc").value;
+        var eclaic = document.getElementById("eclaic").value;
+        var chemc = document.getElementById("chemc").value;
+        var routc = document.getElementById("routc").value;
+        var chefcotise = document.getElementById("chefcotise").value;
+        
+        console.log(louv);
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Louveteaux', 'Eclaireurs', 'Cheminots', 'Routiers','Adultes'],
+                datasets: [{
+                    label: 'Nombre de scouts',
+                    data: [louv, eclaireur, cheminot, routier,respo],
+                    backgroundColor: [
+                        'yellow',
+                        'green',
+                        'orange',
+                        'red',
+                        'blue'
+
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        })
+
+
+        var ctxCotisation = document.getElementById('cotisation').getContext('2d');
+        var myChartCotisation = new Chart(ctxCotisation, {
+            type: 'pie',
+            data: {
+                labels: ['Louveteaux', 'Eclaireurs', 'Cheminots', 'Routiers','Adultes'],
+                datasets: [{
+                    label: 'Nombre de cotisés',
+                    data: [louvc, eclaic, chemc, routc,chefcotise],
+                    backgroundColor: [
+                        'yellow',
+                        'green',
+                        'orange',
+                        'red',
+                        'blue'
+
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1,
+                    title:'dddd'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+
+            }
+        });
+    </script>
 
 {% endblock %}

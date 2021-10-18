@@ -144,8 +144,9 @@ class DistrictController extends AbstractController
     public function ListeMembreDistrict(SerializerInterface $serializer, DistrictRepository $districtRepo): Response
     {
         $ListeMembre = $districtRepo->findAll();
+        //var_dump($ListeMembre);
         $result = $serializer->serialize($ListeMembre,'json',["groups"=>"district"]);
-        return  new Response($result,200);
+       return  new Response($result,200);
     }
 
 

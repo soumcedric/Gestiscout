@@ -124,6 +124,11 @@ class Responsable
      */
     private $Genre;
 
+    /**
+     * @ORM\OneToMany(targetEntity=MAITRISE::class, mappedBy="relation")
+     */
+    private $Maitrises;
+
 
 
 //    /**
@@ -146,6 +151,7 @@ class Responsable
     public function __construct()
     {
         $this->exercerFonctions = new ArrayCollection();
+        $this->Maitrises = new ArrayCollection();
     }
 
 
@@ -155,6 +161,22 @@ class Responsable
     public function getFonctionLibelle(){
         return $this->fonctionLibelle;
     }
+
+
+
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+
+
+
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -412,6 +434,36 @@ public function getGenre(): ?Genre
 public function setGenre(?Genre $Genre): self
 {
     $this->Genre = $Genre;
+
+    return $this;
+}
+
+/**
+ * @return Collection|MAITRISE[]
+ */
+public function getMaitrises(): Collection
+{
+    return $this->Maitrises;
+}
+
+public function addMaitrise(MAITRISE $maitrise): self
+{
+    if (!$this->Maitrises->contains($maitrise)) {
+        $this->Maitrises[] = $maitrise;
+        $maitrise->setRelation($this);
+    }
+
+    return $this;
+}
+
+public function removeMaitrise(MAITRISE $maitrise): self
+{
+    if ($this->Maitrises->removeElement($maitrise)) {
+        // set the owning side to null (unless already changed)
+        if ($maitrise->getRelation() === $this) {
+            $maitrise->setRelation(null);
+        }
+    }
 
     return $this;
 }

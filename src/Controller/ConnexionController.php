@@ -5,7 +5,6 @@ namespace App\Controller;
 //use http\Env\Request;
 use App\Entity\Groupe;
 use App\Entity\UserConnectedInfo;
-use App\Rapport;
 use App\Repository\GroupeRepository;
 use App\Repository\JEUNERepository;
 use App\Repository\ResponsableRepository;
@@ -28,7 +27,7 @@ class ConnexionController extends AbstractController
     private $JeuneLayer;
     private $ResponsableLayer;
     private $EntityManager;
-    private $ClsRapport;
+    
     private $AnneePastorale;
     public function __construct(RapportController $rapport, JEUNERepository $jeune, ResponsableRepository  $Responsable, EntityManagerInterface  $Emanager,App\Repository\AnneePastoraleRepository $an)
     {
@@ -61,7 +60,7 @@ class ConnexionController extends AbstractController
         $UneAnneePastorale =$ActiveYEar[0];
         $CodeAnnee = $UneAnneePastorale->getCodeAnnee();
         //get Total des jeunes par groupe
-        $clsrapport = new App\RapportClass($this->EntityManager);
+        
         $qClass = new App\Classes\QueryClass($this->EntityManager);
 
         $Idgroupe = $session->get('groupeid');
@@ -106,7 +105,10 @@ class ConnexionController extends AbstractController
         //nombre de jeune cotisé par groupe
         $TotalJeuneCotiseGroupe = $qClass->GetNbreJeuneCotiseParGroupe((int)$ActiveYEar[0]->getId(),$groupe[0]->getId());
 
-
+        $nbreCotiseLouveteau = $qClass->GetNbreJeuneCotiseByCriteria($groupe[0]->getId(),1);
+        $nbreCotiseEclaireur = $qClass->GetNbreJeuneCotiseByCriteria($groupe[0]->getId(),2);
+        $nbreCotiseCheminot = $qClass->GetNbreJeuneCotiseByCriteria($groupe[0]->getId(),3);
+        $nbreCotiseRoutier = $qClass->GetNbreJeuneCotiseByCriteria($groupe[0]->getId(),4);
 
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
@@ -130,7 +132,11 @@ class ConnexionController extends AbstractController
             'TotalChefDistrict' => $TotalChefDistrict,
             'TotalJeuneByGroupe'=> $TotalJeuneByGroupeDistrict,
             'TotalChefCotiseGroupe'=>$TotalChefCotiseGroupe,
-            'TotalJeuneCotiseGroupe'=>$TotalJeuneCotiseGroupe
+            'TotalJeuneCotiseGroupe'=>$TotalJeuneCotiseGroupe,
+            'nbreCotiseLouveteau'=>$nbreCotiseLouveteau,
+            'nbreCotiseEclaireur'=>$nbreCotiseEclaireur,
+            'nbreCotiseCheminot'=>$nbreCotiseCheminot,
+        'nbreCotiseRoutier'=>$nbreCotiseRoutier
         ]);
     }
 
@@ -188,6 +194,11 @@ class ConnexionController extends AbstractController
         $nbreJeuneCotiseNDA = $qClass->GetNbreJeuneCotiseParGroupe(0,5);
         $nbreTotalCotiseNDA = $nbreRespoCotiseNDA+$nbreJeuneCotiseNDA;
 
+
+        //nombre de jeune cotisé par groupe et par branche
+
+
+
         return $this->render('connexion/DashboardDistrict.html.twig', [
             'controller_name' => 'ConnexionController',
             'nbreJeuneSsm' => $nbreJeuneStSauveur,
@@ -200,6 +211,7 @@ class ConnexionController extends AbstractController
             'nbreTotalCotiseJMV'=>$nbreTotalCotiseJMV,
             'nbreTotalCotiseSMA'=>$nbreTotalCotiseSMA,
             'nbreTotalCotiseNDA'=>$nbreTotalCotiseNDA
+
 
             ]);
     }

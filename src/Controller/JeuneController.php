@@ -9,6 +9,7 @@ use App\Repository\GenreRepository;
 use App\Repository\GroupeRepository;
 use Cassandra\Date;
 use Doctrine\Persistence\ObjectManager;
+use http\Message;
 use MongoDB\Driver\Session;
 use Symfony\Component\HttpFoundation\Request;
 use phpDocumentor\Reflection\DocBlock\Serializer;
@@ -33,6 +34,8 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use ZipStream\File;
 use App\Classes;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use MercurySeries\FlashyBundle\FlashyNotifier;
 
 
 class JeuneController extends AbstractController
@@ -54,14 +57,30 @@ class JeuneController extends AbstractController
 
 
     #[Route('/jeune', name: 'jeune')]
-    public function index(): Response
+    public function index(FlashyNotifier $flashy): Response
     {
+        $flashy->success('Event created!', 'http://your-awesome-link.com');
         return $this->render('jeune/index.html.twig', [
             'controller_name' => 'JeuneController',
         ]);
     }
 
 
+    #[Route('/test', name: 'test')]
+    public function test(FlashyNotifier $flashy): Response
+    {
+        $flashy->success('Event created!', 'http://your-awesome-link.com');
+        return $this->redirectToRoute('about');
+    }
+
+    #[Route('/about', name: 'about')]
+    public function about(): Response
+    {
+
+        return $this->render('jeune/about.html.twig', [
+            'controller_name' => 'JeuneController',
+        ]);
+    }
 
     #[Route('/ListeJeunes', name: 'ListeJeunes')]
     public function ListeJeunes()
@@ -74,7 +93,28 @@ class JeuneController extends AbstractController
 
 
 
-  #[Route('/ListeJeune', name: 'ListeJeune')]
+    #[Route('/success', name: 'success')]
+    public function success()
+    {
+
+        return $this->render('jeune/success.html.twig', [
+            'controller_name' => 'JeuneController',
+        ]);
+    }
+
+
+
+    #[Route('/error', name: 'error')]
+    public function error()
+    {
+
+        return $this->render('jeune/error.html.twig', [
+            'controller_name' => 'JeuneController',
+        ]);
+    }
+
+
+    #[Route('/ListeJeune', name: 'ListeJeune')]
     public function ListeJeune(SessionInterface $session, JEUNERepository $jeuneRepo, NormalizerInterface $normalizer,SerializerInterface $serializer)
     {
 
@@ -91,16 +131,6 @@ $result = $serializer->serialize($listedesjeunes,'json',['groups'=>'read']);
         return new Response($result,200);
 
     }
-
-
-
-
-
-
-
-
-
-
 
 
     #[Route('/ListeJeuneNonCotise', name: 'ListeJeuneNonCotise')]
@@ -128,21 +158,15 @@ $result = $serializer->serialize($listedesjeunes,'json',['groups'=>'read']);
     }
 
 
-
-
-
-
-
-
-
-
-
     #[Route('/AddJeune', name: 'AddJeune')]
-    public function AddJeune(): Response
+    public function AddJeune(FlashyNotifier $flashy,SessionInterface $session): Response
     {
-
+        $groupeId= $session->get('groupeid');
+        $id=$groupeId->getId();
+        $flashy->success('Event created!', 'http://your-awesome-link.com');
           return $this->render('jeune/AddJeune.html.twig', [
             'controller_name' => 'JeuneController',
+            'groupeid' => $id
       ]);
 
 
@@ -151,9 +175,9 @@ $result = $serializer->serialize($listedesjeunes,'json',['groups'=>'read']);
 
 
 
-        return $this->render('jeune/ListeJeune.html.twig', [
-            'controller_name' => 'JeuneController',
-        ]);
+//        return $this->render('jeune/ListeJeune.html.twig', [
+//            'controller_name' => 'JeuneController',
+//        ]);
     }
 
     #[Route('/AddJeuneFunction', name: 'AddJeuneFunction')]
@@ -332,108 +356,118 @@ $result = $serializer->serialize($listedesjeunes,'json',['groups'=>'read']);
         return new Response(true,200);
     }
     #[Route('/ImportData', name: 'ImportData')]
-    function ImportData(Request $value, JEUNERepository $RepoJeune,SessionInterface $session)
+    function ImportData(Request $value, JEUNERepository $RepoJeune,SessionInterface $session,FlashyNotifier $flashy)
     {
 
-
-
-
-
-        $groupeId= $session->get('groupeid');
-        $id=$groupeId->getId();
-        $connectedGroupe = $this->repoGroupe->findGroupeById($id);
-        $baseDir = realpath(__DIR__ . '/../../Upload');
-        $fichier=$_FILES["fichier"]["name"];
-        $real = realpath($_FILES["fichier"]["tmp_name"]);
-        $extension = $_FILES["fichier"]["type"];
-        $handle = fopen($_FILES["fichier"]["tmp_name"],'r');
-        move_uploaded_file($_FILES["fichier"]["tmp_name"],$baseDir.'//'.$fichier);
-        $newfile = $baseDir.'//'.$fichier;
-        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xls');
-        $spreadsheet = $reader->load($newfile);
-        $highetsrow = $spreadsheet->getActiveSheet()->getHighestDataRow();
-        $highestColumn = $spreadsheet->getActiveSheet()->getHighestDataColumn();
-        $numberOfColumn = $this->MapAlphabeticLetter($highestColumn);
-
-        for ($t=2;$t<=$highetsrow;$t++)
+        try
         {
+            $groupeId= $session->get('groupeid');
+            $id=$groupeId->getId();
+            $connectedGroupe = $this->repoGroupe->findGroupeById($id);
+            $baseDir = realpath(__DIR__ . '/../../Upload');
+            $fichier=$_FILES["fichier"]["name"];
+            $real = realpath($_FILES["fichier"]["tmp_name"]);
+            $extension = $_FILES["fichier"]["type"];
+            $handle = fopen($_FILES["fichier"]["tmp_name"],'r');
+            move_uploaded_file($_FILES["fichier"]["tmp_name"],$baseDir.'//'.$fichier);
+            $newfile = $baseDir.'//'.$fichier;
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xls');
+            $spreadsheet = $reader->load($newfile);
+            $highetsrow = $spreadsheet->getActiveSheet()->getHighestDataRow();
+            $highestColumn = $spreadsheet->getActiveSheet()->getHighestDataColumn();
+            $numberOfColumn = $this->MapAlphabeticLetter($highestColumn);
 
-            $qClass = new Classes\QueryClass($this->EntityManager);
-            $lastid = $RepoJeune->findBy(array(),array('id'=>'DESC'),1,0);
-
-            $id=0;
-            if($lastid == null)
+            for ($t=2;$t<=$highetsrow;$t++)
             {
-                $id = 1;
+                if(is_null($spreadsheet->getActiveSheet()->getCellByColumnAndRow(3,$t)->getValue())){
+
+                }
+                else{
+
+         
+                $qClass = new Classes\QueryClass($this->EntityManager);
+                $lastid = $RepoJeune->findBy(array(),array('id'=>'DESC'),1,0);
+
+                $id=0;
+                if($lastid == null)
+                {
+                    $id = 1;
+                }
+                else
+                {
+                    $id =  $lastid[0]->getId()+1;
+                }
+
+                //get date de naissance and convert it
+                $datenaiss=$spreadsheet->getActiveSheet()->getCellByColumnAndRow(3,$t)->getValue();
+                $intermediate = date_create_from_format('yyyy-mm-dd',trim($datenaiss));
+
+                $Dob= new \DateTime($intermediate);
+                //get branche
+                $brancheFromExcel = $spreadsheet->getActiveSheet()->getCellByColumnAndRow(12,$t)->getValue();
+                $genreFromExcel = $spreadsheet->getActiveSheet()->getCellByColumnAndRow(4,$t)->getValue();
+                $branche = $this->brancheLayer->findOneBy(["Libelle"=>$brancheFromExcel]);
+
+                $genre = $this->GenreLayer->findOneBy(["Libelle"=>$genreFromExcel]);
+                $jeune = new JEUNE();
+                $jeune->setNom($spreadsheet->getActiveSheet()->getCellByColumnAndRow(1,$t)->getValue())
+                    ->setId($id)
+                    ->setPrenoms($spreadsheet->getActiveSheet()->getCellByColumnAndRow(2,$t)->getValue())
+                    ->setDob($Dob)
+                    ->setGenre($genre)
+                    ->setLieuHabitation($spreadsheet->getActiveSheet()->getCellByColumnAndRow(5,$t)->getValue())
+                    ->setOccupation($spreadsheet->getActiveSheet()->getCellByColumnAndRow(6,$t)->getValue())
+                    ->setTelephone($spreadsheet->getActiveSheet()->getCellByColumnAndRow(7,$t)->getValue())
+                    ->setNomPere($spreadsheet->getActiveSheet()->getCellByColumnAndRow(8,$t)->getValue())
+                    ->setNumPere($spreadsheet->getActiveSheet()->getCellByColumnAndRow(9,$t)->getValue())
+                    ->setNomMere($spreadsheet->getActiveSheet()->getCellByColumnAndRow(10,$t)->getValue())
+                    ->setNumMere($spreadsheet->getActiveSheet()->getCellByColumnAndRow(11,$t)->getValue())
+                    ->setBranche($branche)
+                    ->setDateCreation(new \DateTime())
+                    ->setStatut(1)
+                    ->setGroupe($connectedGroupe[0])
+                    ->setUserCreation("ADMIN");
+                $inscription = new INSCRIPTION();
+                $ActiveYear = $this->repoYear->findActiveYear();
+                $inscription->setDateInscription(new \DateTime("now"))
+                    ->setJeunes($jeune)
+                    ->setAnnee($ActiveYear[0]);
+                $jeune->addInscription($inscription);
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($jeune);
+                $manager->flush();
             }
-            else
-            {
-                $id =  $lastid[0]->getId()+1;
+
             }
+            $flashy->success('Event created!', 'http://your-awesome-link.com');
+            return  $this->redirectToRoute("success");
+        }
+        catch(\Exception $e)
+        {
+            $flashy->success('Event created!', 'http://your-awesome-link.com');
+           // var_dump($e);
+           // return  $this->redirectToRoute("error");
+            //return  new \http\Env\Response(true,200);
 
-
-
-
-
-
-
-
-
-
-            //get date de naissance and convert it
-            $datenaiss=$spreadsheet->getActiveSheet()->getCellByColumnAndRow(3,$t)->getValue();
-            $Dob= new \DateTime($datenaiss);
-            //get branche
-            $brancheFromExcel = $spreadsheet->getActiveSheet()->getCellByColumnAndRow(12,$t)->getValue();
-            $genreFromExcel = $spreadsheet->getActiveSheet()->getCellByColumnAndRow(4,$t)->getValue();
-            $branche = $this->brancheLayer->findOneBy(["Libelle"=>$brancheFromExcel]);
-
-            $genre = $this->GenreLayer->findOneBy(["Libelle"=>$genreFromExcel]);
-            $jeune = new JEUNE();
-            $jeune->setNom($spreadsheet->getActiveSheet()->getCellByColumnAndRow(1,$t)->getValue())
-                  ->setId($id)
-                  ->setPrenoms($spreadsheet->getActiveSheet()->getCellByColumnAndRow(2,$t)->getValue())
-                  ->setDob($Dob)
-                  ->setGenre($genre)
-                 ->setLieuHabitation($spreadsheet->getActiveSheet()->getCellByColumnAndRow(5,$t)->getValue())
-                 ->setOccupation($spreadsheet->getActiveSheet()->getCellByColumnAndRow(6,$t)->getValue())
-                 ->setTelephone($spreadsheet->getActiveSheet()->getCellByColumnAndRow(7,$t)->getValue())
-                ->setNomPere($spreadsheet->getActiveSheet()->getCellByColumnAndRow(8,$t)->getValue())
-                ->setNumPere($spreadsheet->getActiveSheet()->getCellByColumnAndRow(9,$t)->getValue())
-                ->setNomMere($spreadsheet->getActiveSheet()->getCellByColumnAndRow(10,$t)->getValue())
-                ->setNumMere($spreadsheet->getActiveSheet()->getCellByColumnAndRow(11,$t)->getValue())
-               ->setBranche($branche)
-                ->setDateCreation(new \DateTime())
-                ->setStatut(1)
-                ->setGroupe($connectedGroupe[0])
-                ->setUserCreation("ADMIN");
-          $inscription = new INSCRIPTION();
-            $ActiveYear = $this->repoYear->findActiveYear();
-              $inscription->setDateInscription(new \DateTime("now"))
-                          ->setJeunes($jeune)
-                          ->setAnnee($ActiveYear[0]);
-            $jeune->addInscription($inscription);
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($jeune);
-            $manager->flush();
-
-
+            return $this->render('jeune/error.html.twig', [
+                'erreur' => $e->getMessage()
+          ]);
+    
         }
 
 
 
-        return null;
+
+       // return null;
     }
     #[Route('/ImportJeune', name: 'ImportJeune')]
-    function ImportationJeune()
+    function ImportationJeune(FlashyNotifier $flashy)
     {
+
         return $this->render('jeune/ImportJeune.html.twig', [
             'controller_name' => 'JeuneController',
         ]);
     }
-
-
-
     function MapAlphabeticLetter($i): int
     {
             switch ($i)

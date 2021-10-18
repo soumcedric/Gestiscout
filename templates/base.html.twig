@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="{{ asset('assets/vendor/c3/c3.min.css')  }}"/>
         <link rel="stylesheet" href="{{ asset('assets/vendor/chartist/css/chartist.min.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.css') }}">
-
+{#        <link rel="stylesheet" href="{{ asset('bundles/mercuryseriesflashy/css/flashy.css') }}"/>#}
 
 
         <!-- MAIN CSS -->
@@ -30,12 +30,12 @@
     </head>
     <body class="theme-blue">
         <!-- Page Loader -->
-<div class="page-loader-wrapper">
-    <div class="loader">
-        <div class="m-t-30"><i class="fa fa-cube font-25"></i></div>
-        <p>Please wait...</p>        
-    </div>
-</div>
+{#<div class="page-loader-wrapper">#}
+{#    <div class="loader">#}
+{#        <div class="m-t-30"><i class="fa fa-cube font-25"></i></div>#}
+{#        <p>Veuillez patientez svp...</p>#}
+{#    </div>#}
+{#</div>#}
 
 <!-- Overlay For Sidebars -->
 <div class="overlay"></div>
@@ -229,7 +229,7 @@
                     <nav class="sidebar-nav sidebar-scroll">
                         <ul class="metismenu">
                             <li class=><img src="{{ asset("/img_logo/LOGO.jpg") }}" class="img-fluid" WIDTH="170" height="150"></li>
-                            <li class="active"><a href="{{ path("Dashboard") }}"><i class="icon-speedometer"></i><span>Dashboard</span></a></li>
+                            <li class="active"><a href="{{ path("Dashboard") }}"><i class="fa fa-dashboard"></i><span>Dashboard</span></a></li>
 
 
                             {% if is_granted('ROLE_SUPERADMIN') %}
@@ -264,27 +264,41 @@
 {#                                <li><a href="{{ path("ViewJeuneCotise") }}"><i class="fa fa-list"></i><span>Liste des cotisés</span></a></li>#}
 
                                 <li>
-                                <a href="#Tables" class="has-arrow"><i class="icon-film"></i><span>Cotisation Jeune</span></a>
+                                <a href="#Tables" class="has-arrow"><i class="fa fa-plus-circle"></i><span>Cotisation Jeune</span></a>
                                 <ul>
-                                    <li><a href="{{  path("cotisation") }}"><i class="fa fa-money"></i><span>Faire une cotisation</span></a></li>
-                                    <li><a href="{{ path("ViewJeuneCotise") }}"><i class="fa fa-list"></i><span>Liste des cotisés</span></a></li>
+                                    <li><a href="{{  path("cotisation") }}">Faire une cotisation</a></li>
+                                    <li><a href="{{ path("ViewJeuneCotise") }}">Liste des cotisés</a></li>
 
                                 </ul>
                                 </li>
                                 <li>
-                                    <a href="#Tables1" class="has-arrow"><i class="icon-film"></i><span>Cotisation Chef</span></a>
+                                    <a href="#Tables1" class="has-arrow"><i class="fa fa-plus-circle"></i><span>Cotisation Chef</span></a>
                                     <ul>
-                                        <li><a href="{{  path("cotisationResponsable") }}"><i class="fa fa-money"></i><span>Faire une cotisation</span></a></li>
-                                        <li><a href="{{ path("ViewResponsableCotise") }}"><i class="fa fa-list"></i><span>Liste des cotisés</span></a></li>
+                                        <li><a href="{{  path("cotisationResponsable") }}">Faire une cotisation</a></li>
+                                        <li><a href="{{ path("ViewResponsableCotise") }}">Liste des cotisés</a></li>
                                     </ul>
                                 </li>
+
+
+
+
+
+
+                                <li class="header">Importation données</li>
+
+
+
+                                        <li><a href="{{  path("ImportJeune") }}"><i class="fa fa-download"></i><span>Importation Jeune</span></a></li>
+
 
                             {% endif %}
 
 
-                            {% if is_granted('ROLE_CONSULT') %}
+                            {% if is_granted('ROLE_CONSULTANT') %}
                                 <li class="header">Jeunes</li>
                                 <li><a href="{{ path("ListeJeunes") }}"><i class="fa fa-list"></i><span>Liste des jeunes</span></a></li>
+                                <li><a href="{{ path("ViewJeuneCotise") }}"><i class="fa fa-list"></i><span>Liste des cotisés</span></a></li>
+
                             {% endif %}
 
 
@@ -347,162 +361,32 @@
                         </div>
                     </nav>
                 </div>
-{#                <div class="tab-pane" id="Envelope-icon">#}
-{#                    <nav class="sidebar-nav sidebar-scroll">#}
-{#                        <a href="app-compose.html" class="btn btn-danger btn-block mb-3">Compose</a>#}
-{#                        <ul class="metismenu">#}
-{#                            <li class="active"><a href="app-inbox.html"><i class="icon-drawer"></i><span>Inbox</span><span class="badge badge-primary float-right">6</span></a></li>#}
-{#                            <li><a href="javascript:void(0);"><i class="icon-cursor"></i><span>Sent</span><span class="badge badge-warning float-right">6</span></a></li>#}
-{#                            <li><a href="javascript:void(0);"><i class="icon-envelope-open"></i><span>Draft</span></a></li>#}
-{#                            <li><a href="javascript:void(0);"><i class="icon-action-redo"></i><span>Outbox</span></a></li>#}
-{#                            <li><a href="javascript:void(0);"><i class="icon-trash"></i><span>Trash</span></a></li>#}
-{#                            <li class="header">Labels</li>#}
-{#                            <li><a href="javascript:void(0);"><i class="fa fa-circle-o text-danger"></i><span>Workshop</span></a></li>#}
-{#                            <li><a href="javascript:void(0);"><i class="fa fa-circle-o text-info"></i><span>Private</span></a></li>#}
-{#                            <li><a href="javascript:void(0);"><i class="fa fa-circle-o text-dark"></i><span>Paypal</span></a></li>#}
-{#                            <li><a href="javascript:void(0);"><i class="fa fa-circle-o text-primary"></i><span>Comapny</span></a></li>#}
-{#                        </ul>#}
-{#                    </nav>#}
-{#                </div>#}
-{#                <div class="tab-pane" id="Components-icon">#}
-{#                    <nav class="sidebar-nav sidebar-scroll">#}
-{#                        <ul class="metismenu">#}
-{#                            <li><a href="ui-helper-class.html"><i class="icon-info"></i>Helper Classes</a></li>#}
-{#                            <li><a href="ui-bootstrap.html"><i class="icon-key"></i>Bootstrap UI</a></li>#}
-{#                            <li><a href="ui-typography.html"><i class="icon-target"></i>Typography</a></li>#}
-{#                            <li><a href="ui-colors.html"><i class="icon-drop"></i>Colors</a></li>#}
-{#                            <li><a href="ui-buttons.html"><i class="icon-tag"></i>Buttons</a></li>#}
-{#                            <li><a href="ui-tabs.html"><i class="icon-tag"></i>Tabs</a></li>#}
-{#                            <li><a href="ui-progressbars.html"><i class="icon-graph"></i>Progress Bars</a></li>#}
-{#                            <li><a href="ui-modals.html"><i class="icon-tag"></i>Modals</a></li>#}
-{#                            <li><a href="ui-notifications.html"><i class="icon-question"></i>Notifications</a></li>#}
-{#                            <li><a href="ui-dialogs.html"><i class="icon-tag"></i>Dialogs</a></li>#}
-{#                            <li><a href="ui-list-group.html"><i class="icon-list"></i>List Group</a></li>#}
-{#                            <li><a href="ui-media-object.html"><i class="icon-tag"></i>Media Object</a></li>#}
-{#                            <li><a href="ui-nestable.html"><i class="icon-loop"></i>Nestable</a></li>#}
-{#                            <li><a href="ui-range-sliders.html"><i class="icon-equalizer"></i>Range Sliders</a></li>#}
-{#                            <li>#}
-{#                                <a href="#Charts" class="has-arrow"><i class="icon-bar-chart"></i><span>Charts</span></a>#}
-{#                                <ul>#}
-{#                                    <li><a href="chart-c3.html">C3 Charts</a></li>#}
-{#                                    <li><a href="chart-chartjs.html">ChartJS</a></li>#}
-{#                                    <li><a href="chart-morris.html">Morris Charts</a></li>#}
-{#                                    <li><a href="chart-flot.html">Flot Charts</a></li>#}
-{#                                    <li><a href="chart-sparkline.html">Sparkline Chart</a></li>#}
-{#                                    <li><a href="chart-jquery-knob.html">Jquery Knob</a></li>#}
-{#                                </ul>#}
-{#                            </li>#}
-{#                            <li>#}
-{#                                <a href="#Forms" class="has-arrow"><i class="icon-layers"></i><span>Forms</span></a>#}
-{#                                <ul>#}
-{#                                    <li><a href="forms-basic.html">Basic Elements</a></li>#}
-{#                                    <li><a href="forms-advanced.html">Advanced Elements</a></li>#}
-{#                                    <li><a href="forms-validation.html">Form Validation</a></li>#}
-{#                                    <li><a href="forms-wizard.html">Form Wizard</a></li>#}
-{#                                    <li><a href="forms-summernote.html">Summernote</a></li>#}
-{#                                    <li><a href="forms-dragdropupload.html">Drag &amp; Drop Upload</a></li>#}
-{#                                    <li><a href="forms-editors.html">CKEditor</a></li>#}
-{#                                    <li><a href="forms-markdown.html">Markdown</a></li>#}
-{#                                    <li><a href="forms-cropping.html">Image Cropping</a></li>#}
-{#                                </ul>#}
-{#                            </li>#}
-{#                            <li>#}
-{#                                <a href="#Tables" class="has-arrow"><i class="icon-film"></i><span>Tables</span></a>#}
-{#                                <ul style="list-style-type: none !important;">#}
-{#                                    <li><a href="table-normal.html">Normal Tables</a></li>#}
-{#                                    <li><a href="table-color.html">Tables Color</a></li>#}
-{#                                    <li><a href="table-jquery-datatable.html">Jquery Datatables</a></li>#}
-{#                                    <li><a href="table-editable.html">Editable Tables</a></li>#}
-{#                                    <li><a href="table-filter.html">Table Filter</a></li>#}
-{#                                    <li><a href="table-dragger.html">Table dragger</a></li>#}
-{#                                </ul>#}
-{#                            </li>#}
-{#                        </ul>#}
-{#                    </nav>#}
-{#                </div>#}
-{#                <div class="tab-pane" id="Setting-icon">#}
-{#                    <nav class="sidebar-nav sidebar-scroll">#}
-{#                        <p>General Settings</p>#}
-{#                        <ul class="setting-list list-unstyled">#}
-{#                            <li>#}
-{#                                <label class="fancy-checkbox">#}
-{#                                    <input type="checkbox" name="checkbox">#}
-{#                                    <span>Report Panel Usag</span>#}
-{#                                </label>#}
-{#                            </li>#}
-{#                            <li>#}
-{#                                <label class="fancy-checkbox">#}
-{#                                    <input type="checkbox" name="checkbox" checked="">#}
-{#                                    <span>Email Redirect</span>#}
-{#                                </label>#}
-{#                            </li>#}
-{#                            <li>#}
-{#                                <label class="fancy-checkbox">#}
-{#                                    <input type="checkbox" name="checkbox" checked="">#}
-{#                                    <span>Notifications</span>#}
-{#                                </label>#}
-{#                            </li>#}
-{#                            <li>#}
-{#                                <label class="fancy-checkbox">#}
-{#                                    <input type="checkbox" name="checkbox">#}
-{#                                    <span>Offline</span>#}
-{#                                </label>#}
-{#                            </li>#}
-{#                            <li>#}
-{#                                <label class="fancy-checkbox">#}
-{#                                    <input type="checkbox" name="checkbox">#}
-{#                                    <span>Location Permission</span>#}
-{#                                </label>#}
-{#                            </li>#}
-{#                        </ul>#}
-{#                        <ul class="list-group">#}
-{#                            <li class="list-group-item">#}
-{#                                Dark Menu#}
-{#                                <div class="float-right">#}
-{#                                    <label class="switch">#}
-{#                                        <input type="checkbox" class="dark_menu_btn">#}
-{#                                        <span class="slider round"></span>#}
-{#                                    </label>#}
-{#                                </div>#}
-{#                            </li>#}
-{#                            <li class="list-group-item">#}
-{#                                Dark version#}
-{#                                <div class="float-right">#}
-{#                                    <label class="switch">#}
-{#                                        <input type="checkbox" class="light-btn">#}
-{#                                        <span class="slider round"></span>#}
-{#                                    </label>#}
-{#                                </div>#}
-{#                            </li>#}
-{#                        </ul>#}
-{#                        <hr>#}
-{#                        <p>Choose Skin</p>#}
-{#                        <ul class="choose-skin list-unstyled mb-0">#}
-{#                            <li data-theme="blue" class="active"><div class="blue"></div></li>#}
-{#                            <li data-theme="green"><div class="green"></div></li>#}
-{#                            <li data-theme="orange"><div class="orange"></div></li>#}
-{#                            <li data-theme="blush"><div class="blush"></div></li>#}
-{#                            <li data-theme="cyan"><div class="cyan"></div></li>#}
-{#                        </ul>#}
-{#                    </nav>#}
-{#                </div>#}
+
             </div>
         </div>
     </div>
     <div id="main-content">
         {% block body %}{% endblock %}
+
     </div>
 </div>
- <!-- Javascript -->
-<!-- Latest jQuery -->
-<script src="{{ asset('assets/vendor/jquery/jquery-3.3.1.min.js') }}"></script>
 
-<!-- Bootstrap 4x JS  -->
-<script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-<script src="{{ asset('bundles/vendorscripts.bundle.js') }}"></script>
 
-<script src="{{ asset('js/common.js') }}"></script>
-        {% block javascripts %}{% endblock %}
+
+
+            <script src="{{ asset('assets/vendor/jquery/jquery-3.3.1.min.js') }}"></script>
+
+
+            <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+            <script src="{{ asset('bundles/vendorscripts.bundle.js') }}"></script>
+
+            <script src="{{ asset('js/common.js') }}"></script>
+{#            <script src="{{ asset('bundles/mercuryseriesflashy/js/flashy.js') }}"></script>#}
+
+        {% block javascripts %}  {% endblock %}
+{#        {{ include('@MercurySeriesFlashy/flashy.html.twig') }}#}
+
     </body>
 </html>

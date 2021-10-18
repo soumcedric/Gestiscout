@@ -159,9 +159,11 @@
                             var dd =table.language.zeroRecords;
                             table.clear().draw();
                             loadingClose();
-                            swal({
-                                title:"",
-                                text:"Aucun enregistrement trouvé"
+                          swal({
+                                title:'',
+                                text:'Aucun enregistrement trouvé'
+                            },function(){
+                                loadingClose()
                             });
                         }
                         else
@@ -185,7 +187,7 @@
                             });
                             loadingClose();
                         }
-
+                        loadingClose();
                     }
                 });
 

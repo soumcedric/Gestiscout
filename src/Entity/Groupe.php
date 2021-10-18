@@ -106,10 +106,16 @@ class Groupe
      */
     private $Jeunes;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ACTIVITES::class, mappedBy="Groupe")
+     */
+    private $Activities;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->Jeunes = new ArrayCollection();
+        $this->Activities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -327,6 +333,36 @@ class Groupe
             // set the owning side to null (unless already changed)
             if ($jeune->getGroupe() === $this) {
                 $jeune->setGroupe(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ACTIVITES[]
+     */
+    public function getActivities(): Collection
+    {
+        return $this->Activities;
+    }
+
+    public function addActivity(ACTIVITES $activity): self
+    {
+        if (!$this->Activities->contains($activity)) {
+            $this->Activities[] = $activity;
+            $activity->setGroupe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeActivity(ACTIVITES $activity): self
+    {
+        if ($this->Activities->removeElement($activity)) {
+            // set the owning side to null (unless already changed)
+            if ($activity->getGroupe() === $this) {
+                $activity->setGroupe(null);
             }
         }
 

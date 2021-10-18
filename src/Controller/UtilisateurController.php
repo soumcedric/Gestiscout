@@ -6,6 +6,7 @@ use App\Classes\QueryClass;
 use App\Entity\Utilisateur;
 use App\Entity\User;
 use App\Repository\GroupeRepository;
+
 use App\Repository\ResponsableRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -52,6 +53,8 @@ class UtilisateurController extends AbstractController
             $ConnectedGroupe = $this->groupeLayer->findOneBy(["id"=>$groupe->getId()]);
             //get Concerned Responsable
             $ConcernedRespo = $this->respoLayer->findOneBy(["id"=>$fromJson["respoid"]]);
+
+
             $user = new User();
 
             $cryptedPass = $encoder->encodePassword($user, $fromJson["password"]);
@@ -60,6 +63,46 @@ class UtilisateurController extends AbstractController
                 ->setGroupe($ConnectedGroupe)
                 ->setRoles($fromJson["roles"])
                 ->setResponsable($ConcernedRespo)
+                ->setDateCreation(new \DateTime())
+                ->setUserCreation("Admin");
+
+            $manager = $this->getDoctrine()->getManager();
+            $manager->persist($user);
+            $manager->flush();
+            return new Response('success',200);
+        }
+
+    }
+
+
+
+
+    #[Route('/AddUserFromDistrict', name: 'AddUserFromDistrict')]
+    public function AddUserFromDistrict(Request $req, UserPasswordEncoderInterface $encoder, ResponsableRepository $respo)
+    {
+        $qClass = new QueryClass($this->em);
+        $fromJson = $req->request->get("value");
+      //  var_dump($fromJson["respoid"]);
+        //get user info from responsable table
+        $ChoseRespo = $respo->findOneBy(["id"=>$fromJson["respoid"]]);
+        //var_dump($ChoseRespo);
+        $userExists = $qClass->CheckUserExist($fromJson["username"]);
+        if ($userExists){
+            return new Response('Cet utilisateur existe déjà',200);
+        }else
+        {
+            //get full user information
+
+            
+            $user = new User();
+
+            $cryptedPass = $encoder->encodePassword($user, $fromJson["password"]);
+            //$cryptedPass = $encoder->encodePassword($user, '123456');
+            $user->setPassword($cryptedPass)
+                ->setUsername($fromJson["username"])
+                ->setGroupe($ChoseRespo->getGroupe())
+                ->setRoles($fromJson["roles"])
+                ->setResponsable($ChoseRespo)
                 ->setDateCreation(new \DateTime())
                 ->setUserCreation("Admin");
 
