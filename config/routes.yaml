@@ -223,7 +223,23 @@ CreateActivite:
 Activites:
     path: /Activites
     controller: App\Controller\ActiviteController::ListActivite 
-# ListActivites:
-#     path: /ListActivites
-#     controller: App\Controller\ActiviteController::ListActivites 
+ListActivites:
+    path: /ListActivites
+    controller: App\Controller\ActiviteController::ListActivites 
+
+details:
+    path: /details/{id}
+    controller: App\Controller\ActiviteController::VwDetailsActivite 
+
+AddDetails:
+    path: /AddDetails
+    controller: App\Controller\ActiviteController::AddDetails
+ProgrammesByActivite:
+    path: /ProgrammesByActivite/{id}
+    controller: App\Controller\ActiviteController::ListProgramme
+redirectToProgramme:
+    path: /redirectToProgramme
+    controller: App\Controller\ActiviteController::redirectToProgramme
+
+
 

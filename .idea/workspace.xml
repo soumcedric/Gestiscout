@@ -17,39 +17,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fa88eed9-97a0-423b-a6a5-deaa9d4620b5" name="Default Changelist" comment="duplicate key resolved 06.05.2021">
-      <change beforePath="$PROJECT_DIR$/.idea/GestiScoutWeb.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/GestiScoutWeb.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/launch.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Upload/fichier modele jeune.xls" beforeDir="false" afterPath="$PROJECT_DIR$/Upload/fichier modele jeune.xls" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Classes/QueryClass.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Classes/QueryClass.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/ConnexionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ConnexionController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/DistrictController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/DistrictController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/JeuneController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/JeuneController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/ResponsableController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ResponsableController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/UtilisateurController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UtilisateurController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Responsable.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Responsable.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Security/LoginFormAuthAuthenticator.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Security/LoginFormAuthAuthenticator.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base_district.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base_district.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/configuration/ListeAnneePastoral.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/configuration/ListeAnneePastoral.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/configuration/ListeBranche.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/configuration/ListeBranche.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/configuration/ListeFonction.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/configuration/ListeFonction.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/connexion/Dashboard.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/connexion/Dashboard.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/connexion/DashboardDistrict.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/connexion/DashboardDistrict.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/district/AddResponsableDistrict.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/district/AddResponsableDistrict.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/district/ListeResponsableDistrict.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/district/ListeResponsableDistrict.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/jeune/AddJeune.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/jeune/AddJeune.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/jeune/ImportJeune.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/jeune/ImportJeune.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/jeune/ListeJeunes.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/jeune/ListeJeunes.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/responsable/AddResponsable.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/responsable/AddResponsable.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/responsable/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/responsable/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/security/login.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/security/login.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ActiviteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ActiviteController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/ACTIVITES.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/ACTIVITES.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/ACTIVITESRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/ACTIVITESRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/activite/ListActivite.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/activite/ListActivite.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +51,7 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="PhpDebugGeneral" xdebug_show_addresses="true" break_at_first_line="true" />
+  <component name="PhpDebugGeneral" break_at_first_line="true" listening_started="true" />
   <component name="PhpServers">
     <servers>
       <server host="localhost" id="aba35af5-8721-495a-b6b0-b3a88a96be2e" name="Unnamed" port="8000" use_path_mappings="true" />
@@ -91,8 +67,8 @@
       <server host="192.168.2.68:8000" id="98fa76ea-08a3-43f6-bf08-b6b681a4764e" name="192.168.2.68:8000" port="8000" />
     </servers>
   </component>
-  <component name="PhpWebServerValidation" path_to_validation_script="D:\CODES SOURCES\GestiScoutWeb" selected_validation_type="LOCAL" web_path_to_validation_script="http://localhost:8000" />
-  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP 8.0">
+  <component name="PhpWebServerValidation" path_to_validation_script="D:\CODES SOURCES\SYMFONY\GestiScoutWeb" selected_validation_type="LOCAL" web_path_to_validation_script="http://localhost:8000" />
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP wamp">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/monolog/monolog" />
       <path value="$PROJECT_DIR$/vendor/egulias/email-validator" />
@@ -222,9 +198,9 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="js.buildTools.grunt.grunt-cli.package" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/templates/responsable" />
+    <property name="last_opened_file_path" value="C:/wamp64/www" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php.debug" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -251,7 +227,7 @@
       <item itemvalue="PHP Web Page.xedebug" />
     </list>
   </component>
-  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -551,6 +527,13 @@
       <workItem from="1624396974056" duration="103000" />
       <workItem from="1624397478658" duration="16000" />
       <workItem from="1624402056286" duration="9889000" />
+      <workItem from="1634586985101" duration="330000" />
+      <workItem from="1634591176844" duration="346000" />
+      <workItem from="1634591646770" duration="3292000" />
+      <workItem from="1634660310497" duration="1619000" />
+      <workItem from="1634664679402" duration="3970000" />
+      <workItem from="1634679556751" duration="462000" />
+      <workItem from="1634680043520" duration="53000" />
     </task>
     <task id="LOCAL-00001" summary="suppression d'un jeune">
       <created>1612209599592</created>
@@ -591,7 +574,7 @@
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -630,112 +613,6 @@
     <MESSAGE value="DISTRICT 23.03.2021" />
     <MESSAGE value="duplicate key resolved 06.05.2021" />
     <option name="LAST_COMMIT_MESSAGE" value="duplicate key resolved 06.05.2021" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="263" y="19" key="#CLI_Interpreters" timestamp="1623962419020">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="263" y="19" key="#CLI_Interpreters/0.0.1366.728@0.0.1366.728" timestamp="1623962419020" />
-    <state x="263" y="19" key="#Servers" timestamp="1623962542779">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="263" y="19" key="#Servers/0.0.1366.728@0.0.1366.728" timestamp="1623962542779" />
-    <state x="486" y="153" key="#Web_Browsers" timestamp="1623962595419">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="486" y="153" key="#Web_Browsers/0.0.1366.728@0.0.1366.728" timestamp="1623962595419" />
-    <state x="137" y="19" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1623962605757">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="137" y="19" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.728@0.0.1366.728" timestamp="1623962605757" />
-    <state x="413" y="111" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1619560633866">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="413" y="111" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.728@0.0.1366.728" timestamp="1619560633866" />
-    <state x="398" y="186" key="#com.jetbrains.php.debug.validation.PhpWebServerValidationDialog#" timestamp="1623962847458">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="398" y="186" key="#com.jetbrains.php.debug.validation.PhpWebServerValidationDialog#/0.0.1366.728@0.0.1366.728" timestamp="1623962847458" />
-    <state width="647" height="466" key="DebuggerActiveHint" timestamp="1619204650677">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="647" height="466" key="DebuggerActiveHint/0.0.1366.728@0.0.1366.728" timestamp="1619204650677" />
-    <state x="463" y="105" key="FileChooserDialogImpl" timestamp="1623962722630">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="463" y="105" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1623962722630" />
-    <state width="1323" height="164" key="GridCell.Tab.0.bottom" timestamp="1624397869889">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="164" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1624397869889" />
-    <state width="1323" height="164" key="GridCell.Tab.0.center" timestamp="1624397869889">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="164" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1624397869889" />
-    <state width="1323" height="164" key="GridCell.Tab.0.left" timestamp="1624397869888">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="164" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1624397869888" />
-    <state width="1323" height="164" key="GridCell.Tab.0.right" timestamp="1624397869889">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="164" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1624397869889" />
-    <state width="1323" height="164" key="GridCell.Tab.1.bottom" timestamp="1624397869889">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="164" key="GridCell.Tab.1.bottom/0.0.1366.728@0.0.1366.728" timestamp="1624397869889" />
-    <state width="1323" height="164" key="GridCell.Tab.1.center" timestamp="1624397869889">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="164" key="GridCell.Tab.1.center/0.0.1366.728@0.0.1366.728" timestamp="1624397869889" />
-    <state width="1323" height="164" key="GridCell.Tab.1.left" timestamp="1624397869889">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="164" key="GridCell.Tab.1.left/0.0.1366.728@0.0.1366.728" timestamp="1624397869889" />
-    <state width="1323" height="164" key="GridCell.Tab.1.right" timestamp="1624397869889">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="164" key="GridCell.Tab.1.right/0.0.1366.728@0.0.1366.728" timestamp="1624397869889" />
-    <state width="1323" height="164" key="GridCell.Tab.2.bottom" timestamp="1624397869890">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="164" key="GridCell.Tab.2.bottom/0.0.1366.728@0.0.1366.728" timestamp="1624397869890" />
-    <state width="1323" height="164" key="GridCell.Tab.2.center" timestamp="1624397869889">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="164" key="GridCell.Tab.2.center/0.0.1366.728@0.0.1366.728" timestamp="1624397869889" />
-    <state width="1323" height="164" key="GridCell.Tab.2.left" timestamp="1624397869889">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="164" key="GridCell.Tab.2.left/0.0.1366.728@0.0.1366.728" timestamp="1624397869889" />
-    <state width="1323" height="164" key="GridCell.Tab.2.right" timestamp="1624397869890">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="1323" height="164" key="GridCell.Tab.2.right/0.0.1366.728@0.0.1366.728" timestamp="1624397869890" />
-    <state x="184" y="9" key="SettingsEditor" timestamp="1623962475087">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="184" y="9" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1623962475087" />
-    <state x="404" y="105" width="570" height="524" key="StructurePopup" timestamp="1616522419033">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="404" y="105" width="570" height="524" key="StructurePopup/0.0.1366.728@0.0.1366.728" timestamp="1616522419033" />
-    <state width="498" height="446" key="SwitcherDM" timestamp="1619046143997">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="498" height="446" key="SwitcherDM/0.0.1366.728@0.0.1366.728" timestamp="1619046143997" />
-    <state x="275" y="97" key="Vcs.Push.Dialog.v2" timestamp="1620423607453">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="275" y="97" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1620423607453" />
-    <state width="691" height="372" key="XDebugger.FullValuePopup" timestamp="1619047858982">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state width="691" height="372" key="XDebugger.FullValuePopup/0.0.1366.728@0.0.1366.728" timestamp="1619047858982" />
-    <state x="470" y="265" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1616457998357">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="470" y="265" key="git4idea.remote.GitConfigureRemotesDialog/0.0.1366.728@0.0.1366.728" timestamp="1616457998357" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -962,7 +839,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/src/Classes/QueryClass.php</url>
-          <line>439</line>
+          <line>440</line>
           <option name="timeStamp" value="157" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
@@ -997,12 +874,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/src/Classes/QueryClass.php</url>
-          <line>349</line>
+          <line>350</line>
           <option name="timeStamp" value="168" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/src/Classes/QueryClass.php</url>
-          <line>59</line>
+          <line>60</line>
           <option name="timeStamp" value="170" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
@@ -1017,7 +894,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/src/Classes/QueryClass.php</url>
-          <line>350</line>
+          <line>351</line>
           <option name="timeStamp" value="175" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
@@ -1065,6 +942,21 @@
           <line>81</line>
           <option name="timeStamp" value="186" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Controller/ActiviteController.php</url>
+          <line>108</line>
+          <option name="timeStamp" value="187" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Controller/ActiviteController.php</url>
+          <line>121</line>
+          <option name="timeStamp" value="188" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Controller/ActiviteController.php</url>
+          <line>120</line>
+          <option name="timeStamp" value="189" />
+        </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/src/Repository/UserRepository.php</url>
           <line>27</line>
@@ -1094,7 +986,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/src/Classes/QueryClass.php</url>
-          <line>56</line>
+          <line>57</line>
           <properties>
             <option name="className" value="\App\Classes\QueryClass" />
             <option name="methodName" value="GetJeuneNonCotise" />

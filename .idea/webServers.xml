@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="c72ca3f1-a6dc-40ed-afb6-e9881962224e" name="wamp" url="http://localhost:8000">
+        <fileTransfer mountedRoot="D:\CODES SOURCES\SYMFONY\GestiScoutWeb" accessType="MOUNT" port="0" />
+      </webServer>
+    </option>
+  </component>
+</project>

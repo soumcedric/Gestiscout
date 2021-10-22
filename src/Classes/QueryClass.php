@@ -9,6 +9,7 @@ use App\Entity\JEUNE;
 use App\Entity\Responsable;
 use App\Repository\AnneePastoraleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 class QueryClass
 {
@@ -495,6 +496,27 @@ class QueryClass
 
         $res = $query->getSingleScalarResult();
         return $res;
+    }
+
+
+    public function GetAllActivites()
+    {
+
+        $conn = $this->em->getConnection();
+        $sql = 'call gestiscoutdb.SP_GET_ALL_ACTIVITE(); ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+       // var_dump($stmt);
+        return $stmt->fetchAllAssociative();
+
+    }
+
+    public function GetAllProgrammesByActivite($activiteid){
+        $conn = $this->em->getConnection();
+        $sql = "call gestiscoutdb.SP_GET_ALL_DETAILS_BY_ACTIVITE('".$activiteid."');";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
     }
 
 }

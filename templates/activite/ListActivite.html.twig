@@ -62,6 +62,8 @@
                             <th>Branche</th>
                             <th>Date Debut</th>
                             <th>Date Fin</th>
+                            <th>Prix</th>
+                            <th>Participant</th>
                             <th>ACTION</th>
                         </tr>
                         </thead>
@@ -273,13 +275,15 @@
                     { "data": "BRANCHE" },
                     { "data": "DEBUT" },
                     { "data": "FIN" },
+                    { "data": "PRIX" },
+                    { "data": "NBRE" },
                     { "data": "ACTION" }
                 ],
-                // columnDefs: [
-                //     {
-                //         targets: 0,
-                //         visible: false
-                //     }],
+                columnDefs: [
+                    {
+                        targets: 0,
+                        visible: false
+                    }],
                 dom:'Bfrtip',
                 buttons: [
 
@@ -321,15 +325,18 @@
              success:function(res){
                  debugger
                  if (res.ok == true) {
-                     $.each(res.data,function(i,n){
+                     let liste = JSON.parse(res.data);
+                     $.each(liste,function(i,n){
                          table.rows.add([{
                     "ID" :n.id,
-                   "LIBELLE":n.Nom,
-                    "GROUPE" :"",
-                    "BRANCHE" :"",
-                     "DEBUT" :"",
-                     "FIN" :"",
-                    "ACTION" :""
+                   "LIBELLE":n.nomactivite,
+                    "GROUPE" :n.nomgroupe,
+                    "BRANCHE" :n.nombranche,
+                     "DEBUT" :n.date_debut,
+                     "FIN" :n.date_fin,
+                      "PRIX" :n.prix+" F CFA",
+                       "NBRE" :n.nbre_participant,
+                    "ACTION" :"<input type='button' id='details' class='btn btn-success' value='voir details' /><input type='button' id='programme' value='Programme' class='btn btn-success'/>"
                          }]).draw();
                      })
                  }
@@ -337,6 +344,25 @@
          })
 
      
+        $("#tbactivites").on('click','tbody > tr > td > input[id=programme]',function (){
+            debugger
+            var row = table.row( $(this).parents('tr') ).data();
+            var ID = row.ID;
+            $.ajax({
+                type:"GET",
+                url:"{{ path("redirectToProgramme") }}",
+                data:{"value":ID},
+                success:function(res){
+                    debugger
+                   window.location=res.url;
+
+                },
+                error:function(res){
+
+                }
+
+            });
+        });
 
 
         });

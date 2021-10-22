@@ -2,20 +2,39 @@
 
 namespace App\Controller;
 
+use App\Classes\QueryClass;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\entity\ACTIVITES;
+use App\Entity\Branche;
 use App\Entity\Groupe;
 use App\Repository\ACTIVITESRepository;
 use DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\BrancheRepository;
 use App\Repository\GroupeRepository;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Serializer\SerializerInterface;
+use App\Entity\DETAILS;
+
 
 class ActiviteController extends AbstractController
 {
+    private $em;
+    private $activiteRepo;
+   // private $rpBranche;
+    public function __construct(EntityManagerInterface $em, BrancheRepository $rpbranche, ACTIVITESRepository $activite)
+    {
+        $this->em=$em;
+        $this->activiteRepo=$activite;
+        //$rpBranche = $rpbranche;
+    }
+
+
     /**
      * @Route("/activite", name="activite")
      */
@@ -104,11 +123,112 @@ class ActiviteController extends AbstractController
      /**
      * @Route("/ListActivites", name="ListActivites")
      */
-    public function ListActivites(ACTIVITESRepository $rpActivite)
+    public function ListActivites(ACTIVITESRepository $rpActivite,SerializerInterface $serializer)
     {
-       $activites = $rpActivite->findAll();
-     //  $result = $serializer->serialize($activites,'json',['groups' => 'fonction']);
-       return new JsonResponse(['ok'=>true, 'data'=>$activites]);
+        $qClass = new QueryClass($this->em);
+        $listactivites = $qClass->GetAllActivites();
+        //var_dump($listactivites);
+       $result = $serializer->serialize($listactivites,'json');
+       return new JsonResponse(['ok'=>true, 'data'=>$result]);
+       // return new Response();
     }
 
+
+/**
+     * @Route("/details/{id}", name="details")
+     */
+    public function VwDetailsActivite(int $id){
+        $activite = $this->activiteRepo->findOneBy(["id"=>$id]);
+        return $this->render('activite/details.html.twig', [
+            'controller_name' => 'ActiviteController',
+            'activityName'=>$activite->getNom(),
+            'activityid'=>$activite->getId()
+        ]);
+    }
+
+
+    /**
+     * @Route("/AddDetails", name="AddDetails")
+     */
+    public function AddDetails(Request $value, BrancheRepository $rpBranche){
+
+        try{
+
+       
+        $data =  $value->request->get('value');
+        $details = new DETAILS();
+        $details->setLibelle($data["Nom"])
+                ->setDeroulement($data["Deroulement"])
+                ->setObjectif($data["Objectif"])
+                ->setDate(new \DateTime($data["Date"]))
+                ->setHeuredebut(new \DateTime($data["HeureDebut"]))
+                ->setHeureFin(new \DateTime($data["HeureFin"]))
+                ->setResponsableActivite($data["Responsable"])
+                ->setContact($data["Contact"])
+                ->setBactif(1)
+                ->setStatut(1)
+                ->setCible($data["Cible"])
+                ->setDescription("dddd")
+                ->setDateCreation(new \DateTime());
+
+        //set activity
+        $activite = $this->activiteRepo->findOneBy(["id"=>$data["Activity"]]);
+      //dump($data["Activity"]);
+        $details->setActivite($activite);
+        //set branche
+        $branche = $rpBranche->findOneBy(["id"=>$data["Branche"]]);
+        $details->setBranche($branche);
+        $manager = $this->getDoctrine()->getManager();
+        $manager->persist($details);
+        $manager->flush();
+        return new JsonResponse(['ok'=>true, 'data'=>"Opération effectuée avec succès"]);
+    }catch(\Exception $e)
+    {
+     return new JsonResponse(['ok'=> false, 'message'=>$e->getMessage()]);
+    }   
+    } 
+
+ /**
+     * @Route("/redirectToProgramme", name="redirectToProgramme")
+     */
+    public function redirectToProgramme(Request $request)
+    {
+        $data= $request->query->get("value");
+        $url = "/ProgrammesByActivite/".$data;
+        return new JsonResponse(['ok'=>true, 'url'=>$url]);
+    }
+
+
+
+    /**
+     * @Route("/ProgrammesByActivite/{id}", name="ProgrammesByActivite")
+     */
+    public function ListProgramme(Request $request, ACTIVITESRepository $rpActivite, int $id)
+    {
+        dump($id);
+        $bEmpty = false;
+        $data= $request->query->get("value");
+        //get activite name
+        $activite = $rpActivite->findOneBy(["id"=>$id]);
+        dump($activite);
+        //obtenir la liste des activités
+        $qClass = new QueryClass($this->em);
+        $result = $qClass->GetAllProgrammesByActivite($id);
+        if(!empty($result)){
+            $bEmpty = true;
+        }
+        return $this->render('activite/ListProgramme.html.twig', [
+            'controller_name' => 'ActiviteController',
+            'emptyCheck'=>$bEmpty,
+            'acitivityName'=>$activite->getNom(),
+            'activityid'=>$id,
+            'allProgrammes'=>$result
+        ]);
+    }
+
+
+
+
+
+    
 }

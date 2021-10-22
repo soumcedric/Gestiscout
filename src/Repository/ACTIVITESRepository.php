@@ -5,6 +5,9 @@ namespace App\Repository;
 use App\Entity\ACTIVITES;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 /**
  * @method ACTIVITES|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,9 +17,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ACTIVITESRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $em;
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $em)
     {
         parent::__construct($registry, ACTIVITES::class);
+        $this->em=$em;
     }
 
     // /**
@@ -47,4 +52,12 @@ class ACTIVITESRepository extends ServiceEntityRepository
         ;
     }
     */
+
+
+    public function getAllActivite()
+    {
+       return $this->createQueryBuilder('a')
+                    ->getQuery();
+            
+    }
 }

@@ -6,16 +6,30 @@ use App\Repository\ACTIVITESRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ACTIVITESRepository::class)
  */
 class ACTIVITES
 {
+
+    const STATUT_INITIER = 'Initier';
+    const STATUT_ACCEPTER = 'Accepter';
+    const STATUT_REFUSE = 'Refuser';
+    
+
+
+
+
+
+
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("activite")
      */
     private $id;
 
@@ -23,86 +37,103 @@ class ACTIVITES
 
     /**
      * @ORM\Column(type="string", length=500, nullable=true)
+     * @Groups("activite")
      */
     private $Description;
 
     /**
      * @ORM\Column(type="string", length=500, nullable=true)
+     * @Groups("activite")
      */
     private $Localisation;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("activite")
      */
     private $Ville;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("activite")
      */
     private $Commune;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("activite")
      */
     private $DateDebut;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("activite")
      */
     private $DateFin;
 
     /**
      * @ORM\Column(type="time", nullable=true)
+     * @Groups("activite")
      */
     private $HeureDebut;
 
     /**
      * @ORM\Column(type="time", nullable=true)
+     * @Groups("activite")
      */
     private $HeureFin;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("activite")
      */
     private $Statut;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("activite")
      */
     private $Autorisation;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("activite")
      */
     private $NbreParticipant;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("activite")
      */
     private $Prix;
 
     /**
      * @ORM\OneToMany(targetEntity=DETAILS::class, mappedBy="Activite")
+     * @Groups("activite")
      */
     private $Details;
 
     /**
      * @ORM\ManyToOne(targetEntity=Groupe::class, inversedBy="Activities")
+     * @Groups("activite")
      */
     private $Groupe;
 
     /**
      * @ORM\ManyToOne(targetEntity=Branche::class, inversedBy="Activities")
+     * @Groups("activite")
      */
     private $Branche;
 
     /**
      * @ORM\OneToMany(targetEntity=MAITRISE::class, mappedBy="Activite")
+     * @Groups("activite")
      */
     private $Responsable;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("activite")
      */
     private $Nom;
 
