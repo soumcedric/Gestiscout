@@ -4,6 +4,9 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
 {% endblock %}
 {% block body %}
 <style>
@@ -40,6 +43,7 @@
 
                         <div class="text-center"> 
                             <button type="submit" class="btn btn-success" id="valider">Valider</button>
+                              <button type="submit" class="btn btn-primary" id="modifier">modifier</button>
                             <button type="button" class="btn btn-danger" id="annuler">Annuler</button>
                         </div>
                             
@@ -79,10 +83,20 @@
 {% endblock %}
 {% block javascripts %}
 <script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
+<script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
+
+
+    <script src="{{ asset("assets/bundles/datatablescripts.bundle.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/dataTables.buttons.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.bootstrap4.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.colVis.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.html5.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.print.min.js") }}"></script>
+
 <script>
     $(document).ready(function(){
         debugger
+        $("#modifier").hide();
       var table = $("#tbBranche").DataTable({
           language: {
               processing: "Traitement en cours...",
@@ -139,7 +153,7 @@
                             "ID":n.id,
                             "CODE":n.Libelle,
                             "LIBELLE":n.Libelle ,
-                            "ACTION" :"<button><span><i class='fa fa-trash'></i></span></button><button><span><i class='fa fa-pencil'></i></span></button><button><span><i class='fa fa-eye'></i></span></button>"
+                            "ACTION" :"<a><span><i class='fa fa-trash fa-2x'></i></span></a><a id='btnupdate'><span><i class='fa fa-pencil fa-2x'></i></span></a><a id='btnconsult'><span><i class='fa fa-eye fa-2x'></i></span></a>"
 
                         }]).draw();
                     });
@@ -198,6 +212,53 @@ debugger
            });
         });
 
+
+
+         $("#tbBranche").on('click','tbody > tr > td > a[id=btnconsult]',function (){
+            debugger
+            var row = table.row( $(this).parents('tr') ).data();
+            var ID = row.ID;
+            $.get("{{"GetBrancheUnique"}}",{"value": ID}, function(res){
+                debugger;
+                if (res.ok == true) {
+                    debugger    
+                    var data = JSON.parse(res.data);
+                    $("#age").val(data.TrancheAge);
+                    $("#libelle").val(data.Libelle);
+
+                       $("#age").attr('readonly',true);
+                    $("#libelle").attr('readonly',true);
+                }
+            });
+        });
+
+
+   $("#tbBranche").on('click','tbody > tr > td > a[id=btnupdate]',function (){
+            debugger
+            var row = table.row( $(this).parents('tr') ).data();
+            var ID = row.ID;
+            $.get("{{"GetBrancheUnique"}}",{"value": ID}, function(res){
+                debugger;
+                if (res.ok == true) {
+                    debugger    
+                    var data = JSON.parse(res.data);
+                    $("#age").val(data.TrancheAge);
+                    $("#libelle").val(data.Libelle);
+  $("#modifier").show();
+    $("#valider").hide();
+                }
+            });
+        });
     });
+
+
+$("#modifier").click(function(){
+
+});
+
+
+
 </script>
 {% endblock %}
+
+

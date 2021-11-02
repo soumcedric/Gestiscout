@@ -23,6 +23,7 @@
                     <div class="body">
                         <div class="row">
                       <div class="col-md-6">
+                      <input type="hidden" id="idget" value=""/>
                             <div class="form-group">
                                 <label>CODE ANNEE</label>
                                 <input type="text" class="form-control" required id="code">
@@ -54,6 +55,7 @@
                         </div>
                         <div class="text-center"> 
                             <button type="submit" class="btn btn-success" id="valider">Valider</button>
+                            <button type="submit" class="btn btn-primary" id="btnupdate">Modifier</button>
                             <button type="submit" class="btn btn-danger" id="annuler">Annuler</button>
                         </div>
                             
@@ -108,6 +110,7 @@
 <script>
     $(document).ready(function(){
         debugger
+        $("#btnupdate").hide();
       var table = $("#tbAnnee").DataTable({
           language: {
               processing: "Traitement en cours...",
@@ -148,6 +151,29 @@
           processing: false,
           retrieve: true
       });
+
+
+function convertDate(dateToConvert){
+         var dateAr = dateToConvert.split('-');
+       
+        var newDate =  dateAr[2].substring(0,2)  + '-' + dateAr[1]+ '-' + dateAr[0];
+        return newDate;
+     }
+
+
+function convertDateEnglish(dateToConvert){
+         var dateAr = dateToConvert.split('-');
+         var newDate =dateAr[0]+"-"+dateAr[1]+"-"+dateAr[2].substring(0,2);
+         return newDate;
+     }
+
+
+
+
+
+
+
+
         debugger
         loadData();
         function loadData(){
@@ -157,20 +183,21 @@
                 success:function(resp){
                     debugger
                     var liste = JSON.parse(resp);
+                    table.clear().draw();
                     $.each(liste,function(i,n){
                         debugger
                         var actif;
                         if(n.bActif==true)
-                            actif="<a><span><i class='fa fa-check fa-2x'></i></span></a>";
+                            actif="<a><span><i class='fa fa-check fa-2x' style='color:green;'></i></span></a>";
                         else
-                            actif="<a><span><i class='fa fa-ban fa-2x'></i></span></a>";
+                            actif="<a><span><i class='fa fa-ban fa-2x' style='color:red;'></i></span></a>";
 
                         //alert(n.Nom);
                         table.rows.add([{
                             "ID":n.id,
                             "CODE":n.CodeAnnee,
-                            "DEBUT":n.DateDebut ,
-                            "FIN" : n.DateFin,
+                            "DEBUT":convertDate(n.DateDebut) ,
+                            "FIN" :convertDate(n.DateFin),
                             "ACTIF" : actif,
                             "ACTION" :"<a id='update'><span><i class='fa fa-pencil fa-2x'></i></span></a>|<a><span><i class='fa fa-trash fa-2x'></i></span></a>"
 
@@ -226,17 +253,23 @@
         });
 
         $("#annuler").click(function(){
-           swal({
-              type:"Question",
-              title: "ANNEE PASTORALE",
-               text:"Etes vous sûr de vouloir annuler ?"
+        //    swal({
+        //       type:"Question",
+        //       title: "ANNEE PASTORALE",
+        //        text:"Etes vous sûr de vouloir annuler ?"
 
-           });
+        //    });
+           $("#btnupdate").hide();
+           $("#valider").show();
+           $("#code").val('');
+           $("#datefin").val('');
+           $("#datedebut").val('');
+           $("#EstActif").prop('checked',false);
         });
 
         $("#tbAnnee").on('click','tbody > tr > td > a[id=update]',function (){
             debugger
-            var row = table.row().data();
+            var row = table.row( $(this).parents('tr') ).data();
             var ID = row.ID;
             $.ajax({
                 type:"GET",
@@ -247,10 +280,15 @@
                     var anneeP = JSON.parse(res);
                    // $("#code").val(anneeP.CodeAnnee);
                     $.each(anneeP,function (i,n){
+                        $("#idget").val(n.id);
                         $("#code").val(n.CodeAnnee);
-                        $("#datefin").val(n.DateFin);
-                        $("#datedebut").val(n.DateDebut);
+                        $("#datefin").val(convertDateEnglish(n.DateFin));
+                        $("#datedebut").val(convertDateEnglish(n.DateDebut));
                         $("#idAnnee").val(anneeP.id);
+                        if(n.bActif == true)
+                        {
+                            $("#EstActif").prop('checked',true);
+                        }
                     });
 
 
@@ -260,8 +298,57 @@
                 }
 
             });
+            $("#btnupdate").show();
+            $("#valider").hide();
         });
 
+
+        $("#btnupdate").click(function(){
+            debugger
+                var AnneeP = {
+                id:$("#idget").val(),
+                Code : $("#code").val(),
+                Debut : $("#datedebut").val(),
+                Fin : $("#datefin").val(),
+                bActif :""
+            };
+            var checked = $("#EstActif").is(":checked");
+            AnneeP.bActif = checked;
+         
+            $.ajax({
+                type:"POST",
+                url:"{{ path("UpdateAnneePastorale")}}",
+                data:{"value": AnneeP},
+                success:function(res)
+                {
+                     if(res.ok == true)
+                  {
+                         $("#btnupdate").hide();
+           $("#valider").show();
+           $("#code").val('');
+           $("#datefin").val('');
+           $("#datedebut").val('');
+           $("#EstActif").prop('checked',false);
+           loadData();
+                      swal({
+                          type:"success",
+                          title:"Modif Année pastorale",
+                          text: res.message
+                      });
+                  }
+                  else{
+                       swal({
+                          type:"error",
+                          title:"Modif Année pastorale",
+                          text: res.message
+                      });
+                  }
+                },
+                error:function(res){
+
+                }
+            })
+        });
 
 
 

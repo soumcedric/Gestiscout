@@ -68,8 +68,8 @@ class AnneePastoraleRepository extends ServiceEntityRepository
     {
         $valConverter = (int)$value;
         return $this->createQueryBuilder('a')
-                    ->andWhere('a.id = 1')
-          //  ->setParameter('val',1)
+                    ->andWhere('a.id = :val')
+            ->setParameter('val',$value)
             //  ->orderBy('a.id', 'ASC')
             //  ->setMaxResults(10)
             ->getQuery()

@@ -39,7 +39,7 @@ AddGroupe:
     controller: App\Controller\ConfigurationController::AddGroupe
 GetAnneePastoraleUnique:
     path: /GetAnneePastoraleUnique
-    controller: App\Controller\ConfigurationController::GetAnneePastoraleUnique
+    controller: App\Controller\ConfigurationController::GetUniqueAnneePastorale
 GetListGroupe:
     path: /GetListGroupe
     controller: App\Controller\ConfigurationController::GetListGroupe
@@ -243,6 +243,12 @@ redirectToProgramme:
 ConsulterDetails:
     path: /ConsulterDetails/{id}
     controller: App\Controller\ActiviteController::ConsulterDetails
+UpdateAnneePastorale:
+    path: /UpdateAnneePastorale
+    controller: App\Controller\ConfigurationController::UpdateAnneePastorale
+GetBrancheUnique:
+    path: /GetBrancheUnique
+    controller: App\Controller\ConfigurationController::BrancheUnique
 
 
 

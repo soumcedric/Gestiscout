@@ -489,7 +489,7 @@ class JEUNE
 
     public function getGenre(): ?Genre
     {
-        return $this->genre;
+        return $this->Genre;
     }
 
     public function setGenre(Genre $genre): self

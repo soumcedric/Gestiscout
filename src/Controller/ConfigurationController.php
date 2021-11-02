@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\AnneePastoraleRepository;
 use App\Repository\GroupeRepository;
 use App\Entity\AnneePastorale;
+use App\Repository\BrancheRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -280,6 +281,14 @@ class ConfigurationController extends AbstractController
     }
     }
 
-
+    #[Route('/GetBrancheUnique', name: 'GetBrancheUnique')]
+    public function BrancheUnique(HttpFoundationRequest $request, BrancheRepository $repoBranche,SerializerInterface $serializer)
+    {
+        $id = $request->query->get("value");
+        $result = $repoBranche->findOneBy(["id"=>$id]);
+        dump($result);
+        $liste =  $serializer->serialize($result,'json',['groups'=>'branche']);
+        return new JsonResponse(['ok'=> true, 'data'=>$liste]);
+    }
 
 }

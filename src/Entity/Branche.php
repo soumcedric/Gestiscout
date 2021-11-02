@@ -29,6 +29,7 @@ class Branche
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("branche")
      */
     private $TrancheAge;
 

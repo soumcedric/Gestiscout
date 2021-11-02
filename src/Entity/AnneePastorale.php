@@ -47,27 +47,31 @@ class AnneePastorale
 
     /**
      * @ORM\Column(type="date", nullable=true)
+     * @Groups("readAnnee")
      */
     private $DateCreation;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("readAnnee")
      */
     private $UserCreation;
 
     /**
      * @ORM\Column(type="date", nullable=true)
+     * @Groups("readAnnee")
      */
     private $DateModification;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("readAnnee")
      */
     private $UserModification;
 
     /**
-     * @ORM\OneToMany(targetEntity=INSCRIPTION::class, mappedBy="Annee",cascade={"persist", "remove"})
-     */
+     * @ORM\OneToMany(targetEntity=INSCRIPTION::class, mappedBy="Annee")
+    */
     private $INSCRIPTIONS;
 
     /**
