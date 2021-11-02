@@ -114,7 +114,7 @@ class DETAILS
 
     /**
      * @ORM\ManyToOne(targetEntity=Branche::class, inversedBy="Details")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $Branche;
 

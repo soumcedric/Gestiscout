@@ -51,7 +51,7 @@
                                 <tr>
                                   <td>
                                         <a href="#">{{details.libelledetails}}</a>
-                                        <p class="mb-0 text-muted">Date: {{details.datedetails}}</p>
+                                        <p class="mb-0 text-muted">Date: {{details.datedetails  }}</p>
                                     </td>
                                     <td class="text-right">
                                         <h6 class="font-14 mb-0">Statut</h6>
@@ -63,7 +63,7 @@
                                     </td>
                                        <td class="w350">
                                     <h6 class="font-14 mb-0">Action</h6>
-                                        <span class="text-muted"><button class="btn btn-primary">Details</button></span>
+                                        <span class="text-muted"><a class="btn btn-primary" href="{{ path("ConsulterDetails", {id:details.id})}}">Details</a></span>
                                     </td>
                                 </tr>
                                 <p></>

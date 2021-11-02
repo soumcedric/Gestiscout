@@ -240,6 +240,9 @@ ProgrammesByActivite:
 redirectToProgramme:
     path: /redirectToProgramme
     controller: App\Controller\ActiviteController::redirectToProgramme
+ConsulterDetails:
+    path: /ConsulterDetails/{id}
+    controller: App\Controller\ActiviteController::ConsulterDetails
 
 
 

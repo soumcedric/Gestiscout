@@ -14,8 +14,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class ACTIVITES
 {
 
-    const STATUT_INITIER = 'Initier';
-    const STATUT_ACCEPTER = 'Accepter';
+    const INITIER = 0;
+    const ACCEPTER =1;
     const STATUT_REFUSE = 'Refuser';
     
 
@@ -136,6 +136,11 @@ class ACTIVITES
      * @Groups("activite")
      */
     private $Nom;
+    /**
+     * @ORM\Column(type="string")
+     * @Groups("activite")
+     */
+    private $StatutString;
 
     public function __construct()
     {
@@ -148,6 +153,18 @@ class ACTIVITES
         return $this->id;
     }
 
+    
+    public function getStautString(): ?string
+    {
+        return $this->StatutString;
+    }
+
+
+    public function setStautString(string $statut): ?self
+    {
+        $this->StatutString = $statut;
+        return $this;
+    }
     public function setId(int $Id): self
     {
         $this->Id = $Id;
@@ -258,6 +275,7 @@ class ACTIVITES
 
     public function setStatut(int $Statut): self
     {
+        
         $this->Statut = $Statut;
 
         return $this;

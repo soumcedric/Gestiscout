@@ -20,6 +20,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Entity\DETAILS;
+use App\Repository\DETAILSRepository;
 
 
 class ActiviteController extends AbstractController
@@ -127,7 +128,12 @@ class ActiviteController extends AbstractController
     {
         $qClass = new QueryClass($this->em);
         $listactivites = $qClass->GetAllActivites();
-        //var_dump($listactivites);
+        dump($listactivites);
+        foreach($listactivites as $ac)
+        {
+           //dump($ac);
+          // var_dump($ac);
+        }
        $result = $serializer->serialize($listactivites,'json');
        return new JsonResponse(['ok'=>true, 'data'=>$result]);
        // return new Response();
@@ -225,7 +231,23 @@ class ActiviteController extends AbstractController
             'allProgrammes'=>$result
         ]);
     }
+    /**
+     * @Route("/ConsulterDetails/{id}", name="ConsulterDetails")
+     */
+    public function ConsulterDetails(int $id, DETAILSRepository $rpDetails)
+    {
+        $activity = $rpDetails->findOneBy(["id"=>$id]);
+        dump($activity);
+        return $this->render('activite/consulterdetails.html.twig', [
+            'controller_name' => 'ActiviteController',
+            'detailsActivite'=>$activity           
+        ]);
+    }
 
+
+
+
+    
 
 
 

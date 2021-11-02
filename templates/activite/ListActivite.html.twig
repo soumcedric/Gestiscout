@@ -327,13 +327,17 @@
                  if (res.ok == true) {
                      let liste = JSON.parse(res.data);
                      $.each(liste,function(i,n){
+                         debugger
+                         //var date = n.date_debut.replace('0','');
+                        var newDate = convertDate(n.date_debut);
+                        var newDateFin = convertDate(n.date_fin);
                          table.rows.add([{
                     "ID" :n.id,
                    "LIBELLE":n.nomactivite,
                     "GROUPE" :n.nomgroupe,
                     "BRANCHE" :n.nombranche,
-                     "DEBUT" :n.date_debut,
-                     "FIN" :n.date_fin,
+                     "DEBUT" :newDate,
+                     "FIN" :newDateFin,
                       "PRIX" :n.prix+" F CFA",
                        "NBRE" :n.nbre_participant,
                     "ACTION" :"<input type='button' id='details' class='btn btn-success' value='voir details' /><input type='button' id='programme' value='Programme' class='btn btn-success'/>"
@@ -343,7 +347,12 @@
              }
          })
 
-     
+     function convertDate(dateToConvert){
+         var dateAr = dateToConvert.split('-');
+       
+        var newDate =  dateAr[2].substring(0,2)  + '-' + dateAr[1]+ '-' + dateAr[0];
+        return newDate;
+     }
         $("#tbactivites").on('click','tbody > tr > td > input[id=programme]',function (){
             debugger
             var row = table.row( $(this).parents('tr') ).data();
