@@ -16,9 +16,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\AnneePastoraleRepository;
 use App\Repository\GroupeRepository;
 use App\Entity\AnneePastorale;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ConfigurationController extends AbstractController
 {
@@ -41,9 +45,10 @@ class ConfigurationController extends AbstractController
          #[Route('/GetListeAnnee', name: 'GetListeAnnee')]
          public function GetListeAnnee(AnneePastoraleRepository $repo,SerializerInterface $serialiser)
          {
-             $liste = $repo->findOneBy(["bActif"=>true]);
-
-             $listeAnneePastorale =  $serialiser->serialize($liste,'json',["group"=>"readAnnee"]);
+            // $liste = $repo->findOneBy(["bActif"=>true]);
+             $liste = $repo->findAll();
+            dump($liste);
+             $listeAnneePastorale =  $serialiser->serialize($liste,'json',["groups"=>"readAnnee"]);
 
             return  new \Symfony\Component\HttpFoundation\Response($listeAnneePastorale,200);
          }
@@ -200,13 +205,12 @@ class ConfigurationController extends AbstractController
     }
 
     #[Route('/GetAnneePastoraleUnique', name: 'GetAnneePastoraleUnique')]
-    public function GetUniqueAnneePastorale(\Symfony\Component\HttpFoundation\Request $value, \App\Repository\AnneePastoraleRepository  $repo,NormalizerInterface $normalizer): Response
+    public function GetUniqueAnneePastorale(\Symfony\Component\HttpFoundation\Request $value, \App\Repository\AnneePastoraleRepository  $repo,NormalizerInterface $normalizer,SerializerInterface $serialiser): Response
     {
         $id = $value->get("value");
         $AneePastorale = $repo->findUniqueAnneePastorale($id);
-        $listeNormalized =  $normalizer->normalize($AneePastorale);//,null,['groups'=>'post:read']);
-        $result = json_encode($listeNormalized);
-        return  new \Symfony\Component\HttpFoundation\Response($result,200);
+        $annee =  $serialiser->serialize($AneePastorale,'json',["groups"=>"readAnnee"]);
+        return  new \Symfony\Component\HttpFoundation\Response($annee,200);
 
     }
 
@@ -233,6 +237,49 @@ class ConfigurationController extends AbstractController
        // $result = json_encode($listeGenre);
         return  new \Symfony\Component\HttpFoundation\Response($listeGenre,200);
     }
+
+
+    #[Route('/UpdateAnneePastorale', name: 'UpdateAnneePastorale')]
+    public function UpdateAnneePastorale(HttpFoundationRequest $request, AnneePastoraleRepository $repo, EntityManagerInterface $entitymanager)
+    {
+        try
+        {
+
+      
+        dump($request);
+        $data = $request->request->get("value");
+        $id = $data["id"];
+        $boolvalue = false;
+        if($data["bActif"] == "true")
+        {
+            $boolvalue = true;
+        }
+        //get annee pastorale unique before modifying
+        $anneePastoraleToUpdate = $repo->findOneBy(["id"=>$id]);
+        dump($anneePastoraleToUpdate);
+        
+        $code = $anneePastoraleToUpdate->getCodeAnnee() == $data["Code"] ? $anneePastoraleToUpdate->getCodeAnnee() : $data["Code"];
+        $datedebut = $anneePastoraleToUpdate->getDateDebut() == new \DateTime($data["Debut"]) ? $anneePastoraleToUpdate->getDateDebut() : new \DateTime($data["Debut"]);
+        $datefin = $anneePastoraleToUpdate->getDateFin() == new \DateTime($data["Fin"]) ? $anneePastoraleToUpdate->getDateFin() : new \DateTime($data["Fin"]);
+        $actif = $anneePastoraleToUpdate->getBActif() == $boolvalue ? $anneePastoraleToUpdate->getBActif() : $boolvalue;
+        
+        $anneePastoraleToUpdate->setCodeAnnee($code);
+        $anneePastoraleToUpdate->setDateDebut($datedebut);
+        $anneePastoraleToUpdate->setDateFin($datefin);
+        $anneePastoraleToUpdate->setBActif($actif);
+        $anneePastoraleToUpdate->setDateModification(new \DateTime());
+
+        // $manager = $this->getDoctrine()->getManager();
+        // $manager->persist($anneePastoraleToUpdate);
+        $entitymanager->flush();
+        return new JsonResponse(['ok'=> true, 'message'=>'opération effectuée avec succès']);
+    }
+    catch(\Exception $e)
+    {
+        return new JsonResponse(['ok'=> false, 'message'=>$e->getMessage()]);
+    }
+    }
+
 
 
 }
