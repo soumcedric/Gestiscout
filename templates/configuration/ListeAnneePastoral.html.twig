@@ -182,7 +182,9 @@ function convertDateEnglish(dateToConvert){
                 url:"{{ path("GetListeAnnee")}}",
                 success:function(resp){
                     debugger
-                    var liste = JSON.parse(resp);
+                    if(resp.ok==true)
+                    {
+    var liste = JSON.parse(resp.data);
                     table.clear().draw();
                     $.each(liste,function(i,n){
                         debugger
@@ -203,6 +205,11 @@ function convertDateEnglish(dateToConvert){
 
                         }]).draw();
                     });
+                    }
+                    else{
+
+                    }
+                
                 }
             });
 

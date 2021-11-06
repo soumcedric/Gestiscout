@@ -46,12 +46,19 @@ class ConfigurationController extends AbstractController
          #[Route('/GetListeAnnee', name: 'GetListeAnnee')]
          public function GetListeAnnee(AnneePastoraleRepository $repo,SerializerInterface $serialiser)
          {
-            // $liste = $repo->findOneBy(["bActif"=>true]);
-             $liste = $repo->findAll();
-            dump($liste);
-             $listeAnneePastorale =  $serialiser->serialize($liste,'json',["groups"=>"readAnnee"]);
+             try{
+    // $liste = $repo->findOneBy(["bActif"=>true]);
+    $liste = $repo->findAll();
+    //dump($liste);
+     $listeAnneePastorale =  $serialiser->serialize($liste,'json',["groups"=>"readAnnee"]);
 
-            return  new \Symfony\Component\HttpFoundation\Response($listeAnneePastorale,200);
+    return  new JsonResponse(["ok"=>true, "data"=>$listeAnneePastorale]);
+             }
+             catch(\Exception $e)
+             {
+                return new JsonResponse(['ok'=> false, 'message'=>$e->getMessage()]);
+             }
+        
          }
 
 
