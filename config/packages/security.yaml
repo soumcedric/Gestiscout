@@ -49,7 +49,7 @@ security:
          - { path: /responsable, roles: [ROLE_USER,ROLE_ADMIN] }
          - { path: /Dashboard, roles: [ROLE_CONSULT,ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_USER] }
          - { path: /ListeAnnePastorale, roles: [ROLE_USER,ROLE_SUPERADMIN] }
-         - { path: /Groupe , roles: [ROLE_SUPERADMIN]}
+         - { path: /Groupe , roles: [ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_DISTRICT_CONFIG]}
          - { path: /ListeJeunes, roles: [ROLE_CONSULT,ROLE_ADMIN,ROLE_CONSULTANT] }
          - { path: /ListeJeunesDistrict, roles: [ROLE_DISTRICT_USER] }
          - { path: ListeResponsableDistrict, roles: [ROLE_DISTRICT_USER]}
