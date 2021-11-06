@@ -222,7 +222,7 @@ class ConfigurationController extends AbstractController
     public function GetListGroupe(GroupeRepository $repo,NormalizerInterface $normalizer)
     {
         $liste = $repo->findAll();
-
+        dump($liste);
         $listeNormalized =  $normalizer->normalize($liste,'json',['groups'=>'groupe']);//,null,['groups'=>'post:read']);
         $result = json_encode($listeNormalized);
         return  new \Symfony\Component\HttpFoundation\Response($result,200);
@@ -247,7 +247,7 @@ class ConfigurationController extends AbstractController
         {
 
       
-        dump($request);
+       // dump($request);
         $data = $request->request->get("value");
         $id = $data["id"];
         $boolvalue = false;
@@ -257,7 +257,7 @@ class ConfigurationController extends AbstractController
         }
         //get annee pastorale unique before modifying
         $anneePastoraleToUpdate = $repo->findOneBy(["id"=>$id]);
-        dump($anneePastoraleToUpdate);
+        //dump($anneePastoraleToUpdate);
         
         $code = $anneePastoraleToUpdate->getCodeAnnee() == $data["Code"] ? $anneePastoraleToUpdate->getCodeAnnee() : $data["Code"];
         $datedebut = $anneePastoraleToUpdate->getDateDebut() == new \DateTime($data["Debut"]) ? $anneePastoraleToUpdate->getDateDebut() : new \DateTime($data["Debut"]);
@@ -289,6 +289,58 @@ class ConfigurationController extends AbstractController
         dump($result);
         $liste =  $serializer->serialize($result,'json',['groups'=>'branche']);
         return new JsonResponse(['ok'=> true, 'data'=>$liste]);
+    }
+    #[Route('/GetGroupeUnique', name: 'GetGroupeUnique')]
+    public function GroupeUnique(HttpFoundationRequest $request, GroupeRepository $Rpgroupe,SerializerInterface $serializer)
+    {
+        try{
+            $data = $request->query->get("value");
+            $groupeUnique = $Rpgroupe->findOneBy(["id"=>$data]);
+            $value = $serializer->serialize($groupeUnique,'json',['groups'=>'groupe']);
+            return new JsonResponse(['ok'=>true, 'data'=>$value]);
+        }
+        catch(\Exception $e){
+            return new JsonResponse(['ok'=> false, 'message'=>$e->getMessage()]);
+        }
+
+    
+    }
+    #[Route('/UpdateGroupe', name: 'UpdateGroupe')]
+    public function UpdateGroupe(HttpFoundationRequest $request, GroupeRepository $repGroupe,EntityManagerInterface $entitymanager)
+    {
+        try{
+            $data = $request->request->get("value");
+            //get groupe to update
+            $groupeToUpdate = $repGroupe->findOneBy(["id"=>$data["id"]]);
+            if($groupeToUpdate != null)
+            {
+                $nom = $groupeToUpdate->getNom() == $data["nom"] ? $groupeToUpdate->getNom() : $data["nom"];
+                $nickname = $groupeToUpdate->getNickName() == $data["nickname"] ? $groupeToUpdate->getNickName() : $data["nickname"];
+                $phone1 =  $groupeToUpdate->getPhone1() == $data["phone1"] ? $groupeToUpdate->getPhone1() : $data["phone1"];
+                $phone2 =  $groupeToUpdate->getPhone2() == $data["phone2"] ? $groupeToUpdate->getPhone2() : $data["phone2"];
+                $email =  $groupeToUpdate->getEmail() == $data["email"] ? $groupeToUpdate->getEmail() : $data["email"];
+              //  $slogan =  $groupeToUpdate->getSlogan() == $data["slogan"] ? $groupeToUpdate->getSlogan() : $data["slogan"];
+                $paroisse =  $groupeToUpdate->getParoisse() == $data["paroisse"] ? $groupeToUpdate->getParoisse() : $data["paroisse"];
+                $region =  $groupeToUpdate->getRegion() == $data["region"] ? $groupeToUpdate->getRegion() : $data["region"];
+
+                $groupeToUpdate->setNom($nom);
+                $groupeToUpdate->setNickName($nickname);
+                $groupeToUpdate->setPhone1($phone1);
+                $groupeToUpdate->setPhone2($phone2);
+                $groupeToUpdate->setEmail($email);
+              //  $groupeToUpdate->setSlogan($slogan);
+                $groupeToUpdate->setParoisse($paroisse);
+                $groupeToUpdate->setRegion($region);
+                $groupeToUpdate->setDateModification(new \DateTime());
+              
+            }
+            $entitymanager->flush();
+            return new JsonResponse(['ok'=> true, 'message'=>'opération effectuée avec succès']);
+        }
+        catch(\Exception $e)
+        {
+            return new JsonResponse(['ok'=> false, 'message'=>$e->getMessage()]);
+        }
     }
 
 }
