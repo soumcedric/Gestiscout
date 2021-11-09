@@ -1,9 +1,12 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_district.html.twig' %}
 
 {% block titre %}ANNEE PASTORALE {% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
 {% endblock %}
 {% block body %}
 <style>
@@ -19,6 +22,7 @@
                         <h2 class="text-center">CONFIGURER LES GROUPES</h2>
                     </div>
                     <div class="body">
+                    <input type="hidden" id="idgroupe" />
                         <div class="row">
                       <div class="col-md-6">
                             <div class="form-group">
@@ -112,7 +116,8 @@
 
                         <div class="text-center"> 
                             <button type="submit" class="btn btn-success" id="valider">Valider</button>
-                            <button type="submit" class="btn btn-danger">Annuler</button>
+                            <button type="submit" class="btn btn-primary" id="modifier">Modifier</button>
+                            <button type="submit" class="btn btn-danger" id="btnannuler">Annuler</button>
                         </div>
                             
                         
@@ -158,6 +163,7 @@
 <script>
     $(document).ready(function(){
         debugger
+        $("#modifier").hide();
       var table = $("#tbFonction").DataTable({
           language: {
               processing: "Traitement en cours...",
@@ -208,6 +214,7 @@
                 url:"{{ path("GetListGroupe")}}",
                 success:function(resp){
                     debugger
+                    table.clear().draw();
                     var liste = JSON.parse(resp);
                     $.each(liste,function(i,n){
 
@@ -219,8 +226,8 @@
                             "NICKNAME":n.NickName ,
                             "REGION":n.Region,
                             "PAROISSE":n.Paroisse,
-                            "TELEPHONE":n.Telephone1,
-                            "ACTION" :"<button><span><i class='fa fa-trash'></i></span></button><button><span><i class='fa fa-pencil'></i></span></button><button><span><i class='fa fa-eye'></i></span></button>"
+                            "TELEPHONE":n.Phone1,
+                            "ACTION" :"<a id='btndelete'><span><i class='fa fa-trash fa-2x'></i></span></a><a id='btnUpdate'><span><i class='fa fa-pencil fa-2x'></i></span></a><a id='btnconsult'><span><i class='fa fa-eye fa-2x'></i></span></a>"
 
                         }]).draw();
                     });
@@ -233,7 +240,28 @@ $("#logo").change(function(){
     readURL(this);
 });
 
+    function Annuler(){
+        EnableInput();
 
+
+                $("#nom").val('');
+                $("#nickname").val('');
+                $("#region").val('');
+                $("#paroisse").val('');
+                $("#phone1").val('');
+                $("#phone2").val('');
+                $("#email").val('');
+               $("#logo").val();
+                $("#image").attr('src','');
+                $("#valider").show();
+                $("#modifier").hide();
+
+
+
+    }
+    $("#btnannuler").click(function(){
+            Annuler();  
+    })
 
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -305,6 +333,141 @@ $("#logo").change(function(){
                });
             }
         });
+
+        function DisableInput(){
+                $("#nom").attr('disabled','true');
+                $("#nickname").attr('disabled','true');
+                $("#region").attr('disabled','true');
+                $("#paroisse").attr('disabled','true');
+                $("#phone1").attr('disabled','true');
+                $("#phone2").attr('disabled','true');
+                $("#email").attr('disabled','true');
+                $("#valider").attr('disabled','true');
+        }
+
+
+            function EnableInput(){
+                $("#nom").removeAttr('disabled');
+                $("#nickname").removeAttr('disabled');
+                $("#region").removeAttr('disabled');
+                $("#paroisse").removeAttr('disabled');
+                $("#phone1").removeAttr('disabled');
+                $("#phone2").removeAttr('disabled');
+                $("#email").removeAttr('disabled');
+                $("#valider").removeAttr('disabled');
+        }
+
+        $("#tbFonction tbody").on('click','tr > td > #btnconsult',function(){
+               debugger
+               DisableInput();
+            var row = table.row( $(this).parents('tr') ).data();
+            var ID = row.ID;
+            $.get("{{path("GetGroupeUnique")}}",{value:ID}, function(res){
+                debugger
+                if (res.ok) {
+                    var value = JSON.parse(res.data);
+                    $("#nom").val(value.Nom);
+                    $("#nickname").val(value.NickName);
+                    $("#region").val(value.Region);
+                    $("#paroisse").val(value.Paroisse);
+                    $("#phone1").val(value.Phone1);
+                    $("#phone2").val(value.Phone2);
+                    $("#email").val(value.Email);
+
+
+
+
+
+
+
+                }
+                else{
+                    // swal({
+                    //     type:"error",
+                    //     title:"Grupe",
+                    //     text:res.data;
+                    // });
+                }
+            })
+            
+
+        });
+
+
+           $("#tbFonction tbody").on('click','tr > td > #btnUpdate',function(){
+               debugger
+               EnableInput();
+               $("#modifier").show();
+               $("#valider").hide();
+            var row = table.row( $(this).parents('tr') ).data();
+            var ID = row.ID;
+            $.get("{{path("GetGroupeUnique")}}",{value:ID}, function(res){
+                debugger
+                if (res.ok) {
+                    var value = JSON.parse(res.data);
+                    $("#nom").val(value.Nom);
+                    $("#nickname").val(value.NickName);
+                    $("#region").val(value.Region);
+                    $("#paroisse").val(value.Paroisse);
+                    $("#phone1").val(value.Phone1);
+                    $("#phone2").val(value.Phone2);
+                    $("#email").val(value.Email);
+                    $("#idgroupe").val(value.id);
+
+
+
+
+
+
+
+                }
+                else{
+                    // swal({
+                    //     type:"error",
+                    //     title:"Grupe",
+                    //     text:res.data;
+                    // });
+                }
+            })
+            
+
+        });
+
+
+        $("#modifier").click(function(){
+              var  Groupe={
+                id:$("#idgroupe").val(),
+               nom : $("#nom").val(),
+               nickname : $("#nickname").val(),
+               region : $("#region").val(),
+               paroisse : $("#paroisse").val(),
+               phone1: $("#phone1").val(),
+               phone2: $("#phone2").val(),
+               email : $("#email").val()
+               //logo : formdata
+           };
+
+        $.post("{{path("UpdateGroupe")}}",{value:Groupe}, function(res){
+            debugger
+            if(res.ok){
+                    swal({
+                        type:"success",
+                        title:"Groupe",
+                        text: res.message
+                    },function(){
+                        loadData();
+                        Annuler();
+                    })
+            }
+            else{
+
+            }
+        });
+
+
+        });
+
+
     });
 </script>
 {% endblock %}

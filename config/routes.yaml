@@ -249,6 +249,11 @@ UpdateAnneePastorale:
 GetBrancheUnique:
     path: /GetBrancheUnique
     controller: App\Controller\ConfigurationController::BrancheUnique
-
+GetGroupeUnique:
+    path: /GetGroupeUnique
+    controller: App\Controller\ConfigurationController::GroupeUnique
+UpdateGroupe:
+    path: /UpdateGroupe
+    controller: App\Controller\ConfigurationController::UpdateGroupe
 
 

@@ -128,7 +128,6 @@ class ActiviteController extends AbstractController
     {
         $qClass = new QueryClass($this->em);
         $listactivites = $qClass->GetAllActivites();
-        dump($listactivites);
         foreach($listactivites as $ac)
         {
            //dump($ac);
