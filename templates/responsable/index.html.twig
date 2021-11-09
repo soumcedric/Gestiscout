@@ -2,10 +2,10 @@
 
 {% block titre %}LISTE DES RESPONSABLES {% endblock %}
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
-{#    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">#}
-{#    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">#}
-{#    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">#}
+     <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
 {#{% endblock %}#}
 <style>
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
@@ -327,7 +327,12 @@
             }
 
 
-
+ function convertDate(dateToConvert){
+         var dateAr = dateToConvert.split('-');
+       
+        var newDate =  dateAr[2].substring(0,2)  + '-' + dateAr[1]+ '-' + dateAr[0];
+        return newDate;
+     }
             loadData();
             function loadData(){
                 loading();
@@ -345,10 +350,10 @@
                             //alert(n.Nom);
                             table.rows.add([{
                                 "ID":n.id,
-                                "NOMPRENOMS":n.Nom + " " + n.Prenoms,
-                                "DOB":n.dateNaiss ,
-                                "TELEPHONE" : n.Telephone,
-                                "FONCTION" : n.fonctionLibelle,
+                                "NOMPRENOMS":n.nom + " " + n.prenoms,
+                                "DOB":convertDate(n.dob) ,
+                                "TELEPHONE" : n.telephone,
+                                "FONCTION" : n.fonction,
                                 // "ACTION" :"<a id='update'><span><i class='fa fa-pencil fa-2x'></i></span></a>|<a id='delete'><span><i class='fa fa-trash fa-2x'></i></span></a>|<a id='add'><span><i class='fa fa-plus fa-2x'></i></span></a>"
                                 "ACTION" :"<a id='delete'><span><i class='fa fa-trash fa-2x'></i></span></a>|<a id='add'><span><i class='fa fa-plus fa-2x'></i></span></a>"
 

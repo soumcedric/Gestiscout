@@ -529,4 +529,13 @@ class QueryClass
         return $stmt->fetchAllAssociative();
     }
 
+    public function GetResponsableActifByGroupe($groupe)
+    {
+        $conn = $this->em->getConnection();
+        $sql = "call gestiscoutdb.SP_GET_RESPONSABLE_ACTIF_BY_GROUPE('".$groupe."','".$this->activeYear->getId()."');";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
 }

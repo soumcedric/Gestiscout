@@ -79,6 +79,11 @@ class ConnexionController extends AbstractController
         $TotalCheminot = $this->JeuneLayer->GetJeuneParUnite((int)$Idgroupe->getId(),3);
         $TotalRoutier = $this->JeuneLayer->GetJeuneParUnite((int)$Idgroupe->getId(),4);
 
+        dump("louveteau".$TotalLouveteau);
+        dump($TotalEclaireur);
+        dump("cheminot".$TotalCheminot);
+        dump($TotalRoutier);
+
 
         //get info groupe
         $groupe = $GroupeData->findGroupeById($Idgroupe);
