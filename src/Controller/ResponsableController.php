@@ -55,16 +55,12 @@ class ResponsableController extends AbstractController
     #[Route('/GetListResponsable', name: 'GetListResponsable')]
     public function GetListResponsable(SessionInterface $session,ExercerFonctionRepository  $exercerRepo,ResponsableRepository  $repoResponsable, SerializerInterface $serializer,AnneePastoraleRepository $anneerepo, FONCTIONRepository $fonctionrepo)
     {
-        $Idgroupe = $session->get('groupeid');
+        $groupe = $session->get('groupeid');
         $ActiveYear = $this->AnneeLayer->findActiveYear();
         $qCls = new QueryClass($this->em);
-        $ListResponsable =$qCls->GetListResponsableActif($Idgroupe->getId(),$ActiveYear[0]->getId());
-        foreach ($ListResponsable as $respo)
-        {
-            $dateOfBirth = $respo->getDob();
-            $respo->setDateNaiss($dateOfBirth->format('d-m-Y'));
-        }
-
+        $id = $groupe->getId();
+        $ListResponsable =$qCls->GetResponsableActifByGroupe($id);
+       
 
 
 
