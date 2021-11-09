@@ -34,6 +34,7 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use ZipStream\File;
 use App\Classes;
+use App\Classes\QueryClass;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use MercurySeries\FlashyBundle\FlashyNotifier;
 
@@ -46,13 +47,15 @@ class JeuneController extends AbstractController
     private $repoGroupe;
     private $repoYear;
     private $EntityManager;
-    public function __construct(BrancheRepository $branche, GenreRepository $genre, GroupeRepository $groupe, AnneePastoraleRepository $repoyear,EntityManagerInterface  $Emanager)
+    private $anneeLayer;
+    public function __construct(BrancheRepository $branche, GenreRepository $genre, GroupeRepository $groupe, AnneePastoraleRepository $repoyear,EntityManagerInterface  $Emanager, AnneePastoraleRepository $annee)
         {
             $this->brancheLayer = $branche;
             $this->GenreLayer = $genre;
             $this->repoGroupe = $groupe;
             $this->repoYear = $repoyear;
             $this->EntityManager=$Emanager;
+            $this->anneeLayer = $annee;
         }
 
 
@@ -117,19 +120,23 @@ class JeuneController extends AbstractController
     #[Route('/ListeJeune', name: 'ListeJeune')]
     public function ListeJeune(SessionInterface $session, JEUNERepository $jeuneRepo, NormalizerInterface $normalizer,SerializerInterface $serializer)
     {
-
-        $groupeId= $session->get('groupeid');
-        $id=$groupeId->getId();
-        $listedesjeunes = $jeuneRepo->GetJeuneActif($id);
-        foreach ($listedesjeunes as $jeune)
+        try
         {
-            $dateOfBirth = $jeune->getDob();
-            $jeune->setDateNaiss($dateOfBirth->format('d-m-Y'));
+            $qClass = new QueryClass($this->EntityManager);
+            $anneeActive = $this->anneeLayer->findActiveYear();
+            $groupe= $session->get('groupeid');
+            $anneeId=$anneeActive[0]->getId();
+            $id=$groupe->getId();
+            $listedesjeunes = $qClass->GetJeunesActifByGroupe($id);
+            $result = $serializer->serialize($listedesjeunes,'json',['groups'=>'read']);
+            return new JsonResponse(["ok"=>true, "data"=>$result]);
         }
-$result = $serializer->serialize($listedesjeunes,'json',['groups'=>'read']);
+        catch(\Exception $e)
+        {
 
-        return new Response($result,200);
+        }        
 
+       
     }
 
 

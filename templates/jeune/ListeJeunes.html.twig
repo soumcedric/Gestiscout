@@ -263,6 +263,16 @@
             $('.modal_load').modal('hide');
 
         }
+
+ function convertDate(dateToConvert){
+         var dateAr = dateToConvert.split('-');
+       
+        var newDate =  dateAr[2].substring(0,2)  + '-' + dateAr[1]+ '-' + dateAr[0];
+        return newDate;
+     }
+
+
+
         function loadData(){
             loading();
             $.ajax({
@@ -272,7 +282,7 @@
                     debugger
                     loadingClose();
                     table.clear().draw();
-                       if(resp=="[]"){
+                       if(resp.ok==false){
                         //   var dd= table.language.zeroRecords
                             loadingClose();
                             table.clear().draw();
@@ -285,17 +295,17 @@
                         }else{
 
                      
-                    var liste = JSON.parse(resp);
+                    var liste = JSON.parse(resp.data);
                     $.each(liste,function(i,n){
 
                         debugger
                         //alert(n.Nom);
                         table.rows.add([{
                             "ID":n.id,
-                            "NOM":n.Nom,
-                            "PRENOMS":n.Prenoms ,
-                            "DOB": n.DateNaiss,
-                            "TELEPHONE" :n.Telephone,
+                            "NOM":n.nom,
+                            "PRENOMS":n.prenoms ,
+                            "DOB": convertDate(n.dob),
+                            "TELEPHONE" :n.telephone,
                             "ACTION" :"<a id='update'><span><i class='fa fa-pencil fa-2x'></i></span></a><a id='consult'><span><i class='fa fa-eye fa-2x'></i></span></a><a id='delete'><span><i class='fa fa-trash fa-2x'></i></span></a>"
 
                         }]).draw();
