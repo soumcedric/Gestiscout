@@ -166,35 +166,33 @@
                     success:function(resp){
                         debugger
 
-                        if(resp=="[]"){
-                        //    var dd =table.language.zeroRecords;
+                        if(resp.ok == true){
+                             loadingClose();
                             table.clear().draw();
-                            loadingClose();
-                            swal({
-                                title:"",
-                                text:"Aucun enregistrement trouvé"
-                            });
-                        }
-                        else
-                        {
-                            loadingClose();
-                            table.clear().draw();
-                            var liste = JSON.parse(resp);
+                            var liste = JSON.parse(resp.data);
                             $.each(liste,function(i,n){
 
                                 debugger
                                 //alert(n.Nom);
                                 table.rows.add([{
                                     "ID":n.id,
-                                    "MATRICULE" : n.Matricule,
-                                    "NOM":n.Nom,
-                                    "PRENOMS":n.Prenoms ,
+                                    "MATRICULE" : n.matricule,
+                                    "NOM":n.nom,
+                                    "PRENOMS":n.prenoms ,
                                     // "DOB": n.DateNaiss,
-                                    "TELEPHONE" :n.Telephone,
+                                    "TELEPHONE" :n.telephone,
                                     // "ACTION" :"<button id='cotisation' class='btn btn-success'>Cotisation</button>"
 
                                 }]).draw();
                             });
+                        }
+                        else
+                        {
+                           swal({
+                               type:"error",
+                               title:"Cotisation",
+                               text:resp.message
+                           });
                         }
 
                     }
@@ -239,7 +237,7 @@
                     $.ajax({
                         type:"POST",
                         url:"{{ path('SaveCotisation') }}",
-                        data:{"value" : JSON.stringify(matricule), "JeuneId" : JSON.stringify(jeuneId)},
+                        data:{"value" : JSON.stringify(matricule), "JeuneId" : jeuneId},
                         success:function(res){
 debugger
                             if (res=="success"){

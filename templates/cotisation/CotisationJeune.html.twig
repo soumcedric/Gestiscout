@@ -164,11 +164,11 @@
                     { "data": "TELEPHONE" },
                     { "data": "ACTION" }
                 ],
-                // columnDefs: [
-                //     {
-                //         targets: 0,
-                //         visible: false
-                //     }],
+                columnDefs: [
+                    {
+                        targets: 0,
+                        visible: false
+                    }],
                 data: [],
                 rowCallback: function (row, data) { },
                 filter: true,
@@ -197,30 +197,31 @@
                     success:function(resp){
 
                         debugger
-                        if(resp=="[]"){
-                            loadingClose();
-                         //  var dd= table.language.zeroRecords
-
-                            table.clear().draw();
-                        }
-                        else
-                        {
+                        if(resp.ok == true){
                             loadingClose();
                             table.clear().draw();
-                            var liste = JSON.parse(resp);
+                            var liste = JSON.parse(resp.data);
                             $.each(liste,function(i,n){
 
                                 debugger
                                 //alert(n.Nom);
                                 table.rows.add([{
                                     "ID":n.id,
-                                    "NOM":n.Nom,
-                                    "PRENOMS":n.Prenoms ,
+                                    "NOM":n.nom,
+                                    "PRENOMS":n.prenoms ,
                                     // "DOB": n.DateNaiss,
-                                    "TELEPHONE" :n.Telephone,
+                                    "TELEPHONE" :n.telephone,
                                     "ACTION" :"<button id='cotisation' class='btn btn-success'>Cotisation</button>"
 
                                 }]).draw();
+                            });
+                        }
+                        else
+                        {
+                            swal({
+                                type:"error",
+                                title:"Cotisation",
+                                text:resp.message
                             });
                         }
 

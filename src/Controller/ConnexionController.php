@@ -72,18 +72,44 @@ class ConnexionController extends AbstractController
 
         //$RespoGroupe = $this->ResponsableLayer->GetResponsabeByGroupe((int)$Idgroupe->getId());
         $RespoGroupe = $qClass->GetNbreResponsableByGroup(0,(int)$Idgroupe->getId());
+
         $TotalJeuneMasculin = $qClass->GetNbreJeuneByGenreByGroupe($Idgroupe->getId(),'1');
        
         $TotalJeuneFeminin = $qClass->GetNbreJeuneByGenreByGroupe($Idgroupe->getId(),'2');
+
+
+
+
+
+        $TotalJeuneMasculin = $qClass->GetNbreJeuneByGenreByGroupe('1',$Idgroupe->getId());
+        $TotalJeuneFeminin = $qClass->GetNbreJeuneByGenreByGroupe('2',$Idgroupe->getId());
+
+
+
+
+
+/*
+
         $TotalLouveteau = $this->JeuneLayer->GetJeuneParUnite((int)$Idgroupe->getId(),1);
         $TotalEclaireur = $this->JeuneLayer->GetJeuneParUnite((int)$Idgroupe->getId(),2);
         $TotalCheminot = $this->JeuneLayer->GetJeuneParUnite((int)$Idgroupe->getId(),3);
         $TotalRoutier = $this->JeuneLayer->GetJeuneParUnite((int)$Idgroupe->getId(),4);
 
-        dump("louveteau".$TotalLouveteau);
-        dump($TotalEclaireur);
-        dump("cheminot".$TotalCheminot);
-        dump($TotalRoutier);
+*/
+
+        $TotalLouveteau = $qClass->GetNbreJeuneByGroupeByBrancheByAnnee($Idgroupe->getId(),1);
+        $TotalEclaireur = $qClass->GetNbreJeuneByGroupeByBrancheByAnnee($Idgroupe->getId(),2);
+        $TotalCheminot = $qClass->GetNbreJeuneByGroupeByBrancheByAnnee($Idgroupe->getId(),3);
+        $TotalRoutier = $qClass->GetNbreJeuneByGroupeByBrancheByAnnee($Idgroupe->getId(),4);
+
+
+
+
+
+        //  dump($TotalLouveteau);
+        //  dump($TotalEclaireur);
+        //  dump($TotalCheminot);
+        //  dump($TotalRoutier);
 
 
         //get info groupe
@@ -103,7 +129,7 @@ class ConnexionController extends AbstractController
         $TotalChefDistrict = $qClass->GetNbreChefDistrict((int)$ActiveYEar[0]->getId());
         $TotalJeuneByGroupeDistrict = $qClass->GetNbreJeuneByGroupeDistrict((int)$ActiveYEar[0]->getId());
         $TotalJeuneParBrancheDistrict = $qClass->GetNbreJeuneParBranche((int)$ActiveYEar[0]->getId());
-        dump($TotalChefDistrict);
+        
 
         //nombre de chef cotisé par groupe
         $TotalChefCotiseGroupe = $qClass->GetNbreResponsableCotiseParGroupe((int)$ActiveYEar[0]->getId(),$groupe[0]->getId());
