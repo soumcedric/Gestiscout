@@ -557,5 +557,15 @@ class QueryClass
         $stmt->execute();
         return $stmt->fetchAllAssociative();
     }
+    //TOTAL JEUNE BY GENRE BY GROUPE
+    public function GetNbreJeuneByGenreByGroupe($groupe,$genre)
+    {
+        $conn = $this->em->getConnection();
+        $sql = "call gestiscoutdb.SP_GET_NBRE_JEUNE_BY_GROUPE_BY_GENRE_BY_ANNEE('".$genre."','".$this->activeYear->getId()."','".$groupe."');";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchOne();
+
+    }
 
 }

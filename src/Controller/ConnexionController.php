@@ -72,8 +72,9 @@ class ConnexionController extends AbstractController
 
         //$RespoGroupe = $this->ResponsableLayer->GetResponsabeByGroupe((int)$Idgroupe->getId());
         $RespoGroupe = $qClass->GetNbreResponsableByGroup(0,(int)$Idgroupe->getId());
-        $TotalJeuneMasculin = $this->JeuneLayer->GetTotalByGenre((int)$Idgroupe->getId(),1);
-        $TotalJeuneFeminin = $this->JeuneLayer->GetTotalByGenre((int)$Idgroupe->getId(),2);
+        $TotalJeuneMasculin = $qClass->GetNbreJeuneByGenreByGroupe($Idgroupe->getId(),'1');
+       
+        $TotalJeuneFeminin = $qClass->GetNbreJeuneByGenreByGroupe($Idgroupe->getId(),'2');
         $TotalLouveteau = $this->JeuneLayer->GetJeuneParUnite((int)$Idgroupe->getId(),1);
         $TotalEclaireur = $this->JeuneLayer->GetJeuneParUnite((int)$Idgroupe->getId(),2);
         $TotalCheminot = $this->JeuneLayer->GetJeuneParUnite((int)$Idgroupe->getId(),3);
