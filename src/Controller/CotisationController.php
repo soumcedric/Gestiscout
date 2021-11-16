@@ -81,13 +81,20 @@ class CotisationController extends AbstractController
     public function CotisationJeune(SessionInterface $session,SerializerInterface $serializer): Response
     {
 
-        $Idgroupe = $session->get('groupeid');
-        $ActiveYear = $this->AnneeLayer->findActiveYear();
-        $qClass = new QueryClass($this->em);
-        $jeune = $qClass->GetJeuneNonCotise($Idgroupe->getId(),(int)$ActiveYear);
-        $result = $serializer->serialize($jeune,'json',['groups'=>'read']);
-        //var_dump($result);
-        return new Response($result,200);
+        try
+        {
+            $Idgroupe = $session->get('groupeid');
+            $ActiveYear = $this->AnneeLayer->findActiveYear();
+            $qClass = new QueryClass($this->em);
+            $jeune = $qClass->GetListeJeuneNonCotise($Idgroupe->getId());
+            $result = $serializer->serialize($jeune,'json',['groups'=>'read']);
+            return new JsonResponse(["ok"=>true, "data"=>$result]);
+        }
+        catch(\Exception $e)
+        {
+            return new JsonResponse(['ok'=> false, 'message'=>$e->getMessage()]);
+        }
+  
     }
 
 
@@ -100,8 +107,10 @@ class CotisationController extends AbstractController
             $cotisation = new Cotisation();
             $matricule = $request->request->get('value');
             $JeuneId = $request->request->get('JeuneId');
+            //dump(trim($JeuneId,'"'));
             //get jeune information
-            $Jeune = $this->JeuneLayer->findOneBy(["id"=>$JeuneId]);
+            $Jeune = $this->JeuneLayer->findOneBy(["id"=>trim($JeuneId,'"')]);
+           // dump($Jeune);
             $cotisation->setMatricule($matricule)
                 ->setJeune($Jeune)
                 ->setUserCreation('Admin')
@@ -128,9 +137,11 @@ class CotisationController extends AbstractController
     {
 
         $Idgroupe = $session->get('groupeid');
-        $jeune=$this->JeuneLayer->GetJeuneCotise((int)$Idgroupe->getId());
+        // $jeune=$this->JeuneLayer->GetJeuneCotise((int)$Idgroupe->getId());
+        $qClass = new QueryClass($this->em);
+        $jeune = $qClass->GetListeJeuneCotiseParGroupe($Idgroupe->getId());
         $result = $serializer->serialize($jeune,'json',['groups'=>'read']);
-        return new Response($result,200);
+        return new JsonResponse(["ok"=>true, "data"=>$result]);
     }
 
     #[Route('/GetListeJeuneCotiseParGroupe', name: 'GetListeJeuneCotiseParGroupe')]
@@ -139,9 +150,9 @@ class CotisationController extends AbstractController
         $activeYear = $this->AnneeLayer->findActiveYear();
         $Idgroupe = $session->get('groupeid');
         $Qclass = new QueryClass($this->em);
-        $Jeunes = $Qclass->ListeJeuneCotiseParGroupe((int)$Idgroupe->getId(),(int)$activeYear);
+        $Jeunes = $Qclass->GetListeJeuneCotiseParGroupe($Idgroupe->getId());
         $liste = $serializer->serialize($Jeunes,'json',['groups'=>'read']);
-        return new Response($liste,200);
+        return new JsonResponse(["ok"=>true, "data"=>$liste]);
     }
 
 
