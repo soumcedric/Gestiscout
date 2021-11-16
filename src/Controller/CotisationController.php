@@ -10,6 +10,7 @@ use App\Repository\ResponsableRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use http\Env\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -151,10 +152,10 @@ class CotisationController extends AbstractController
         $Idgroupe = $session->get('groupeid');
         $ActiveYear = $this->AnneeLayer->findActiveYear();
         $qClass = new QueryClass($this->em);
-        $jeune = $qClass->GetResponsableNonCotise($Idgroupe->getId(),(int)$ActiveYear);
+        $jeune = $qClass->GetResponsablesNonCotiseParGroupe($Idgroupe->getId());
        // var_dump($jeune);
         $result = $serializer->serialize($jeune,'json',['groups'=>'show_chef']);
-        return new Response($result,200);
+        return new JsonResponse(["ok"=>true, "data"=>$result]);
     }
 
 
@@ -168,6 +169,7 @@ class CotisationController extends AbstractController
             $cotisation = new Cotisation();
             $matricule = $request->request->get('value');
             $RespoId = $request->request->get('RespoId');
+            dump($RespoId);
             //get jeune information
             $Respo = $this->RespoLayer->findOneBy(["id"=>$RespoId]);
             $cotisation->setMatricule($matricule)
@@ -197,9 +199,9 @@ class CotisationController extends AbstractController
         $Idgroupe = $session->get('groupeid');
         $ActiveYear = $this->AnneeLayer->findActiveYear();
         $qClass = new QueryClass($this->em);
-        $jeune = $qClass->GetResponsableCotiseParGroupe($Idgroupe->getId(),(int)$ActiveYear);
+        $jeune = $qClass->GetListResponsablesCotisesParGroupe($Idgroupe->getId());
         $result = $serializer->serialize($jeune,'json',['groups'=>'show_chef']);
-        return new Response($result,200);
+        return new JsonResponse(["ok"=>true, "data"=>$result]);
     }
 
 }

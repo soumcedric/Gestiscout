@@ -155,7 +155,7 @@
                     url:"{{ path("GetListeRespoCotise")}}",
                     success:function(resp){
                         debugger
-                        if(resp=="[]"){
+                        if(resp.ok==false){
                             var dd =table.language.zeroRecords;
                             table.clear().draw();
                             loadingClose();
@@ -169,13 +169,13 @@
                         else
                         {
                             table.clear().draw();
-                            var liste = JSON.parse(resp);
+                            var liste = JSON.parse(resp.data);
                             $.each(liste,function(i,n){
 
                                 debugger
                                 //alert(n.Nom);
                                 table.rows.add([{
-                                    "ID":n.id,
+                                    "ID":n.Id,
                                     "MATRICULE" : n.Matricule,
                                     "NOM":n.Nom,
                                     "PRENOMS":n.Prenoms ,

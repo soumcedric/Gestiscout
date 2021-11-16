@@ -538,4 +538,24 @@ class QueryClass
         return $stmt->fetchAllAssociative();
     }
 
+
+    public function GetResponsablesNonCotiseParGroupe($groupe)
+    {
+        $conn = $this->em->getConnection();
+        $sql = "call gestiscoutdb.SP_GET_RESPONSABLES_NON_COTISE_PAR_GROUPE('".$this->activeYear->getId()."','".$groupe."');";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    
+    public function GetListResponsablesCotisesParGroupe($groupe)
+    {
+        $conn = $this->em->getConnection();
+        $sql = "call gestiscoutdb.SP_GET_RESPONSABLES_COTISES('".$this->activeYear->getId()."','".$groupe."');";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
 }

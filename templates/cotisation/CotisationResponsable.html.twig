@@ -161,11 +161,11 @@
                     { "data": "TELEPHONE" },
                     { "data": "ACTION" }
                 ],
-                // columnDefs: [
-                //     {
-                //         targets: 0,
-                //         visible: false
-                //     }],
+                columnDefs: [
+                    {
+                        targets: 0,
+                        visible: false
+                    }],
                 data: [],
                 rowCallback: function (row, data) { },
                 filter: true,
@@ -183,7 +183,7 @@
                     url:"{{ path("GetListeRespoNonCotise")}}",
                     success:function(resp){
                         debugger
-                        if(resp=="[]"){
+                        if(resp.ok==false){
                         //   var dd= table.language.zeroRecords
                             loadingClose();
                             table.clear().draw();
@@ -194,15 +194,16 @@
                         }
                         else
                         {
+                            debugger
                             loadingClose();
                             table.clear().draw();
-                            var liste = JSON.parse(resp);
+                            var liste = JSON.parse(resp.data);
                             $.each(liste,function(i,n){
 
                                 debugger
                                 //alert(n.Nom);
                                 table.rows.add([{
-                                    "ID":n.id,
+                                    "ID":n.Id,
                                     "NOM":n.Nom,
                                     "PRENOMS":n.Prenoms ,
                                     // "DOB": n.DateNaiss,
@@ -263,7 +264,7 @@
                     $.ajax({
                         type:"POST",
                         url:"{{ path('SaveCotisationResponsable') }}",
-                        data:{"value" : matricule, "RespoId" : JSON.stringify(jeuneId)},
+                        data:{"value" : matricule, "RespoId" : jeuneId},
                         success:function(res){
 debugger
                             if (res=="success"){
