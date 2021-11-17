@@ -417,7 +417,7 @@ class QueryClass
         }
         public  function GetListeResponsableByCriteria($groupe)
     {
-        $sql = "SELECT r.id,r.Nom,r.Prenoms,r.Telephone,f.Code,g.Nom as Groupe FROM App\Entity\Responsable r, App\Entity\ExercerFonction ex, App\Entity\Groupe g, App\Entity\FONCTION f ";
+        $sql = "SELECT r.id,r.Nom,r.Prenoms,r.Telephone,f.Libelle,g.Nom as Groupe FROM App\Entity\Responsable r, App\Entity\ExercerFonction ex, App\Entity\Groupe g, App\Entity\FONCTION f ";
         $sql =$sql."WHERE r.id = ex.Responsable ";
         $sql =$sql."AND r.groupe = g.id ";
         $sql = $sql." AND r.Statut = 1 ";

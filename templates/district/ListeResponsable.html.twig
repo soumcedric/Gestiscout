@@ -46,15 +46,11 @@
                                     <select id="groupe" class="form-control"></select>
 
                             </div>
-
-
-
-
                         </div>
 
+    <br/>
 
-
-                        <div class="text-center">
+                        <div class=" text-center">
                             <button type="submit" class="btn btn-success" id="valider">Rechercher</button>
                             <button type="submit" class="btn btn-danger">Annuler</button>
                         </div>
@@ -82,8 +78,9 @@
                             <th>NOM</th>
                             <th>PRENOMS</th>
                             <th>GROUPE</th>
+                            <th>FONCTION</th>
                             <th>TELEPHONE</th>
-                            <th>CODE</th>
+                            {# <th>CODE</th> #}
 
                         </tr>
                         </thead>
@@ -141,8 +138,9 @@
                     { "data": "NOM" },
                     { "data": "PRENOMS" },
                     { "data": "PAROISSE" },
+                      { "data": "FONCTION" },
                     { "data": "TELEPHONE" },
-                    { "data": "CODE" }
+                  //  { "data": "CODE" }
 
 
                 ],
@@ -231,8 +229,9 @@
                                         "NOM":n.Nom,
                                         "PRENOMS":n.Prenoms ,
                                         "PAROISSE" : n.Groupe,
+                                        "FONCTION": n.Libelle,
                                         "TELEPHONE" :n.Telephone,
-                                        "CODE" : n.Code
+                                        //"CODE" : n.Code
 
 
                                     }]).draw();
