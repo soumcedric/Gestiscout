@@ -640,6 +640,182 @@ class RapportController extends AbstractController
 
 
 
+    #[Route('/ExportResponsableDistrict/{groupe}', name: 'ExportResponsableDistrict')]
+    public function ExportResponsableDistrict(SessionInterface $session, EntityManagerInterface $em, GroupeRepository $repgroupe,string $groupe)
+    {
+        //get selected groupe
+        $selectedGroupe = $repgroupe->findOneBy(["id"=>$groupe]);
+      
+        $query = new QueryClass($em);
+
+        $spreadsheet = new Spreadsheet();
+
+        //localisatio of the file (fr, en ,ru)
+        $validatelocale = \PhpOffice\PhpSpreadsheet\Settings::setlocale('fr');
+        
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1',"LISTE DES CHEFS - ".$selectedGroupe->getNom());
+        $sheet->setCellValue('A3',"ID");
+        $sheet->setCellValue('B3',"NOM");
+        $sheet->setCellValue('C3',"PRENOMS");
+        $sheet->setCellValue('D3',"DATE DE NAISSANCE");
+        $sheet->setCellValue('E3',"OCCUPATION");
+        $sheet->setCellValue('F3',"LIEU D'HABITATION");
+        $sheet->setCellValue('G3',"FONCTION");
+        $sheet->setCellValue('H3',"TELEPHONE");
+       // $sheet->setCellValue('I3',"TELEPHONE");
+
+        $sheet->setTitle("LISTE DES CHEFS");
+
+        $sheet->mergeCells("A1:H1");
+        $sheet->setAutoFilter("A3:H3");
+        //format of title
+        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+                    ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_FILL);
+        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+                    ->getBorders()->getTop(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
+        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+                    ->getBorders()->getBottom(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+                    ->getBorders()->getLeft(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+                    ->getBorders()->getRight(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+
+                    $styleArray = [
+                        'font' => [
+                            'bold' => true,
+                        ],
+                        'alignment' => [
+                            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                        ],
+                        'borders' => [
+                            'top' => [
+                                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE,
+                            ],
+                        ],
+                        'fill' => [
+                            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    
+                            'startColor' => [
+                                'argb' => 'CCE5FF',
+                            ],
+                          
+                        ],
+                    ];
+                    $spreadsheet->getActiveSheet()->getStyle('A1:H1')->applyFromArray($styleArray); 
+                    
+                    
+
+
+
+
+                    $styleheader = [
+                        'font' => [
+                            'bold' => true,
+                        ],
+                        'alignment' => [
+                            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                        ],
+                        'borders' => [
+                            'top' => [
+                                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE,
+                            ],
+                        ],
+                        'fill' => [
+                            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    
+                            'startColor' => [
+                                'argb' => 'CCE5FF',
+                            ],
+                          
+                        ],
+                    ];
+
+                    $spreadsheet->getActiveSheet()->getStyle('A3')->applyFromArray($styleheader); 
+                    $spreadsheet->getActiveSheet()->getStyle('B3')->applyFromArray($styleheader); 
+                    $spreadsheet->getActiveSheet()->getStyle('C3')->applyFromArray($styleheader); 
+                    $spreadsheet->getActiveSheet()->getStyle('D3')->applyFromArray($styleheader); 
+                    $spreadsheet->getActiveSheet()->getStyle('E3')->applyFromArray($styleheader); 
+                    $spreadsheet->getActiveSheet()->getStyle('F3')->applyFromArray($styleheader); 
+                    $spreadsheet->getActiveSheet()->getStyle('G3')->applyFromArray($styleheader); 
+                    $spreadsheet->getActiveSheet()->getStyle('H3')->applyFromArray($styleheader); 
+                   // $spreadsheet->getActiveSheet()->getStyle('I3')->applyFromArray($styleheader); 
+                   // $spreadsheet->getActiveSheet()->getStyle('J3')->applyFromArray($styleArray); 
+                    
+                    
+
+                    //DIMENSION
+                    $sheet->getColumnDimension('A')->setAutoSize(true);
+                    $sheet->getColumnDimension('B')->setAutoSize(true);
+                    $sheet->getColumnDimension('C')->setAutoSize(true);
+                    $sheet->getColumnDimension('D')->setAutoSize(true);
+                    $sheet->getColumnDimension('E')->setAutoSize(true);
+                    $sheet->getColumnDimension('F')->setAutoSize(true);
+                    $sheet->getColumnDimension('G')->setAutoSize(true);
+                    $sheet->getColumnDimension('H')->setAutoSize(true);
+                  //  $sheet->getColumnDimension('I')->setAutoSize(true);
+                   // $sheet->getColumnDimension('A')->setAutoSize(true);
+                    //DIMENSION
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //format of title
+        //write in spreadsheet
+        
+        //get jeune par groupe
+        $chefs = $query->GetListeResponsableByCriteria($groupe);
+       // var_dump($chefs);
+        $row = 4;
+        for ($i=0; $i < count($chefs); $i++) {
+           // var_dump($jeunes[$i]);
+            // for($t=1; $t < count($jeunes[$i]); $t++){
+            //     var_dump($jeunes[$i][$t]);
+            // }
+            $column=1;
+            foreach($chefs[$i] as $k => $jeune){
+                if($k!="Groupe")
+                {
+                    $sheet->setCellValueByColumnAndRow($column,$row,$jeune);
+                  
+                }
+                $column++;
+            }
+            $row++;
+
+           
+          }
+
+
+
+
+        //create the sheet in xlsx format
+        $writer = new Xlsx($spreadsheet);
+
+        //create temporary file
+        $filename = "LISTE CHEFS ".$selectedGroupe->getNom().".xlsx";
+        $temp_file = tempnam(sys_get_temp_dir(),$filename);
+
+        //create the excel file in the tmp directory of the system
+        $writer->save($temp_file);
+
+        //return the excell file in attachment
+        return $this->file($temp_file,$filename,ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        //return new Response("success");
+    }
+
 
 
 

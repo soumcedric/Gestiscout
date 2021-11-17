@@ -270,6 +270,9 @@ ExportResponsableByGroupeToExcelAttachment:
 ExportJeuneDistrict:
     path: /ExportJeuneDistrict/{groupe}/{branche}
     controller: App\Controller\RapportController::ExportJeuneDistrict
+ExportResponsableDistrict:
+    path: /ExportResponsableDistrict/{groupe}
+    controller: App\Controller\RapportController::ExportResponsableDistrict
 
 
 

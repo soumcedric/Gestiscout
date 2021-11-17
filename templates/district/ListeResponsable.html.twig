@@ -70,6 +70,9 @@
                 <h2>Résultat de la recherche</h2>
             </div>
             <div class="body">
+              <div>
+                <button class="btn btn-primary" id="export">Export Excel</button>
+            </div>
                 <div class="table-responsive">
                     <table class="table" id="tbjeune">
                         <thead>
@@ -114,6 +117,7 @@
     <script>
         $(document).ready(function(){
             debugger
+            var groupe = "";
             var table = $("#tbjeune").DataTable({
                 language: {
                     processing: "Traitement en cours...",
@@ -186,15 +190,18 @@
                 }
             });
 
-
+  $("#export").click(function(){
+                debugger
+                window.location.href = "/ExportResponsableDistrict/"+groupe;
+            });
 
 
 
             $("#valider").click(function (){
                 debugger
-                loading();
+               // loading();
                 // let branche = $("#branche").val();
-                let groupe = $("#groupe").val();
+                 groupe = $("#groupe").val();
                 if (groupe == '-1')
                 {
                     swal({
@@ -202,18 +209,19 @@
                         title:"",
                         text:"Veuillez faire un choix correct svp"
                     },function () {
-                        loadingClose();
+                    //    loadingClose();
                     })
                 }
                 else
                 {
+                     //  loadingClose();
                     $.ajax({
                         type:"GET",
                         url:"{{ path("RechercheResponsable") }}",
                         data:{  groupe : groupe},
                         success:function(res){
                             debugger
-                            loadingClose();
+                         //   loadingClose();
                             table.clear().draw();
                             if(res=="")
                             {
@@ -240,7 +248,7 @@
 
                         },
                         error: function(){
-                            loadingClose();
+                           // loadingClose();
                         }
                     });
                 }
