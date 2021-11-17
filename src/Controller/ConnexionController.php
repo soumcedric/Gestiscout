@@ -74,22 +74,11 @@ class ConnexionController extends AbstractController
         $RespoGroupe = $qClass->GetNbreResponsableByGroup(0,(int)$Idgroupe->getId());
 
 
+        $TotalJeuneMasculin = $qClass->GetNbreJeuneByGenreByGroupe($Idgroupe->getId(),'1');
+        $TotalJeuneFeminin = $qClass->GetNbreJeuneByGenreByGroupe($Idgroupe->getId(),'2');
+       
 
 
-        $TotalJeuneMasculin = $qClass->GetNbreJeuneByGenreByGroupe('1',$Idgroupe->getId());
-        $TotalJeuneFeminin = $qClass->GetNbreJeuneByGenreByGroupe('2',$Idgroupe->getId());
-
-
-
-
-
-/*
-        $TotalLouveteau = $this->JeuneLayer->GetJeuneParUnite((int)$Idgroupe->getId(),1);
-        $TotalEclaireur = $this->JeuneLayer->GetJeuneParUnite((int)$Idgroupe->getId(),2);
-        $TotalCheminot = $this->JeuneLayer->GetJeuneParUnite((int)$Idgroupe->getId(),3);
-        $TotalRoutier = $this->JeuneLayer->GetJeuneParUnite((int)$Idgroupe->getId(),4);
-
-*/
 
         $TotalLouveteau = $qClass->GetNbreJeuneByGroupeByBrancheByAnnee($Idgroupe->getId(),1);
         $TotalEclaireur = $qClass->GetNbreJeuneByGroupeByBrancheByAnnee($Idgroupe->getId(),2);
@@ -97,13 +86,6 @@ class ConnexionController extends AbstractController
         $TotalRoutier = $qClass->GetNbreJeuneByGroupeByBrancheByAnnee($Idgroupe->getId(),4);
 
 
-
-
-
-        //  dump($TotalLouveteau);
-        //  dump($TotalEclaireur);
-        //  dump($TotalCheminot);
-        //  dump($TotalRoutier);
 
 
         //get info groupe
@@ -126,10 +108,10 @@ class ConnexionController extends AbstractController
         
 
         //nombre de chef cotisé par groupe
-        $TotalChefCotiseGroupe = $qClass->GetNbreResponsableCotiseParGroupe((int)$ActiveYEar[0]->getId(),$groupe[0]->getId());
+        $TotalChefCotiseGroupe = $qClass->GetNbreResponsableCotiseParGroupe($groupe[0]->getId());
 
         //nombre de jeune cotisé par groupe
-        $TotalJeuneCotiseGroupe = $qClass->GetNbreJeuneCotiseParGroupe((int)$ActiveYEar[0]->getId(),$groupe[0]->getId());
+        $TotalJeuneCotiseGroupe = $qClass->GetNbreJeunesCotiseParGroupe($groupe[0]->getId());
 
         $nbreCotiseLouveteau = $qClass->GetNbreJeuneCotiseByCriteria($groupe[0]->getId(),1);
         $nbreCotiseEclaireur = $qClass->GetNbreJeuneCotiseByCriteria($groupe[0]->getId(),2);
