@@ -50,7 +50,11 @@
             <h2 class="text-center">Liste des jeunes</h2>
         </div>
         <div class="body">
+        <div class="row">
+                <a class="btn btn-primary" type="button" id="exportexcel" href="{{"ExportJeuneByGroupeToExcelAttachment"}}">Export Excel</a>
+            </div>
             <div class="table-responsive">
+            
                 <table class="table dataTable js-exportable" id="tbjeune">
                     <thead>
                         <tr>
@@ -58,6 +62,7 @@
                             <th>NOM</th>
                             <th>PRENOMS</th>
                             <th>DATE DE NAISSANCE</th>
+                            <th>BRANCHE</th>
                             <th>TELEPHONE</th>
                             <th>ACTION</th>
                         </tr>
@@ -210,6 +215,7 @@
               { "data": "NOM" },
               { "data": "PRENOMS" },
               { "data": "DOB" },
+              { "data": "BRANCHE" },
               { "data": "TELEPHONE" },
               { "data": "ACTION" }
           ],
@@ -218,31 +224,31 @@
                   targets: 0,
                   visible: false
               }],
-            dom:'Bfrtip',
-            buttons: [
+           // dom:'Bfrtip',
+            // buttons: [
 
-                {
-                    extend: 'print',
-                    text:'Imprimer',
-                    messageTop: function () {
-                        return 'LISTE DES JEUNES'
-                    },
-                    messageBottom: null
-                },
-                {
-                    extend: 'pdfHtml5',
-                    orientation: 'portrait',
-                    pageSize: 'LEGAL',
-                    title:'Liste des Jeunes',
-                    exportOptions:{
-                        columns:[0,1,2,3,4]
-                    },
-                    // customize: function(doc) {
-                    //     doc.content[1].margin = [ 100, 0, 100, 0 ] //left, top, right, bottom
-                    // }
-                }
+            //     {
+            //         extend: 'print',
+            //         text:'Imprimer',
+            //         messageTop: function () {
+            //             return 'LISTE DES JEUNES'
+            //         },
+            //         messageBottom: null
+            //     },
+            //     {
+            //         extend: 'pdfHtml5',
+            //         orientation: 'portrait',
+            //         pageSize: 'LEGAL',
+            //         title:'Liste des Jeunes',
+            //         exportOptions:{
+            //             columns:[0,1,2,3,4]
+            //         },
+            //         // customize: function(doc) {
+            //         //     doc.content[1].margin = [ 100, 0, 100, 0 ] //left, top, right, bottom
+            //         // }
+            //     }
 
-            ],
+            // ],
           data: [],
           rowCallback: function (row, data) { },
           filter: true,
@@ -305,6 +311,7 @@
                             "NOM":n.nom,
                             "PRENOMS":n.prenoms ,
                             "DOB": convertDate(n.dob),
+                            "BRANCHE": n.branche,
                             "TELEPHONE" :n.telephone,
                             "ACTION" :"<a id='update'><span><i class='fa fa-pencil fa-2x'></i></span></a><a id='consult'><span><i class='fa fa-eye fa-2x'></i></span></a><a id='delete'><span><i class='fa fa-trash fa-2x'></i></span></a>"
 
@@ -554,6 +561,7 @@ debugger
         });
 
 
+   
     });
 </script>
 {% endblock %}
