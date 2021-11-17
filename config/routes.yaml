@@ -264,5 +264,8 @@ ExportToExcelAttachment:
 ExportJeuneByGroupeToExcelAttachment:
     path: /ExportJeuneByGroupeToExcelAttachment
     controller: App\Controller\RapportController::ExportJeuneByGroupeToExcelAttachment
+ExportResponsableByGroupeToExcelAttachment:
+    path: /ExportResponsableByGroupeToExcelAttachment
+    controller: App\Controller\RapportController::ExportResponsableByGroupeToExcelAttachment
 
 
