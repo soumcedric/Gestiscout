@@ -357,23 +357,23 @@ class QueryClass
         return $res;
     }
 
-    public  function GetNbreResponsableCotiseParGroupe($year,$groupe) : int
-    {
-       $sql = "SELECT COUNT(r.id) FROM ";
-       $sql = $sql."App\Entity\Responsable r,";
-       $sql = $sql."App\Entity\ExercerFonction ex ";
-       $sql = $sql."WHERE r.id = ex.Responsable ";
-       $sql = $sql."AND r.Statut = 1 ";
-       $sql = $sql."AND r.groupe = :groupe ";
-        $sql = $sql."AND ex.AnneePastorale = :year ";
-       $sql = $sql." and r.id in (SELECT IDENTITY(co.Responsable) FROM App\Entity\Cotisation co) ";
+    // public  function GetNbreResponsableCotiseParGroupe($year,$groupe) : int
+    // {
+    //    $sql = "SELECT COUNT(r.id) FROM ";
+    //    $sql = $sql."App\Entity\Responsable r,";
+    //    $sql = $sql."App\Entity\ExercerFonction ex ";
+    //    $sql = $sql."WHERE r.id = ex.Responsable ";
+    //    $sql = $sql."AND r.Statut = 1 ";
+    //    $sql = $sql."AND r.groupe = :groupe ";
+    //     $sql = $sql."AND ex.AnneePastorale = :year ";
+    //    $sql = $sql." and r.id in (SELECT IDENTITY(co.Responsable) FROM App\Entity\Cotisation co) ";
 
-       $query = $this->em->createQuery($sql);
-       $query->setParameter('year',$this->activeYear);
-       $query->setParameter('groupe', $groupe);
-       $res = $query->getSingleScalarResult();
-       return $res;
-    }
+    //    $query = $this->em->createQuery($sql);
+    //    $query->setParameter('year',$this->activeYear);
+    //    $query->setParameter('groupe', $groupe);
+    //    $res = $query->getSingleScalarResult();
+    //    return $res;
+    // }
 
 
     public  function GetNbreJeuneCotiseParGroupe($year,$groupe) : int
@@ -597,6 +597,25 @@ class QueryClass
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
+    }
+
+    public function GetNbreResponsableCotiseParGroupe($groupe)
+    {
+        $conn = $this->em->getConnection();
+        $sql = "call gestiscoutdb.SP_GET_NBRE_RESPO_COTISE_PAR_GROUPE('".$this->activeYear->getId()."','".$groupe."');";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchOne();
+    }
+
+
+    public function GetNbreJeunesCotiseParGroupe($groupe)
+    {
+        $conn = $this->em->getConnection();
+        $sql = "call gestiscoutdb.SP_GET_NBRE_JEUNES_COTISE_PAR_GROUPE('".$this->activeYear->getId()."','".$groupe."');";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchOne();
     }
 
 }
