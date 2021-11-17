@@ -401,7 +401,7 @@ class QueryClass
     /*----------------------- debut requete district -----------------------------*/
         public  function GetListeJeuneByCriteria($groupe,$branche)
         {
-            $sql="SELECT j.id, j.Nom,j.Prenoms,j.Dob,j.Telephone,g.Nom as nomgroupe FROM App\Entity\JEUNE j,App\Entity\Groupe g, App\Entity\INSCRIPTION i, App\Entity\Branche b ";
+            $sql="SELECT j.id, j.Nom,j.Prenoms,j.Dob,j.Occupation,g.Nom as nomgroupe,j.Telephone FROM App\Entity\JEUNE j,App\Entity\Groupe g, App\Entity\INSCRIPTION i, App\Entity\Branche b ";
             $sql=$sql." WHERE j.Groupe = g.id";
             $sql = $sql." AND j.id = i.Jeunes ";
             $sql = $sql." AND j.branche = b.id ";

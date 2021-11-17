@@ -80,6 +80,9 @@
                 <h2>Résultat de la recherche</h2>
             </div>
             <div class="body">
+            <div>
+                <button class="btn btn-primary" id="export">Export Excel</button>
+            </div>
                 <div class="table-responsive">
                     <table class="table" id="tbjeune">
                         <thead>
@@ -129,6 +132,8 @@
     <script>
         $(document).ready(function(){
             debugger
+            var groupe="";
+            var branche="";
             var table = $("#tbjeune").DataTable({
                 language: {
                     processing: "Traitement en cours...",
@@ -222,9 +227,11 @@
 
             $("#valider").click(function (){
                 debugger
+                groupe = "";
+                branche="";
                 loading();
-                let branche = $("#branche").val();
-                let groupe = $("#groupe").val();
+                 branche = $("#branche").val();
+                 groupe = $("#groupe").val();
                 if ( branche=='-1' || groupe=='-1')
                 {
 
@@ -282,6 +289,12 @@
 
 
             });
+
+            $("#export").click(function(){
+                debugger
+                window.location.href = "/ExportJeuneDistrict/"+groupe+"/"+branche;
+            });
+
         });
     </script>
 {% endblock %}
