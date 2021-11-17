@@ -255,5 +255,14 @@ GetGroupeUnique:
 UpdateGroupe:
     path: /UpdateGroupe
     controller: App\Controller\ConfigurationController::UpdateGroupe
+ExportToExcel:
+    path: /ExportToExcel
+    controller: App\Controller\RapportController::ExportToExcel
+ExportToExcelAttachment:
+    path: /ExportToExcelAttachment
+    controller: App\Controller\RapportController::ExportToExcelAttachment
+ExportJeuneByGroupeToExcelAttachment:
+    path: /ExportJeuneByGroupeToExcelAttachment
+    controller: App\Controller\RapportController::ExportJeuneByGroupeToExcelAttachment
 
 
