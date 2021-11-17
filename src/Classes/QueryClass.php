@@ -544,10 +544,36 @@ class QueryClass
     {
         $conn = $this->em->getConnection();
         $sql = "call gestiscoutdb.SP_GET_RESPONSABLES_NON_COTISE_PAR_GROUPE('".$this->activeYear->getId()."','".$groupe."');";
+
+    public function GetNbreJeuneByGroupeByBrancheByAnnee($groupe,$branche)
+    {
+        $conn = $this->em->getConnection();
+        $sql = "call gestiscoutdb.SP_GET_NBRE_JEUNE_BY_GROUPE_BRANCHE('".$groupe."','".$this->activeYear->getId()."','".$branche."');";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchOne();
+    }
+
+    public function GetNbreJeuneByGenreByGroupe($genre,$groupe)
+    {
+        $conn = $this->em->getConnection();
+        $sql = "call gestiscoutdb.SP_GET_NBRE_JEUNE_BY_GROUPE_BY_GENRE_BY_ANNEE('".$genre."','".$this->activeYear->getId()."','".$groupe."');";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchOne();
+    }
+
+
+    public function GetListeJeuneNonCotise($groupe)
+    {
+        $conn = $this->em->getConnection();
+        $sql = "call gestiscoutdb.SP_GET_JEUNES_NON_COTISE_PAR_GROUPE('".$groupe."','".$this->activeYear->getId()."');";
+
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
     }
+
 
     
   
@@ -594,6 +620,12 @@ class QueryClass
     {
         $conn = $this->em->getConnection();
         $sql = "call gestiscoutdb.SP_GET_RESPONSABLES_COTISES('".$this->activeYear->getId()."','".$groupe."');";
+
+    public function GetListeJeuneCotiseParGroupe($groupe)
+    {
+        $conn = $this->em->getConnection();
+        $sql = "call gestiscoutdb.SP_GET_JEUNES_COTISES('".$groupe."','".$this->activeYear->getId()."');";
+ 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
