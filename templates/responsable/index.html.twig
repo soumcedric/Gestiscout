@@ -52,6 +52,9 @@
                 <h2 class="text-center">Liste des responsables</h2>
             </div>
             <div class="body">
+            <div class="row">
+                <a class="btn btn-primary" href="{{path("ExportResponsableByGroupeToExcelAttachment")}}">Export Excel</a>
+            </div>
                 <div class="table-responsive">
                     <table class="table" id="tbrespo">
                         <thead class="thead-light">
@@ -273,36 +276,36 @@
                     { "data": "FONCTION" },
                     { "data": "ACTION" }
                 ],
-                // columnDefs: [
+                columnDefs: [
+                    {
+                        targets: 0,
+                        visible: false
+                    }],
+                // dom:'Bfrtip',
+                // buttons: [
+
                 //     {
-                //         targets: 0,
-                //         visible: false
-                //     }],
-                dom:'Bfrtip',
-                buttons: [
+                //         extend: 'print',
+                //         text:'Imprimer',
+                //         messageTop: function () {
+                //             return 'Liste des responsables'
+                //         },
+                //         messageBottom: null
+                //     },
+                //     {
+                //         extend: 'pdfHtml5',
+                //         orientation: 'portrait',
+                //         pageSize: 'LEGAL',
+                //         title:'Liste des Responsables',
+                //         exportOptions:{
+                //             columns:[0,1,2,3,4]
+                //         },
+                //         customize: function(doc) {
+                //             //doc.content[1].margin = [ 100, 0, 100, 0 ] //left, top, right, bottom
+                //         }
+                //     }
 
-                    {
-                        extend: 'print',
-                        text:'Imprimer',
-                        messageTop: function () {
-                            return 'Liste des responsables'
-                        },
-                        messageBottom: null
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        orientation: 'portrait',
-                        pageSize: 'LEGAL',
-                        title:'Liste des Responsables',
-                        exportOptions:{
-                            columns:[0,1,2,3,4]
-                        },
-                        customize: function(doc) {
-                            //doc.content[1].margin = [ 100, 0, 100, 0 ] //left, top, right, bottom
-                        }
-                    }
-
-                ],
+                // ],
                 data: [],
                 rowCallback: function (row, data) { },
                 filter: true,

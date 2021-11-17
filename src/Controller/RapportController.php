@@ -447,7 +447,7 @@ class RapportController extends AbstractController
         $writer = new Xlsx($spreadsheet);
 
         //create temporary file
-        $filename = "LISTE CHEFS".$groupe->getNom().".xlsx";
+        $filename = "LISTE CHEFS ".$groupe->getNom().".xlsx";
         $temp_file = tempnam(sys_get_temp_dir(),$filename);
 
         //create the excel file in the tmp directory of the system
