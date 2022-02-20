@@ -1,0 +1,267 @@
+{% extends 'base_district.html.twig' %}
+
+{% block titre %}FORMATION {% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
+{% endblock %}
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+    <div class="container-fluid">
+           
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="header">
+                        <h2 class="text-center">LISTE DES CHEFS PAR STAGE DE FORMATION</h2>
+                    </div>
+                    <div class="body">
+                        <div class="row">
+                      <div class="col-md-6">
+                      <input type="hidden" id="idget" value=""/>
+                            <div class="form-group">
+                                <label>Stage</label>
+                               <select class="form-control" id="selformation"></select>
+                                {# <input type="hidden" id="idAnnee"> #}
+                            </div>
+                         
+                           
+                      </div>
+                  
+                      <div class="col-md-6">
+                       
+                      
+                        <div class="form-group">
+                            <label>Groupe</label>
+                           <select class="form-control" id="selgroupe"></select>
+                        </div>
+                       
+                
+                
+                
+                  </div>
+                        </div>
+                        <div class="text-center"> 
+                            <button type="submit" class="btn btn-success" id="valider">Valider</button>
+                            <button type="submit" class="btn btn-primary" id="btnupdate">Modifier</button>
+                            <button type="submit" class="btn btn-danger" id="annuler">Annuler</button>
+                        </div>
+                            
+                        
+                    </div>
+                </div>
+            </div>
+          
+        </div>
+        
+    </div>
+    
+<div class="col-lg-12">
+    <div class="card">
+        <div class="header">
+            <h2 class="text-center">Liste des chefs</h2>
+        </div>
+        <div class="body">
+            <div class="table-responsive">
+                <table class="table" id="tbchef">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom & Prénoms</th>
+                            <th>Date de naissance</th>
+                            <th>Groupe</th>
+                            <th>Stage actuel</th>
+                            {# <th>ACTION</th> #}
+                        </tr>
+                    </thead>
+                   <tbody>
+
+                   </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+
+<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
+
+
+    <script src="{{ asset("assets/bundles/datatablescripts.bundle.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/dataTables.buttons.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.bootstrap4.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.colVis.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.html5.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.print.min.js") }}"></script>
+<script>
+    $(document).ready(function(){
+        debugger
+        $("#btnupdate").hide();
+      var table = $("#tbchef").DataTable({
+          language: {
+              processing: "Traitement en cours...",
+              search: "Rechercher&nbsp;:",
+              lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
+              info: "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+              infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+              infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+              infoPostFix: "",
+              loadingRecords: "Chargement en cours...",
+              zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
+              emptyTable: "Aucune donnée disponible dans le tableau",
+              paginate: {
+                  first: "Premier",
+                  previous: "Pr&eacute;c&eacute;dent",
+                  next: "Suivant",
+                  last: "Dernier"
+              }
+          },
+          columns: [
+              { "data": "ID" },
+              { "data": "NOM" },
+              { "data": "DOB" },
+              { "data": "GROUPE" },
+              { "data": "STAGE" },
+            //   { "data": "ACTION" }
+          ],
+          columnDefs: [
+              {
+                  targets: 0,
+                  visible: false
+              }],
+          data: [],
+          rowCallback: function (row, data) { },
+          filter: true,
+          info: true,
+          ordering: false,
+          processing: false,
+          retrieve: true
+      });
+
+
+
+
+$("#valider").click(function(){
+    debugger
+    var stage = $("#selformation").val();
+    var groupe = $("#selgroupe").val();
+    $.get("{{path('ListeChefByChef')}}",{"groupe":groupe, "stage":stage},function(res){
+        if (res.ok == true) {
+            debugger
+            table.clear().draw();
+            $.each(res.data, function(i,n){
+                debugger
+                var date = convertDate(n.dob)
+                table.rows.add([{
+                    "ID" : n.id,
+                    "NOM" :n.nom+" "+n.prenoms,
+                    "DOB" :date,
+                    "GROUPE" :n.paroisse,
+                    "STAGE" :n.libelle,
+                    // "ACTION" :""
+                }]).draw();
+            });
+        }
+    });
+});
+
+
+ function convertDate(dateToConvert){
+         var dateAr = dateToConvert.split('-');
+       
+        var newDate =  dateAr[2].substring(0,2)  + '-' + dateAr[1]+ '-' + dateAr[0];
+        return newDate;
+     }
+
+GetListGroupe();
+loadFormation();
+function convertDate(dateToConvert){
+         var dateAr = dateToConvert.split('-');
+       
+        var newDate =  dateAr[2].substring(0,2)  + '-' + dateAr[1]+ '-' + dateAr[0];
+        return newDate;
+     }
+
+
+function convertDateEnglish(dateToConvert){
+         var dateAr = dateToConvert.split('-');
+         var newDate =dateAr[0]+"-"+dateAr[1]+"-"+dateAr[2].substring(0,2);
+         return newDate;
+     }
+
+
+    function GetListGroupe(){
+           $.ajax({
+                type:"GET",
+                url:"{{ path("GetListGroupe")}}",
+                success:function(resp){
+                    debugger
+                    $("#selgroupe").empty();
+                    var defaultline = "<option selected=selected value='-1'>---selectionner groupe---</option>";
+                    $("#selgroupe").append(defaultline);
+                     var lineall = "<option value='TOUT'>TOUT</option>";
+                    $("#selgroupe").append(lineall);
+                    //var liste = JSON.parse(resp);
+                    $.each(resp.data,function(i,n){
+                        debugger
+                        var line = "<option value="+n.id+">"+n.Nom+"</option>";
+                        $("#selgroupe").append(line);
+
+                    });
+                }
+            });
+
+    }
+
+
+
+
+ function loadFormation(){
+                $.ajax({
+                    type:"GET",
+                    url:"{{ path("GetListeFormation") }}",
+                    success:function(res){
+                        debugger
+                        var liste = JSON.parse(res.data);
+                        if (liste.length>0){
+                            $("#selformation").empty();
+                            var defaultline="<option value=0 selected>---Choisir une formation---</option>";
+                            $("#selformation").append(defaultline);
+
+                        
+                            var lineall="<option value='TOUT'>TOUT</option>";
+                            $("#selformation").append(lineall);
+                            $.each(liste,function(i,n) {
+                                debugger
+                                var option = "<option value="+n.id+">"+n.libelle+"</option>";
+                                $("#selformation").append(option);
+                            });
+                        }else{
+
+                        }
+
+                            },
+                    error:function(){
+
+                    }
+
+                });
+            }
+
+
+
+
+
+
+
+
+    });
+</script>
+{% endblock %}

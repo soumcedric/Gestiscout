@@ -129,6 +129,17 @@ class Responsable
      */
     private $Maitrises;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Formation::class, mappedBy="responsable",cascade={"persist","remove"})
+     * @Groups({"show_chef"})
+     */
+    private $formations;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ResponsableFormation::class, mappedBy="responsable_id",cascade={"persist","remove"})
+     */
+    private $responsableFormations;
+
 
 
 //    /**
@@ -152,6 +163,8 @@ class Responsable
     {
         $this->exercerFonctions = new ArrayCollection();
         $this->Maitrises = new ArrayCollection();
+        $this->formations = new ArrayCollection();
+        $this->responsableFormations = new ArrayCollection();
     }
 
 
@@ -462,6 +475,63 @@ public function removeMaitrise(MAITRISE $maitrise): self
         // set the owning side to null (unless already changed)
         if ($maitrise->getRelation() === $this) {
             $maitrise->setRelation(null);
+        }
+    }
+
+    return $this;
+}
+
+/**
+ * @return Collection|Formation[]
+ */
+public function getFormations(): Collection
+{
+    return $this->formations;
+}
+
+public function addFormation(Formation $formation): self
+{
+    if (!$this->formations->contains($formation)) {
+        $this->formations[] = $formation;
+        $formation->addResponsable($this);
+    }
+
+    return $this;
+}
+
+public function removeFormation(Formation $formation): self
+{
+    if ($this->formations->removeElement($formation)) {
+        $formation->removeResponsable($this);
+    }
+
+    return $this;
+}
+
+/**
+ * @return Collection|ResponsableFormation[]
+ */
+public function getResponsableFormations(): Collection
+{
+    return $this->responsableFormations;
+}
+
+public function addResponsableFormation(ResponsableFormation $responsableFormation): self
+{
+    if (!$this->responsableFormations->contains($responsableFormation)) {
+        $this->responsableFormations[] = $responsableFormation;
+        $responsableFormation->setResponsableId($this);
+    }
+
+    return $this;
+}
+
+public function removeResponsableFormation(ResponsableFormation $responsableFormation): self
+{
+    if ($this->responsableFormations->removeElement($responsableFormation)) {
+        // set the owning side to null (unless already changed)
+        if ($responsableFormation->getResponsableId() === $this) {
+            $responsableFormation->setResponsableId(null);
         }
     }
 

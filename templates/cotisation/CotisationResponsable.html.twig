@@ -177,7 +177,7 @@
             debugger
             loadData();
             function loadData(){
-                loading();
+               // loading();
                 $.ajax({
                     type:"GET",
                     url:"{{ path("GetListeRespoNonCotise")}}",
@@ -185,7 +185,7 @@
                         debugger
                         if(resp.ok==false){
                         //   var dd= table.language.zeroRecords
-                            loadingClose();
+                            //loadingClose();
                             table.clear().draw();
                             swal({
                                 title:'',
@@ -195,7 +195,7 @@
                         else
                         {
                             debugger
-                            loadingClose();
+                            //loadingClose();
                             table.clear().draw();
                             var liste = JSON.parse(resp.data);
                             $.each(liste,function(i,n){
@@ -250,10 +250,10 @@
             $("#saveCotisation").click(function(){
                 debugger
                 $("#modalmodif").modal('hide');
-                loading();
+                //loading();
                 var matricule = $("#matricule").val();
                 if (matricule==""){
-                    loadingClose();
+                    //loadingClose();
                     swal({
                         title:"",
                         type:"warning",
@@ -268,7 +268,7 @@
                         success:function(res){
 debugger
                             if (res=="success"){
-                                loadingClose();
+                                //loadingClose();
                                 swal({
                                     title : "",
                                     type:"success",
@@ -299,12 +299,12 @@ debugger
 
             function loading()
             {
-                $('.modal_load').modal('show');
+                //$('.modal_load').modal('show');
 
             }
             function loadingClose()
             {
-                $('.modal_load').modal('hide');
+                //$('.modal_load').modal('hide');
 
             }
 

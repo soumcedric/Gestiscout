@@ -1,0 +1,177 @@
+{% extends 'base_district.html.twig' %}
+
+{% block titre %}ANNEE PASTORALE {% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
+{% endblock %}
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+    <div class="container-fluid">
+           
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="header">
+                        <h2 class="text-center">CONFIGURER LES FORMATIONS</h2>
+                    </div>
+                    <div class="body">
+                    <input type="hidden" id="idgroupe" />
+                        <div class="row">
+                      <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Libelle</label>
+                                <input type="text" class="form-control" required id="Libelle" placeholder="Libelle de la formation">
+                            </div>
+                      </div>
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label>Ordre</label>
+                                <input type="int" class="form-control" required id="Ordre" placeholder="ordre de la formation">
+                            </div>
+
+                        </div>
+
+                    </div>
+               
+               
+
+                        <div class="text-center"> 
+                            <button type="submit" class="btn btn-success" id="valider">Valider</button>
+                            <button type="submit" class="btn btn-primary" id="modifier">Modifier</button>
+                            <button type="submit" class="btn btn-danger" id="btnannuler">Annuler</button>
+                        </div>
+                            
+                        
+                    </div>
+                </div>
+            </div>
+          
+        </div>
+        
+    </div>
+    
+<div class="col-lg-12">
+    <div class="card">
+        <div class="header">
+            <h2 class="text-center">Liste des formations</h2>
+        </div>
+        <div class="body">
+            <div class="table-responsive">
+                <table class="table" id="tbFonction">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>LIBELLE</th>
+                            <th>ORDRE</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                   <tbody>
+
+                   </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
+<script>
+    $(document).ready(function(){
+        debugger
+        $("#modifier").hide();
+      var table = $("#tbFonction").DataTable({
+          language: {
+              processing: "Traitement en cours...",
+              search: "Rechercher&nbsp;:",
+              lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
+              info: "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+              infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+              infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+              infoPostFix: "",
+              loadingRecords: "Chargement en cours...",
+              zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
+              emptyTable: "Aucune donnée disponible dans le tableau",
+              paginate: {
+                  first: "Premier",
+                  previous: "Pr&eacute;c&eacute;dent",
+                  next: "Suivant",
+                  last: "Dernier"
+              }
+          },
+          columns: [
+              { "data": "ID" },
+              { "data": "LIBELLE" },
+              { "data": "ORDRE" },
+              { "data": "ACTION" }
+          ],
+          // columnDefs: [
+          //     {
+          //         targets: 0,
+          //         visible: false
+          //     }],
+          data: [],
+          rowCallback: function (row, data) { },
+          filter: true,
+          info: true,
+          ordering: false,
+          processing: false,
+          retrieve: true
+      });
+    loadData();
+    function loadData(){
+        $.ajax({
+            type:"GET",
+            url:"{{path("GetListeFormation")}}",
+            success:function(res){
+                debugger
+                var data = JSON.parse(res.data);
+                $.each(data,function(i,n){
+                    table.rows.add([{
+                        "ID": n.id,
+                        "LIBELLE": n.libelle,
+                        "ORDRE":n.ordre,
+                        "ACTION":"<a><span><i class='fa fa-trash fa-2x'></i></span></a><a id='btnupdate'><span><i class='fa fa-pencil fa-2x'></i></span></a><a id='btnconsult'><span><i class='fa fa-eye fa-2x'></i></span></a>"
+                    }]).draw();
+                });
+            }
+        })
+    }
+        $("#valider").click(function(){
+            var Formation ={
+                Libelle:$("#Libelle").val(),
+                Ordre: $("#Ordre").val()
+            };
+
+            $.ajax({
+                type:"POST",
+                url:"{{path("AddFormation")}}",
+                data:{"value": Formation },
+                success:function(res){
+                    if(res.ok == true){
+                        swal({
+                                    title:"FORMATION",
+                                    type:"success",
+                                    text:"Opération effectuée avec succès"
+                                });
+                    }
+                }
+            });
+        });
+
+
+
+    });
+</script>
+{% endblock %}

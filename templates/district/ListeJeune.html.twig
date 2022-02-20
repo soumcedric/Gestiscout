@@ -92,7 +92,9 @@
                             <th>PRENOMS</th>
 
                             <th>GROUPE</th>
+                              <th>BRANCHE</th>
                             <th>TELEPHONE</th>
+                           
 {#                            <th>ACTION</th>#}
                         </tr>
                         </thead>
@@ -159,6 +161,7 @@
                     { "data": "PRENOMS" },
                   //  { "data": "DATE DE NAISSANCE" },
                     { "data": "GROUPE" },
+                     { "data": "BRANCHE" },
                     { "data": "TELEPHONE" },
                     // { "data": "ACTION" }
                 ],
@@ -194,6 +197,10 @@
                     $("#brache").empty();
                     var defaultline = "<option selected='selected' value='-1'>---selectionner branche---</option>";
                     $("#branche").append(defaultline);
+
+
+                     var defaultline1 = "<option value=0>toute les branches</option>";
+                    $("#branche").append(defaultline1);
                     var liste = JSON.parse(resp);
                     $.each(liste,function(i,n){
                         debugger
@@ -211,8 +218,8 @@
                     $("#groupe").empty();
                     var defaultline = "<option selected=selected value='-1'>---selectionner groupe---</option>";
                     $("#groupe").append(defaultline);
-                    var liste = JSON.parse(resp);
-                    $.each(liste,function(i,n){
+                    //var liste = JSON.parse(resp);
+                    $.each(resp.data,function(i,n){
                         debugger
                         var line = "<option value="+n.id+">"+n.Nom+"</option>";
                         $("#groupe").append(line);
@@ -272,6 +279,7 @@
                                         "NOM":n.Nom,
                                         "PRENOMS":n.Prenoms ,
                                         "GROUPE": n.nomgroupe,
+                                        "BRANCHE": n.Libelle,
                                         "TELEPHONE" :n.Telephone
 
 

@@ -83,7 +83,7 @@
                             <th>GROUPE</th>
                             <th>FONCTION</th>
                             <th>TELEPHONE</th>
-                            {# <th>CODE</th> #}
+                            <th>FORMATION</th>
 
                         </tr>
                         </thead>
@@ -144,7 +144,7 @@
                     { "data": "PAROISSE" },
                       { "data": "FONCTION" },
                     { "data": "TELEPHONE" },
-                  //  { "data": "CODE" }
+                    { "data": "FORMATION" }
 
 
                 ],
@@ -180,8 +180,8 @@
                     $("#groupe").empty();
                     var defaultline = "<option selected value='-1'>---selectionner groupe---</option>";
                     $("#groupe").append(defaultline);
-                    var liste = JSON.parse(resp);
-                    $.each(liste,function(i,n){
+                   // var liste = JSON.parse(resp);
+                    $.each(resp.data,function(i,n){
                         debugger
                         var line = "<option value="+n.id+">"+n.Nom+"</option>";
                         $("#groupe").append(line);
@@ -239,7 +239,7 @@
                                         "PAROISSE" : n.Groupe,
                                         "FONCTION": n.Libelle,
                                         "TELEPHONE" :n.Telephone,
-                                        //"CODE" : n.Code
+                                        "FORMATION" : n.Formation
 
 
                                     }]).draw();

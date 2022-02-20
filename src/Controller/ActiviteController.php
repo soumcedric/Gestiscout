@@ -75,8 +75,8 @@ class ActiviteController extends AbstractController
                   ->setDateFin(new \DateTime($data["DateFin"]))
                   ->setHeureDebut(new \DateTime($data["HeureDebut"]))
                   ->setHeureFin((new DateTime($data["HeureFin"])))
-                  ->setStatut($data["Statut"])
-                  ->setAutorisation($data["Autorisation"])
+                  ->setStatut(0)
+                  //->setAutorisation($data["Autorisation"])
                   ->setNbreParticipant($data["NbreParticipant"]);
                  // ->setGroupe($data["Groupe"])
                   //->setBranche($data["Branche"]);

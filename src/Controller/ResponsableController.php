@@ -19,9 +19,10 @@ use App\Repository\FONCTIONRepository;
 use App\Entity\Responsable;
 use App\Entity\ExercerFonction;
 use App\Entity\AnneePastorale;
-
-
-
+use App\Repository\FormationRepository;
+use App\Repository\ResponsableFormationRepository;
+use App\Entity\ResponsableFormation;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -60,10 +61,6 @@ class ResponsableController extends AbstractController
         $qCls = new QueryClass($this->em);
         $id = $groupe->getId();
         $ListResponsable =$qCls->GetResponsableActifByGroupe($id);
-       
-
-
-
         $result = $serializer->serialize($ListResponsable,'json',   ['groups' => 'show_chef']);
         return new Response($result,200);
 
@@ -95,7 +92,7 @@ class ResponsableController extends AbstractController
 
 
     #[Route('/AddResponsable', name: 'AddResponsable')]
-    public function AddResponsable(GenreRepository $genrerepo,SessionInterface $session,Request $value,ResponsableRepository $repoRespo, FONCTIONRepository $repoFonction, AnneePastoraleRepository $repoAnnee,GroupeRepository  $groupeRepo)
+    public function AddResponsable(GenreRepository $genrerepo,SessionInterface $session,Request $value,ResponsableRepository $repoRespo, FONCTIONRepository $repoFonction, AnneePastoraleRepository $repoAnnee,GroupeRepository  $groupeRepo, FormationRepository $formrepo, ResponsableFormationRepository $rfrepo)
     {
 
         try
@@ -115,7 +112,14 @@ class ResponsableController extends AbstractController
                 $id =  $lastid[0]->getId()+1;
             }
             $fromJson=$value->request->get('value');
-          
+            //get formation
+            $formation = $formrepo->findOneBy(['id'=>$fromJson["formation"]]);
+
+
+             //new responsable formation
+             $responsableformation = new ResponsableFormation();
+             $responsableformation->setFormationId($formation)
+                                  ->setDatecreation(new \DateTime());
             if ($fromJson['groupe'] == null){
 
                 $groupeId= $session->get('groupeid');
@@ -124,6 +128,8 @@ class ResponsableController extends AbstractController
                 $ExerciceFonction = new ExercerFonction();
                 $idFonction = $fromJson["fonction"];
                 $genre =  $genrerepo->findOneBy(["id"=>$fromJson["genre"]]);
+              
+               
 
                 $date = new \DateTime($fromJson["dob"]);
                 $responsable->setNom($fromJson["nom"])
@@ -138,9 +144,14 @@ class ResponsableController extends AbstractController
                     ->setUserCreation("Admin")
                     ->setUserModification("Admin")
                     ->setStatut(1)
+                   // ->addFormation($formation)
+                 //  ->addResponsableFormation($responsableformation)
                     ->setGroupe($connectedGroupe[0]);
+                    $responsableformation->setResponsableId($responsable);
 
+                    $responsable->addResponsableFormation($responsableformation);
                 $fonction = $repoFonction->findById($idFonction);
+
                 $anneePastorale = $repoAnnee->findActiveYear();
                 $ExerciceFonction->setFonction($fonction[0])
                     ->setAnneePastorale($anneePastorale[0])
@@ -177,7 +188,16 @@ class ResponsableController extends AbstractController
                     ->setUserCreation("Admin")
                     ->setUserModification("Admin")
                     ->setStatut(1)
+                 //   ->addFormation($formation)
+                     //->addResponsableFormation($responsableformation)
                     ->setGroupe($chosenGroup);
+
+
+
+                    $responsableformation->setResponsableId($responsable);
+                    $responsable->addResponsableFormation($responsableformation);
+
+
 
                 $fonction = $repoFonction->findById($idFonction);
                 $anneePastorale = $repoAnnee->findActiveYear();
@@ -204,7 +224,7 @@ class ResponsableController extends AbstractController
         }
         catch (\Exception $e)
         {
-            //var_dump($e);
+            
            return  new \Symfony\Component\HttpFoundation\Response(false,200);
         }
 
@@ -230,77 +250,175 @@ class ResponsableController extends AbstractController
     #[Route('/GetRespoUnique', name: 'GetRespoUnique')]
     public function GetRespoUnique(ResponsableRepository $repo, ExercerFonctionRepository $repoExercer, Request $request, SerializerInterface $serializer, AnneePastoraleRepository $repoAnnee){
         $id = $request->query->get("value");
-        $ResponsableUnique = $repo->findOneByID($id);
-        $activeYear = $repoAnnee->findActiveYear();
-        $fonction = $repoExercer->findFonctionChef($id,$activeYear)[0]->getFonction();
-        $ResponsableUnique->setFonctionLibelle($fonction->getLibelle());
-        $ResponsableUnique->setFonctionId($fonction->getId());
-       $date=$ResponsableUnique->getDob();
-       $ResponsableUnique->setDateNaiss($date->format('d/m/Y'));
-
+        $qClass = new QueryClass($this->em);
+    //     $ResponsableUnique = $repo->findOneByID($id);
+    //     $activeYear = $repoAnnee->findActiveYear();
+    //     $fonction = $repoExercer->findFonctionChef($id,$activeYear)[0]->getFonction();
+    //     $ResponsableUnique->setFonctionLibelle($fonction->getLibelle());
+    //     $ResponsableUnique->setFonctionId($fonction->getId());
+    //    $date=$ResponsableUnique->getDob();
+    //    $ResponsableUnique->setDateNaiss($date->format('Y-m-d'));
+        $ResponsableUnique = $qClass->GetResponsableUnique($id);
+       // var_dump($ResponsableUnique);
         $result = $serializer->serialize($ResponsableUnique,'json',   ['groups' => 'show_chef']);
         return new Response($result,200);
     }
 
 
-      #[Route('/ModifRespo', name: 'ModifRespo')]
-      public function UpdateResponsable(ResponsableRepository $repo, ExercerFonctionRepository $repoExercer, Request $request, SerializerInterface $serializer, AnneePastoraleRepository $repoAnnee){
+      #[Route('/ModifierResponsable', name: 'ModifierResponsable')]
+      public function UpdateResponsable(ResponsableRepository $repo, ExercerFonctionRepository $repoExercer, Request $request, SerializerInterface $serializer, AnneePastoraleRepository $repoAnnee, FONCTIONRepository $repofonction, FormationRepository $repoformation){
 
           try {
-
-              $value = $request->request->get('value');
-              $id = $value['id'];
-              $ResponsableUnique = $repo->findOneByID($id);
-              $activeYear = $repoAnnee->findActiveYear();
-              $fonction = $repoExercer->findFonctionChef($id,$activeYear)[0]->getFonction();
-              $ResponsableUnique->setFonctionLibelle($fonction->getLibelle());
-              $ResponsableUnique->setFonctionId($fonction->getId());
-
-
-              $ResponsableToUpdate = new Responsable();
-              $ResponsableToUpdate->setNom($value['nom'])
-                  // ->setNom($value['nom'])
-                  ->setPrenoms($value['prenoms'])
-                  //  ->setDob($value['dob'])
-                  ->setHabitation($value['habitation'])
-                  ->setOccupation($value['occupation'])
-                  ->setTelephone($value["telephone"])
-              ;
-
-
-              $nom = $ResponsableUnique->getNom() == $ResponsableToUpdate->getNom() ? $ResponsableUnique->getNom() : $ResponsableToUpdate->getNom();
-              $habitation = $ResponsableUnique->getPrenoms() == $ResponsableToUpdate->getPrenoms() ? $ResponsableUnique->getPrenoms() : $ResponsableToUpdate->getPrenoms();
-              $occupation = $ResponsableUnique->getOccupation() == $ResponsableToUpdate->getOccupation() ? $ResponsableUnique->getOccupation() : $ResponsableToUpdate->getOccupation();
-              $dob = $ResponsableUnique->getDob() == $ResponsableToUpdate->getDob() ? $ResponsableUnique->getDob() : $ResponsableToUpdate->getDob();
-              $phone = $ResponsableUnique->getTelephone() == $ResponsableToUpdate->getTelephone() ? $ResponsableUnique->getTelephone() : $ResponsableToUpdate->getTelephone();
-              $prenoms = $ResponsableUnique->getPrenoms() == $ResponsableToUpdate->getPrenoms() ? $ResponsableUnique->getPrenoms() : $ResponsableToUpdate->getPrenoms();
+            $qClass = new QueryClass($this->em);
+               
+               $value = $request->request->get('value');
+             //var_dump($value);
+               $id = $value['id'];
+              //dump($id);
+             $ResponsableToUpdate = $repo->findOneBy(["id"=>$id]);
+ 
+               $activeYear = $repoAnnee->findActiveYear();
+               //dump($activeYear);
 
 
 
-              $ResponsableUnique->setNom("")
-                                ->setNom($nom)
-                                ->setHabitation("")
+$fonctiontoupdate = $repofonction->findOneBy(["id"=>$value['fonction']]);
+$fonction=$qClass->GetExercerfonction($ResponsableToUpdate->getId());
+
+
+//get exercer fonction
+$exofonction = $repoExercer->findOneBy(["id"=>$fonction]);
+
+$exofonction->setFonction($fonctiontoupdate);
+
+//get formation
+$formationToUpdate = $ResponsableToUpdate->getResponsableFormations();
+//formation selectionnée
+$selectedFormation = $repoformation->findOneBy(["id"=> $value["formation"]]);
+$formationToUpdate[0]->setFormationId($selectedFormation);
+
+
+
+
+
+         // $formation = $repoformation->findOneBy(["id"=>$value["formation"]]);
+      
+            //  $nom = $ResponsableUnique->getNom() == $ResponsableToUpdate->getNom() ? $ResponsableUnique->getNom() : $ResponsableToUpdate->getNom();
+              $nom = $ResponsableToUpdate->getNom() == $value["nom"] ? $ResponsableToUpdate->getNom() :  $value["nom"] ;
+              $prenoms = $ResponsableToUpdate->getPrenoms() == $value["prenoms"] ? $ResponsableToUpdate->getPrenoms() :  $value["prenoms"] ;
+              $occupation = $ResponsableToUpdate->getOccupation() == $value["occupation"] ? $ResponsableToUpdate->getOccupation() :  $value["occupation"] ;
+              $habitation = $ResponsableToUpdate->getHabitation() == $value["habitation"] ? $ResponsableToUpdate->getHabitation() :  $value["habitation"] ;
+              $telephone = $ResponsableToUpdate->getTelephone() == $value["telephone"] ? $ResponsableToUpdate->getTelephone() :  $value["telephone"] ;
+              $telephone = $ResponsableToUpdate->getTelephone() == $value["telephone"] ? $ResponsableToUpdate->getTelephone() :  $value["telephone"] ;
+         
+            $formation = $repoformation->findOneBy(["id"=>$value["formation"]]);
+
+
+              $ResponsableToUpdate->setNom($nom)
+                                ->setPrenoms($prenoms)
                                 ->setHabitation($habitation)
-                                ->setOccupation("")
                                 ->setOccupation($occupation)
+                              //  ->addExercerFonction()
 //                 // ->setDob($dob)
-                                ->setTelephone("")
-                                ->setTelephone($phone)
-                               ->setPrenoms("")
-                              ->setPrenoms($prenoms)
-              ;
+                            
+                                ->setTelephone($telephone) 
+                                //->addFormation($formation)
+                                ;
+             
+               $manager = $this->getDoctrine()->getManager();
+              $manager->persist($ResponsableToUpdate);
+             $manager->persist($exofonction);
+             $manager->persist($formationToUpdate[0]);
+               $manager->flush();
 
-              $manager = $this->getDoctrine()->getManager();
-              $manager->persist($ResponsableUnique);
-              $manager->flush();
-          }catch (\Exception $e){
-
+               return new JsonResponse(["ok"=>true, "data"=>"Opération effectuée avec succès"]);
+           }catch (\Exception $e){
+            return new JsonResponse(["ok"=>false, "data"=>$e->getMessage()]);
           }
 
-
-
-        return new Response("success",200);
     }
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     #[Route('/AjouterRespocg', name: 'AjouterRespocg')]
     public function AjouterRespocg(): Response

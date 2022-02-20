@@ -87,6 +87,7 @@ class CotisationController extends AbstractController
             $ActiveYear = $this->AnneeLayer->findActiveYear();
             $qClass = new QueryClass($this->em);
             $jeune = $qClass->GetListeJeuneNonCotise($Idgroupe->getId());
+            dump($jeune);
             $result = $serializer->serialize($jeune,'json',['groups'=>'read']);
             return new JsonResponse(["ok"=>true, "data"=>$result]);
         }
@@ -164,9 +165,11 @@ class CotisationController extends AbstractController
         $ActiveYear = $this->AnneeLayer->findActiveYear();
         $qClass = new QueryClass($this->em);
         $jeune = $qClass->GetResponsablesNonCotiseParGroupe($Idgroupe->getId());
+        //dump($jeune);
        // var_dump($jeune);
         $result = $serializer->serialize($jeune,'json',['groups'=>'show_chef']);
         return new JsonResponse(["ok"=>true, "data"=>$result]);
+       // return new Response();
     }
 
 
@@ -211,6 +214,7 @@ class CotisationController extends AbstractController
         $ActiveYear = $this->AnneeLayer->findActiveYear();
         $qClass = new QueryClass($this->em);
         $jeune = $qClass->GetListResponsablesCotisesParGroupe($Idgroupe->getId());
+        
         $result = $serializer->serialize($jeune,'json',['groups'=>'show_chef']);
         return new JsonResponse(["ok"=>true, "data"=>$result]);
     }

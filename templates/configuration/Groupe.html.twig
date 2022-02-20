@@ -215,8 +215,8 @@
                 success:function(resp){
                     debugger
                     table.clear().draw();
-                    var liste = JSON.parse(resp);
-                    $.each(liste,function(i,n){
+                  //  var liste = JSON.parse(resp);
+                    $.each(resp.data,function(i,n){
 
                         debugger
                         //alert(n.Nom);

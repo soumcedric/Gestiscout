@@ -273,6 +273,33 @@ ExportJeuneDistrict:
 ExportResponsableDistrict:
     path: /ExportResponsableDistrict/{groupe}
     controller: App\Controller\RapportController::ExportResponsableDistrict
+Formation:
+    path: /Formation
+    controller: App\Controller\ConfigurationController::Formation
+AddFormation:
+    path: /AddFormation
+    controller: App\Controller\ConfigurationController::AddFormation
+GetListeFormation:
+    path: /GetListeFormation
+    controller: App\Controller\ConfigurationController::GetListeFormation
+UpdateRespoDistrict:
+    path: /UpdateRespoDistrict
+    controller: App\Controller\DistrictController::UpdateRespoDistrict
+chefparformation:
+    path: /chefparformation
+    controller: App\Controller\FormationController::chefparformation
+ListeChefByChef:
+    path: /ListeChefByChef
+    controller: App\Controller\FormationController::ListeChefByChef
+PrevisionStage:
+    path: /PrevisionStage
+    controller: App\Controller\FormationController::PrevisionStage
+GetNextParticpation:
+    path: /GetNextParticpation
+    controller: App\Controller\FormationController::GetNextParticpation
+
+
+
 
 
 

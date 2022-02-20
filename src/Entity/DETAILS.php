@@ -123,6 +123,11 @@ class DETAILS
      */
     private $Activite;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $DateValidation;
+
   
     public function getId(): ?int
     {
@@ -377,6 +382,18 @@ class DETAILS
     public function setActivite(?ACTIVITES $Activite): self
     {
         $this->Activite = $Activite;
+
+        return $this;
+    }
+
+    public function getDateValidation(): ?\DateTimeInterface
+    {
+        return $this->DateValidation;
+    }
+
+    public function setDateValidation(?\DateTimeInterface $DateValidation): self
+    {
+        $this->DateValidation = $DateValidation;
 
         return $this;
     }

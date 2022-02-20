@@ -67,6 +67,11 @@
                                             <select id="fonction" class="form-control"></select>
                                         </div>
 
+                                          <div class="form-group">
+                                            <label>Formation</label>
+                                            <select id="formation" class="form-control"></select>
+                                        </div>
+
 
 
                                         <br>
@@ -158,6 +163,7 @@ debugger
             document.getElementById("dob").setAttribute("max", currentdate);
             reset();
             loadFonction();
+            loadFormation();
             function loading()
             {
                    $('.modal').modal('show');
@@ -205,7 +211,8 @@ debugger
                     telephone : $("#telephone").val(),
                     fonction : $("#fonction").val(),
                     groupe: "",
-                    genre: $("#genre").val()
+                    genre: $("#genre").val(),
+                    formation: $("#formation").val()
                 };
 
                 if (responsable.nom=='' || responsable.prenoms=='' || responsable.dob=='' ||responsable.telephone=='')
@@ -306,6 +313,41 @@ debugger
                 });
             }
 
+
+
+
+
+ function loadFormation(){
+                $.ajax({
+                    type:"GET",
+                    url:"{{ path("GetListeFormation") }}",
+                    success:function(res){
+                        debugger
+                        var liste = JSON.parse(res.data);
+                        if (liste.length>0){
+                            $("#formation").empty();
+                            var defaultline="<option value=0 selected>---Choisir une formation---</option>";
+                            $("#formation").append(defaultline);
+                            $.each(liste,function(i,n) {
+                                debugger
+                                var option = "<option value="+n.id+">"+n.libelle+"</option>";
+                                $("#formation").append(option);
+                            });
+                        }else{
+
+                        }
+
+                            },
+                    error:function(){
+
+                    }
+
+                });
+            }
+
+
+
+
             function loadGroupe(){
                 $.ajax({
                     type:"GET",
@@ -353,4 +395,10 @@ debugger
 
         });
     </script>
+
+
+
+
+
+
 {% endblock %}

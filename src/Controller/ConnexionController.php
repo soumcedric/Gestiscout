@@ -110,7 +110,7 @@ class ConnexionController extends AbstractController
 
         //nombre de jeune cotisé par groupe
         $TotalJeuneCotiseGroupe = $qClass->GetNbreJeunesCotiseParGroupe($groupe[0]->getId());
-
+        
         $nbreCotiseLouveteau = $qClass->GetNbreJeuneCotiseByCriteria($groupe[0]->getId(),1);
         $nbreCotiseEclaireur = $qClass->GetNbreJeuneCotiseByCriteria($groupe[0]->getId(),2);
         $nbreCotiseCheminot = $qClass->GetNbreJeuneCotiseByCriteria($groupe[0]->getId(),3);
@@ -169,22 +169,23 @@ class ConnexionController extends AbstractController
         $nbreJeuneNda = $qClass->GetNbreJeuneParGroupe(0,5);
 
         //nombre de jeune et responsable cotisé par groupe MOHICANS
-        $nbreTotalCotiseSSM=0;
-        $nbreRespoCotiseSSM = $qClass->GetNbreResponsableCotiseParGroupe(0,1);
+        //$nbreTotalCotiseSSM=0;
+        $nbreRespoCotiseSSM = $qClass->GetNbreResponsableCotiseParGroupe(1);
         $nbreJeuneCotiseSSM = $qClass->GetNbreJeuneCotiseParGroupe(0,1);
+       // dump($nbreRespoCotiseSSM);
         $nbreTotalCotiseSSM = $nbreRespoCotiseSSM+$nbreJeuneCotiseSSM;
 
         //nombre de jeune et responsable cotisé par groupe LION KING
         $nbreTotalCotiseSM=0;
         $nbreRespoCotiseSM = $qClass->GetNbreResponsableCotiseParGroupe(0,2);
         $nbreJeuneCotiseSM = $qClass->GetNbreJeuneCotiseParGroupe(0,2);
-        $nbreTotalCotiseSM = $nbreRespoCotiseSM+$nbreJeuneCotiseSM;
+         $nbreTotalCotiseSM = $nbreRespoCotiseSM+$nbreJeuneCotiseSM;
 
         //nombre de jeune et responsable cotisé par groupe PETROLIER
         $nbreTotalCotiseJMV=0;
         $nbreRespoCotiseJMV = $qClass->GetNbreResponsableCotiseParGroupe(0,3);
         $nbreJeuneCotiseJMV = $qClass->GetNbreJeuneCotiseParGroupe(0,3);
-        $nbreTotalCotiseJMV = $nbreRespoCotiseJMV+$nbreJeuneCotiseJMV;
+         $nbreTotalCotiseJMV = $nbreRespoCotiseJMV+$nbreJeuneCotiseJMV;
 
 
         //nombre de jeune et responsable cotisé par groupe SMA
@@ -198,7 +199,7 @@ class ConnexionController extends AbstractController
         $nbreTotalCotiseNDA=0;
         $nbreRespoCotiseNDA = $qClass->GetNbreResponsableCotiseParGroupe(0,5);
         $nbreJeuneCotiseNDA = $qClass->GetNbreJeuneCotiseParGroupe(0,5);
-        $nbreTotalCotiseNDA = $nbreRespoCotiseNDA+$nbreJeuneCotiseNDA;
+         $nbreTotalCotiseNDA = $nbreRespoCotiseNDA+$nbreJeuneCotiseNDA;
 
 
         //nombre de jeune cotisé par groupe et par branche

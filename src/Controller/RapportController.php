@@ -310,22 +310,22 @@ class RapportController extends AbstractController
         $sheet->setCellValue('F3',"LIEU D'HABITATION");
         $sheet->setCellValue('G3',"FONCTION");
         $sheet->setCellValue('H3',"TELEPHONE");
-       // $sheet->setCellValue('I3',"TELEPHONE");
+        $sheet->setCellValue('I3',"FORMATION");
 
         $sheet->setTitle("LISTE DES CHEFS");
 
-        $sheet->mergeCells("A1:H1");
-        $sheet->setAutoFilter("A3:H3");
+        $sheet->mergeCells("A1:I1");
+        $sheet->setAutoFilter("A3:I3");
         //format of title
-        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:I1")
                     ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_FILL);
-        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:I1")
                     ->getBorders()->getTop(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
-        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:I1")
                     ->getBorders()->getBottom(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:I1")
                     ->getBorders()->getLeft(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:I1")
                     ->getBorders()->getRight(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
 
                     $styleArray = [
@@ -386,7 +386,7 @@ class RapportController extends AbstractController
                     $spreadsheet->getActiveSheet()->getStyle('F3')->applyFromArray($styleheader); 
                     $spreadsheet->getActiveSheet()->getStyle('G3')->applyFromArray($styleheader); 
                     $spreadsheet->getActiveSheet()->getStyle('H3')->applyFromArray($styleheader); 
-                   // $spreadsheet->getActiveSheet()->getStyle('I3')->applyFromArray($styleheader); 
+                    $spreadsheet->getActiveSheet()->getStyle('I3')->applyFromArray($styleheader); 
                    // $spreadsheet->getActiveSheet()->getStyle('J3')->applyFromArray($styleArray); 
                     
                     
@@ -400,7 +400,7 @@ class RapportController extends AbstractController
                     $sheet->getColumnDimension('F')->setAutoSize(true);
                     $sheet->getColumnDimension('G')->setAutoSize(true);
                     $sheet->getColumnDimension('H')->setAutoSize(true);
-                  //  $sheet->getColumnDimension('I')->setAutoSize(true);
+                    $sheet->getColumnDimension('I')->setAutoSize(true);
                    // $sheet->getColumnDimension('A')->setAutoSize(true);
                     //DIMENSION
 
@@ -479,7 +479,10 @@ class RapportController extends AbstractController
         $validatelocale = \PhpOffice\PhpSpreadsheet\Settings::setlocale('fr');
         
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1',"LISTE DES JEUNES ".$selectedBranche->getLibelle()." - ".$groupe->getNom());
+        if($branche==0)
+             $sheet->setCellValue('A1',"LISTE DES JEUNES  - ".$groupe->getNom());
+         else
+             $sheet->setCellValue('A1',"LISTE DES JEUNES ".$selectedBranche->getLibelle()." - ".$groupe->getNom());
         $sheet->setCellValue('A3',"ID");
         $sheet->setCellValue('B3',"NOM");
         $sheet->setCellValue('C3',"PRENOMS");
@@ -487,21 +490,22 @@ class RapportController extends AbstractController
         $sheet->setCellValue('E3',"OCCUPATION");
         $sheet->setCellValue('F3',"LIEU D'HABITATION");
         $sheet->setCellValue('G3',"TELEPHONE");
+        $sheet->setCellValue('H3',"BRANCHE");
 
         $sheet->setTitle("LISTE DES JEUNES");
 
-        $sheet->mergeCells("A1:G1");
-        $sheet->setAutoFilter("A3:G3");
+        $sheet->mergeCells("A1:H1");
+        $sheet->setAutoFilter("A3:H3");
         //format of title
-        $spreadsheet->getActiveSheet()->getStyle("A1:G1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
                     ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_FILL);
-        $spreadsheet->getActiveSheet()->getStyle("A1:G1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
                     ->getBorders()->getTop(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
-        $spreadsheet->getActiveSheet()->getStyle("A1:G1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
                     ->getBorders()->getBottom(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        $spreadsheet->getActiveSheet()->getStyle("A1:G1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
                     ->getBorders()->getLeft(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        $spreadsheet->getActiveSheet()->getStyle("A1:G1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
                     ->getBorders()->getRight(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
 
                     $styleArray = [
@@ -525,7 +529,7 @@ class RapportController extends AbstractController
                           
                         ],
                     ];
-                    $spreadsheet->getActiveSheet()->getStyle('A1:G1')->applyFromArray($styleArray); 
+                    $spreadsheet->getActiveSheet()->getStyle('A1:H1')->applyFromArray($styleArray); 
                     
                     
 
@@ -561,7 +565,7 @@ class RapportController extends AbstractController
                     $spreadsheet->getActiveSheet()->getStyle('E3')->applyFromArray($styleheader); 
                     $spreadsheet->getActiveSheet()->getStyle('F3')->applyFromArray($styleheader); 
                     $spreadsheet->getActiveSheet()->getStyle('G3')->applyFromArray($styleheader); 
-                    // $spreadsheet->getActiveSheet()->getStyle('H3')->applyFromArray($styleheader); 
+                    $spreadsheet->getActiveSheet()->getStyle('H3')->applyFromArray($styleheader); 
                     // $spreadsheet->getActiveSheet()->getStyle('I3')->applyFromArray($styleheader); 
                    // $spreadsheet->getActiveSheet()->getStyle('J3')->applyFromArray($styleArray); 
                     
@@ -575,7 +579,7 @@ class RapportController extends AbstractController
                     $sheet->getColumnDimension('E')->setAutoSize(true);
                     $sheet->getColumnDimension('F')->setAutoSize(true);
                     $sheet->getColumnDimension('G')->setAutoSize(true);
-                    // $sheet->getColumnDimension('H')->setAutoSize(true);
+                    $sheet->getColumnDimension('H')->setAutoSize(true);
                     // $sheet->getColumnDimension('I')->setAutoSize(true);
                    // $sheet->getColumnDimension('A')->setAutoSize(true);
                     //DIMENSION
@@ -661,24 +665,24 @@ class RapportController extends AbstractController
         $sheet->setCellValue('D3',"DATE DE NAISSANCE");
         $sheet->setCellValue('E3',"OCCUPATION");
         $sheet->setCellValue('F3',"LIEU D'HABITATION");
-        $sheet->setCellValue('G3',"FONCTION");
-        $sheet->setCellValue('H3',"TELEPHONE");
-       // $sheet->setCellValue('I3',"TELEPHONE");
+        $sheet->setCellValue('G3',"FORMATION");
+        $sheet->setCellValue('H3',"FONCTION");
+        $sheet->setCellValue('I3',"TELEPHONE");
 
         $sheet->setTitle("LISTE DES CHEFS");
 
-        $sheet->mergeCells("A1:H1");
-        $sheet->setAutoFilter("A3:H3");
+        $sheet->mergeCells("A1:I1");
+        $sheet->setAutoFilter("A3:I3");
         //format of title
-        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:I1")
                     ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_FILL);
-        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:I1")
                     ->getBorders()->getTop(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
-        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:I1")
                     ->getBorders()->getBottom(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:I1")
                     ->getBorders()->getLeft(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
-        $spreadsheet->getActiveSheet()->getStyle("A1:H1")
+        $spreadsheet->getActiveSheet()->getStyle("A1:I1")
                     ->getBorders()->getRight(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
 
                     $styleArray = [
@@ -702,7 +706,7 @@ class RapportController extends AbstractController
                           
                         ],
                     ];
-                    $spreadsheet->getActiveSheet()->getStyle('A1:H1')->applyFromArray($styleArray); 
+                    $spreadsheet->getActiveSheet()->getStyle('A1:I1')->applyFromArray($styleArray); 
                     
                     
 
@@ -739,7 +743,7 @@ class RapportController extends AbstractController
                     $spreadsheet->getActiveSheet()->getStyle('F3')->applyFromArray($styleheader); 
                     $spreadsheet->getActiveSheet()->getStyle('G3')->applyFromArray($styleheader); 
                     $spreadsheet->getActiveSheet()->getStyle('H3')->applyFromArray($styleheader); 
-                   // $spreadsheet->getActiveSheet()->getStyle('I3')->applyFromArray($styleheader); 
+                    $spreadsheet->getActiveSheet()->getStyle('I3')->applyFromArray($styleheader); 
                    // $spreadsheet->getActiveSheet()->getStyle('J3')->applyFromArray($styleArray); 
                     
                     
@@ -753,7 +757,7 @@ class RapportController extends AbstractController
                     $sheet->getColumnDimension('F')->setAutoSize(true);
                     $sheet->getColumnDimension('G')->setAutoSize(true);
                     $sheet->getColumnDimension('H')->setAutoSize(true);
-                  //  $sheet->getColumnDimension('I')->setAutoSize(true);
+                    $sheet->getColumnDimension('I')->setAutoSize(true);
                    // $sheet->getColumnDimension('A')->setAutoSize(true);
                     //DIMENSION
 

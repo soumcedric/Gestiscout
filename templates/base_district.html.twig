@@ -7,6 +7,7 @@
 <!-- VENDOR CSS -->
         <!-- VENDOR CSS -->
         <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+
         <link rel="stylesheet" href="{{ asset('assets/vendor/font-awesome/css/font-awesome.min.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/vendor/animate-css/vivify.min.css') }}">
 
@@ -231,7 +232,7 @@
                             <li class=><img src="{{ asset("/img_logo/LOGO.jpg") }}" class="img-fluid" WIDTH="170" height="150"></li>
                             <li class="active"><a href="{{ path("DistrictDash") }}"><i class="fa fa-dashboard"></i><span>Dashboard</span></a></li>
 
-
+{#
 
 
                             {% if is_granted('ROLE_DISTRICT_USER') %}
@@ -252,12 +253,9 @@
                             <li><a href="{{ path("ListeFonction") }}"><i class="fa fa-wrench"></i><span>Fonction</span></a></li>
                             <li><a href="{{ path("Groupe") }}"><i class="fa fa-wrench"></i><span>Groupe</span></a></li>
 
-                            {% endif %}
+                            {% endif %} #}
 
-
-
-
-                            {% if is_granted('ROLE_DISTRICT_CONFIG') %}
+                            {# {% if is_granted('ROLE_CD') %}
                                 <li class="header">Responsable district</li>
                                 <li><a href="{{ path("AddResponsableDistrict") }}"><i class="fa fa-bars"></i><span>Insérer Responsable</span></a></li>
                                 <li><a href="{{ path("ListeResponsable_District") }}"><i class="fa fa-bars"></i><span>Liste Responsable</span></a></li>
@@ -265,9 +263,36 @@
                                 <li><a href="{{ path("AjouterRespocg") }}"><i class="fa fa-bars"></i><span>Insérer Responsable</span></a></li>
                                 <li><a href="{{ path("ListeRespoCg") }}"><i class="fa fa-bars"></i><span>Liste Responsable</span></a></li>
 
+                            {% endif %} #}
+
+
+                            {% if is_granted('ROLE_CD')%}
+                                    <li class="header">Configuration</li>
+                            <li><a href="{{  path("ListeAnnePastorale") }}"><i class="fa fa-wrench"></i><span>Année pastorale</span></a></li>
+                            <li><a href="{{  path("ListeBranche") }}"><i class="fa fa-wrench"></i><span>Branche</span></a></li>
+                            <li><a href="{{ path("ListeFonction") }}"><i class="fa fa-wrench"></i><span>Fonction</span></a></li>
+                            <li><a href="{{ path("Groupe") }}"><i class="fa fa-wrench"></i><span>Groupe</span></a></li>
+                            <li><a href="{{ path("Formation") }}"><i class="fa fa-wrench"></i><span>Formation</span></a></li>
+                             <li class="header">Jeunes</li>
+                            <li><a href="{{ path("ListeJeuneDistrict") }}"><i class="fa fa-bars"></i><span>Liste des jeunes</span></a></li>
+                                <li class="header">Chefs Groupe</li>
+                                <li><a href="{{ path("ListeResponsableDistrict") }}"><i class="fa fa-bars"></i><span>Liste des chefs</span></a></li>
+                               <li class="header">Chef district</li>
+                                <li><a href="{{ path("AddResponsableDistrict") }}"><i class="fa fa-bars"></i><span>Insérer Responsable</span></a></li>
+                                <li><a href="{{ path("ListeResponsable_District") }}"><i class="fa fa-bars"></i><span>Liste Responsable</span></a></li>
+                                {# <li class="header">Responsable Groupe</li>
+                                <li><a href="{{ path("AjouterRespocg") }}"><i class="fa fa-bars"></i><span>Insérer Responsable</span></a></li>
+                                <li><a href="{{ path("ListeRespoCg") }}"><i class="fa fa-bars"></i><span>Liste Responsable</span></a></li> #}
+  <li class="header">Cotisation</li>
+                             <li><a href="{{ path("JeuneCotiseDistrict") }}"><i class="fa fa-bars"></i><span> jeunes cotisés</span></a></li>
+                                <li><a href="{{ path("ListeResponsableCotiseDistrict") }}"><i class="fa fa-bars"></i><span> responsables cotisés</span></a></li>
                             {% endif %}
 
-
+                            {% if is_granted('ROLE_FORMATION')%}
+                               <li class="header">Formation</li>
+                            <li><a href="{{  path("chefparformation") }}"><i class="fa fa-wrench"></i><span>Chefs par stage</span></a></li>
+                            <li><a href="{{  path("PrevisionStage") }}"><i class="fa fa-wrench"></i><span>Prévision stage</span></a></li>
+                            {% endif %}
 
 
 

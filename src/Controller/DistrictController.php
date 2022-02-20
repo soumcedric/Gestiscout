@@ -88,6 +88,7 @@ class DistrictController extends AbstractController
 
         $qClass = new QueryClass($this->em);
         $result = $qClass->GetListeResponsableByCriteria($groupe);
+        dump($result);
         $finalResult = $serializer->serialize($result,'json');
         if($result!=null)
             return new Response($finalResult,200);
@@ -165,6 +166,7 @@ class DistrictController extends AbstractController
     public function InsertRespoDistrict(Request $value)
     {
         $Req = $value->request->get('value');
+        dump($Req);
         $date= new \DateTime($Req["dob"]);
         $district = new District();
         $district->setNom($Req["nom"])
@@ -184,4 +186,51 @@ class DistrictController extends AbstractController
         return new Response(true,200);
 
     }
+
+
+
+
+
+    
+
+    #[Route('/UpdateRespoDistrict', name: 'UpdateRespoDistrict')]
+    public function UpdateRespoDistrict(Request $value)
+    {
+        $Req = $value->request->get('value');
+        dump($Req);
+        $date= new \DateTime($Req["dob"]);
+        $district = new District();
+        $district->setNom($Req["nom"])
+                 ->setPrenoms($Req["prenoms"])
+                 ->setTelephone($Req["telephone"])
+                ->setDob($Req["dob"]);
+        $exercerfonction = new ExercerFonction();
+        $exercerfonction->setDateDebut(new \DateTime())
+                        ->setDateFin(new \DateTime())
+                        ->setDateCreation(new \DateTime())
+                        ->addDistrict($district);
+
+        $manager = $this->getDoctrine()->getManager();
+        $manager->persist($district);
+        $manager->persist($exercerfonction);
+        $manager->flush();
+        return new Response(true,200);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

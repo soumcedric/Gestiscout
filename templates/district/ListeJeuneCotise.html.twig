@@ -153,11 +153,11 @@
                     { "data": "TELEPHONE" },
                     // { "data": "ACTION" }
                 ],
-                // columnDefs: [
-                //     {
-                //         targets: 0,
-                //         visible: false
-                //     }],
+                 columnDefs: [
+              {
+                  targets: 0,
+                  visible: false
+              }],
                 data: [],
                 rowCallback: function (row, data) { },
                 filter: true,
@@ -174,8 +174,10 @@
                 success:function(resp){
                     debugger
                     $("#brache").empty();
-                    var defaultline = "<option selected value='-1'>---selectionner branche---</option>";
+                    var defaultline = "<option selected value='-1' >---selectionner branche---</option>";
                     $("#branche").append(defaultline);
+                     var defaultline1 = "<option value='0'>TOUT</option>";
+                    $("#branche").append(defaultline1);
                     var liste = JSON.parse(resp);
                     $.each(liste,function(i,n){
                         debugger
@@ -193,8 +195,8 @@
                     $("#groupe").empty();
                     var defaultline = "<option selected value='-1'>---selectionner groupe---</option>";
                     $("#groupe").append(defaultline);
-                    var liste = JSON.parse(resp);
-                    $.each(liste,function(i,n){
+                   //var liste = JSON.parse(resp);
+                    $.each(resp.data,function(i,n){
                         debugger
                         var line = "<option value="+n.id+">"+n.Nom+"</option>";
                         $("#groupe").append(line);

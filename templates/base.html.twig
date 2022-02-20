@@ -241,11 +241,25 @@
                             {% endif %}
 
 
-                            {% if is_granted('ROLE_ADMIN') %}
+                            {% if is_granted('ROLE_CG') %}
                             <li class="header">Jeunes</li>
                             <li><a href="{{ path("AddJeune") }}"><i class="fa fa-plus"></i><span>Nouveau jeune</span></a></li>
                             <li><a href="{{ path("ListeJeunes") }}"><i class="fa fa-list"></i><span>Liste des jeunes</span></a></li>
+                             <li class="header">Responsable</li>
+                            <li><a href="{{ path("AjouterRespoView") }}"><i class="fa fa-plus"></i><span>Nouveau responsable</span></a></li>
+                            <li><a href="{{ path("responsable") }}"><i class="fa fa-list"></i><span>Liste des responsables</span></a></li>
                             {% endif %}
+
+
+                               {% if is_granted('ROLE_CG') %}
+                            <li class="header">Activités</li>
+                              <li><a href="{{  path("activite") }}"><i class="fa fa-wrench"></i><span>Créer activité</span></a></li>
+                            {# <li><a href="{{ path("ListeJeunes") }}"><i class="fa fa-list"></i><span>Liste des jeunes</span></a></li>
+                             #}
+                            {% endif %}
+
+
+
 
 
                         {% if is_granted('ROLE_ADMIN') %}
@@ -258,7 +272,7 @@
 
 
 
-                            {% if is_granted('ROLE_ADMIN') %}
+                            {% if is_granted('ROLE_CG') %}
                                 <li class="header">Cotisation</li>
 {#                                <li><a href="{{  path("cotisation") }}"><i class="fa fa-money"></i><span>Faire une cotisation</span></a></li>#}
 {#                                <li><a href="{{ path("ViewJeuneCotise") }}"><i class="fa fa-list"></i><span>Liste des cotisés</span></a></li>#}
@@ -283,12 +297,12 @@
 
 
 
-
+{# 
                                 <li class="header">Importation données</li>
 
 
 
-                                        <li><a href="{{  path("ImportJeune") }}"><i class="fa fa-download"></i><span>Importation Jeune</span></a></li>
+                                        <li><a href="{{  path("ImportJeune") }}"><i class="fa fa-download"></i><span>Importation Jeune</span></a></li> #}
 
 
                             {% endif %}

@@ -16,7 +16,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\AnneePastoraleRepository;
 use App\Repository\GroupeRepository;
 use App\Entity\AnneePastorale;
+use App\Entity\Formation;
 use App\Repository\BrancheRepository;
+use App\Repository\FormationRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -24,6 +26,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 class ConfigurationController extends AbstractController
 {
@@ -231,8 +234,8 @@ class ConfigurationController extends AbstractController
         $liste = $repo->findAll();
         dump($liste);
         $listeNormalized =  $normalizer->normalize($liste,'json',['groups'=>'groupe']);//,null,['groups'=>'post:read']);
-        $result = json_encode($listeNormalized);
-        return  new \Symfony\Component\HttpFoundation\Response($result,200);
+        //$result = json_encode($listeNormalized);
+        return new JsonResponse(['ok'=> true, 'data'=>$listeNormalized]);
     }
 
 
@@ -349,5 +352,52 @@ class ConfigurationController extends AbstractController
             return new JsonResponse(['ok'=> false, 'message'=>$e->getMessage()]);
         }
     }
+
+    #[Route('/Formation', name: 'Formation')]
+    public function Formation(): Response
+    {
+        return $this->render('Configuration/Formation.html.twig', [
+            'controller_name' => 'ConfigurationController',
+        ]);
+    }
+
+
+
+    #[Route('/AddFormation', name: 'AddFormation')]
+    public function AddFormation(\App\Repository\FormationRepository  $form, \Symfony\Component\HttpFoundation\Request $value): Response
+    {
+        try
+        {
+        $newFormation = new Formation();
+
+        $fromjson = $value->request->get('value');
+        $newFormation->setLibelle($fromjson["Libelle"]);
+        $newFormation->setOrdre($fromjson["Ordre"]);
+     
+
+
+
+        $manager = $this->getDoctrine()->getManager();
+        $manager->persist($newFormation);
+        $manager->flush();
+        return new JsonResponse(["ok"=>true, "data"=>"Opération effectuée avec succès"]);
+    }
+    catch(\Exception $e)
+    {
+        return new JsonResponse(["ok"=>true, "data"=>$e->getMessage()]);
+    }
+    }
+
+    #[Route('/GetListeFormation', name: 'GetListeFormation')]
+    public function GetListeFormation(FormationRepository $repo,SerializerInterface $serializer)
+    {
+        $liste = $repo->findAll();
+
+        $listeformation =  $serializer->serialize($liste,'json',['groups'=>'formation']);
+        return new JsonResponse(["ok"=>true, "data"=>$listeformation]);
+    }
+
+
+
 
 }

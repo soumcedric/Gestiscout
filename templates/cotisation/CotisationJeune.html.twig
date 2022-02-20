@@ -180,17 +180,17 @@
             debugger
             function loading()
             {
-                $('.modal_load').modal('show');
+                //$('.modal_load').modal('show');
 
             }
             function loadingClose()
             {
-                $('.modal_load').modal('hide');
+                //$('.modal_load').modal('hide');
 
             }
             loadData();
             function loadData(){
-                loading();
+                //loading();
                 $.ajax({
                     type:"GET",
                     url:"{{ path("cotisationJeune")}}",
@@ -198,7 +198,7 @@
 
                         debugger
                         if(resp.ok == true){
-                            loadingClose();
+                          //  loadingClose();
                             table.clear().draw();
                             var liste = JSON.parse(resp.data);
                             $.each(liste,function(i,n){
@@ -269,14 +269,14 @@
                         text:"Veuillez remplir le champ matricule svp !"
                     });
                 }else{
-                    loading();
+                   // loading();
                     $.ajax({
                         type:"POST",
                         url:"{{ path('SaveCotisation') }}",
                         data:{"value" :matricule, "JeuneId" : JSON.stringify(jeuneId)},
                         success:function(res){
 debugger
-                            loadingClose();
+                            //loadingClose();
                             if (res=="success"){
                                 swal({
                                     title : "",
@@ -285,7 +285,7 @@ debugger
                                 },function(){
                                         $("#matricule").val('');
                                         $("#modalmodif").hide();
-                                        loadingClose();
+                                        //loadingClose();
                                         loadData();
                                 });
                             }else{

@@ -142,6 +142,16 @@ class ACTIVITES
      */
     private $StatutString;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $Commentaire;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $DateValidation;
+
     public function __construct()
     {
         $this->Details = new ArrayCollection();
@@ -409,6 +419,30 @@ class ACTIVITES
     public function setNom(string $Nom): self
     {
         $this->Nom = $Nom;
+
+        return $this;
+    }
+
+    public function getCommentaire(): ?string
+    {
+        return $this->Commentaire;
+    }
+
+    public function setCommentaire(?string $Commentaire): self
+    {
+        $this->Commentaire = $Commentaire;
+
+        return $this;
+    }
+
+    public function getDateValidation(): ?\DateTimeInterface
+    {
+        return $this->DateValidation;
+    }
+
+    public function setDateValidation(?\DateTimeInterface $DateValidation): self
+    {
+        $this->DateValidation = $DateValidation;
 
         return $this;
     }
