@@ -21,6 +21,8 @@
         background-color: transparent;
         border: none;
     }
+
+}
 </style>
 {% endblock %}
 {% block body %}
@@ -32,7 +34,8 @@
 
                   
                        <div class="col-lg-12 col-md-12 text-right">
-                        <a class="btn btn-success" href="{{path("details",{id:activityid}) }}">Ajouter programme</a>
+                        {# <a class="btn btn-success" href="{{path("details",{id:activityid}) }}">Ajouter programme</a> #}
+                        <a class="btn btn-success actionlink">Ajouter programme</a>
                        </div>
 
 
@@ -53,20 +56,22 @@
                                         <a href="#">{{details.libelledetails}}</a>
                                         <p class="mb-0 text-muted">Date: {{details.datedetails  }}</p>
                                     </td>
-                                    <td class="text-right">
-                                        <h6 class="font-14 mb-0">Statut</h6>
-                                        <span class="text-muted">{{details.statut}}</span>
+                               
+                                    <td class="w350 ">
+                                    <h6 class="font-14 mb-0">Description</h6>
+                                        <span class="text-muted">{{details.description}}</span>
                                     </td>
-                                    <td class="w350">
-                                    <h6 class="font-14 mb-0">Déroulement</h6>
-                                        <span class="text-muted">{{details.deroulement}}</span>
+                                     <td class="w350 ">
+                                    <h6 class="font-14 mb-0">Responsable</h6>
+                                        <span class="text-muted">{{details.responsable_activite}}</span>
                                     </td>
                                        <td class="w350">
-                                    <h6 class="font-14 mb-0">Action</h6>
-                                        <span class="text-muted"><a class="btn btn-primary" href="{{ path("ConsulterDetails", {id:details.id})}}">Details</a></span>
-                                    </td>
+                                    <h6 class="font-14 mb-0">Actions</h6>
+                                         <span class="text-muted"><a class="fa fa-info-circle fa-1x" href="{{ path("ConsulterDetails", {id:details.id,district:0})}}"></a></span>
+                                         <span class="text-muted"><a class="fa fa-pencil fa-1x" href="{{ path("ConsulterDetails", {id:details.id,district:0})}}"></a></span>
+                                </td>
                                 </tr>
-                                <p></>
+                               
                                 {%endfor%}
 
                               
@@ -78,7 +83,7 @@
 
 
  
-
+<input type="hidden" id="activityid" value="{{activityid}}" />
 
 
 
@@ -88,6 +93,14 @@
 
 {% endblock %}
 {% block javascripts %}
-
+    <script>
+        $(document).ready(function(){
+            $(".actionlink").click(function(){
+                debugger
+                var id=$("#activityid").val();
+                window.location.href="/details/"+id;
+            });
+        });
+    </script>
  
 {% endblock %}

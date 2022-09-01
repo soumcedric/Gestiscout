@@ -60,6 +60,8 @@ class User implements UserInterface
      */
     private $district;
 
+  
+
     public function getId(): ?int
     {
         return $this->id;
@@ -192,4 +194,6 @@ class User implements UserInterface
 
         return $this;
     }
+
+    
 }

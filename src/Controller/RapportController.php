@@ -7,6 +7,8 @@ use App\Repository\BrancheRepository;
 use App\Repository\GroupeRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Repository\JEUNERepository;
+use App\Repository\SessionFormationRepository;
+use App\Repository\SessionFormationResponsableRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Id;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,6 +22,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\Length;
+
 
 class RapportController extends AbstractController
 {
@@ -820,6 +823,175 @@ class RapportController extends AbstractController
         //return new Response("success");
     }
 
+
+    #[Route('/ExportListeDefinitiveStages/{stage}', name: 'ExportListeDefinitiveStages')]
+    public function ExportListeDefinitiveStages(int $stage, SessionFormationRepository $sessionFormationRepo, EntityManagerInterface $em)
+    {
+        
+        //get info session stage
+        $session = $sessionFormationRepo->findOneBy(["id"=>$stage]);
+        $stageLibelle=$session->getStageFormation()->getLibelle();
+        $dateDebutSession=$session->getDateDebut();
+        $dateFinSession=$session->getDateFin();
+
+
+
+        $spreadsheet = new Spreadsheet();
+        //localisatio of the file (fr, en ,ru)
+        $validatelocale = \PhpOffice\PhpSpreadsheet\Settings::setlocale('fr');
+
+
+        //get participants who confirmed
+        
+        $query = new QueryClass($em);
+        $participants = $query->GetResponsableWithConfirmationToStage($stage);
+       // dump($participants);
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1',"STAGE NOM DU STAGE ".$stageLibelle." - SESSION DU ".$dateDebutSession->format('d-m-y')." AU ".$dateFinSession->format('d-m-y'));
+        $sheet->setCellValue('A3',"NOM");
+        $sheet->setCellValue('B3',"PRENOMS");
+        $sheet->setCellValue('C3',"DATE DE NAISSANCE");
+        $sheet->setCellValue('D3',"OCCUPATION");
+        $sheet->setCellValue('E3',"FONCTION");
+        $sheet->setCellValue('F3',"TELEPHONE");
+        $sheet->setCellValue('G3',"GROUPE");
+        //$sheet->setCellValue('H3',"TELEPHONE");
+       // $sheet->setCellValue('I3',"");
+
+
+
+
+       $sheet->mergeCells("A1:G1");
+       $sheet->setAutoFilter("A3:G3");
+       //format of title
+       $spreadsheet->getActiveSheet()->getStyle("A1:G1")
+                   ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_FILL);
+       $spreadsheet->getActiveSheet()->getStyle("A1:G1")
+                   ->getBorders()->getTop(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE);
+       $spreadsheet->getActiveSheet()->getStyle("A1:G1")
+                   ->getBorders()->getBottom(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+       $spreadsheet->getActiveSheet()->getStyle("A1:G1")
+                   ->getBorders()->getLeft(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+       $spreadsheet->getActiveSheet()->getStyle("A1:G1")
+                   ->getBorders()->getRight(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+
+                   $styleArray = [
+                       'font' => [
+                           'bold' => true,
+                       ],
+                       'alignment' => [
+                           'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                       ],
+                       'borders' => [
+                           'top' => [
+                               'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE,
+                           ],
+                       ],
+                       'fill' => [
+                           'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                   
+                           'startColor' => [
+                               'argb' => 'CCE5FF',
+                           ],
+                         
+                       ],
+                   ];
+                   $spreadsheet->getActiveSheet()->getStyle('A1:G1')->applyFromArray($styleArray); 
+                   
+                   
+
+
+
+
+                   $styleheader = [
+                       'font' => [
+                           'bold' => true,
+                       ],
+                       'alignment' => [
+                           'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                       ],
+                       'borders' => [
+                           'top' => [
+                               'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE,
+                           ],
+                       ],
+                       'fill' => [
+                           'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                   
+                           'startColor' => [
+                               'argb' => 'CCE5FF',
+                           ],
+                         
+                       ],
+                   ];
+
+                   $spreadsheet->getActiveSheet()->getStyle('A3')->applyFromArray($styleheader); 
+                   $spreadsheet->getActiveSheet()->getStyle('B3')->applyFromArray($styleheader); 
+                   $spreadsheet->getActiveSheet()->getStyle('C3')->applyFromArray($styleheader); 
+                   $spreadsheet->getActiveSheet()->getStyle('D3')->applyFromArray($styleheader); 
+                   $spreadsheet->getActiveSheet()->getStyle('E3')->applyFromArray($styleheader); 
+                   $spreadsheet->getActiveSheet()->getStyle('F3')->applyFromArray($styleheader); 
+                   $spreadsheet->getActiveSheet()->getStyle('G3')->applyFromArray($styleheader); 
+                  // $spreadsheet->getActiveSheet()->getStyle('H3')->applyFromArray($styleheader); 
+                   //$spreadsheet->getActiveSheet()->getStyle('I3')->applyFromArray($styleheader); 
+                  // $spreadsheet->getActiveSheet()->getStyle('J3')->applyFromArray($styleArray); 
+                   
+                   
+
+                   //DIMENSION
+                   $sheet->getColumnDimension('A')->setAutoSize(true);
+                   $sheet->getColumnDimension('B')->setAutoSize(true);
+                   $sheet->getColumnDimension('C')->setAutoSize(true);
+                   $sheet->getColumnDimension('D')->setAutoSize(true);
+                   $sheet->getColumnDimension('E')->setAutoSize(true);
+                   $sheet->getColumnDimension('F')->setAutoSize(true);
+                   $sheet->getColumnDimension('G')->setAutoSize(true);
+                  // $sheet->getColumnDimension('H')->setAutoSize(true);
+                 //  $sheet->getColumnDimension('I')->setAutoSize(true);
+                  // $sheet->getColumnDimension('A')->setAutoSize(true);
+                   //DIMENSION
+
+
+
+        $row = 4;
+        for ($i=0; $i < count($participants); $i++) {
+           // var_dump($jeunes[$i]);
+            // for($t=1; $t < count($jeunes[$i]); $t++){
+            //     var_dump($jeunes[$i][$t]);
+            // }
+            $column=1;
+            foreach($participants[$i] as $k => $chef){
+               
+                    $sheet->setCellValueByColumnAndRow($column,$row,$chef);
+                  
+               
+                $column++;
+            }
+            $row++;
+
+           
+          }
+        
+
+        $sheet->setTitle("LISTE DES CHEFS");
+
+         //create the sheet in xlsx format
+         $writer = new Xlsx($spreadsheet);
+
+         //create temporary file
+         $filename = "LISTE CHEFS .xlsx";
+         $temp_file = tempnam(sys_get_temp_dir(),$filename);
+ 
+         //create the excel file in the tmp directory of the system
+         $writer->save($temp_file);
+ 
+         //return the excell file in attachment
+         return $this->file($temp_file,$filename,ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+         //return new Response("success");
+         //return new Response();
+    }
+
+  
 
 
 

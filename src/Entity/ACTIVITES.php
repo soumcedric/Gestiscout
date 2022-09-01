@@ -16,7 +16,7 @@ class ACTIVITES
 
     const INITIER = 0;
     const ACCEPTER =1;
-    const STATUT_REFUSE = 'Refuser';
+    const STATUT_REFUSE =2;
     
 
 
@@ -136,12 +136,7 @@ class ACTIVITES
      * @Groups("activite")
      */
     private $Nom;
-    /**
-     * @ORM\Column(type="string")
-     * @Groups("activite")
-     */
-    private $StatutString;
-
+ 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -151,6 +146,52 @@ class ACTIVITES
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $DateValidation;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=AnneePastorale::class, inversedBy="activites")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $anneepastorale;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $DateCreation;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $UserCreation;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $DateModification;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $UserModification;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $Bactif;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $Cible;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $bOneDay;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $bSoumis;
 
     public function __construct()
     {
@@ -170,11 +211,7 @@ class ACTIVITES
     }
 
 
-    public function setStautString(string $statut): ?self
-    {
-        $this->StatutString = $statut;
-        return $this;
-    }
+
     public function setId(int $Id): self
     {
         $this->Id = $Id;
@@ -443,6 +480,114 @@ class ACTIVITES
     public function setDateValidation(?\DateTimeInterface $DateValidation): self
     {
         $this->DateValidation = $DateValidation;
+
+        return $this;
+    }
+
+    public function getAnneepastorale(): ?AnneePastorale
+    {
+        return $this->anneepastorale;
+    }
+
+    public function setAnneepastorale(?AnneePastorale $anneepastorale): self
+    {
+        $this->anneepastorale = $anneepastorale;
+
+        return $this;
+    }
+
+    public function getDateCreation(): ?\DateTimeInterface
+    {
+        return $this->DateCreation;
+    }
+
+    public function setDateCreation(\DateTimeInterface $DateCreation): self
+    {
+        $this->DateCreation = $DateCreation;
+
+        return $this;
+    }
+
+    public function getUserCreation(): ?string
+    {
+        return $this->UserCreation;
+    }
+
+    public function setUserCreation(?string $UserCreation): self
+    {
+        $this->UserCreation = $UserCreation;
+
+        return $this;
+    }
+
+    public function getDateModification(): ?\DateTimeInterface
+    {
+        return $this->DateModification;
+    }
+
+    public function setDateModification(?\DateTimeInterface $DateModification): self
+    {
+        $this->DateModification = $DateModification;
+
+        return $this;
+    }
+
+    public function getUserModification(): ?string
+    {
+        return $this->UserModification;
+    }
+
+    public function setUserModification(?string $UserModification): self
+    {
+        $this->UserModification = $UserModification;
+
+        return $this;
+    }
+
+    public function getBactif(): ?bool
+    {
+        return $this->Bactif;
+    }
+
+    public function setBactif(bool $Bactif): self
+    {
+        $this->Bactif = $Bactif;
+
+        return $this;
+    }
+
+    public function getCible(): ?string
+    {
+        return $this->Cible;
+    }
+
+    public function setCible(string $Cible): self
+    {
+        $this->Cible = $Cible;
+
+        return $this;
+    }
+
+    public function getBOneDay(): ?bool
+    {
+        return $this->bOneDay;
+    }
+
+    public function setBOneDay(bool $bOneDay): self
+    {
+        $this->bOneDay = $bOneDay;
+
+        return $this;
+    }
+
+    public function getBSoumis(): ?bool
+    {
+        return $this->bSoumis;
+    }
+
+    public function setBSoumis(bool $bSoumis): self
+    {
+        $this->bSoumis = $bSoumis;
 
         return $this;
     }

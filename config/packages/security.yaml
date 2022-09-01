@@ -1,5 +1,6 @@
 security:
     encoders:
+        Symfony\Component\Security\Core\User\User: 'plaintext'
         App\Entity\User:
             algorithm: auto
 
@@ -7,30 +8,39 @@ security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
-            entity:
-                class: App\Entity\User
-                property: username
+        chain_provider:
+            chain:
+                providers: [in_memory,user_db]
+        user_db:
+            entity: {class: App\Entity\User, property: username}
+        in_memory:
+            memory:
+                users: 
+                    superadmin: { password: superadmin, roles: [ROLE_CONFIG]}
+          
+                
         # used to reload user from session & other features (e.g. switch_user)
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: true
-            lazy: true
-            provider: app_user_provider
+            anonymous: ~
+            # lazy: true
+            provider: chain_provider
 
             form_login:
-                login_path: loginn
-                check_path: loginn
-                default_target_path: '/Dashboard'
-                always_use_default_target_path: true
+                 login_path: '/login'
+                 check_path: '/login'
+                #  default_target_path: '/Dashboard'
+                #  always_use_default_target_path: false
 
 
             guard:
                 authenticators:
-                    - App\Security\LoginFormAuthAuthenticator
+                      - App\Security\LoginCustomAuthenticator
+                # entry_point: App\Security\LoginFormAuthenticator
+                # entry_point: App\Security\AppCustomAuthAuthenticator
             logout:
                 path: app_logout
                 # where to redirect after logout
@@ -48,22 +58,28 @@ security:
     access_control:
          - { path: /responsable, roles: [ROLE_USER,ROLE_ADMIN,ROLE_CD,ROLE_CG] }
          - { path: /Dashboard, roles: [ROLE_CONSULT,ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_USER,ROLE_CD,ROLE_CG,"ROLE_FORMATION"] }
-         - { path: /ListeAnnePastorale, roles: [ROLE_USER,ROLE_SUPERADMIN,ROLE_CD,ROLE_CG] }
-         - { path: /Groupe , roles: [ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG]}
+         - { path: /ListeAnnePastorale, roles: [ROLE_USER,ROLE_SUPERADMIN,ROLE_CD,ROLE_CG,ROLE_CONFIG] }
+         - { path: /Groupe , roles: [ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG,ROLE_CONFIG]}
          - { path: /ListeJeunes, roles: [ROLE_CONSULT,ROLE_ADMIN,ROLE_CONSULTANT,ROLE_CD,ROLE_CG] }
          - { path: /ListeJeunesDistrict, roles: [ROLE_DISTRICT_USER,ROLE_CD,ROLE_CG?"ROLE_FORMATION"] }
          - { path: ListeResponsableDistrict, roles: [ROLE_DISTRICT_USER,ROLE_CD,ROLE_CG?"ROLE_FORMATION"]}
          - { path: ListeResponsableDistrict, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG]}
          - { path: /DistrictDash, roles: [ROLE_DISTRICT_CONFIG,ROLE_DISTRICT_USER,ROLE_CD,ROLE_CG,ROLE_FORMATION]}
-         - { path: /ListeAnnePastorale, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG]}
-         - { path: /GetListeAnnee, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG]}
-         - { path: /ListeFonction, roles: [ROLE_CD,ROLE_CG]}
-         - { path: /ListeBranche, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG]}
+         - { path: /ListeAnnePastorale, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG,ROLE_CONFIG]}
+         - { path: /GetListeAnnee, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG,ROLE_CONFIG]}
+         - { path: /ListeFonction, roles: [ROLE_CD,ROLE_CG,ROLE_CONFIG]}
+         - { path: /ListeBranche, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG,ROLE_CONFIG]}
          - { path: /AddResponsableDistrict, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG]}
          - { path: /DeleteJeune, roles: [ROLE_DISTRICT_CONFIG,ROLE_USER,ROLE_ADMIN,ROLE_CD,ROLE_CG]}
-         - { path: /DistrictDash, roles: [ROLE_CD,"ROLE_FORMATION"]}
+        #  - { path: /DistrictDash, roles: [ROLE_CD,"ROLE_FORMATION"]}
          - { path: /chefparformation, roles: [ROLE_CD,ROLE_FORMATION]}
          - { path: /ListeChefByChef, roles: [ROLE_CD,ROLE_FORMATION]}
+         - { path: /DashAdmin, roles: [ROLE_CONFIG]}
+         - { path: /GetDistrictUnique, roles: [ROLE_CONFIG]}
+         - { path: /SoumettreActivite, roles: [ROLE_CG]}
+         - { path: /SaveSession, roles: [ROLE_CD,ROLE_FORMATION]}
+         - { path: /Sessions, roles: [ROLE_CD,ROLE_FORMATION]}
+
 
 
 

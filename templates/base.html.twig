@@ -224,11 +224,12 @@
             </ul>
         </div>
         <div class="sidebar_list">
-            <div class="tab-content" id="main-menu">
+            <div class="tab-content" id="main-menu"> 
                 <div class="tab-pane active" id="Home-icon">
                     <nav class="sidebar-nav sidebar-scroll">
                         <ul class="metismenu">
-                            <li class=><img src="{{ asset("/img_logo/LOGO.jpg") }}" class="img-fluid" WIDTH="170" height="150"></li>
+                          
+                            <li class=><img src=/uploads/{{app.user.Groupe.getfilename}} class="img-fluid" WIDTH="170" height="150"></li>
                             <li class="active"><a href="{{ path("Dashboard") }}"><i class="fa fa-dashboard"></i><span>Dashboard</span></a></li>
 
 
@@ -254,6 +255,7 @@
                                {% if is_granted('ROLE_CG') %}
                             <li class="header">Activités</li>
                               <li><a href="{{  path("activite") }}"><i class="fa fa-wrench"></i><span>Créer activité</span></a></li>
+                              <li><a href="{{  path("Activites") }}"><i class="fa fa-wrench"></i><span>Liste des activités</span></a></li>
                             {# <li><a href="{{ path("ListeJeunes") }}"><i class="fa fa-list"></i><span>Liste des jeunes</span></a></li>
                              #}
                             {% endif %}

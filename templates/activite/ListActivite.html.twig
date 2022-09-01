@@ -58,12 +58,13 @@
                         <tr>
                             <th>ID</th>
                             <th>Libelle</th>
-                            <th>Groupe</th>
-                            <th>Branche</th>
+                            {# <th>Groupe</th> #}
+                            <th>Cible</th>
                             <th>Date Debut</th>
                             <th>Date Fin</th>
                             <th>Prix</th>
                             <th>Participant</th>
+                            <th>Statut</th>
                             <th>ACTION</th>
                         </tr>
                         </thead>
@@ -271,12 +272,13 @@
                 columns: [
                     { "data": "ID" },
                     { "data": "LIBELLE" },
-                    { "data": "GROUPE" },
+                    // { "data": "GROUPE" },
                     { "data": "BRANCHE" },
                     { "data": "DEBUT" },
                     { "data": "FIN" },
                     { "data": "PRIX" },
                     { "data": "NBRE" },
+                    { "data": "STATUT" },
                     { "data": "ACTION" }
                 ],
                 columnDefs: [
@@ -321,26 +323,47 @@
 
          $.ajax({
              type:"GET",
-             url:"{{path("ListActivites")}}",
+             url:"{{path("ActivitesByGroupe")}}",
              success:function(res){
                  debugger
                  if (res.ok == true) {
-                     let liste = JSON.parse(res.data);
-                     $.each(liste,function(i,n){
+                     //let liste = JSON.parse(res.data);
+                     $.each(res.data,function(i,n){
                          debugger
-                         //var date = n.date_debut.replace('0','');
+                        
                         var newDate = convertDate(n.date_debut);
                         var newDateFin = convertDate(n.date_fin);
+                         var statut = "";
+                         var optionline = "";
+
+                
+
+                if(n.b_soumis==false)
+                {
+                    optionline="<a id='programme'><i class='fa fa-list-ol fa-1x'></i></a> <a><i class='fa fa-pencil fa-1x'></i></a> <a id='btnsoumettre'><i class='fa fa-check' style='color:green'></i></a>";
+                     statut = '<span class="badge badge-danger">En Attente de confirmation</span>'
+                }
+                else{
+                    optionline="<a id='programme'><i class='fa fa-list-ol fa-1x'></i></a> <a><i class='fa fa-pencil fa-1x'></i></a>";
+                      if(n.statut == "0")
+                    statut = '<span class="badge badge-primary">Initier</span>'
+                  else if(n.statut == "1")
+                    statut = '<span class="badge badge-success">Accepter</span>'
+                  else
+                    statut = '<span class="badge badge-danger">Réfusé</span>'
+                }
                          table.rows.add([{
                     "ID" :n.id,
-                   "LIBELLE":n.nomactivite,
-                    "GROUPE" :n.nomgroupe,
-                    "BRANCHE" :n.nombranche,
+                   "LIBELLE":'<strong>'+ n.nomactivite +'</strong>',
+                   // "GROUPE" :n.nomgroupe,
+                    "BRANCHE" :'',
                      "DEBUT" :newDate,
                      "FIN" :newDateFin,
                       "PRIX" :n.prix+" F CFA",
                        "NBRE" :n.nbre_participant,
-                    "ACTION" :"<input type='button' id='details' class='btn btn-success' value='voir details' /><input type='button' id='programme' value='Programme' class='btn btn-success'/>"
+                    "STATUT":statut,
+                    // "ACTION" :"<input type='button' id='programme' value='Programme' class='btn btn-success'/>"
+                    "ACTION" :optionline
                          }]).draw();
                      })
                  }
@@ -353,16 +376,17 @@
         var newDate =  dateAr[2].substring(0,2)  + '-' + dateAr[1]+ '-' + dateAr[0];
         return newDate;
      }
-        $("#tbactivites").on('click','tbody > tr > td > input[id=programme]',function (){
+        $("#tbactivites").on('click','tbody > tr > td > a[id=programme]',function (){
             debugger
             var row = table.row( $(this).parents('tr') ).data();
             var ID = row.ID;
             $.ajax({
                 type:"GET",
                 url:"{{ path("redirectToProgramme") }}",
-                data:{"value":ID},
+                data:{"value":ID, "district":false},
                 success:function(res){
                     debugger
+                    //alert(res.url);
                    window.location=res.url;
 
                 },
@@ -372,6 +396,122 @@
 
             });
         });
+
+
+$("#tbactivites").on('click','tbody > tr > td > a[id=btnsoumettre]',function (){
+
+    debugger
+    var row = table.row( $(this).parents('tr') ).data();
+    var ID = row.ID;
+     swal({
+                type:'warning',
+                title:'Activités',
+                text:'Etes-vous sûr de vouloir soumettre cette activité à l\'approbation du district ?',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Non',
+                confirmButtonText: 'Oui, soumettre!'
+            },function(res){
+
+                if(res==false)
+                    return;
+                else{
+ $.ajax({
+        type:"POST",
+        url:"{{path("Soumettre")}}",
+        data:{"value": ID},
+        succees:function(res){
+            debugger
+            if(res.ok == true)
+            {
+                swal({
+                    type:'success',
+                    title:'Activité',
+                    text: res.message
+                });
+            }
+        },
+        error:function(res){
+            debugger
+        }
+    });
+                }
+
+            });
+
+
+
+
+
+   
+});
+
+        //  $("#tbactivites").on('click','tbody > tr > td > a[id=btnsoumettre]',function (){
+        //     debugger
+        //     var row = table.row( $(this).parents('tr') ).data();
+        //     var ID = row.ID;
+        //     swal({
+        //         type:'warning',
+        //         title:'Activités',
+        //         text:'Etes-vous sûr de vouloir soumettre cette activité à l\'approbation du district ?',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonColor: '#d33',
+        //         cancelButtonText: 'Non',
+        //         confirmButtonText: 'Oui, soumettre!'
+        //     },function(res){
+        //         debugger
+        //         if(res==false)
+        //             return;
+        //         else{
+        //             $.ajax({
+        //                 type:'POST',
+        //                 path:"{{path("Soumettre")}}",
+        //                 data:{"value":ID},
+        //                 success:function(response)
+        //                 {
+        //                     debugger
+        //                     if(response.ok==true)
+        //                     {
+        //                         swal({
+        //                             type:'succees',
+        //                             title:'Activité',
+        //                             text:response.message
+        //                         });
+        //                     }
+        //                 },
+        //                 error:function(response)
+        //                 {
+        //                     debugger
+        //                      swal({
+        //                             type:'succees',
+        //                             title:'Activité',
+        //                             text:response.message
+        //                         });
+        //                 }
+        //             });
+        //         }
+            
+            
+            
+        //     });
+        //     // $.ajax({
+        //     //     type:"GET",
+        //     //     url:"{{ path("redirectToProgramme") }}",
+        //     //     data:{"value":ID, "district":false},
+        //     //     success:function(res){
+        //     //         debugger
+        //     //         //alert(res.url);
+        //     //        window.location=res.url;
+
+        //     //     },
+        //     //     error:function(res){
+
+        //     //     }
+
+        //     // });
+        // });
 
 
         });

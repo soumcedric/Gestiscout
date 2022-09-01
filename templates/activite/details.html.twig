@@ -24,83 +24,90 @@
                            <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Nom activité</label>
+                                    <label>Intitulé</label>
                                     <input type="text" class="form-control" required id="nom" placeholder="nom de l'activité">
                                 </div>
                             </div>
                              </div>
 
-
+                                {% if oneDayActivity == false %}
                                  <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Déroulement</label>
-                                    <textarea class="form-control" rows="2" id="txtderoulement"></textarea>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Déroulement</label>
+                                            <textarea class="form-control" rows="2" id="txtderoulement" value=""></textarea>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                             </div>
 
-                                <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Objecitf</label>
-                                    <textarea class="form-control" rows="2" id="objectif"></textarea>
+
+                                    <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Objecitf</label>
+                                            <textarea class="form-control" rows="2" id="objectif"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                             </div>
-
-
 
                              <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Date</label>
-                                    <input type="date" class="form-control" id="date" />
+                                    <input type="date" class="form-control" id="date" min="{{dateMin | date("Y-m-d")}}" max="{{dateMax | date("Y-m-d")}}"  />
                                     
                                 </div>
                             </div>
+                            </div>
+                                    {% endif %}
+
+                           
+
+                            
+
+                <div class="row">
 
                                  <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Heure Début</label>
-                                    <input type="time" class="form-control" id="heuredebut" />
-                                    
+                                    <div class="form-group">
+                                        <label>Heure Début</label>
+                                        <input type="time" class="form-control" id="heuredebut" />
+                                        
+                                    </div>
                                 </div>
-                            </div>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Heure Fin</label>
-                                    <input type="time" class="form-control" id="heurefin" />
-                                    
+
+                                 <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Heure Fin</label>
+                                        <input type="time" class="form-control" id="heurefin" />
+                                    </div>
                                 </div>
-                            </div>
                             
-                             </div>
+                </div>
 
 
 
 
-
+ {% if oneDayActivity == false %} 
                              
                                  <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Branche</label>
-                                   <select class="form-control" id="selbranche">
-                                        <option>---sélectionner la branche---</option>
-                                   </select>
-                                </div>
-                            </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Branche</label>
+                                            <select class="form-control" id="selbranche">
+                                                    <option>---sélectionner la branche---</option>
+                                            </select>
+                                            </div>
+                                        </div>
                                <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Cible</label>
-                                            <input id="cible" class="form-control" placeholder="cible de l'activité..."/>
+                                    <div class="form-group">
+                                        <label>Cible</label>
+                                        <input id="cible" class="form-control" placeholder="cible de l'activité..."/>
+                                    </div>
                                 </div>
-                            </div>
                              </div>
 
-
-                               
+ {% endif %}
+                              
                                  <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -116,8 +123,11 @@
                                 </div>
                             </div>
                              </div>
+                            
 
 
+ 
+ 
  <div class="text-center"> 
                             <button type="submit" class="btn btn-success" id="valider">Valider</button>
                             <button type="submit" class="btn btn-danger">Annuler</button>
@@ -193,17 +203,31 @@
             });
      $("#valider").click(function(){
          debugger   
+            // let details = {
+            //         Nom:$("#nom").val(),
+            //         Deroulement:$("#txtderoulement").val() =="undefined" ? "" : $("#txtderoulement").val() ,
+            //         Objectif: $("#objectif").val() == "undefined" ? "" :  $("#objectif").val(),
+            //         Date:$("#date").val(),
+            //         HeureDebut: $("#heuredebut").val(),
+            //         HeureFin:$("#heuredebut").val(),
+            //         Cible : $("#cible").val() == "undefined" ? "" :  $("#cible").val() ,
+            //         Responsable : $("#responsable").val(),
+            //         Branche: $("#selbranche").val(),
+            //         Contact : $("#contact").val() == "undefined" ? "" : $("#contact").val(),
+            //         Activity:$("#activityid").val()
+
+            // };
             let details = {
                     Nom:$("#nom").val(),
-                    Deroulement:$("#txtderoulement").val(),
-                    Objectif: $("#objectif").val(),
-                    Date:$("#date").val(),
+                    Deroulement:"",
+                    Objectif: "",
+                    Date:"",
                     HeureDebut: $("#heuredebut").val(),
-                    HeureFin:$("#heuredebut").val(),
-                    Cible : $("#cible").val(),
+                    HeureFin:$("#heurefin").val(),
+                    Cible : "" ,
                     Responsable : $("#responsable").val(),
-                    Branche: $("#selbranche").val(),
-                    Contact : $("#contact").val(),
+                    Branche: "",
+                    Contact : $("#contact").val() == "undefined" ? "" : $("#contact").val(),
                     Activity:$("#activityid").val()
 
             };

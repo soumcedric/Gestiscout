@@ -1,0 +1,218 @@
+{% extends 'base.html.twig' %}
+
+{% block titre %}PROGRAMME D'ACTIVITE {% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+{% endblock %}
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+    <div class="container-fluid">
+           
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="header">
+                        <h2 class="text-center">DETAILS ACTIVITE</h2>
+                    </div>
+                    <div class="body">
+                        {# <input type="hidden" value="{{activityid}}"id="activityid"/> #}
+                         <div class="alert alert-primary text-center " role="alert"><strong>{{detailsActivite.Libelle | upper}}</strong></div>
+                           <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Nom activité</label>
+                                    <input type="text" class="form-control" required id="nom" placeholder="nom de l'activité" readonly="" value="{{detailsActivite.Libelle}}">
+                                </div>
+                            </div>
+                             </div>
+
+
+                                 <div class="row">
+                          
+                             </div>
+
+                                <div class="row">
+                          
+                             </div>
+
+
+
+                             <div class="row">
+                         
+
+                                 <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Heure Début</label>
+                                    <input type="time" class="form-control" id="heuredebut" value="{{detailsActivite.HeureDebut|date('H:i:s') }}" readonly='' />
+                                    
+                                </div>
+                            </div>
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Heure Fin</label>
+                                    <input type="time" class="form-control" id="heurefin" value="{{detailsActivite.HeureFin|date('H:i:s') }}" readonly='' />
+                                
+                                    
+                                </div>
+                            </div>
+                            
+                             </div>
+
+
+
+
+
+                             
+                                 <div class="row">
+                            <div class="col-md-6">
+                                
+                            </div>
+                              
+                             </div>
+
+
+                               
+                                 <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Responsable activité</label>
+                                   <input type="text" id="responsable" class="form-control" readonly="" value="{{detailsActivite.ResponsableActivite}}" />
+                                </div>
+                            </div>
+
+                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Contact responsable</label>
+                                   <input type="tel" id="contact" class="form-control" value="{{detailsActivite.Contact}}" readonly="" />
+                                </div>
+                            </div>
+                             </div>
+
+{# 
+ <div class="text-center"> 
+                            <button type="submit" class="btn btn-success" id="valider">Valider</button>
+                            <button type="submit" class="btn btn-danger">Annuler</button>
+                        </div> #}
+                            
+                     </div>
+
+                </div>
+            </div>
+          
+        </div>
+        
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
+<script>
+    $(document).ready(function(){
+        debugger
+          $.ajax({
+                type:"GET",
+                url:"{{ path("GetListBranche")}}",
+                success:function(resp){
+                    debugger
+                    $("#selbranche").empty();
+                    var defaultline = '<option value=selected>---selectionner branche---</option>';
+                    $("#selbranche").append(defaultline);
+                    var liste = JSON.parse(resp);
+                    $.each(liste,function(i,n){
+                        debugger
+                        var line = '<option value='+n.id+'>'+n.Libelle+'</option>';
+                        $("#selbranche").append(line);
+
+                    });
+                }
+            });
+              $.ajax({
+                type:"GET",
+                url:"{{ path("GetListBranche")}}",
+                success:function(resp){
+                    debugger
+                    $("#selbranche").empty();
+                    var defaultline = '<option value=selected>---selectionner branche---</option>';
+                    $("#selbranche").append(defaultline);
+                    var liste = JSON.parse(resp);
+                    $.each(liste,function(i,n){
+                        debugger
+                        var line = '<option value='+n.id+'>'+n.Libelle+'</option>';
+                        $("#selbranche").append(line);
+
+                    });
+                }
+            });
+                 $.ajax({
+                type:"GET",
+                url:"{{ path("GetListGroupe")}}",
+                success:function(resp){
+                    debugger
+                    $("#selgroupe").empty();
+                    var defaultline = '<option value=selected>---selectionner groupe---</option>';
+                    $("#selgroupe").append(defaultline);
+                    var liste = JSON.parse(resp);
+                    $.each(liste,function(i,n){
+                        debugger
+                        var line = '<option value='+n.id+'>'+n.Nom+'</option>';
+                        $("#selgroupe").append(line);
+
+                    });
+                   // $("#selgroupe").val($("#gr").val());
+                }
+            });
+     $("#valider").click(function(){
+         debugger   
+            let details = {
+                    Nom:$("#nom").val(),
+                    Deroulement:$("#txtderoulement").val(),
+                    Objectif: $("#objectif").val(),
+                    Date:$("#date").val(),
+                    HeureDebut: $("#heuredebut").val(),
+                    HeureFin:$("#heuredebut").val(),
+                    Cible : $("#cible").val(),
+                    Responsable : $("#responsable").val(),
+                    Branche: $("#selbranche").val(),
+                    Contact : $("#contact").val(),
+                    Activity:$("#activityid").val()
+
+            };
+          $.ajax({
+              type:"POST",
+              url:"{{ path('AddDetails') }}",
+              data:{value: details},
+              success:function(res){
+                  debugger
+                  if(res.ok == true)
+                  {
+                      swal({
+                          type:"success",
+                          title:"Ajout d'une activité",
+                          text: res.message
+                      });
+                  }
+                  else{
+                       swal({
+                          type:"error",
+                          title:"Ajout d'une activité",
+                          text: res.message
+                      });
+                  }
+              }
+          })
+            
+        })
+
+$("#logo").change(function(){
+    debugger
+    readURL(this);
+});
+
+    });
+</script>
+{% endblock %}

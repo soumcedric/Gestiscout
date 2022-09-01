@@ -56,6 +56,7 @@ class ConnexionController extends AbstractController
     public function Dashboard(SessionInterface $session, GroupeRepository $GroupeData, UserRepository $UserData, ResponsableRepository  $respo): Response
     {
         $id = $session->get('id');
+        
         $ActiveYEar = $this->AnneePastorale->findActiveYear();
         $UneAnneePastorale =$ActiveYEar[0];
         $CodeAnnee = $UneAnneePastorale->getCodeAnnee();
@@ -92,6 +93,7 @@ class ConnexionController extends AbstractController
         $Responsable = $user->getResponsable()->getId();
         $infoResponsable = $respo->findOneByID($Responsable);
 
+    
 
         $ConnectedUser = new UserConnectedInfo();
         $ConnectedUser->Groupe = $groupe[0]->getNom();
@@ -142,7 +144,9 @@ class ConnexionController extends AbstractController
             'nbreCotiseLouveteau'=>$nbreCotiseLouveteau,
             'nbreCotiseEclaireur'=>$nbreCotiseEclaireur,
             'nbreCotiseCheminot'=>$nbreCotiseCheminot,
-        'nbreCotiseRoutier'=>$nbreCotiseRoutier
+            'nbreCotiseRoutier'=>$nbreCotiseRoutier
+            
+           
         ]);
     }
 
@@ -222,6 +226,18 @@ class ConnexionController extends AbstractController
 
             ]);
     }
+
+
+
+    #[Route('/DashAdmin', name: 'DashAdmin')]
+    public  function DashAdmin()
+    {      
+
+        return $this->render('connexion/DashboardAdmin.html.twig', [
+            'controller_name' => 'ConnexionController',
+           ]);
+    }
+
 
 
 

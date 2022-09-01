@@ -111,6 +111,37 @@ class Groupe
      */
     private $Activities;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=CommissariatDistrict::class, inversedBy="groupes")
+     * @Groups({"groupe"})
+     */
+    private $commissariatDistrict;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"groupe"})
+     */
+    private $filename;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $extension;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $filebase;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $filebasetext;
+    /**
+     * @Groups({"groupe"})
+     */
+    private $GroupeId;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -368,4 +399,79 @@ class Groupe
 
         return $this;
     }
+
+    public function getCommissariatDistrict(): ?CommissariatDistrict
+    {
+        return $this->commissariatDistrict;
+    }
+
+    public function setCommissariatDistrict(?CommissariatDistrict $commissariatDistrict): self
+    {
+        $this->commissariatDistrict = $commissariatDistrict;
+
+        return $this;
+    }
+
+    public function getFilename(): ?string
+    {
+        return $this->filename;
+    }
+
+    public function setFilename(?string $filename): self
+    {
+        $this->filename = $filename;
+
+        return $this;
+    }
+
+    public function getExtension(): ?string
+    {
+        return $this->extension;
+    }
+
+    public function setExtension(?string $extension): self
+    {
+        $this->extension = $extension;
+
+        return $this;
+    }
+
+    public function getFilebase(): ?string
+    {
+        return $this->filebase;
+    }
+
+    public function setFilebase(?string $filebase): self
+    {
+        $this->filebase = $filebase;
+
+        return $this;
+    }
+
+    public function getFilebasetext(): ?string
+    {
+        return $this->filebasetext;
+    }
+
+    public function setFilebasetext(?string $filebasetext): self
+    {
+        $this->filebasetext = $filebasetext;
+
+        return $this;
+    }
+
+
+
+    public function setGroupeId(?int $groupeid): self
+    {
+        $this->GroupeId = $groupeid;
+
+        return $this;
+    }
+
+    public function getGroupeId(): ?int
+    {
+        return $this->GroupeId;
+    }
+
 }

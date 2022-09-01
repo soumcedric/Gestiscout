@@ -1,0 +1,184 @@
+{% extends 'base_district.html.twig' %}
+
+{% block titre %}FORMATION {% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables.net-rowgroup-bs/1.0.2/rowGroup.bootstrap.min.css" integrity="sha512-2daaOVoEBw8Xi5mtuzMnKKmt6CVCjsYBo6GxPo3aMFUpkU23P0Ru+gkgq4dsrR7P+J+OCy3pCS7vX2AeL3ifMw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        tr.dtrg-group,
+        tr.dtrg-group:hover {
+            background-color: #ddd !important;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+    <div class="container-fluid">
+           
+        {# <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="header">
+                        <h2 class="text-center">LISTE DEFINITIVE SESSION DE FORMATION</h2>
+                    </div>
+                    <div class="body">
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                        <form id="basic-form" method="post" novalidate>
+                                            <div class="form-group">
+                                                <label>Stage</label>
+                                               <select class="form-control" id="selstage">
+                                                    <option value=0 selected>---Choisir un stage----</option>
+                                               </select>
+                                                <span style="color:red;" id="spanstage"></span>
+                                            </div>
+                                             <div class="form-group">
+                                                <label>Date début</label>
+                                                <input type="date" id="txtdatedebut" class="form-control"/>
+                                                <span style="color:red;" id="spandatedebut"></span>
+                                            </div>
+                                                <div class="form-group">
+                                                <label>Directeur de stage</label>
+                                                <input type="text" id="txtdirecteurstage" class="form-control"/>
+                                            </div>
+                                           
+                                        </form>
+                            </div>
+                             <div class="col-lg-6">
+                                        <form id="basic-form" method="post" novalidate>
+                                            <div class="form-group">
+                                                <label>Lieu</label>
+                                                <input type="text" id="txtlieu" class="form-control"/>
+                                                <span style="color:red;" id="spanlieu"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Date Fin</label>
+                                                <input type="date" class="form-control" id="txtdatefin"  >
+                                                <span style="color:red;" id="spandatefin"></span>
+                                            </div>
+                                           
+                                           
+                                        </form>
+                            </div>
+                        </div>
+
+                        
+                         <div class="text-center">
+                                <button type="button" class="btn btn-success" id="btnsave">Enregistrer</button>
+                                <button type="button" class="btn btn-danger" id="btnreste">Annuler</button>
+                         </div>
+                   
+
+
+                    </div>
+                </div>
+            </div>
+          
+        </div> #}
+        
+    </div>
+    
+<div class="col-lg-12">
+    <div class="card">
+        <div class="header">
+            <h2 class="text-center" id="title">Liste des sessions</h2>
+        </div>
+        <div class="body">
+            <div class="table-responsive">
+                <table class="table" id="tblistedefinitive">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Stage</th>
+                            <th>Date Début</th>
+                            <th>Date Fin</th>
+                            <th>Lieu</th>
+                            <th>Directeur</th>                        
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                   <tbody>
+
+                   </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+   <div class="modal fade bd-example-modal-lg preparationliste" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title h4" id="myLargeModalLabel">Préparation de la liste des participants au stage.....</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="col-lg-12">
+                                            <div class="card">
+                                                <div class="header">
+                                                    <h2 class="text-center" id="title">Liste des participants</h2>
+                                                </div>
+                                                <div class="body">
+                                                <input type="hidden" id="idsession" />
+                                                    <div class="table-responsive">
+                                                        <table class="table" id="tbparticipant">
+                                                            <thead>
+                                                                <tr>
+                                                            
+                                                                    <th></th>
+                                                                    <th>NOM</th>
+                                                                    <th>PRENOMS</th>
+                                                                    <th>FONCTION</th>
+                                                                    <th>GROUPE</th> 
+                                                                     <th>GROUPE</th>
+                                                            
+                                                                </tr>
+                                                            </thead>
+                                                        <tbody>
+
+                                                        </tbody>
+                                                    
+                                                        </table>
+                                                    </div>
+                                                        
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                                    <div class=" row text-center">
+                                                            <button type="button" class="btn btn-success" id="btnsaveparticipant" onclick="SaveParticipant();">Enregistrer</button>
+                                                            <button type="button" class="btn btn-danger" id="btnreste">Annuler</button>
+                                                    </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+{% endblock %}
+{% block javascripts %}
+
+<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
+
+
+    <script src="{{ asset("assets/bundles/datatablescripts.bundle.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/dataTables.buttons.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.bootstrap4.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.colVis.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.html5.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.print.min.js") }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables.net-rowgroup/1.2.0/dataTables.rowGroup.min.js"></script>
+    <script src="{{ asset("js/pages/formation/formation.js") }}"></script>
+{% endblock %}

@@ -43,10 +43,16 @@ class Formation
      */
     private $responsableFormations;
 
+    /**
+     * @ORM\OneToMany(targetEntity=SessionFormation::class, mappedBy="stageFormation")
+     */
+    private $sessionFormations;
+
     public function __construct()
     {
         $this->responsable = new ArrayCollection();
         $this->responsableFormations = new ArrayCollection();
+        $this->sessionFormations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,6 +132,36 @@ class Formation
             // set the owning side to null (unless already changed)
             if ($responsableFormation->getFormationId() === $this) {
                 $responsableFormation->setFormationId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SessionFormation[]
+     */
+    public function getSessionFormations(): Collection
+    {
+        return $this->sessionFormations;
+    }
+
+    public function addSessionFormation(SessionFormation $sessionFormation): self
+    {
+        if (!$this->sessionFormations->contains($sessionFormation)) {
+            $this->sessionFormations[] = $sessionFormation;
+            $sessionFormation->setStageFormation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSessionFormation(SessionFormation $sessionFormation): self
+    {
+        if ($this->sessionFormations->removeElement($sessionFormation)) {
+            // set the owning side to null (unless already changed)
+            if ($sessionFormation->getStageFormation() === $this) {
+                $sessionFormation->setStageFormation(null);
             }
         }
 

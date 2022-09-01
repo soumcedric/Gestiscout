@@ -1,6 +1,6 @@
 index:
     path: /
-    controller: App\Controller\SecurityController::loginn
+    controller: App\Controller\LoginCustomController::login
 configuration:
     path: /configuration
     controller: App\Controller\ConfigurationController::index
@@ -52,9 +52,9 @@ connexion:
 Dashboard:
     path: /Dashboard
     controller: App\Controller\ConnexionController::Dashboard
-Login:
-    path: /Login
-    controller: App\Controller\ConnexionController::Login
+app_login:
+    path: /login
+    controller: App\Controller\LoginCustomController::login
 DistrictDash:
     path: /DistrictDash
     controller: App\Controller\ConnexionController::DashboardDistrict
@@ -241,7 +241,7 @@ redirectToProgramme:
     path: /redirectToProgramme
     controller: App\Controller\ActiviteController::redirectToProgramme
 ConsulterDetails:
-    path: /ConsulterDetails/{id}
+    path: /ConsulterDetails/{id}/{district}
     controller: App\Controller\ActiviteController::ConsulterDetails
 UpdateAnneePastorale:
     path: /UpdateAnneePastorale
@@ -297,6 +297,78 @@ PrevisionStage:
 GetNextParticpation:
     path: /GetNextParticpation
     controller: App\Controller\FormationController::GetNextParticpation
+ActivitesByGroupe:
+    path: /ActivitesByGroupe
+    controller: App\Controller\ActiviteController::ActivitesByGroupe
+ViewActivitesByGroupeDistrict:
+    path: /ViewActivitesByGroupeDistrict
+    controller: App\Controller\ActiviteController::ViewActivitesByGroupeDistrict
+ActivitesByGroupeDistrict:
+    path: /ActivitesByGroupeDistrict
+    controller: App\Controller\ActiviteController::ActivitesByGroupeDistrict
+DetailsActiviteDistrict:
+    path: /DetailsActiviteDistrict/{id}
+    controller: App\Controller\ActiviteController::DetailsActiviteDistrict
+GetListDistrict:
+    path: /GetListDistrict
+    controller: App\Controller\ConfigurationController::GetListDistrict
+IndexCommissariatDistrict:
+    path: /IndexCommissariatDistrict
+    controller: App\Controller\ConfigurationController::IndexCommissariatDistrict
+AddDistrict:
+    path: /AddDistrict
+    controller: App\Controller\ConfigurationController::AddDistrict
+connexionlogin:
+    path: /connexionlogin
+    controller: App\Controller\SecurityController::connexion
+DecisionActivite:
+    path: /DecisionActivite
+    controller: App\Controller\ActiviteController::DecisionActivite
+DashAdmin:
+    path: /DashAdmin
+    controller: App\Controller\ConnexionController::DashAdmin
+GetDistrictUnique:
+    path: /GetDistrictUnique
+    controller: App\Controller\ConfigurationController::GetDistrictUnique
+Soumettre:
+    path: /SoumettreActivite
+    controller: App\Controller\ActiviteController::SoumettreActivite
+CreerSession:
+    path: /CreerSessionFormation
+    controller: App\Controller\FormationController::CreerSessionFormation
+SaveSession:
+    path: /SaveSession
+    controller: App\Controller\FormationController::SaveSession
+Sessions:
+    path: /Sessions
+    controller: App\Controller\FormationController::Sessions
+ListePreparatoire:
+    path: /ListePreparatoire
+    controller: App\Controller\FormationController::ListePreparatoire
+CreerListeParticipant:
+    path: /CreerListeParticipant
+    controller: App\Controller\FormationController::CreerListeParticipant
+ListResponsableNextSession:
+    path: /ListResponsableNextSession
+    controller: App\Controller\FormationController::GetResponsableBy_nextSession
+ConfirmerParticpation:
+    path: /ConfirmerParticpation
+    controller: App\Controller\FormationController::ConfirmerParticpation
+ListeDefinitive:
+    path: /ListeDefinitive
+    controller: App\Controller\FormationController::ListeDefinitive
+ExportListeDefinitiveStages:
+    path: /ExportListeDefinitiveStages/{stage}
+    controller: App\Controller\RapportController::ExportListeDefinitiveStages
+    
+
+
+
+
+
+
+
+
 
 
 

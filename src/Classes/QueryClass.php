@@ -551,22 +551,26 @@ class QueryClass
     }
 
 
-    public function GetAllActivites()
-    {
+    // public function GetAllActivites()
+    // {
+    //     $query = "select responsable.id, Nom,Prenoms,Occupation,Telephone,Habitation,Dob,fonction.id fonctionId, 
+    //     fonction.libelle fonctionlibelle, formation.id formationId, formation.libelle formationlibelle from responsable,
+    //      exercer_fonction , fonction, responsable_formation, formation
+    //     where responsable.id = exercer_fonction.responsable_id
+    //     and exercer_fonction.fonction_id = fonction.id
+    //     and responsable.id = responsable_formation.responsable_id_id
+    //     and responsable_formation.formation_id_id = formation.id
+    //     and exercer_fonction.annee_pastorale_id = '".$this->activeYear->getId()."'
+    //     and responsable.id ='".$id."';";
+    //     $stmt = $this->em->getConnection()->prepare($query);
+    //     $stmt->execute();
+    //     return $stmt->fetchAllAssociative();
 
-        $conn = $this->em->getConnection();
-        $sql = 'call SP_GET_ALL_ACTIVITE(); ';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-       // var_dump($stmt);
-        return $stmt->fetchAllAssociative();
-
-    }
+    // }
 
     public function GetAllProgrammesByActivite($activiteid){
-        $conn = $this->em->getConnection();
-        $sql = "call SP_GET_ALL_DETAILS_BY_ACTIVITE('".$activiteid."');";
-        $stmt = $conn->prepare($sql);
+        $query = "select id,libelle libelledetails, date datedetails, description, statut, deroulement,responsable_activite  from details where activite_id = '".$activiteid."'";
+        $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
     }
@@ -895,6 +899,7 @@ class QueryClass
 
 
 
+
  public function GetNextStageFormation($stage)
     {
 
@@ -918,6 +923,135 @@ class QueryClass
 
        
     }
+
+
+
+    /*REQUETES ACTIVITES*/
+
+    public function ListActiviteByGroupe($groupe)
+    {
+        $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis
+        from activites ac, annee_pastorale an, groupe gr
+        where ac.groupe_id = gr.id
+        and ac.anneepastorale_id = an.id
+        and gr.id = '".$groupe."'
+        and an.id = '".$this->activeYear->getId()."'";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    /*REQUETES ACTIVITES*/
+
+
+
+    /* GET INFO GROUPE*/
+    public function GetInfoGroupe($groupe)
+    {
+        $query = "SELECT * FROM GROUPE WHERE id='".$groupe."'";
+      
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    /** */
+
+
+    /*GET DISTRICT LINKIED TO A GROUP*/
+    public function GetGroupeUnique($groupeid){
+        $query = "select * from groupe where id = '".$groupeid."'";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    /**/
+
+
+
+      /*GET FORMATION SESSIONS*/
+      public function GetSessions(){
+        $query = "select session_formation.id id, Lieu,date_debut DateDebut,date_fin DateFin,directeur_stage DirecteurStage, formation.libelle Stage
+        from session_formation, formation
+        where session_formation.stage_formation_id = formation.id";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    /**/
+
+
+    
+      /*GET POTENTIAL PARTICIPANTS*/
+      public function GetListParticipantformation($formationid){
+        $query = "SELECT responsable.id id, responsable.nom nom , responsable.prenoms prenoms , fonction.libelle fonction, groupe.nom groupe FROM RESPONSABLE, responsable_formation, groupe, exercer_fonction, fonction
+        where responsable.groupe_id = groupe.id
+        and responsable.id = responsable_formation.responsable_id_id
+        and responsable.id = exercer_fonction.responsable_id
+        and exercer_fonction.fonction_id = fonction.id
+        and responsable_formation.formation_id_id = '".$formationid."'
+        and exercer_fonction.annee_pastorale_id = '".$this->activeYear->getId()."' ";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    /**/
+
+
+
+     /*GET POTENTIAL PARTICIPANTS*/
+     public function GetResponsableBy_nextSession($sessionid){
+        $query = "select session_formation_responsable.id Id,
+         responsable.nom Nom , responsable.prenoms Prenoms, groupe.nom Groupe
+        from session_formation_responsable, responsable, groupe, exercer_fonction, fonction
+        where session_formation_responsable.responsable_id_id = responsable.id
+        and responsable.groupe_id = groupe.id
+        and responsable.id = exercer_fonction.responsable_id
+        and exercer_fonction.fonction_id = fonction.id
+        and session_formation_responsable.bconfirm_pariticpation = 0
+        and session_id_id = '".$sessionid."'
+        and annee_pastorale_id = '".$this->activeYear->getId()."' ";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    /**/
+
+
+     /*GET  PARTICIPANTS WITH CONFIRMATION*/
+     public function GetResponsableWithConfirmationToStage($sessionid){
+        $query = "select 
+         responsable.nom Nom , responsable.prenoms Prenoms, responsable.dob,responsable.occupation, fonction.libelle,responsable.telephone, groupe.nom Groupe
+        from session_formation_responsable, responsable, groupe, exercer_fonction, fonction
+        where session_formation_responsable.responsable_id_id = responsable.id
+        and responsable.groupe_id = groupe.id
+        and responsable.id = exercer_fonction.responsable_id
+        and exercer_fonction.fonction_id = fonction.id
+        and session_formation_responsable.bconfirm_pariticpation = 1
+        and session_id_id = ".$sessionid."";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    /**/
+
+
+
+    
+
+
+
+
+
+
+
+
+
 
 
 

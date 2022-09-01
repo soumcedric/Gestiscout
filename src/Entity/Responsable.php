@@ -140,6 +140,11 @@ class Responsable
      */
     private $responsableFormations;
 
+    /**
+     * @ORM\OneToMany(targetEntity=SessionFormationResponsable::class, mappedBy="responsableId")
+     */
+    private $sessionFormationResponsables;
+
 
 
 //    /**
@@ -165,6 +170,7 @@ class Responsable
         $this->Maitrises = new ArrayCollection();
         $this->formations = new ArrayCollection();
         $this->responsableFormations = new ArrayCollection();
+        $this->sessionFormationResponsables = new ArrayCollection();
     }
 
 
@@ -532,6 +538,36 @@ public function removeResponsableFormation(ResponsableFormation $responsableForm
         // set the owning side to null (unless already changed)
         if ($responsableFormation->getResponsableId() === $this) {
             $responsableFormation->setResponsableId(null);
+        }
+    }
+
+    return $this;
+}
+
+/**
+ * @return Collection|SessionFormationResponsable[]
+ */
+public function getSessionFormationResponsables(): Collection
+{
+    return $this->sessionFormationResponsables;
+}
+
+public function addSessionFormationResponsable(SessionFormationResponsable $sessionFormationResponsable): self
+{
+    if (!$this->sessionFormationResponsables->contains($sessionFormationResponsable)) {
+        $this->sessionFormationResponsables[] = $sessionFormationResponsable;
+        $sessionFormationResponsable->setResponsableId($this);
+    }
+
+    return $this;
+}
+
+public function removeSessionFormationResponsable(SessionFormationResponsable $sessionFormationResponsable): self
+{
+    if ($this->sessionFormationResponsables->removeElement($sessionFormationResponsable)) {
+        // set the owning side to null (unless already changed)
+        if ($sessionFormationResponsable->getResponsableId() === $this) {
+            $sessionFormationResponsable->setResponsableId(null);
         }
     }
 

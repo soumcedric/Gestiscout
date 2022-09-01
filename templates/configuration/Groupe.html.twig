@@ -1,4 +1,4 @@
-{% extends 'base_district.html.twig' %}
+{% extends 'base_admin.html.twig' %}
 
 {% block titre %}ANNEE PASTORALE {% endblock %}
 
@@ -88,6 +88,13 @@
                                     <input type="email" class="form-control" required id="email" placeholder="email du groupe">
                                 </div>
                             </div>
+                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>District</label>
+                                    <select id="seldistrict" class="form-control">
+                                    </select>
+                                </div>
+                            </div>
 
 
 
@@ -145,6 +152,7 @@
                             <th>REGION</th>
                             <th>PAROISSE</th>
                             <th>TELEPHONE</th>
+                            <th>LOGO</th>
                             <th>ACTION</th>
                         </tr>
                     </thead>
@@ -190,13 +198,14 @@
               { "data": "REGION" },
               { "data": "PAROISSE" },
               { "data": "TELEPHONE" },
+              { "data": "LOGO" },
               { "data": "ACTION" }
           ],
-          // columnDefs: [
-          //     {
-          //         targets: 0,
-          //         visible: false
-          //     }],
+          columnDefs: [
+              {
+                  targets: 0,
+                  visible: false
+              }],
           data: [],
           rowCallback: function (row, data) { },
           filter: true,
@@ -207,6 +216,7 @@
       });
         debugger
          loadData();
+         loadDistrict();
 
         function loadData(){
             $.ajax({
@@ -227,6 +237,7 @@
                             "REGION":n.Region,
                             "PAROISSE":n.Paroisse,
                             "TELEPHONE":n.Phone1,
+                            "LOGO":'<img src="/uploads/' + n.filename + '" width=100 height=100>',
                             "ACTION" :"<a id='btndelete'><span><i class='fa fa-trash fa-2x'></i></span></a><a id='btnUpdate'><span><i class='fa fa-pencil fa-2x'></i></span></a><a id='btnconsult'><span><i class='fa fa-eye fa-2x'></i></span></a>"
 
                         }]).draw();
@@ -234,6 +245,26 @@
                 }
             });
         }
+
+
+
+     function loadDistrict(){
+            $.ajax({
+                type:"GET",
+                url:"{{ path("GetListDistrict")}}",
+                success:function(resp){
+                    debugger
+                    var liste = JSON.parse(resp.data);
+                    $("#seldistrict").append("<option value=0 selected>---sélectionner un district---</option>");
+                    $.each(liste,function(i,n){
+                        $("#seldistrict").append("<option value="+n.id+">"+n.nom+"</option>");
+                    });
+                }
+            });
+        }
+
+
+
 
 $("#logo").change(function(){
     debugger
@@ -278,20 +309,35 @@ $("#logo").change(function(){
 
         $("#valider").click(function (){
             debugger
-            var filename = $('input[type=file]').val().split('\\').pop();
-            var formdata = new FormData();
-           // formdata.append('img',filename);
-            formdata.append('test','dfdf');
-           Groupe={
+            
+           var formData = new FormData();
+          
+             let filename = $('input[type=file]')[0].files[0].name;
+        formData.append('image_path',  $('input[type=file]')[0].files[0],filename);
+        Groupe={
                nom : $("#nom").val(),
                nickname : $("#nickname").val(),
                region : $("#region").val(),
                paroisse : $("#paroisse").val(),
                phone1: $("#phone1").val(),
                phone2: $("#phone2").val(),
-               mail : $("#email").val()
-               //logo : formdata
+               mail : $("#email").val(),
+               logo : $("#image").prop('src'),
+               img: $("#logo").val(),
+              logo :  $("#image").prop('src'),
+              District : $("#seldistrict").val()
            };
+
+
+         formData.append('nom', Groupe.nom );
+         formData.append('nickname', Groupe.nickname );
+         formData.append('region', Groupe.region );
+         formData.append('paroisse', Groupe.paroisse );
+         formData.append('phone1', Groupe.phone1 );
+         formData.append('phone2', Groupe.phone2 );
+         formData.append('mail', Groupe.mail );
+         formData.append('District', Groupe.District );
+          // data.append('doc', JSON.Stringify(Groupe));
 
            if(Groupe.nom=='' || Groupe.nickname=='' || Groupe.region =='' || Groupe.paroisse=='' || Groupe.phone1==''){
                swal({
@@ -304,11 +350,13 @@ $("#logo").change(function(){
                $.ajax({
                    type: "POST",
                    url:"{{ path("AddGroupe") }}",
-                   dataType:"json",
-                   data: {"value": Groupe},
+                   processData:false,
+                    contentType:false,
+                   //data: {"groupe": Groupe},
+                    data:formData,
                    success:function(res){
                        debugger
-                       if (res===1){
+                       if (res.ok==true){
                            swal({
                                title:"GROUPE",
                                text:"Enregistrement effectué avec succès",
@@ -404,22 +452,18 @@ $("#logo").change(function(){
             $.get("{{path("GetGroupeUnique")}}",{value:ID}, function(res){
                 debugger
                 if (res.ok) {
-                    var value = JSON.parse(res.data);
-                    $("#nom").val(value.Nom);
-                    $("#nickname").val(value.NickName);
-                    $("#region").val(value.Region);
-                    $("#paroisse").val(value.Paroisse);
-                    $("#phone1").val(value.Phone1);
-                    $("#phone2").val(value.Phone2);
-                    $("#email").val(value.Email);
+                    //var value = JSON.parse(res.data);
+                    //var vall = value.commissariatDistrict();  
+                    var value = res.data[0]; 
+                    $("#nom").val(value.nom);
+                    $("#nickname").val(value.nick_name);
+                    $("#region").val(value.region);
+                    $("#paroisse").val(value.paroisse);
+                    $("#phone1").val(value.phone1);
+                    $("#phone2").val(value.phone2);
+                    $("#email").val(value.email);
                     $("#idgroupe").val(value.id);
-
-
-
-
-
-
-
+                    $("#seldistrict").val(value.commissariat_district_id);
                 }
                 else{
                     // swal({
@@ -435,7 +479,13 @@ $("#logo").change(function(){
 
 
         $("#modifier").click(function(){
-              var  Groupe={
+            debugger
+            var formData = new FormData();
+          
+             let filename = $('input[type=file]')[0].files[0].name;
+        formData.append('image_path',  $('input[type=file]')[0].files[0],filename);
+             formData.append('image_path',  $('input[type=file]')[0].files[0],filename);
+        Groupe={
                 id:$("#idgroupe").val(),
                nom : $("#nom").val(),
                nickname : $("#nickname").val(),
@@ -443,26 +493,87 @@ $("#logo").change(function(){
                paroisse : $("#paroisse").val(),
                phone1: $("#phone1").val(),
                phone2: $("#phone2").val(),
-               email : $("#email").val()
-               //logo : formdata
+               mail : $("#email").val(),
+               logo : $("#image").prop('src'),
+               img: $("#logo").val(),
+              logo :  $("#image").prop('src'),
+              District : $("#seldistrict").val()
            };
 
-        $.post("{{path("UpdateGroupe")}}",{value:Groupe}, function(res){
-            debugger
-            if(res.ok){
-                    swal({
-                        type:"success",
-                        title:"Groupe",
-                        text: res.message
-                    },function(){
-                        loadData();
-                        Annuler();
-                    })
-            }
-            else{
+            formData.append('id', Groupe.id );
+             formData.append('nom', Groupe.nom );
+         formData.append('nickname', Groupe.nickname );
+         formData.append('region', Groupe.region );
+         formData.append('paroisse', Groupe.paroisse );
+         formData.append('phone1', Groupe.phone1 );
+         formData.append('phone2', Groupe.phone2 );
+         formData.append('mail', Groupe.mail );
+         formData.append('District', Groupe.District );
 
-            }
-        });
+          $.ajax({
+                   type: "POST",
+                   url:"{{ path("UpdateGroupe") }}",
+                   processData:false,
+                    contentType:false,
+                   //data: {"groupe": Groupe},
+                    data:formData,
+                   success:function(res){
+                       debugger
+                       if (res.ok==true){
+                           swal({
+                               title:"GROUPE",
+                               text:"Enregistrement effectué avec succès",
+                               type:"success"
+
+                           },function (){
+                               debugger
+                           });
+                       }else {
+                           swal({
+                               type:"error",
+                               title:"GROUPE",
+                               text:"Problème pendant l'opération"
+                           });
+                       }
+
+                   },
+                   error:function(res){
+                       debugger
+                   }
+
+               });
+
+
+    
+        //       var  Groupe={
+        //        id:$("#idgroupe").val(),
+        //        nom : $("#nom").val(),
+        //        nickname : $("#nickname").val(),
+        //        region : $("#region").val(),
+        //        paroisse : $("#paroisse").val(),
+        //        phone1: $("#phone1").val(),
+        //        phone2: $("#phone2").val(),
+        //        email : $("#email").val(),
+        //        district: $("#seldistrict").val()
+        //        //logo : formdata
+        //    };
+
+        // $.post("{{path("UpdateGroupe")}}",{value:Groupe}, function(res){
+        //     debugger
+        //     if(res.ok){
+        //             swal({
+        //                 type:"success",
+        //                 title:"Groupe",
+        //                 text: res.message
+        //             },function(){
+        //                 loadData();
+        //                 Annuler();
+        //             })
+        //     }
+        //     else{
+
+        //     }
+        // });
 
 
         });

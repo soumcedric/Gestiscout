@@ -75,6 +75,7 @@ class District
      */
     private $exercerFonctions;
 
+
     public function __construct()
     {
         $this->exercerFonctions = new ArrayCollection();
@@ -219,4 +220,5 @@ class District
 
         return $this;
     }
+
 }

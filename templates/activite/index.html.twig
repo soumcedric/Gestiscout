@@ -4,6 +4,8 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+    {# <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> #}
 {% endblock %}
 {% block body %}
 <style>
@@ -19,7 +21,7 @@
                         <h2 class="text-center">AJOUTER UNE ACTIVITE</h2>
                     </div>
                     <div class="body">
-                        <div class="row">
+                 <div class="row">
                       <div class="col-md-12">
                             <div class="form-group">
                                 <label>Libellé de l'activité</label>
@@ -36,23 +38,16 @@
 
                         </div>
 
-                    </div>
+                </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Ville</label>
-                                    <input type="text" class="form-control" required id="Ville" placeholder="Ville">
+                                    <label>Localisation</label>
+                                    <input type="text" class="form-control"  id="localisation" placeholder="Localisation">
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
-
-                                <div class="form-group">
-                                    <label>Commune</label>
-                                    <input type="text" class="form-control" required id="commune" placeholder="Commune">
-                                </div>
-
-                            </div>
+                      
 
                         </div>
 
@@ -94,6 +89,23 @@
 
                         </div>
 
+                    <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Cible</label>
+                                   <select class="form-control" id="selcible">
+                                   <option value="selected">---sélectionner cible---</option>
+                                    <option value="0">Groupe</option>
+                                    <option value="1">Branche</option>
+                                   </select>
+                                    
+                                       
+                                    
+                                </div>
+                            </div>
+                   
+
+                        </div>
 
 
                         <div class="row">
@@ -103,9 +115,12 @@
                                    <select class="form-control" id="selgroupe">
                                     <option>---sélectionner votre groupe---</option>
                                    </select>
+                                    
+                                       
+                                    
                                 </div>
                             </div>
-
+                                 
                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Branche</label>
@@ -116,6 +131,23 @@
                             </div>
 
                         </div>
+
+                       
+                        
+                    
+
+
+
+                        
+                        <div class="row">
+                          
+                        </div>
+
+
+
+
+
+                 
 
 
                         <div class="row">
@@ -147,6 +179,8 @@
         </div>
         
     </div>
+    
+    <input type="hidden" value="{{groupe}}" id="gr" disabled> 
 {#     
 <div class="col-lg-12">
     <div class="card">
@@ -182,6 +216,24 @@
 <script>
     $(document).ready(function(){
         debugger
+   
+            $("#selgroupe").attr('disabled','disabled');
+            $("#selbranche").attr('disabled','disabled');
+            $("#selcible").change(function(){
+                debugger
+               
+                if($(this).val()=="1")
+                {
+                   $("#selbranche").removeAttr('disabled');
+                   $("#selgroupe").attr('disabled','disabled');
+                }
+                else if($(this).val()=="0"){
+                      $("#selgroupe").removeAttr('disabled');
+                   $("#selbranche").attr('disabled','disabled');
+                }
+                    
+            })
+          // $('.js-example-basic-multiple').select2();
               $.ajax({
                 type:"GET",
                 url:"{{ path("GetListBranche")}}",
@@ -207,14 +259,14 @@
                     $("#selgroupe").empty();
                     var defaultline = '<option value=selected>---selectionner groupe---</option>';
                     $("#selgroupe").append(defaultline);
-                    var liste = JSON.parse(resp);
-                    $.each(liste,function(i,n){
+                   // var liste = JSON.parse(resp);
+                    $.each(resp.data,function(i,n){
                         debugger
                         var line = '<option value='+n.id+'>'+n.Nom+'</option>';
                         $("#selgroupe").append(line);
 
                     });
-                   // $("#selgroupe").val($("#gr").val());
+                    $("#selgroupe").val($("#gr").val());
                 }
             });
      $("#valider").click(function(){
@@ -222,9 +274,7 @@
             let acitivy = {
                     Nom:$("#nom").val(),
                     Description:$("#description").val(),
-                    Localisation:"",
-                    Ville:$("#Ville").val(),
-                    Commune:$("#commune").val(),
+                    Localisation:$("#localisation").val(),
                     DateDebut:$("#datedebut").val(),
                     DateFin:$("#datefin").val(),
                     HeureDebut:$("#heuredebut").val(),
@@ -234,7 +284,8 @@
                     NbreParticipant:$("#nbre").val(),
                     Prix:$("#prix").val(),
                     Groupe:$("#selgroupe").val(),
-                    Branche:$("#selbranche").val()
+                    Branche:$("#selbranche").val() == "selected" ? '' : $("#selbranche").val()  ,
+                    Cible: $("#selcible").val()
             };
           $.ajax({
               type:"POST",
@@ -244,6 +295,7 @@
                   debugger
                   if(res.ok == true)
                   {
+                      debugger
                       swal({
                           type:"success",
                           title:"Ajout d'une activité",
@@ -251,12 +303,22 @@
                       });
                   }
                   else{
+                      debugger
                        swal({
                           type:"error",
                           title:"Ajout d'une activité",
                           text: res.message
                       });
                   }
+              },
+              error:function(res)
+              {
+                debugger    
+                swal({
+                          type:"error",
+                          title:"Ajout d'une activité",
+                          text: res.responseText
+                      });
               }
           })
             

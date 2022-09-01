@@ -290,9 +290,20 @@
 
                             {% if is_granted('ROLE_FORMATION')%}
                                <li class="header">Formation</li>
+                               <li><a href="{{  path("CreerSession") }}"><i class="fa fa-wrench"></i><span>Créer session</span></a></li>
                             <li><a href="{{  path("chefparformation") }}"><i class="fa fa-wrench"></i><span>Chefs par stage</span></a></li>
                             <li><a href="{{  path("PrevisionStage") }}"><i class="fa fa-wrench"></i><span>Prévision stage</span></a></li>
+                            <li><a href="{{  path("ListeDefinitive") }}"><i class="fa fa-wrench"></i><span>Liste définitive</span></a></li>
                             {% endif %}
+
+
+                            {% if is_granted('ROLE_CD')%}
+                               <li class="header">Activités</li>
+                            <li><a href="{{  path("ViewActivitesByGroupeDistrict") }}"><i class="fa fa-wrench"></i><span>Activités par groupe</span></a></li>
+                            {# <li><a href="{{  path("PrevisionStage") }}"><i class="fa fa-wrench"></i><span>Prévision stage</span></a></li> #}
+                            {% endif %}
+
+
 
 
 

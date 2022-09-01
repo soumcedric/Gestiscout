@@ -79,6 +79,11 @@ class AnneePastorale
      */
     private $exercerFonctions;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ACTIVITES::class, mappedBy="anneepastorale")
+     */
+    private $activites;
+
 
 
     public function __construct()
@@ -86,6 +91,7 @@ class AnneePastorale
         $this->INSCRIPTIONS = new ArrayCollection();
         $this->Responsable = new ArrayCollection();
         $this->exercerFonctions = new ArrayCollection();
+        $this->activites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -243,6 +249,36 @@ class AnneePastorale
             // set the owning side to null (unless already changed)
             if ($exercerFonction->getAnneePastorale() === $this) {
                 $exercerFonction->setAnneePastorale(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ACTIVITES[]
+     */
+    public function getActivites(): Collection
+    {
+        return $this->activites;
+    }
+
+    public function addActivite(ACTIVITES $activite): self
+    {
+        if (!$this->activites->contains($activite)) {
+            $this->activites[] = $activite;
+            $activite->setAnneepastorale($this);
+        }
+
+        return $this;
+    }
+
+    public function removeActivite(ACTIVITES $activite): self
+    {
+        if ($this->activites->removeElement($activite)) {
+            // set the owning side to null (unless already changed)
+            if ($activite->getAnneepastorale() === $this) {
+                $activite->setAnneepastorale(null);
             }
         }
 
