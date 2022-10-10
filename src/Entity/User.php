@@ -60,6 +60,11 @@ class User implements UserInterface
      */
     private $district;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $bActif;
+
   
 
     public function getId(): ?int
@@ -191,6 +196,18 @@ class User implements UserInterface
     public function setDistrict(?District $district): self
     {
         $this->district = $district;
+
+        return $this;
+    }
+
+    public function getBActif(): ?bool
+    {
+        return $this->bActif;
+    }
+
+    public function setBActif(bool $bActif): self
+    {
+        $this->bActif = $bActif;
 
         return $this;
     }

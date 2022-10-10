@@ -584,36 +584,36 @@ class QueryClass
         return $stmt->fetchAllAssociative();
     }
 
-    public function GetNbreJeuneByGenreByGroupe($genre,$groupe)
-    {
-        $conn = $this->em->getConnection();
-        $sql = "call gestiscoutdb.SP_GET_RESPONSABLE_ACTIF_BY_GROUPE('".$groupe."','".$this->activeYear->getId()."');";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAllAssociative();
-    }
+    // public function GetNbreJeuneByGenreByGroupe($genre,$groupe)
+    // {
+    //     $conn = $this->em->getConnection();
+    //     $sql = "call gestiscoutdb.SP_GET_RESPONSABLE_ACTIF_BY_GROUPE('".$groupe."','".$this->activeYear->getId()."');";
+    //     $stmt = $conn->prepare($sql);
+    //     $stmt->execute();
+    //     return $stmt->fetchAllAssociative();
+    // }
 
 
-    public function GetListeJeuneNonCotise($groupe)
-    {
-        // $conn = $this->em->getConnection();
-        // $sql = "call SP_GET_RESPONSABLES_NON_COTISE_PAR_GROUPE('".$this->activeYear->getId()."','".$groupe."');";
-        // $stmt = $conn->prepare($sql);
-        // $stmt->execute();
-        // return $stmt->fetchAllAssociative();
+    // public function GetListeJeuneNonCotise($groupe)
+    // {
+    //     // $conn = $this->em->getConnection();
+    //     // $sql = "call SP_GET_RESPONSABLES_NON_COTISE_PAR_GROUPE('".$this->activeYear->getId()."','".$groupe."');";
+    //     // $stmt = $conn->prepare($sql);
+    //     // $stmt->execute();
+    //     // return $stmt->fetchAllAssociative();
 
 
 
-        $sql = "select r.Id, r.Nom, r.Prenoms, r.Telephone
-        from responsable r, exercer_fonction ex
-        where r.id = ex.responsable_id
-        and ex.annee_pastorale_id=".$this->activeYear->getId()."
-        and r.groupe_id = ".$groupe."
-        and r.id not in(select c.responsable_id from cotisation c where c.annee_pastorale_id=".$this->activeYear->getId()." and c.responsable_id is not null)";
-        $stmt = $this->em->getConnection()->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAllAssociative();
-    }
+    //     $sql = "select r.Id, r.Nom, r.Prenoms, r.Telephone
+    //     from responsable r, exercer_fonction ex
+    //     where r.id = ex.responsable_id
+    //     and ex.annee_pastorale_id=".$this->activeYear->getId()."
+    //     and r.groupe_id = ".$groupe."
+    //     and r.id not in(select c.responsable_id from cotisation c where c.annee_pastorale_id=".$this->activeYear->getId()." and c.responsable_id is not null)";
+    //     $stmt = $this->em->getConnection()->prepare($sql);
+    //     $stmt->execute();
+    //     return $stmt->fetchAllAssociative();
+    // }
 
     
   

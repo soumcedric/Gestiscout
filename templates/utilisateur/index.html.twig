@@ -1,39 +1,117 @@
-{% extends 'base1.html.twig' %}
+{% extends 'base_admin.html.twig' %}
 
 {% block title %}Hello UtilisateurController!{% endblock %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-lg-6">
-            <form id="basic-form" method="post" novalidate>
-                <div class="form-group">
-                    <label>Nom Utilisateur</label>
-                    <input type="text" class="form-control" required id="loginname">
-                </div>
-                <div class="form-group">
-                    <label>Mot de passe</label>
-                    <input type="password" class="form-control" required id="password">
-                </div>
-                <div class="form-group">
-                    <label>Confirmer mot de passe</label>
-                    <input type="password" class="form-control" required id="confirmpass">
-                </div>
-                <div class="form-group">
-                    <label>Groupe</label>
-                    <select id="groupe" class="form-control"></select>
-                </div>
+ 
 
 
-                <br>
-
-            </form>
+    <div class="block-header">
+        <div class="row clearfix">
+            <div class="col-md-6 col-sm-12">
+{#                <h1>Color Table</h1>#}
+                <nav aria-label="breadcrumb">
+{#
+                </nav>
+            </div>
+{#            <div class="col-md-6 col-sm-12 text-right hidden-xs">#}
+{#                <a href="javascript:void(0);" class="btn btn-sm btn-primary" title="">Ajouter un responsable</a>#}
+{#            </div>#}
         </div>
+    </div>
 
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2 class="text-center" >Ajouter un utilisateur</h2>
+                        </div>
+                        <div class="body">
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    {# <form id="basic-form" method="post" novalidate> #}
+                                     <div class="col-lg-12">
+                                        <div class="col-lg-6">
+                                               <label>District</label>
+                                            <input type="text" class="form-control" required id="Nom">
+                                        </div>
+                                        <div class="col-lg-6">
+                                               <label>District</label>
+                                            <input type="text" class="form-control" required id="Nom">
+                                        </div>
+                                     </div>
+                                        <div class="form-group">
+                                         
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Responsable</label>
+                                            <input type="text" class="form-control" required id="prenoms">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Nom</label>
+                                            <input type="date" class="form-control" required id="dob" max="">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Fonction</label>
+                                            <select id="fonction" class="form-control"></select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Pseudo</label>
+                                            <select id="formation" class="form-control"></select>
+                                        </div>
+
+                                         <div class="form-group">
+                                            <label>Mot de passe</label>
+                                            <select id="formation" class="form-control"></select>
+                                        </div>
+
+
+                                        <br>
+
+                                    {# </form> #}
+                                </div>
+                              
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-success" id="save">Enregistrer</button>
+                                <button type="button" class="btn btn-danger" id="reset">Annuler</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="text-center">
-        <button type="button" class="btn btn-success" id="save">Enregistrer</button>
-        <button type="button" class="btn btn-danger" id="reset">Annuler</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="width: 48px">
+            <span class="fa fa-spinner fa-spin fa-3x"></span>
+        </div>
     </div>
+</div>
+
+
+
 {% endblock %}
 
 {% block javascripts %}
