@@ -570,6 +570,7 @@ class QueryClass
 
     public function GetAllProgrammesByActivite($activiteid){
         $query = "select id,libelle libelledetails, date datedetails, description, statut, deroulement,responsable_activite  from details where activite_id = '".$activiteid."'";
+       
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
