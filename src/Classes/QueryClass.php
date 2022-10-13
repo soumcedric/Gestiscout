@@ -568,6 +568,16 @@ class QueryClass
 
     // }
 
+
+
+
+
+
+
+
+
+
+
     public function GetAllProgrammesByActivite($activiteid){
         $query = "select id,libelle libelledetails, date datedetails, description, statut, deroulement,responsable_activite  from details where activite_id = '".$activiteid."'";
        
@@ -577,6 +587,17 @@ class QueryClass
     }
 
 
+
+
+
+
+
+
+
+
+
+
+    
     public function GetJeunesActifByGroupe($groupe)
     {
         // $conn = $this->em->getConnection();
