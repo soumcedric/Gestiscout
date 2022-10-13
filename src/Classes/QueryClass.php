@@ -551,22 +551,111 @@ class QueryClass
     }
 
 
-    public function GetAllActivites()
-    {
+    // public function GetAllActivites()
+    // {
+    //     $query = "select responsable.id, Nom,Prenoms,Occupation,Telephone,Habitation,Dob,fonction.id fonctionId, 
+    //     fonction.libelle fonctionlibelle, formation.id formationId, formation.libelle formationlibelle from responsable,
+    //      exercer_fonction , fonction, responsable_formation, formation
+    //     where responsable.id = exercer_fonction.responsable_id
+    //     and exercer_fonction.fonction_id = fonction.id
+    //     and responsable.id = responsable_formation.responsable_id_id
+    //     and responsable_formation.formation_id_id = formation.id
+    //     and exercer_fonction.annee_pastorale_id = '".$this->activeYear->getId()."'
+    //     and responsable.id ='".$id."';";
+    //     $stmt = $this->em->getConnection()->prepare($query);
+    //     $stmt->execute();
+    //     return $stmt->fetchAllAssociative();
 
-        $conn = $this->em->getConnection();
-        $sql = 'call gestiscoutdb.SP_GET_ALL_ACTIVITE(); ';
-        $stmt = $conn->prepare($sql);
+    // }
+
+
+
+
+
+
+
+
+
+
+
+    public function GetAllProgrammesByActivite($activiteid){
+        $query = "select id,libelle libelledetails, date datedetails, description, statut, deroulement,responsable_activite  from details where activite_id = '".$activiteid."'";
+       
+        $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
-       // var_dump($stmt);
         return $stmt->fetchAllAssociative();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    public function GetJeunesActifByGroupe($groupe)
+    {
+        // $conn = $this->em->getConnection();
+        // $sql = "call SP_GET_JEUNES_ACTIF_BY_GROUPE('".$groupe."','".$this->activeYear->getId()."');";
+        // $stmt = $conn->prepare($sql);
+        // $stmt->execute();
+        // return $stmt->fetchAllAssociative();
+
+
+        $sql="select jeunes.id, jeunes.nom, jeunes.prenoms, jeunes.dob, jeunes.occupation, jeunes.lieu_habitation, branche.libelle branche, groupe.nom groupe, jeunes.telephone
+        from jeune jeunes, inscription inscriptions, branche branche, groupe groupe
+        where jeunes.id = inscriptions.jeunes_id
+        and jeunes.branche_id = branche.id
+        and jeunes.groupe_id = groupe.id
+        and inscriptions.annee_id = ".$this->activeYear->getId()."
+        and jeunes.statut='1'
+        and jeunes.groupe_id=".$groupe.";";
+
+        $stmt = $this->em->getConnection()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 
-    public function GetAllProgrammesByActivite($activiteid){
-        $conn = $this->em->getConnection();
-        $sql = "call gestiscoutdb.SP_GET_ALL_DETAILS_BY_ACTIVITE('".$activiteid."');";
-        $stmt = $conn->prepare($sql);
+    public function GetResponsableActifByGroupe($groupe)
+    {
+        // $conn = $this->em->getConnection();
+        // $sql = "call SP_GET_RESPONSABLE_ACTIF_BY_GROUPE('".$groupe."','".$this->activeYear->getId()."');";
+        // $stmt = $conn->prepare($sql);
+        // $stmt->execute();
+        // return $stmt->fetchAllAssociative();
+
+
+        $sql = "SELECT responsables.id, responsables.nom, responsables.prenoms, responsables.dob, responsables.occupation, 
+        responsables.habitation, fonction.libelle fonction, responsables.telephone,formation.id formation_id, formation.libelle formation
+        FROM responsable responsables, exercer_fonction exercer, groupe groupes, genre, fonction,formation, responsable_formation
+        WHERE responsables.id = exercer.responsable_id
+        and responsables.groupe_id = groupes.id
+        and responsables.genre_id = genre.id
+        and exercer.fonction_id = fonction.id
+        and responsables.id = responsable_formation.responsable_id_id
+        and formation.id = responsable_formation.formation_id_id
+        and responsables.statut = '1'
+        and responsables.groupe_id = ".$groupe."
+        and exercer.annee_pastorale_id = ".$this->activeYear->getId().";";
+        $stmt = $this->em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
 
@@ -577,46 +666,26 @@ class QueryClass
 
     public function GetResponsablesNonCotiseParGroupe($groupe)
     {
-        $conn = $this->em->getConnection();
-        $sql = "call gestiscoutdb.SP_GET_JEUNES_ACTIF_BY_GROUPE('".$groupe."','".$this->activeYear->getId()."');";
-        $stmt = $conn->prepare($sql);
+        // $conn = $this->em->getConnection();
+        // $sql = "call SP_GET_RESPONSABLES_NON_COTISE_PAR_GROUPE('".$this->activeYear->getId()."','".$groupe."');";
+        // $stmt = $conn->prepare($sql);
+        // $stmt->execute();
+        // return $stmt->fetchAllAssociative();
+
+
+
+        $sql = "select r.Id, r.Nom, r.Prenoms, r.Telephone
+        from responsable r, exercer_fonction ex
+        where r.id = ex.responsable_id
+        and ex.annee_pastorale_id=".$this->activeYear->getId()."
+        and r.groupe_id = ".$groupe."
+        and r.id not in(select c.responsable_id from cotisation c where c.annee_pastorale_id=".$this->activeYear->getId()." and c.responsable_id is not null)";
+        $stmt = $this->em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
     }
 
-    // public function GetNbreJeuneByGenreByGroupe($genre,$groupe)
-    // {
-    //     $conn = $this->em->getConnection();
-    //     $sql = "call gestiscoutdb.SP_GET_RESPONSABLE_ACTIF_BY_GROUPE('".$groupe."','".$this->activeYear->getId()."');";
-    //     $stmt = $conn->prepare($sql);
-    //     $stmt->execute();
-    //     return $stmt->fetchAllAssociative();
-    // }
-
-
-    // public function GetListeJeuneNonCotise($groupe)
-    // {
-    //     // $conn = $this->em->getConnection();
-    //     // $sql = "call SP_GET_RESPONSABLES_NON_COTISE_PAR_GROUPE('".$this->activeYear->getId()."','".$groupe."');";
-    //     // $stmt = $conn->prepare($sql);
-    //     // $stmt->execute();
-    //     // return $stmt->fetchAllAssociative();
-
-
-
-    //     $sql = "select r.Id, r.Nom, r.Prenoms, r.Telephone
-    //     from responsable r, exercer_fonction ex
-    //     where r.id = ex.responsable_id
-    //     and ex.annee_pastorale_id=".$this->activeYear->getId()."
-    //     and r.groupe_id = ".$groupe."
-    //     and r.id not in(select c.responsable_id from cotisation c where c.annee_pastorale_id=".$this->activeYear->getId()." and c.responsable_id is not null)";
-    //     $stmt = $this->em->getConnection()->prepare($sql);
-    //     $stmt->execute();
-    //     return $stmt->fetchAllAssociative();
-    // }
-
     
-  
   
     public function GetNbreJeuneByGroupeByBrancheByAnnee($groupe,$branche)
     {
