@@ -360,6 +360,10 @@ ListeDefinitive:
 ExportListeDefinitiveStages:
     path: /ExportListeDefinitiveStages/{stage}
     controller: App\Controller\RapportController::ExportListeDefinitiveStages
+update_groupe_new:
+    path: /update_groupe_new
+    controller: App\Controller\ConfigurationController::update_groupe_new
+    
     
 
 

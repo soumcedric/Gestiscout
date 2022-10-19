@@ -361,7 +361,7 @@ class ConfigurationController extends AbstractController
         }
     }
     #[Route('/UpdateGroupe', name: 'UpdateGroupe')]
-    public function UpdateGroupe(HttpFoundationRequest $request, GroupeRepository $repGroupe, EntityManagerInterface $entitymanager, CommissariatDistrictRepository $cdRepo,SluggerInterface $slugger)
+    public function UpdateGroupe(HttpFoundationRequest $request, GroupeRepository $repGroupe, EntityManagerInterface $entitymanager, CommissariatDistrictRepository $cdRepo,SluggerInterface $slugger):Response
     {
         try {
 
@@ -381,16 +381,49 @@ class ConfigurationController extends AbstractController
             //file management
             $file = $request->files->get('image_path');
 
-             $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-             $safeFilename = $slugger->slug($originalFilename);
-             $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
-             $file->move(
-                $this->getParameter('brochures_directory'),
-                $newFilename
-              );
+            //  $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            //  $safeFilename = $slugger->slug($originalFilename);
+            //  $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
 
 
-            $newGroupe->setFilename($newFilename);
+
+
+
+
+
+
+            $baseDir = realpath(__DIR__ . '/../../img_logo');
+            $fichier=$_FILES["fichier"]["name"];
+            $real = realpath($_FILES["fichier"]["tmp_name"]);
+            $extension = $_FILES["fichier"]["type"];
+            $handle = fopen($_FILES["fichier"]["tmp_name"],'r');
+            move_uploaded_file($_FILES["fichier"]["tmp_name"],$baseDir.'//'.$fichier);
+            $newfile = $baseDir.'//'.$fichier;
+
+           // dump($real);
+
+
+            //var_dump($newfile);
+            // $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xls');
+            // $spreadsheet = $reader->load($newfile);
+            // $highetsrow = $spreadsheet->getActiveSheet()->getHighestDataRow();
+            // $highestColumn = $spreadsheet->getActiveSheet()->getHighestDataColumn();
+            // $numberOfColumn = $this->MapAlphabeticLetter($highestColumn);
+
+
+
+
+
+
+
+
+            //  $file->move(
+            //     $this->getParameter('brochures_directory'),
+            //     $newFilename
+            //   );
+
+
+            // $newGroupe->setFilename($newFilename);
 
 
             //get groupe to update
@@ -405,7 +438,7 @@ class ConfigurationController extends AbstractController
                 $paroisse =  $groupeToUpdate->getParoisse() ==$newGroupe->getParoisse() ? $groupeToUpdate->getParoisse() : $newGroupe->getParoisse();
                 $region =  $groupeToUpdate->getRegion() == $newGroupe->getRegion()? $groupeToUpdate->getRegion() : $newGroupe->getRegion();
             }
-            $groupeToUpdate->setFilename($newGroupe->getFilename());
+            $groupeToUpdate->setFilename($fichier);
                 //selected district
                 $selecteDistrict = $cdRepo->findOneBy(["id"=>$request->get("District")]);
              $district = $groupeToUpdate->getCommissariatDistrict() == $selecteDistrict ? $groupeToUpdate->getCommissariatDistrict() : $selecteDistrict;
@@ -422,14 +455,32 @@ class ConfigurationController extends AbstractController
                 $groupeToUpdate->setDateModification(new \DateTime());
                 $groupeToUpdate->setCommissariatDistrict($district);
 
-                dump($groupeToUpdate);
+                var_dump($groupeToUpdate);
            
              $entitymanager->flush();
-            return new JsonResponse(['ok' => true, 'message' => 'opération effectuée avec succès']);
+             return new Response();
+            //return new JsonResponse(['ok' => true, 'message' => 'opération effectuée avec succès']);
         } catch (\Exception $e) {
-           return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
+           //return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
+           return new Response();
         }
-        //return new Response();
+     
+    }
+
+
+    #[Route('/update_groupe_new', name: 'update_groupe_new')]
+    public function update_groupe_new(HttpFoundationRequest $request)
+    {
+        $targetfile = "../..";
+        define ('SITE_ROOT', realpath(dirname(__FILE__)));
+        $fichier=$_FILES["image_path"]["name"];
+         $real = realpath($_FILES["image_path"]["tmp_name"]);
+         $extension = $_FILES["image_path"]["type"];
+         $handle = fopen($_FILES["image_path"]["tmp_name"],'r');
+         move_uploaded_file($fichier,__DIR__.'//../../public'.$fichier);
+    //     $newfile = $targetfile.'//'.$fichier;
+    dump(__DIR__);
+        return new Response();
     }
 
     #[Route('/Formation', name: 'Formation')]
