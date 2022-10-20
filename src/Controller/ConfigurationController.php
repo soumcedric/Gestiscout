@@ -469,18 +469,74 @@ class ConfigurationController extends AbstractController
 
 
     #[Route('/update_groupe_new', name: 'update_groupe_new')]
-    public function update_groupe_new(HttpFoundationRequest $request)
+    public function update_groupe_new(HttpFoundationRequest $request, GroupeRepository $repGroupe, EntityManagerInterface $entitymanager, CommissariatDistrictRepository $cdRepo,SluggerInterface $slugger)
     {
-        $targetfile = "../..";
+        try{
+
+    
+        $newGroupe = new Groupe();
+        $newGroupe->setNom($request->get("nom"))
+            ->setNickName($request->get("nickname"))
+            ->setPhone1($request->get("phone1"))
+            ->setPhone2($request->get("phone2"))
+            ->setEmail($request->get("mail"))
+            ->setSlogan("")
+            ->setRegion($request->get("region"))
+            ->setParoisse($request->get("paroisse"))
+            ->setDateModification(new \DateTime());
+
+        $targetfile = __DIR__."/../../public/uploads/groupe";
         define ('SITE_ROOT', realpath(dirname(__FILE__)));
         $fichier=$_FILES["image_path"]["name"];
          $real = realpath($_FILES["image_path"]["tmp_name"]);
          $extension = $_FILES["image_path"]["type"];
          $handle = fopen($_FILES["image_path"]["tmp_name"],'r');
-         move_uploaded_file($fichier,__DIR__.'//../../public'.$fichier);
-    //     $newfile = $targetfile.'//'.$fichier;
-    dump(__DIR__);
-        return new Response();
+        if(move_uploaded_file($real,$targetfile.'/'. $fichier))   
+        {
+            dump("moved");
+        }
+        else
+        {
+            dump("unmoved");
+        }
+       //get groupe to update
+       $groupeToUpdate = $repGroupe->findOneBy(["id" => $request->get("id")]);
+       if ($groupeToUpdate != null) {
+        $nom = $groupeToUpdate->getNom() == $newGroupe->getNom() ? $groupeToUpdate->getNom() : $newGroupe->getNom();
+        $nickname = $groupeToUpdate->getNickName() == $newGroupe->getNickName()? $groupeToUpdate->getNickName() : $newGroupe->getNickName();
+        $phone1 =  $groupeToUpdate->getPhone1() == $newGroupe->getPhone1() ? $groupeToUpdate->getPhone1() : $newGroupe->getPhone1();
+        $phone2 =  $groupeToUpdate->getPhone2() == $newGroupe->getPhone2()? $groupeToUpdate->getPhone2() : $newGroupe->getPhone2();
+        $email =  $groupeToUpdate->getEmail() == $newGroupe->getEmail()? $groupeToUpdate->getEmail() : $newGroupe->getEmail();
+        //  $slogan =  $groupeToUpdate->getSlogan() == $data["slogan"] ? $groupeToUpdate->getSlogan() : $data["slogan"];
+        $paroisse =  $groupeToUpdate->getParoisse() ==$newGroupe->getParoisse() ? $groupeToUpdate->getParoisse() : $newGroupe->getParoisse();
+        $region =  $groupeToUpdate->getRegion() == $newGroupe->getRegion()? $groupeToUpdate->getRegion() : $newGroupe->getRegion();
+       }
+        $groupeToUpdate->setFilename($fichier);
+        //selected district
+        $selecteDistrict = $cdRepo->findOneBy(["id"=>$request->get("District")]);
+     $district = $groupeToUpdate->getCommissariatDistrict() == $selecteDistrict ? $groupeToUpdate->getCommissariatDistrict() : $selecteDistrict;
+
+
+        $groupeToUpdate->setNom($nom);
+        $groupeToUpdate->setNickName($nickname);
+        $groupeToUpdate->setPhone1($phone1);
+        $groupeToUpdate->setPhone2($phone2);
+        $groupeToUpdate->setEmail($email);
+        //  $groupeToUpdate->setSlogan($slogan);
+        $groupeToUpdate->setParoisse($paroisse);
+        $groupeToUpdate->setRegion($region);
+        $groupeToUpdate->setDateModification(new \DateTime());
+        $groupeToUpdate->setCommissariatDistrict($district);
+
+        dump($groupeToUpdate);
+        $entitymanager->flush();
+       // return new Response();
+       return new JsonResponse(['ok' => true, 'message' => 'opération effectuée avec succès']);
+    }
+    catch (\Exception $e) {
+       return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
+      // return new Response();
+    }
     }
 
     #[Route('/Formation', name: 'Formation')]
