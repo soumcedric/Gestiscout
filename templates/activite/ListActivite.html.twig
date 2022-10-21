@@ -231,6 +231,42 @@
     </div>
 
 
+    
+
+
+
+     <div class="modal fade" id="modalcommentaire" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalCenterTitle">Commentaire</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                         <div class="row g-3 align-items-center div_decision" >
+						  <div class="col-2">
+						    <label for="inputPassword6" class="col-form-label">Décision</label>
+						  </div>
+                          <div class="col-10">
+                                <textarea row="5" class="form-control" id="txtcommentaire"></textarea>
+                          </div>
+					
+						 
+						</div>
+
+                                        </div>
+                                        {# <div class="modal-footer">
+                                            <button type="button" class="btn btn-round btn-default" data-dismiss="modal">Fermer</button>
+                                            <button type="button" class="btn btn-round btn-primary" id="btnvalider">Valider</button>
+                                        </div> #}
+                                    </div>
+                                </div>
+                            </div>
+
+
+
 
 
 
@@ -249,7 +285,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script>
         $(document).ready(function(){
-            debugger
+            var activities = new Array();
             var table = $("#tbactivites").DataTable({
                 language: {
                     processing: "Traitement en cours...",
@@ -327,9 +363,10 @@
              success:function(res){
                  debugger
                  if (res.ok == true) {
-                     //let liste = JSON.parse(res.data);
+                     debugger
                      $.each(res.data,function(i,n){
-                         debugger
+                        debugger
+                         activities.push(n);
                         
                         var newDate = convertDate(n.date_debut);
                         var newDateFin = convertDate(n.date_fin);
@@ -344,14 +381,18 @@
                      statut = '<span class="badge badge-danger">En Attente de confirmation</span>'
                 }
                 else{
-                    optionline="<a id='programme'><i class='fa fa-list-ol fa-1x'></i></a> <a><i class='fa fa-pencil fa-1x'></i></a>";
+                    optionline="<a id='programme'><i class='fa fa-list-ol fa-1x'></i></a>";
                       if(n.statut == "0")
-                    statut = '<span class="badge badge-primary">Initier</span>'
+                    statut = '<span class="badge badge-primary">Initier</span>';
                   else if(n.statut == "1")
-                    statut = '<span class="badge badge-success">Accepter</span>'
+                    statut = '<span class="badge badge-success">Accepter</span>';
                   else
-                    statut = '<span class="badge badge-danger">Réfusé</span>'
+                    statut = '<span class="badge badge-danger">Réfusé</span>';
                 }
+
+                if(n.commentaire)
+                    optionline += ' <a id="btncommentaire"><i class="fa fa-comment"></i></a>'
+
                          table.rows.add([{
                     "ID" :n.id,
                    "LIBELLE":'<strong>'+ n.nomactivite +'</strong>',
@@ -417,13 +458,14 @@ $("#tbactivites").on('click','tbody > tr > td > a[id=btnsoumettre]',function (){
                 if(res==false)
                     return;
                 else{
+            debugger
  $.ajax({
         type:"POST",
         url:"{{path("Soumettre")}}",
         data:{"value": ID},
-        succees:function(res){
+        succees:function(resp){
             debugger
-            if(res.ok == true)
+            if(resp.ok == true)
             {
                 swal({
                     type:'success',
@@ -521,6 +563,23 @@ $("#tbactivites").on('click','tbody > tr > td > a[id=btnsoumettre]',function (){
         // });
 
 
+          $("#tbactivites").on('click','tbody > tr > td > a[id=btncommentaire]',function ()
+          {
+            debugger
+                var row = table.row( $(this).parents('tr') ).data();
+                var ID = row.ID;
+                var commentaire = "";
+                $.each(activities,function(i,n){
+                    if(n.id == ID)
+                    {
+                        commentaire= n.commentaire;
+                        return;
+                    }
+                });
+                
+                $("#txtcommentaire").text(commentaire);
+                $("#modalcommentaire").modal('show');
+          });
         });
     </script>
 {% endblock %}

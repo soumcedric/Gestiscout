@@ -216,7 +216,7 @@ $("#btnrechercher").click(function(){
                     statut = '<span class="badge badge-primary">Initier</span>'
                   else if(n.statut == "1")
                     statut = '<span class="badge badge-success">Accepter</span>'
-                  else
+                  else if(n.statut=="2")
                     statut = '<span class="badge badge-danger">Réfusé</span>'
                     
                 table.rows.add([{

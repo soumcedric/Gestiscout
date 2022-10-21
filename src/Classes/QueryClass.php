@@ -950,14 +950,31 @@ class QueryClass
 
     /*REQUETES ACTIVITES*/
 
-    public function ListActiviteByGroupe($groupe)
+    public function ListActiviteByGroupe($groupe,$bsoumis)
     {
-        $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis
+        if($bsoumis==false){
+            $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis, commentaire
         from activites ac, annee_pastorale an, groupe gr
         where ac.groupe_id = gr.id
         and ac.anneepastorale_id = an.id
         and gr.id = '".$groupe."'
         and an.id = '".$this->activeYear->getId()."'";
+        }
+        else{
+            $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis, commentaire
+        from activites ac, annee_pastorale an, groupe gr
+        where ac.groupe_id = gr.id
+        and ac.anneepastorale_id = an.id
+        and gr.id = '".$groupe."'
+        and ac.b_soumis != 0
+        and an.id = '".$this->activeYear->getId()."'";
+        }
+        // $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis, commentaire
+        // from activites ac, annee_pastorale an, groupe gr
+        // where ac.groupe_id = gr.id
+        // and ac.anneepastorale_id = an.id
+        // and gr.id = '".$groupe."'
+        // and an.id = '".$this->activeYear->getId()."'";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();

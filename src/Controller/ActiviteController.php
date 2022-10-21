@@ -375,7 +375,7 @@ class ActiviteController extends AbstractController
         $groupe = $session->get('groupeid');
         $anneeActive = $this->annePastorale->findActiveYear();
         $qClass = new QueryClass($this->em);
-        $listactivites = $qClass->ListActiviteByGroupe($groupe->getId());
+        $listactivites = $qClass->ListActiviteByGroupe($groupe->getId(),false);
         //dump($listactivites);
         // $result = $serializer->serialize($listactivites,'json');
         return new JsonResponse(['ok' => true, 'data' => $listactivites]);
@@ -394,7 +394,7 @@ class ActiviteController extends AbstractController
 
             $anneeActive = $this->annePastorale->findActiveYear();
             $qClass = new QueryClass($this->em);
-            $listactivites = $qClass->ListActiviteByGroupe($value);
+            $listactivites = $qClass->ListActiviteByGroupe($value,true);
 
             // $result = $serializer->serialize($listactivites,'json');
             return new JsonResponse(['ok' => true, 'data' => $listactivites]);
@@ -429,13 +429,13 @@ class ActiviteController extends AbstractController
         //retrouver contrat
         $activite = $repoact->findOneBy(["id" => $idactivite]);
 
-        if($decision ==0)
+        if($decision =="0")
         {
-            $activite->setStatut(2);//refuser
+            $activite->setStatut(1);//Accepter
             $activite->setCommentaire($commentaire);
         }           
         else    
-            $activite->setStatut(1);//accepter
+            $activite->setStatut(2);//Refuser
        
         $manager = $this->getDoctrine()->getManager();
         $manager->persist($activite);
@@ -452,6 +452,7 @@ class ActiviteController extends AbstractController
     public function SoumettreActivite(Request $value, ACTIVITESRepository $activite, MailerInterface $mailer)
     {
         try {
+            
             $data =  $value->request->get('value');
             
             $activityToSubmit = $activite->findOneBy(["id"=>$data]);
@@ -469,16 +470,28 @@ class ActiviteController extends AbstractController
            // ->text('Bonjour, une activité à été soumise pour approbation. Vous pouvez la consulter à l\'adresse suivante.')
             ->html('Bonjour, <br/> <p>Une activité à été soumise pour approbation par le groupe <strong>'.$activityToSubmit->getGroupe()->getNom()  .'</strong></p> <p>Nom de l\'activité: '.$activityToSubmit->getNom().'</p><br\> <p>Vous pouvez la consulter à partir de l\'adresse suivante:.....</p>');
         
-            $mailer->send($email);
-           // dump($mailer);
+            //$mailer->send($email);
+          
            return new JsonResponse(['ok' => true, 'message' => 'opération effectuée avec succès']);
-            //return  var_dump($activity);
-            // return new Response('true',200);
+         
         } catch (\Exception $e) {
               return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
         }
 
         //return new Response();
+
+    }
+
+    function CheckPrograms($idActivite)
+    {
+        $repo = $this->em->getRepository('DETAILS');
+        $RepoActivite = $this->em->getRepository('ACTIVITES');
+        $activite = $repo->findOneBy(['id'=>$idActivite]);
+        $details = $repo->findOneBy(["Activite"=>$activite]);
+        var_dump($details);
+
+        return false;
+     
 
     }
 }
