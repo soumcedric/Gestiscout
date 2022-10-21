@@ -470,15 +470,15 @@ class ActiviteController extends AbstractController
             ->html('Bonjour, <br/> <p>Une activité à été soumise pour approbation par le groupe <strong>'.$activityToSubmit->getGroupe()->getNom()  .'</strong></p> <p>Nom de l\'activité: '.$activityToSubmit->getNom().'</p><br\> <p>Vous pouvez la consulter à partir de l\'adresse suivante:.....</p>');
         
             $mailer->send($email);
-            dump($mailer);
-         //  return new JsonResponse(['ok' => true, 'message' => 'opération effectuée avec succès']);
+           // dump($mailer);
+           return new JsonResponse(['ok' => true, 'message' => 'opération effectuée avec succès']);
             //return  var_dump($activity);
             // return new Response('true',200);
         } catch (\Exception $e) {
-           //   return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
+              return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
         }
 
-        return new Response();
+        //return new Response();
 
     }
 }

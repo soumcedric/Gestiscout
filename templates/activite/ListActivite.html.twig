@@ -431,6 +431,13 @@ $("#tbactivites").on('click','tbody > tr > td > a[id=btnsoumettre]',function (){
                     text: res.message
                 });
             }
+            else{
+                swal({
+                    type:'error',
+                    title:'Activité',
+                    text: res.message
+                });
+            }
         },
         error:function(res){
             debugger
