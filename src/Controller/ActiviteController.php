@@ -426,71 +426,71 @@ class ActiviteController extends AbstractController
         $idactivite = $value->request->get("id");
         $commentaire = $value->request->get("commentaire");
         $decision = $value->request->get("decision");
+        dump($decision);
         //retrouver contrat
         $activite = $repoact->findOneBy(["id" => $idactivite]);
 
         if($decision =="0")
         {
             $activite->setStatut(1);//Accepter
-            $activite->setCommentaire($commentaire);
+            
         }           
         else    
             $activite->setStatut(2);//Refuser
+            $activite->setCommentaire($commentaire);
        
         $manager = $this->getDoctrine()->getManager();
         $manager->persist($activite);
         $manager->flush();
-        return new JsonResponse();
+        return new JsonResponse(['ok' => true, 'message' => "Décision enregistrée avec succès"]);
     }
 
 
 
 
-      /**
+    /**
      * @Route("/SoumettreActivite", name="Soumettre")
      */
-    public function SoumettreActivite(Request $value, ACTIVITESRepository $activite, MailerInterface $mailer)
+    public function SoumettreActivite(Request $value, ACTIVITESRepository $activite, MailerInterface $mailer, ACTIVITESRepository $activiterep, DETAILSRepository $detailsrep)
     {
         try {
-            
+
             $data =  $value->request->get('value');
-            
-            $activityToSubmit = $activite->findOneBy(["id"=>$data]);
-            $activityToSubmit->setBSoumis(true);
-            $activityToSubmit->setDateModification(new \DateTime());
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($activityToSubmit);
-            $manager->flush();
+            $check = $this->CheckPrograms($data, $detailsrep, $activiterep);
+            $activityToSubmit = $activite->findOneBy(["id" => $data]);
 
+            if ($check == true) {
+                $activityToSubmit->setBSoumis(true);
+                $activityToSubmit->setDateModification(new \DateTime());
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($activityToSubmit);
+                $manager->flush();
 
-            $email = (new Email())
-            ->from('infos@scoutblackfeet.com')
-            ->to('csoumahoro@scoutblackfeet.com')
-            ->subject('Activité soumise pour approbation')
-           // ->text('Bonjour, une activité à été soumise pour approbation. Vous pouvez la consulter à l\'adresse suivante.')
-            ->html('Bonjour, <br/> <p>Une activité à été soumise pour approbation par le groupe <strong>'.$activityToSubmit->getGroupe()->getNom()  .'</strong></p> <p>Nom de l\'activité: '.$activityToSubmit->getNom().'</p><br\> <p>Vous pouvez la consulter à partir de l\'adresse suivante:.....</p>');
-        
-            //$mailer->send($email);
-          
-           return new JsonResponse(['ok' => true, 'message' => 'opération effectuée avec succès']);
-         
+                $email = (new Email())
+                    ->from('infos@scoutblackfeet.com')
+                    ->to('csoumahoro@scoutblackfeet.com')
+                    ->subject('Activité soumise pour approbation')
+                    ->html('Bonjour, <br/> <p>Une activité à été soumise pour approbation par le groupe <strong>' . $activityToSubmit->getGroupe()->getNom()  . '</strong></p> <p>Nom de l\'activité: ' . $activityToSubmit->getNom() . '</p><br\> <p>Vous pouvez la consulter à partir de l\'adresse suivante:.....</p>');
+
+                $mailer->send($email);
+
+                return new JsonResponse(['ok' => true, 'message' => 'opération effectuée avec succès']);
+            } else {
+                return new JsonResponse(['ok' => true, 'message' => 'Impossible de soumettre cette activité car aucun programme n\'a été ajouté.']);
+            }
+            //   return new Response();
         } catch (\Exception $e) {
-              return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
+            return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
+            // return new Response();
         }
-
-        //return new Response();
-
     }
 
-    function CheckPrograms($idActivite)
+    function CheckPrograms($idActivite, DETAILSRepository $repodetails, ACTIVITESRepository $repoactivite)
     {
-        $repo = $this->em->getRepository('DETAILS');
-        $RepoActivite = $this->em->getRepository('ACTIVITES');
-        $activite = $repo->findOneBy(['id'=>$idActivite]);
-        $details = $repo->findOneBy(["Activite"=>$activite]);
-        var_dump($details);
-
-        return false;
+        $activite = $repoactivite->findOneBy(['id'=>$idActivite]);
+        $details = $repodetails->count(["Activite"=>$activite]);
+        if($details>0) return true;
+        else return false;
      
 
     }

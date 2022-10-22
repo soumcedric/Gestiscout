@@ -452,7 +452,8 @@ $("#tbactivites").on('click','tbody > tr > td > a[id=btnsoumettre]',function (){
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 cancelButtonText: 'Non',
-                confirmButtonText: 'Oui, soumettre!'
+                confirmButtonText: 'Oui, soumettre!',
+                closeOnConfirm: false,
             },function(res){
 
                 if(res==false)
@@ -474,6 +475,7 @@ $("#tbactivites").on('click','tbody > tr > td > a[id=btnsoumettre]',function (){
                 });
             }
             else{
+                debugger
                 swal({
                     type:'error',
                     title:'Activité',

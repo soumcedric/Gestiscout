@@ -100,9 +100,9 @@
 						  </div>
 						  <div class="col-8">
 						    <select class="form-control" id="seldecision">
-						    	<option>---sélectionner une décision---</option>
-                                <option val=0>Accepter</option>
-                                <option val=1>Refuser</option>
+						    	<option selected>---sélectionner une décision---</option>
+                                <option value="0">Accepter</option>
+                                <option value="1">Refuser</option>
                              
 						    </select>
 						    
@@ -338,7 +338,7 @@ $("#tbchef tbody").on('click',' tr > td > .btndetails',function(){
 $("#seldecision").change(function(){
     debugger
     let selected = $(this).val();
-    if(selected === "Refuser")
+    if(selected === "1")
          $(".div_decision").show();
     else
          $(".div_decision").hide();
@@ -348,11 +348,27 @@ $("#seldecision").change(function(){
 
 
 $("#btnvalider").click(function(){
-
+    debugger
     let decision = $("#seldecision").val();
     var commentaire = $("#txtcommentaire").val();
-    $.post("/DecisionActivite",{ "id": idactivite,"decision":decision, "commentaire":commentaire},function(){
-        window.location.reload();
+    $.post("/DecisionActivite",{ "id": idactivite,"decision":decision, "commentaire":commentaire},function(res){
+        //window.location.reload();
+        $("#modaldecision").modal('hide');
+        debugger
+        if(res.ok)
+        {
+            swal({
+                type:"success",
+                title: 'Activités',
+                text: res.message
+            },function(){
+                window.location.reload();
+            });
+        }
+        else
+        {
+
+        }
     });
 });
 
