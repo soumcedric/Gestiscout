@@ -152,7 +152,7 @@
         // GetListGroupe();
         $("#btnupdate").hide();
       var table = $("#tbchef").DataTable({
-          language: {
+            language: {
               processing: "Traitement en cours...",
               search: "Rechercher&nbsp;:",
               lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
@@ -190,7 +190,7 @@
           filter: true,
           info: true,
           ordering: false,
-          processing: false,
+          processing: true,
           retrieve: true
       });
 
@@ -199,13 +199,17 @@
 
 $("#btnrechercher").click(function(){
     debugger
+   //- table.loadingRecords="ddddddddddddddddd";
  //   var stage = $("#selformation").val();
     var groupe = $("#selgroupe").val();
     $.get("{{path('ActivitesByGroupeDistrict')}}",{"groupe":groupe},function(res){
         debugger
         if (res.ok == true) {
-            debugger
+            debugger 
             table.clear().draw();
+            //table.processing=true;
+            //$('.dataTables_processing', $('#tbchef').closest('.dataTables_wrapper')).show();
+            
             $.each(res.data, function(i,n){
                 debugger
                   var datedebut = convertDate(n.date_debut)

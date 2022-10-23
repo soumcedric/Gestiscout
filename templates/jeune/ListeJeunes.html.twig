@@ -192,6 +192,7 @@
         debugger
 
         var table = $("#tbjeune").DataTable({
+         // processing:true,
           language: {
               processing: "Traitement en cours...",
               search: "Rechercher&nbsp;:",
@@ -254,19 +255,19 @@
           filter: true,
           info: true,
           ordering: false,
-          processing: false,
+          processing: true,
           retrieve: true
       });
         debugger
         loadData();
         function loading()
         {
-            $('.modal_load').modal('show');
+           // $('.modal_load').modal('show');
 
         }
         function loadingClose()
         {
-            $('.modal_load').modal('hide');
+            //$('.modal_load').modal('hide');
 
         }
 

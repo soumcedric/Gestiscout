@@ -144,24 +144,18 @@ class JeuneController extends AbstractController
     public function ListeJeuneNonCotise(SessionInterface $session, JEUNERepository $jeuneRepo, NormalizerInterface $normalizer,SerializerInterface $serializer)
     {
 
-        $groupeId= $session->get('groupeid');
-        $id=$groupeId->getId();
+        $groupeId = $session->get('groupeid');
+        $id = $groupeId->getId();
         $listedesjeunes = $jeuneRepo->GetJeuneActif($id);
-        foreach ($listedesjeunes as $jeune)
-        {
+        foreach ($listedesjeunes as $jeune) {
             $dateOfBirth = $jeune->getDob();
             $jeune->setDateNaiss($dateOfBirth->format('d-m-Y'));
         }
-        $result = $serializer->serialize($listedesjeunes,'json',['groups'=>'read']);
+        dump($listedesjeunes);
+        $result = $serializer->serialize($listedesjeunes, 'json', ['groups' => 'read']);
 
-        return new Response($result,200);
-        // return new JsonResponse('no result found',200);
-//          return $this->render('jeune/ListeJeunes.html.twig',
-//            array('liste'=>$listedesjeunes)
-//        );
-        // return $this->json(true);
-
-        // return $listedesjeunes;
+        return new Response($result, 200);
+       
     }
 
 
