@@ -300,6 +300,9 @@
                           type:"success",
                           title:"Ajout d'une activité",
                           text: res.message
+                      },function(params) {
+                        //windows.location.href="{{ path('ActivitesByGroupe') }}";
+                        window.location.href = "{{ path('Activites') }}";
                       });
                   }
                   else{

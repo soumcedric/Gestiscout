@@ -451,7 +451,8 @@ class ActiviteController extends AbstractController
     /**
      * @Route("/SoumettreActivite", name="Soumettre")
      */
-    public function SoumettreActivite(Request $value, ACTIVITESRepository $activite, MailerInterface $mailer, ACTIVITESRepository $activiterep, DETAILSRepository $detailsrep)
+    public function SoumettreActivite(Request $value, ACTIVITESRepository $activite, MailerInterface $mailer,
+                                     ACTIVITESRepository $activiterep, DETAILSRepository $detailsrep) : JsonResponse
     {
         try {
 
@@ -476,7 +477,7 @@ class ActiviteController extends AbstractController
 
                 return new JsonResponse(['ok' => true, 'message' => 'opération effectuée avec succès']);
             } else {
-                return new JsonResponse(['ok' => true, 'message' => 'Impossible de soumettre cette activité car aucun programme n\'a été ajouté.']);
+                return new JsonResponse(['ok' => false, 'message' => 'Impossible de soumettre cette activité car aucun programme n\'a été ajouté.']);
             }
             //   return new Response();
         } catch (\Exception $e) {
