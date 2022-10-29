@@ -156,13 +156,16 @@ class FormationController extends AbstractController
           $sessionId = $request->request->get("value");
           //Get Formation
           $session = $repoSession->findOneBy(["id"=>$sessionId]);
+          
           $formation = $session->getStageFormation();
+         
           //Get formation's order
           $order = $repoFormation->findOneBy(["id"=>$formation->getId()])->getOrdre();
+          
           //Get Responsable's list with order = currentorder-1
           $orderToConsider = $order-1;
           $formationToConsider = $repoFormation->findOneBy(["ordre"=>$orderToConsider]);
-         // dump($formationToConsider);
+          //dump($formationToConsider);
         //   $listeformationresponsableToConsider = $repformationrespo->findBy(array('formation_id'=>$formationToConsider->getId()));
         //   foreach(listeformationresponsableToConsider as $value)
         //   {
@@ -170,7 +173,7 @@ class FormationController extends AbstractController
         //   }
           $qClass = new QueryClass($this->em);
           $listeResponsable = $qClass->GetListParticipantformation($formationToConsider->getId());
-          //dump($listeResponsable);
+          dump($listeResponsable);
         // return new JsonResponse(['ok' => true, 'data' => $serializer->serialize($listeResponsable,'json')]);
         return new JsonResponse(['ok' => true, 'data' => $listeResponsable, 'idFormation'=>$session->getId()]);
         }

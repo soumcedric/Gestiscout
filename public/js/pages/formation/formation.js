@@ -192,7 +192,7 @@ $(function(){
                         "DATEFIN":convertDate(n.DateFin),
                         "LIEU":n.Lieu,
                         "DIRECTEUR":n.DirecteurStage,
-                        "ACTION":"<a><i class='fa fa-pencil fa-1x'></i></a> <a><i class='fa fa-trash-o fa-1x'></i></a> <a id='liste_prepa'><i class='fa-solid fa-clipboard-list fa-1x'></i></i></a>"
+                        "ACTION":"<a><i class='fa fa-pencil fa-1x'></i></a> <a><i class='fa fa-trash-o fa-1x'></i></a> <a id='liste_prepa' title='Préparer liste'><i class='fa-solid fa-clipboard-list fa-1x'></i></i></a>"
                     }]).draw();
                     
                     tablelistedefinitive.rows.add([{
@@ -219,11 +219,18 @@ $(function(){
     }
     
     $("#tbsessionstage tbody").on('click', 'tr > td > a[id="liste_prepa"]',function(){
+        debugger
         var table = $("#tbsessionstage").DataTable();
         var row = table.row( $(this).parents('tr') ).data();
+        var formation = row.STAGE;
+        var datedebut = row.DATEDEBUT;
+        var datefin = row.DATEFIN;
+        var message = formation + ' du ' + datedebut + ' au ' + datefin;
+        $("#titre").text(message) ;
         var ID = row.ID;
         $("#idsession").val(ID);
         var table = $("#tbparticipant").DataTable({
+            destroy:true,
             language: {
                 processing: "Traitement en cours...",
                 search: "Rechercher&nbsp;:",
@@ -268,10 +275,10 @@ $(function(){
                 //     targets: 1,
                 //     visible: false
                 // },
-                {
-                    targets: 5,
-                    visible: false
-                },
+                // {
+                //     targets: 5,
+                //     visible: true
+                // },
                 {
                     targets: 4,
                     visible: false
@@ -300,7 +307,9 @@ $(function(){
             // processing: false,
             // retrieve: true
         });
-        $(".preparationliste").modal("show");
+        $(".preparationliste").modal({
+            backdrop:false
+        });
         // $.post("/ListePreparatoire",{"value": ID},function(res){
         //     debugger
         //     if(res.ok)
@@ -322,6 +331,9 @@ $(function(){
         // });
     });
 
+    $("#btncancel").click(function(){
+        $(".preparationliste").modal('hide');
+    });
 
    
 });
@@ -335,7 +347,7 @@ function SaveParticipant()
     swal({
         type:"warning",
         title:"STAGE DE FORMATION",
-        text:"Etes vous sûr de vouloir confirmer cette liste de participant ?",
+        text:"Etes vous sûr de vouloir confirmer cette liste de participants ?",
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -397,6 +409,7 @@ function GetChefPar_NextStage()
             {
                 debugger
                 var table = $("#tbchef").DataTable({
+                    destroy:true,
                     language: {
                         processing: "Traitement en cours...",
                         search: "Rechercher&nbsp;:",
@@ -420,7 +433,7 @@ function GetChefPar_NextStage()
                         { "data": "NOM" },
                         { "data": "GROUPE" },
                       //  { "data": "STAGE" },
-                     { "data": "ACTION" }
+                     //{ "data": "ACTION" }
                     ],
                     columnDefs: [
                         {
@@ -430,7 +443,7 @@ function GetChefPar_NextStage()
                             orderable: false,
                             //className: 'dt-body-center',
                             render:function(data,type,full,meta){
-                                return '<input type="checkbox" class="form-control checkconfirm" name="chk[]" value='+data+' onclick="confirmParticipation();" />';
+                                return '<input type="checkbox" class="form-control checkconfirm" name="chk[]" value='+data+' onclick="CheckList();" />';
                             }
                         }],
                     data: [],
@@ -438,7 +451,7 @@ function GetChefPar_NextStage()
                     filter: true,
                     info: true,
                     ordering: false,
-                    processing: false,
+                    processing: true,
                     retrieve: true
                 });
                 table.clear().draw();
@@ -449,7 +462,8 @@ function GetChefPar_NextStage()
                     "ID": n.Id,
                     "NOM":n.Nom+" "+n.Prenoms ,
                     "GROUPE" : n.Groupe,
-                    "ACTION" : "<a title='Confirmer participation' onclick='confirmParticipation();'><i class='fa fa-solid fa-check fa-1x' style='color:green;'></i></a> <a><i class='fa fa-trash-o fa-1x'></i></a> <a id='liste_prepa'><i class='fa-solid fa-clipboard-list fa-1x'></i></i></a>"
+                    // "ACTION" : "<a title='Confirmer participation' onclick='confirmParticipation();'><i class='fa fa-solid fa-check fa-1x' style='color:green;'></i></a> <a><i class='fa fa-trash-o fa-1x'></i></a> <a id='liste_prepa'><i class='fa-solid fa-clipboard-list fa-1x'></i></i></a>"
+                   // "ACTION" : "<a title='Confirmer participation' onclick='confirmParticipation();'><i class='fa fa-solid fa-check fa-1x' style='color:green;'></i></a> <a><i class='fa fa-trash-o fa-1x'></i></a> <a id='liste_prepa'><i class='fa-solid fa-clipboard-list fa-1x'></i></i></a>"
        				}]).draw();
                 });
           
@@ -467,28 +481,48 @@ function checkAll()
     debugger
     var checkedValue = $('.checkall').is(':checked');
     $('input:checkbox').not(this).prop('checked', checkedValue);
-}
-
-
-function confirmParticipation()
-{
-    debugger
     var checkedValue = $('.checkconfirm:checkbox:checked');
-    var arrayParticipant = [];
     checkedValue.each(function(){
         debugger
         arrayParticipant.push(this.value);
     });
-    $.post("/ConfirmerParticipation",{"value":arrayParticipant},function(res)
-    {
-        if(res.ok){
-            swal({
-                type:"success",
-                title:"Session de formation",
-                text: res.message
-            });
-        }
+}
+var arrayParticipant = [];
+function CheckList()
+{
+    var checkedValue = $('.checkconfirm:checkbox:checked');
+    checkedValue.each(function(){
+        debugger
+        arrayParticipant.push(this.value);
     });
+}
+
+function confirmParticipation()
+{
+    debugger
+    if(arrayParticipant.length > 0)
+    {
+        $.post("/ConfirmerParticipation",{"value":arrayParticipant},function(res)
+        {
+            if(res.ok){
+                swal({
+                    type:"success",
+                    title:"Session de formation",
+                    text: res.message
+                },function(){
+                    window.location.reload();
+                });
+            }
+        });
+    }
+    else{
+        swal({
+            type:"warning",
+            title:"Session de formation",
+            text:"Aucun participant sélectionné"
+        });
+    }
+  
 }
 
 function DownloadList(id)

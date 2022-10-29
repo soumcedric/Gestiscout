@@ -67,7 +67,7 @@
                             <th>Nom & Prénoms</th>
                             <th>Groupe</th>
                         
-                            <th>Action</th>
+                            {# <th>Action</th> #}
                         </tr>
                     </thead>
                    <tbody>
@@ -75,7 +75,7 @@
                    </tbody>
                 </table>
             </div>
-            <div class="row text-center">
+            <div class="text-center">
                 <button type="button" class="btn btn-success" onclick="confirmParticipation();">Confirmer</button>
                 <button type="button" class="btn btn-danger">Annuler</button>
             </div>
@@ -100,7 +100,52 @@
     $(document).ready(function(){
         debugger
         $("#btnupdate").hide();
-     
+         var table = $("#tbchef").DataTable({
+                    destroy:true,
+                    language: {
+                        processing: "Traitement en cours...",
+                        search: "Rechercher&nbsp;:",
+                        lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
+                        info: "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+                        infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+                        infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+                        infoPostFix: "",
+                        loadingRecords: "Chargement en cours...",
+                        zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
+                        emptyTable: "Aucune donnée disponible dans le tableau",
+                        paginate: {
+                            first: "Premier",
+                            previous: "Pr&eacute;c&eacute;dent",
+                            next: "Suivant",
+                            last: "Dernier"
+                        }
+                    },
+                    columns: [
+                        { "data": "ID" },
+                        { "data": "NOM" },
+                        { "data": "GROUPE" },
+                      //  { "data": "STAGE" },
+                    // { "data": "ACTION" }
+                    ],
+                    columnDefs: [
+                        {
+                            targets:0,
+                            //visible:false,
+                            searchable: false,
+                            orderable: false,
+                            //className: 'dt-body-center',
+                            render:function(data,type,full,meta){
+                                return '<input type="checkbox" class="form-control  checkconfirm" name="chk[]" value='+data+' onclick="CheckList();" />';
+                            }
+                        }],
+                    data: [],
+                    rowCallback: function (row, data) { },
+                    filter: true,
+                    info: true,
+                    ordering: false,
+                    processing: false,
+                    retrieve: true
+                });
 
 
 

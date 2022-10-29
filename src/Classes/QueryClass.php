@@ -1031,6 +1031,7 @@ class QueryClass
         and responsable.id = exercer_fonction.responsable_id
         and exercer_fonction.fonction_id = fonction.id
         and responsable_formation.formation_id_id = '".$formationid."'
+        and responsable.id not in (select responsable_id_id from session_formation_responsable)
         and exercer_fonction.annee_pastorale_id = '".$this->activeYear->getId()."' ";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
