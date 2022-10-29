@@ -58,7 +58,7 @@ $(function(){
                 //    loadingClose();
                 //     reset();
                 idSession = res.idFormation;
-
+                window.location.reload();
                 });
             }
             else{
