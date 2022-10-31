@@ -193,10 +193,16 @@ class ACTIVITES
      */
     private $bSoumis;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Documents::class, mappedBy="Activite")
+     */
+    private $documents;
+
     public function __construct()
     {
         $this->Details = new ArrayCollection();
         $this->Responsable = new ArrayCollection();
+        $this->documents = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -588,6 +594,36 @@ class ACTIVITES
     public function setBSoumis(bool $bSoumis): self
     {
         $this->bSoumis = $bSoumis;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Documents[]
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(Documents $document): self
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents[] = $document;
+            $document->setActivite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Documents $document): self
+    {
+        if ($this->documents->removeElement($document)) {
+            // set the owning side to null (unless already changed)
+            if ($document->getActivite() === $this) {
+                $document->setActivite(null);
+            }
+        }
 
         return $this;
     }
