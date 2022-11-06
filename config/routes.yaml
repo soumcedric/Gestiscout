@@ -375,6 +375,9 @@ GetDocumentsByActivite:
 DownloadDocument:
     path: /DownloadDocument/{docid}
     controller: App\Controller\RapportController::DownloadDocument
+ModifierResponsable:
+    path: /ModifierResponsable
+    controller: App\Controller\ResponsableController::UpdateResponsable
     
     
 
