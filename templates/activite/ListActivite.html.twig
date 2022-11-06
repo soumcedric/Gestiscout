@@ -538,6 +538,7 @@ $("#tbactivites").on('click','tbody > tr > td > a[id=btnsoumettre]',function (){
                 $(".alert-submit-error").toggle('show');
 
             }
+            window.location.reload();
         },
         error:function(res){
             debugger

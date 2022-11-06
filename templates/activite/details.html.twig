@@ -130,7 +130,7 @@
  
  <div class="text-center"> 
                             <button type="submit" class="btn btn-success" id="valider">Valider</button>
-                            <button type="submit" class="btn btn-danger">Annuler</button>
+                            <button type="button" id="btncancel" class="btn btn-danger">Annuler</button>
                         </div>
                             
                      </div>
@@ -243,6 +243,15 @@
                           type:"success",
                           title:"Ajout d'une activité",
                           text: res.message
+                      },function(){
+                      $("#heuredebut").val('');
+                    $("#heurefin").val('');
+                    $("#responsable").val('');
+                    $("#txtderoulement").val('');
+                    $("#objectif").val('');
+                    $("#contact").val('');
+                    $("#cible").val('');
+                    window.location.reload();
                       });
                   }
                   else{
@@ -261,6 +270,19 @@ $("#logo").change(function(){
     debugger
     readURL(this);
 });
+
+
+    $("#btncancel").click(function(){
+         $("#nom").val("");
+                    $("#heuredebut").val('');
+                    $("#heurefin").val('');
+                    $("#responsable").val('');
+                    $("#txtderoulement").val('');
+                    $("#objectif").val('');
+                    $("#contact").val('');
+                    $("#cible").val('');
+                    window.location.reload();
+    });
 
     });
 </script>
