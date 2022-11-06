@@ -22,6 +22,7 @@ use App\Entity\Formation;
 use App\Repository\BrancheRepository;
 use App\Repository\CommissariatDistrictRepository;
 use App\Repository\FormationRepository;
+use App\Repository\TypeDocumentRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -659,4 +660,15 @@ class ConfigurationController extends AbstractController
         $district =  $serializer->serialize($liste, 'json', ['groups' => 'dst']);
         return new JsonResponse(["ok" => true, "data" => $district]);
     }
-}
+
+
+    #[Route('/ListeTypeDocuments', name: 'ListeTypeDocuments')]
+    public function ListeTypeDocuments(TypeDocumentRepository $repo, SerializerInterface $serializer)
+    {
+
+        $liste = $repo->findAll();
+     
+        $typedocuments =  $serializer->serialize($liste, 'json', ['groups' => 'typedoc']);
+        return new JsonResponse(["ok" => true, "data" => $typedocuments]);
+    }
+} 

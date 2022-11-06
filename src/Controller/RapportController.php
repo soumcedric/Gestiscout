@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Classes\QueryClass;
 use App\Repository\BrancheRepository;
+use App\Repository\DocumentsRepository;
 use App\Repository\GroupeRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Repository\JEUNERepository;
 use App\Repository\SessionFormationRepository;
 use App\Repository\SessionFormationResponsableRepository;
+use App\Repository\TypeDocumentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Id;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -992,6 +994,26 @@ class RapportController extends AbstractController
     }
 
   
+    #[Route('/DownloadDocument/{docid}', name: 'DownloadDocument')]
+    public function DownloadDocument(int $docid, EntityManagerInterface $em, DocumentsRepository $docrep)
+    {
+        
+        //get filename
+        $file = $docrep->findOneBy(["id"=>$docid]);
+        $filename = $file->getNom();
+        $filepath = $file->getDirectoryPath();
+        $definitivefile = $filepath."/".$filename;
+        //dump($definitivefile);
+        header("Cache-Control: public");
+        header("Content-Description: File Transfer");
+        header("Content-Disposition: attachment; filename=".$filename."");
+        header("Content-Type: application/zip");
+        header("Content-Transfer-Encoding: binary");
+    
+        // read the file from disk
+        readfile($definitivefile);
+    }
+
 
 
 

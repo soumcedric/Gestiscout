@@ -1081,6 +1081,20 @@ class QueryClass
     /**/
 
 
+    /*GET DOCUMENTS BY ACTIVITE*/
+    public function GetDocumentByActivite($activiteid){
+        $query = "select ac.id, dc.id docid, tp.libelle, dc.directory_path, dc.nom
+        from activites ac, documents dc, type_document tp
+        where ac.id = dc.activite_id
+        and dc.type_document_id = tp.id
+        and ac.id = ".$activiteid."";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    /**/
+
 
     
 

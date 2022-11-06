@@ -238,36 +238,90 @@
     
 
 
+<div class="modal fade" id="modalcommentaire" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalCenterTitle">Commentaire</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row g-3 align-items-center div_decision">
+					<div class="col-2">
+						<label for="inputPassword6" class="col-form-label">Décision</label>
+					</div>
+					<div class="col-10">
+						<textarea row="5" class="form-control" id="txtcommentaire"></textarea>
+					</div>
 
-     <div class="modal fade" id="modalcommentaire" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalCenterTitle">Commentaire</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                         <div class="row g-3 align-items-center div_decision" >
-						  <div class="col-2">
-						    <label for="inputPassword6" class="col-form-label">Décision</label>
-						  </div>
-                          <div class="col-10">
-                                <textarea row="5" class="form-control" id="txtcommentaire"></textarea>
-                          </div>
-					
-						 
-						</div>
 
-                                        </div>
-                                        {# <div class="modal-footer">
-                                            <button type="button" class="btn btn-round btn-default" data-dismiss="modal">Fermer</button>
-                                            <button type="button" class="btn btn-round btn-primary" id="btnvalider">Valider</button>
-                                        </div> #}
-                                    </div>
-                                </div>
+				</div>
+
+			</div>
+			{# <div class="modal-footer">
+			                                            <button type="button" class="btn btn-round btn-default" data-dismiss="modal">Fermer</button>
+			                                            <button type="button" class="btn btn-round btn-primary" id="btnvalider">Valider</button>
+			                                        </div> #}
+		</div>
+	</div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="modaldocument" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalCenterTitle">Documents</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+                    <div class="col-lg-6">
+                        <h4>Ajout des documents</h4>
+                        <div clas="row">
+                            
+                            <select class="form-control" id="seltypedoc">
+                                <option>---sélectionner un type de document---</option>
+                            </select>
+                            <div lass="input-group mb-3">
+                            {# <div clas="input-group-prepend">
+                                <span class="input-group-text">upload</span>
+                            </div> #}
+                            <div class="custom-file">
+                                <input id="" class="" type="file" data-buttonText="parcourir" Accept=".doc,.docx,.pdf" />
+                                {# <label class="custom-file-label">sélectionner le fichier</label> #}
                             </div>
+                            <input type="hidden" id="activiteid"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 added_doc">
+                        
+                        
+                    </div>
+                </div>
+
+			</div>
+			<div class="modal-footer">
+			           <button type="button" class="btn btn-round btn-default" data-dismiss="modal">Fermer</button>
+			           <button type="button" class="btn btn-round btn-primary" id="btnvalider" onclick="addDocument();">Valider</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
 
 
 
@@ -383,11 +437,11 @@
 
                 if(n.b_soumis==false)
                 {
-                    optionline="<a id='programme'><i class='fa fa-list-ol fa-1x'></i></a> <a><i class='fa fa-pencil fa-1x'></i></a> <a id='btnsoumettre'><i class='fa fa-check' style='color:green'></i></a>";
+                    optionline="<a id='programme'><i class='fa fa-list-ol fa-1x'></i></a> <a><i class='fa fa-pencil fa-1x'></i></a> <a id='btnsoumettre' title='soumettre au district'><i class='fa fa-check' style='color:green'></i></a> <a id='add_doc' onclick='add_doc("+n.id+");' title='ajouter documents'><i class='fa fa-file'></i></a>";
                      statut = '<span class="badge badge-danger">En Attente de confirmation</span>'
                 }
                 else{
-                    optionline="<a id='programme'><i class='fa fa-list-ol fa-1x'></i></a>";
+                    optionline="<a id='programme'><i class='fa fa-list-ol fa-1x'></i></a> <a id=''><i class='fa fa-file-circle-plus' style='color:green'></i></a>";
                       if(n.statut == "0")
                     statut = '<span class="badge badge-primary">Initier</span>';
                   else if(n.statut == "1")
@@ -397,7 +451,7 @@
                 }
 
                 if(n.commentaire)
-                    optionline += ' <a id="btncommentaire"><i class="fa fa-comment"></i></a>'
+                    optionline += ' <a id="btncommentaire" title="commentaires"><i class="fa fa-comment"></i></a>'
 
                          table.rows.add([{
                     "ID" :n.id,
@@ -520,5 +574,135 @@ $("#tbactivites").on('click','tbody > tr > td > a[id=btnsoumettre]',function (){
                 $("#modalcommentaire").modal('show');
           });
         });
+    </script>
+    <script>
+        function add_doc(activiteid){
+            
+                GetListTypeDocument();
+                $("#activiteid").val(activiteid);
+                GetDocumentByActivite(activiteid);
+                $("#modaldocument").modal({
+                    backdrop:false
+                });
+            }
+
+        function GetListTypeDocument(){
+            $.ajax({
+                type:"GET",
+                url:"{{path("ListeTypeDocuments")}}",
+                success:function(res){
+                    debugger
+                    $("#seltypedoc").empty();
+                    $("#seltypedoc").append("<option selected>---sélectionner un type document---</option>");
+                    var liste = JSON.parse(res.data);
+                    $.each(liste,function(i,n){
+                        $("#seltypedoc").append("<option value="+n.id+">"+n.Libelle+"</option>");
+                    });
+                },
+                error:function(res){
+                    debugger
+                }
+            });
+        }
+
+        function addDocument()
+        {
+            debugger
+            var data = new FormData();
+            let filename = $('input[type=file]')[0].files[0].name;
+            data.append("activiteid",$("#activiteid").val());
+            data.append("file",$('input[type=file]')[0].files[0],filename);
+            data.append("typedoc",$("#seltypedoc").val());
+            $.ajax({
+                type:"POST",
+                url:"{{path("addDocuments")}}",
+                processData:false,
+                contentType:false,
+                data:data,
+                success:function(res)
+                {
+                    if(res.ok)
+                    {
+                         swal({
+                            type:"success",
+                            title:"Ajout de documents",
+                            message : res.message
+                        },function()
+                        {
+                            GetDocumentByActivite($("#activiteid").val());
+                        });
+                    }
+                    else
+                    {
+                          swal({
+                            type:"error",
+                            title:"Ajout de documents",
+                            message : res.message
+                        });
+                    }
+                },
+                error:function(res)
+                {
+                     swal({
+                        type:"error",
+                        title:"Ajout de documents",
+                        message : res.message
+                    });
+                }
+            });
+        }
+
+        function GetDocumentByActivite(activite)
+        {
+            debugger
+            let activiteid = $("#activiteid").val();
+            $.ajax({
+                type:"GET",
+                url:"{{ path("GetDocumentsByActivite") }}",
+                data:{"id":activite},
+                success:function(res)
+                {
+                    debugger
+                    if(res.ok)
+                    {
+                        if(res.data.length != 0)
+                        {
+                             $(".added_doc").empty();
+                        $(".added_doc").append("<h4>Documents ajoutés</h4>");
+                        $.each(res.data,function(i,n)
+                        {                        
+                            $(".added_doc").append("<p>"+n.libelle+" <a onclick='DownloadList("+n.docid+");'><i class='fa fa-download'></i></a> </p>");
+                        });
+                        }
+                        else
+                        {
+                             $(".added_doc").empty();
+                        $(".added_doc").append("<h4>Documents ajoutés</h4>");
+                        $(".added_doc").append("Aucun documents ajoutés");
+                        }
+                        
+                    }
+                    else
+                    {
+                       
+                    }
+                   
+                    
+                },
+                error:function(res)
+                {
+                    debugger
+                }
+            });
+        }
+
+
+        function DownloadList(id)
+        {
+            debugger
+            window.location.href = "/DownloadDocument/"+id;
+        }
+
+
     </script>
 {% endblock %}

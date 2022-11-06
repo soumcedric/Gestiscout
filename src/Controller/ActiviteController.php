@@ -22,9 +22,12 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Entity\DETAILS;
+use App\Entity\Documents;
 use App\Repository\AnneePastoraleRepository;
 use App\Repository\AnnePastoraleRepository;
 use App\Repository\DETAILSRepository;
+use App\Repository\DocumentsRepository;
+use App\Repository\TypeDocumentRepository;
 use Doctrine\DBAL\Schema\View;
 use PhpParser\Node\Expr\Cast\Bool_;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -300,24 +303,28 @@ class ActiviteController extends AbstractController
      */
     public function DetailsActiviteDistrict(Request $request, ACTIVITESRepository $rpActivite, int $id)
     {
-        dump($id);
+        //dump($id);
         $bEmpty = false;
         $data = $request->query->get("value");
         //get activite name
         $activite = $rpActivite->findOneBy(["id" => $id]);
-        dump($activite);
+        //dump($activite);
         //obtenir la liste des activités
         $qClass = new QueryClass($this->em);
         $result = $qClass->GetAllProgrammesByActivite($id);
         if (!empty($result)) {
             $bEmpty = true;
         }
+        //obtenir les documents associés
+        $doc = $this->GetDocByActivite($id);
+        dump($doc);
         return $this->render('activite/DetailsActivitesDistrict.html.twig', [
             'controller_name' => 'ActiviteController',
             'emptyCheck' => $bEmpty,
             'acitivityName' => $activite->getNom(),
             'activityid' => $id,
-            'allProgrammes' => $result
+            'allProgrammes' => $result,
+            'docs'=> $doc
         ]);
     }
 
@@ -491,8 +498,107 @@ class ActiviteController extends AbstractController
         $activite = $repoactivite->findOneBy(['id'=>$idActivite]);
         $details = $repodetails->count(["Activite"=>$activite]);
         if($details>0) return true;
-        else return false;
-     
+        else return false; 
 
     }
+
+
+      /**
+     * @Route("/addDocuments", name="addDocuments")
+     */
+    public function addDocuments(Request $req, TypeDocumentRepository $repTypeDoc, ACTIVITESRepository $repActivite) 
+    {
+        try
+        {
+
+       
+                //file management
+                $file = $req->files->get('file');
+                $targetfile = __DIR__ . "/../../public/uploads/Activités/Documents/";
+                define('SITE_ROOT', realpath(dirname(__FILE__)));
+                //$fichier=$_FILES["file"]["name"];
+
+                $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $fichier = $originalFilename  . '-' . uniqid() . '.' . $file->guessExtension();
+                $real = realpath($_FILES["file"]["tmp_name"]);
+                if (!file_exists($targetfile)) {
+                    mkdir($targetfile, 0777, true);
+                }
+                if (move_uploaded_file($real, $targetfile . '/' . $fichier)) {
+                    dump("moved");
+                } else {
+                    dump("unmoved");
+                }
+
+                //enregistrement en base de données
+                $document = new Documents();
+                $document->setNom($fichier)
+                    ->setDirectoryPath($targetfile);
+                //get type doc
+                $typedoc = $repTypeDoc->findOneBy(["id" => $req->get("typedoc")]);
+
+                //get activite id
+                $selectedActivite = $repActivite->findOneBy(["id" => $req->get("activiteid")]);
+                dump($selectedActivite);
+
+                $document->setTypeDocument($typedoc)
+                    ->setActivite($selectedActivite)
+                    ->setDateCreate(new \DateTime());
+
+
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($document);
+                $manager->flush();
+                
+                return new JsonResponse(['ok' => true, 'message' => "Décision enregistrée avec succès"]);
+        }
+        catch(\Exception $e)
+        {
+            return new JsonResponse(['ok' => true, 'message' => $e->getMessage()]);
+        }
+
+
+
+        return new Response();
+    }
+
+    
+      /**
+     * @Route("/GetDocumentsByActivite", name="GetDocumentsByActivite")
+     */
+    public function GetDocumentsByActivite(Request $req, DocumentsRepository $repDoc, ACTIVITESRepository $repActivite, TypeDocumentRepository $repTypedoc, SerializerInterface $serializer)
+    {
+        //get activite ID
+        $activite = $repActivite->findOneBy(["id"=> $req->get("id")]);
+        //get all document related to activite
+        
+        $docs = $this->GetDocByActivite($req->get("id"));
+        //dump($docs);
+        // $docs = array();
+        // if($documents != null)
+        // {
+        //     foreach($documents as $d)
+        //     {
+        //         $document = new Documents();
+        //         $document->setNom($d->getNom())
+        //                  ->setDirectoryPath($d->getDirectoryPath());
+        //         $typedoc = $repTypedoc->findOneBy(["id"=>$d->getTypeDocument()->getId()]);
+        //         $document->setTypeDocument($typedoc);
+        //         array_push($docs,$document);
+        //     }
+        // }
+        //$result = $serializer->serialize($docs, 'json');
+        //dump($docs);
+        //return new Response();
+        return new JsonResponse(['ok' => true, 'data' => $docs]);
+    }
+
+
+    private function GetDocByActivite($activiteid)
+    {
+        $qClass = new QueryClass($this->em);
+        $docs = $qClass->GetDocumentByActivite($activiteid);
+        return $docs;
+    }
+
 }

@@ -363,6 +363,18 @@ ExportListeDefinitiveStages:
 update_groupe_new:
     path: /update_groupe_new
     controller: App\Controller\ConfigurationController::update_groupe_new
+ListeTypeDocuments:
+    path: /ListeTypeDocuments
+    controller: App\Controller\ConfigurationController::ListeTypeDocuments
+addDocuments:
+    path: /addDocuments
+    controller: App\Controller\ActiviteController::addDocuments
+GetDocumentsByActivite:
+    path: /GetDocumentsByActivite
+    controller: App\Controller\ActiviteController::GetDocumentsByActivite
+DownloadDocument:
+    path: /DownloadDocument/{docid}
+    controller: App\Controller\RapportController::DownloadDocument
     
     
 

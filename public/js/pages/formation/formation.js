@@ -335,6 +335,8 @@ $(function(){
         $(".preparationliste").modal('hide');
     });
 
+
+
    
 });
 
@@ -530,3 +532,4 @@ function DownloadList(id)
     debugger
     window.location.href = "/ExportListeDefinitiveStages/"+id;
 }
+
