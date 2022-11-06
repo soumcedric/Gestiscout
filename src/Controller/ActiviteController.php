@@ -195,7 +195,7 @@ class ActiviteController extends AbstractController
                 'oneDayActivity' => true
             ]);
         } else {
-            return $this->render('activite/Details.html.twig', [
+            return $this->render('activite/details.html.twig', [
                 'controller_name' => 'ActiviteController',
                 'activityName' => $activite->getNom(),
                 'activityid' => $activite->getId(),
@@ -518,8 +518,11 @@ class ActiviteController extends AbstractController
                 define('SITE_ROOT', realpath(dirname(__FILE__)));
                 //$fichier=$_FILES["file"]["name"];
 
-                $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-                $fichier = $originalFilename  . '-' . uniqid() . '.' . $file->guessExtension();
+                $originalFilename = pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME);
+                $extension = pathinfo($_FILES["file"]["name"],PATHINFO_EXTENSION);
+                
+                $fichier = $originalFilename  . '-' . uniqid() . '.' . $extension;
+                //dump($fichier);
                 $real = realpath($_FILES["file"]["tmp_name"]);
                 if (!file_exists($targetfile)) {
                     mkdir($targetfile, 0777, true);
@@ -530,14 +533,14 @@ class ActiviteController extends AbstractController
                     dump("unmoved");
                 }
 
-                //enregistrement en base de données
+                // //enregistrement en base de données
                 $document = new Documents();
                 $document->setNom($fichier)
                     ->setDirectoryPath($targetfile);
                 //get type doc
                 $typedoc = $repTypeDoc->findOneBy(["id" => $req->get("typedoc")]);
 
-                //get activite id
+              //  get activite id
                 $selectedActivite = $repActivite->findOneBy(["id" => $req->get("activiteid")]);
                 dump($selectedActivite);
 
@@ -550,7 +553,7 @@ class ActiviteController extends AbstractController
                 $manager->persist($document);
                 $manager->flush();
                 
-                return new JsonResponse(['ok' => true, 'message' => "Décision enregistrée avec succès"]);
+               return new JsonResponse(['ok' => true, 'message' => "Décision enregistrée avec succès"]);
         }
         catch(\Exception $e)
         {
@@ -559,7 +562,7 @@ class ActiviteController extends AbstractController
 
 
 
-        return new Response();
+       // return new Response();
     }
 
     

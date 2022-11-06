@@ -283,7 +283,7 @@
 			</div>
 			<div class="modal-body">
 				<div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-8">
                         <h4>Ajout des documents</h4>
                         <div clas="row">
                             
@@ -295,14 +295,14 @@
                                 <span class="input-group-text">upload</span>
                             </div> #}
                             <div class="custom-file">
-                                <input id="" class="" type="file" data-buttonText="parcourir" Accept=".doc,.docx,.pdf" />
+                                <input id="inputfile" class="" type="file" data-buttonText="parcourir" Accept=".doc,.docx,.pdf" />
                                 {# <label class="custom-file-label">sélectionner le fichier</label> #}
                             </div>
                             <input type="hidden" id="activiteid"/>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 added_doc">
+                    <div class="col-lg-4 added_doc">
                         
                         
                     </div>
@@ -577,7 +577,7 @@ $("#tbactivites").on('click','tbody > tr > td > a[id=btnsoumettre]',function (){
     </script>
     <script>
         function add_doc(activiteid){
-            
+                $("#inputfile").val('');
                 GetListTypeDocument();
                 $("#activiteid").val(activiteid);
                 GetDocumentByActivite(activiteid);
@@ -608,6 +608,7 @@ $("#tbactivites").on('click','tbody > tr > td > a[id=btnsoumettre]',function (){
         function addDocument()
         {
             debugger
+           
             var data = new FormData();
             let filename = $('input[type=file]')[0].files[0].name;
             data.append("activiteid",$("#activiteid").val());
@@ -677,8 +678,8 @@ $("#tbactivites").on('click','tbody > tr > td > a[id=btnsoumettre]',function (){
                         else
                         {
                              $(".added_doc").empty();
-                        $(".added_doc").append("<h4>Documents ajoutés</h4>");
-                        $(".added_doc").append("Aucun documents ajoutés");
+                            $(".added_doc").append("<h4>Documents ajoutés</h4>");
+                            $(".added_doc").append("Aucun documents ajoutés");
                         }
                         
                     }
