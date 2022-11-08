@@ -66,6 +66,7 @@
                             <th>ID</th>
                             <th>Nom</th>
                             <th>Groupe</th>
+                             <th>Cible</th>
                             <th>Période</th>
                             <th>Prix</th>
                             <th>Participants</th>
@@ -174,6 +175,7 @@
               { "data": "ID" },
               { "data": "NOM" },
               { "data": "GROUPE" },
+              { "data": "CIBLE" },
               { "data": "PERIODE" },
               { "data": "PRIX" },
              { "data": "NBRE" },
@@ -215,6 +217,7 @@ $("#btnrechercher").click(function(){
                   var datedebut = convertDate(n.date_debut)
                   var datefin = convertDate(n.date_fin)
                   var statut = "";
+                  var btndecision = "";
 
                   if(n.statut == "0")
                     statut = '<span class="badge badge-primary">Initier</span>'
@@ -222,16 +225,20 @@ $("#btnrechercher").click(function(){
                     statut = '<span class="badge badge-success">Accepter</span>'
                   else if(n.statut=="2")
                     statut = '<span class="badge badge-danger">Réfusé</span>'
+
+                if(n.statut == 0)
+                    btndecision = "|<button class='btn btn-outline-danger btndecision'>Décision</button>";
                     
                 table.rows.add([{
                     "ID" : n.id,
                     "NOM" :n.nomactivite,
                     "GROUPE" :n.nomgroupe,
+                    "CIBLE": n.cible,
                     "PERIODE" :datedebut+" au "+datefin,
-                    "PRIX" :n.prix,
+                    "PRIX" :n.prix +" F CFA",
                     "NBRE" :n.nbre_participant,
                     "STATUT" :statut,
-                    "ACTION" :"<button class='btn btn-outline-success btndetails'>Détails</button>|<button class='btn btn-outline-danger btndecision'>Décision</button>",
+                    "ACTION" :"<button class='btn btn-outline-success btndetails'>Détails</button>"+btndecision,
                     // "ACTION" :""
                 }]).draw();
             });

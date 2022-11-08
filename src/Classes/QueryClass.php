@@ -953,16 +953,27 @@ class QueryClass
     public function ListActiviteByGroupe($groupe,$bsoumis)
     {
         if($bsoumis==false){
-            $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis, commentaire
-        from activites ac, annee_pastorale an, groupe gr
+            $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis,
+             commentaire,
+             case 
+             when branche_id is null then 'GROUPE' 
+           else (select libelle from branche where id = branche_id)
+          end
+          cible
+             from activites ac, annee_pastorale an, groupe gr
         where ac.groupe_id = gr.id
         and ac.anneepastorale_id = an.id
         and gr.id = '".$groupe."'
         and an.id = '".$this->activeYear->getId()."'";
         }
         else{
-            $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis, commentaire
-        from activites ac, annee_pastorale an, groupe gr
+            $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis, commentaire,
+            case 
+            when branche_id is null then 'GROUPE' 
+          else (select libelle from branche where id = branche_id)
+         end
+         cible
+            from activites ac, annee_pastorale an, groupe gr
         where ac.groupe_id = gr.id
         and ac.anneepastorale_id = an.id
         and gr.id = '".$groupe."'
