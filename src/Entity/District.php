@@ -75,6 +75,11 @@ class District
      */
     private $exercerFonctions;
 
+    /**
+     * @ORM\OneToOne(targetEntity=CaisseDistrict::class, mappedBy="district", cascade={"persist", "remove"})
+     */
+    private $caisseDistrict;
+
 
     public function __construct()
     {
@@ -217,6 +222,28 @@ class District
         if ($this->exercerFonctions->removeElement($exercerFonction)) {
             $exercerFonction->removeDistrict($this);
         }
+
+        return $this;
+    }
+
+    public function getCaisseDistrict(): ?CaisseDistrict
+    {
+        return $this->caisseDistrict;
+    }
+
+    public function setCaisseDistrict(?CaisseDistrict $caisseDistrict): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($caisseDistrict === null && $this->caisseDistrict !== null) {
+            $this->caisseDistrict->setDistrict(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($caisseDistrict !== null && $caisseDistrict->getDistrict() !== $this) {
+            $caisseDistrict->setDistrict($this);
+        }
+
+        $this->caisseDistrict = $caisseDistrict;
 
         return $this;
     }
