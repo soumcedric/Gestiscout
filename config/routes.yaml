@@ -378,6 +378,12 @@ DownloadDocument:
 ModifierResponsable:
     path: /ModifierResponsable
     controller: App\Controller\ResponsableController::UpdateResponsable
+Caisse:
+    path: /Caisse
+    controller: App\Controller\CaisseController::index
+CreerCaisse:
+    path: /CreerCaisse
+    controller: App\Controller\CaisseController::CreerCaisse
     
     
 
