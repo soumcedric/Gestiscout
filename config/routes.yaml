@@ -384,8 +384,15 @@ Caisse:
 CreerCaisse:
     path: /CreerCaisse
     controller: App\Controller\CaisseController::CreerCaisse
-    
-    
+VwOperations:
+    path: /VwOperations
+    controller: App\Controller\CaisseController::VwOperations
+ListeOperations:
+    path: /ListeOperations/{origine}
+    controller: App\Controller\CaisseController::ListeOperations
+ListeMvt:
+    path: /ListeMvt
+    controller: App\Controller\CaisseController::GetListeTypeMouvement
 
 
 

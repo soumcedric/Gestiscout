@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\TypeMouvementRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=TypeMouvementRepository::class)
@@ -14,21 +15,25 @@ class TypeMouvement
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"typemvt"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"typemvt"})
      */
     private $Libelle;
 
     /**
      * @ORM\Column(type="string", length=1)
+     * @Groups({"typemvt"})
      */
     private $Code;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"typemvt"})
      */
     private $datecreate;
 
