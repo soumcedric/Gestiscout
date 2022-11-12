@@ -71,6 +71,12 @@ class MouvementDistrict
      */
     private $user;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=District::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $district;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -192,6 +198,18 @@ class MouvementDistrict
     public function setUser(?user $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getDistrict(): ?District
+    {
+        return $this->district;
+    }
+
+    public function setDistrict(?District $district): self
+    {
+        $this->district = $district;
 
         return $this;
     }
