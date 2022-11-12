@@ -79,6 +79,8 @@ security:
          - { path: /SoumettreActivite, roles: [ROLE_CG]}
          - { path: /SaveSession, roles: [ROLE_CD,ROLE_FORMATION]}
          - { path: /Sessions, roles: [ROLE_CD,ROLE_FORMATION]}
+         - { path: /Caisse, roles: [ROLE_CD,ROLE_CD_FINANCE,ROLE_CG_FINANCE]}
+         - { path: /VwOperations, roles: [ROLE_CD,ROLE_CD_FINANCE,ROLE_CG_FINANCE]}
 
 
 

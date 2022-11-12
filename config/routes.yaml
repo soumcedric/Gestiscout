@@ -393,6 +393,10 @@ ListeOperations:
 ListeMvt:
     path: /ListeMvt
     controller: App\Controller\CaisseController::GetListeTypeMouvement
+SaveMvt:
+    path: /SaveMvt
+    controller: App\Controller\CaisseController::SaveMvt
+
 
 
 

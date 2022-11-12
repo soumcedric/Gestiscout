@@ -114,29 +114,32 @@
                <div class="form-group row">
                    <label class="col-sm-2 col-form-label">description</label>
                    <div class="col-sm-10">
-                      <input type="text" class="form-control form-control-normal"
+                      <input type="text" class="form-control form-control-normal " id="txtdescription"
                          placeholder="description de l'opération">
+                       <div class="col-form-label" id="messagedescription"></div>
                      </div>
+                    
               </div>
                <div class="form-group row">
                    <label class="col-sm-2 col-form-label">montant</label>
                    <div class="col-sm-10">
-                      <input type="text" class="form-control form-control-normal"
+                      <input type="number" class="form-control form-control-normal" id="txtmontant"
                          placeholder="montant de l'opération">
+                       <div class="col-form-label" id="messagemontant"></div>
                      </div>
               </div>
                <div class="form-group row">
                    <label class="col-sm-2 col-form-label">date</label>
                    <div class="col-sm-10">
-                      <input type="date" class="form-control form-control-normal"
+                      <input type="date" class="form-control form-control-normal" id="seldate"
                          placeholder="date de l'opération">
                      </div>
               </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="" class="btn btn-primary" onclick="SaveMvt();">Enregistrer</button>
       </div>
     </div>
   </div>

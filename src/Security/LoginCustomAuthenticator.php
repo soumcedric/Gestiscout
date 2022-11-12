@@ -156,9 +156,20 @@ class LoginCustomAuthenticator extends AbstractFormLoginAuthenticator implements
                   //get groupe
                //   $groupe = $this->entityManager->getRepository(Groupe::class)->findOneBy([''])
                 // if (!$user) {
+                    $request->getSession()->set("USER",$user);
                     $request->getSession()->set("id",$user->getId());
                     $request->getSession()->set('nom',"ddddd");
-                    $request->getSession()->set('groupeid',$user->getGroupe());
+                    if($user->getGroupe()!=null)
+                    {
+                        $request->getSession()->set('groupeid',$user->getGroupe());
+                        $request->getSession()->set('entite','1');// entité connecté groupe => 1
+                    }                        
+                    else
+                        {
+                            $request->getSession()->set('districtid',$user->getDistrict());
+                            $request->getSession()->set('entite','2');// entité connecté district => 2
+                        }
+                        
              }
        
 
@@ -179,7 +190,10 @@ class LoginCustomAuthenticator extends AbstractFormLoginAuthenticator implements
         {
             $this->target="Dashboard"; 
         }
-                 
+        else if(in_array('ROLE_CD_FINANCE',$user->getRoles(),true))
+        {
+            $this->target="Caisse"; 
+        }   
       return new RedirectResponse($this->urlGenerator->generate($this->target));
         throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }
