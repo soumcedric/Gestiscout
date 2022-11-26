@@ -19,6 +19,9 @@ use App\Repository\GroupeRepository;
 use App\Entity\AnneePastorale;
 use App\Entity\CommissariatDistrict;
 use App\Entity\Formation;
+use App\Entity\Periode;
+use App\Entity\Rubrique;
+use App\Entity\SousRubrique;
 use App\Repository\BrancheRepository;
 use App\Repository\CommissariatDistrictRepository;
 use App\Repository\FormationRepository;
@@ -30,17 +33,20 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use App\Repository\PeriodeRepository;
+use App\Repository\RubriqueRepository;
 use App\Services\FileUploader;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ConfigurationController extends AbstractController
 {
     private $EntityManager;
+    private $r_periode;
 
-    public function __construct(EntityManagerInterface  $Emanager)
+    public function __construct(EntityManagerInterface  $Emanager, PeriodeRepository $periodeRepo)
     {
         $this->EntityManager = $Emanager;
+        $this->r_periode = $periodeRepo;
     }
 
     #[Route('/configuration', name: 'configuration')]
@@ -671,4 +677,116 @@ class ConfigurationController extends AbstractController
         $typedocuments =  $serializer->serialize($liste, 'json', ['groups' => 'typedoc']);
         return new JsonResponse(["ok" => true, "data" => $typedocuments]);
     }
+
+
+
+
+    /* GESTION DE LA PERIODE */
+    #[Route('/Periode', name: 'Periode')]
+    public function Periode(): Response
+    {
+        return $this->render('Configuration/Periode.html.twig', [
+            'controller_name' => 'ConfigurationController',
+        ]);
+    
+    }
+    #[Route('/GetListPeriode', name: 'GetListPeriode')]
+    public function GetListPeriode(SerializerInterface $serialiser): JsonResponse
+    {
+        $qClass = new Classes\QueryClass($this->EntityManager);
+        $liste = $qClass->GetPeriodes();
+        return new JsonResponse(["ok" => true, "data" => $liste]);
+    }
+
+    #[Route('/SavePriode', name: 'SavePeriode')]
+    public function SavePeriode(\Symfony\Component\HttpFoundation\Request $request, AnneePastoraleRepository $anneepastorale)
+    {
+        $data = $request->request->get("data");
+        $newPeriode = new Periode();
+        $newPeriode->setCode("T1")
+            ->setDatedebut(new \DateTime($data["datedebut"]))
+            ->setDatefin(new \DateTime($data["datefin"]))
+            ->setAnneepastorale($anneepastorale->findOneBy(["id" => $data["anneepastorale"]]))
+            ->setEtat(1)
+            ->setDatecreate(new \DateTime())
+            ->setUsercreate(0);
+
+        $manager = $this->getDoctrine()->getManager();
+        $manager->persist($newPeriode);
+        $manager->flush();
+        return new JsonResponse(["ok" => true, "message" => "Opération réussie"]);
+    }
+
+    /*------------------------*/
+
+    /* GESTION RUBRIQUE ET SOUS RUBRIQUE */
+    #[Route('/Rubrique', name: 'Rubrique')]
+    public function Rubrique(): Response
+    {
+        return $this->render('Configuration/Rubrique.html.twig', [
+            'controller_name' => 'ConfigurationController',
+        ]);
+    }
+
+    #[Route('/SaveRubrique', name: 'SaveRubrique')]
+    public function SaveRubrique(\Symfony\Component\HttpFoundation\Request $request): JsonResponse
+    {
+        $data = $request->request->get("data");
+        $newRubrique = new Rubrique();
+        $newRubrique->setLibelle($data["libelle"])
+                    ->setCode($data["code"]);
+        $manager = $this->getDoctrine()->getManager();
+        $manager->persist($newRubrique);
+        $manager->flush();
+        return new JsonResponse(["ok" => true, "message" => "Opération réussie"]);
+                    
+    }
+
+
+    #[Route('/GetRubriques', name: 'GetRubriques')]
+    public function GetListRubrique(): JsonResponse
+    {
+        $qClass = new Classes\QueryClass($this->EntityManager);
+        $liste = $qClass->GetRubriques();
+        return new JsonResponse(["ok" => true, "data" => $liste]);
+    }
+
+
+    #[Route('/GetSousRubriques', name: 'GetSousRubriques')]
+    public function GetListSousRubrique(): JsonResponse
+    {
+        $qClass = new Classes\QueryClass($this->EntityManager);
+        $liste = $qClass->GetSousRubriques();
+        return new JsonResponse(["ok" => true, "data" => $liste]);
+    }
+
+
+    #[Route('/SousRubrique', name: 'SousRubrique')]
+    public function SousRubrique(): Response
+    {
+        return $this->render('Configuration/SousRubrique.html.twig', [
+            'controller_name' => 'ConfigurationController',
+        ]);
+    }
+
+    #[Route('/SaveSousRubrique', name: 'SaveSousRubrique')]
+    public function SaveSousRubrique(\Symfony\Component\HttpFoundation\Request $request, RubriqueRepository $rubrique): JsonResponse
+    {
+        $data = $request->request->get("data");
+        $newRubrique = new SousRubrique();
+        $newRubrique->setLibelle($data["libelle"])
+                    ->setCode($data["code"])
+                    ->setDateCreation(new \DateTime())
+                    ->setRubrique($rubrique->findOneBy(["id"=>$data["rubrique"]]));
+        $manager = $this->getDoctrine()->getManager();
+        $manager->persist($newRubrique);
+        $manager->flush();
+        return new JsonResponse(["ok" => true, "message" => "Opération réussie"]);
+                    
+    }
+
+
+   
+
+        /* GESTION RUBRIQUE ET SOUS RUBRIQUE */
 } 

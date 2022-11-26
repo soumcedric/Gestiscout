@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Repository\MouvementDistrictRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass=MouvementDistrictRepository::class)
  */
@@ -14,31 +14,37 @@ class MouvementDistrict
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("mvtdistrict")
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("mvtdistrict")
      */
     private $DateMvt;
 
     /**
      * @ORM\Column(type="bigint")
+     * @Groups("mvtdistrict")
      */
     private $Montant;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("mvtdistrict")
      */
     private $datecreate;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("mvtdistrict")
      */
     private $usercreate;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups("mvtdistrict")
      */
     private $datemodification;
 
@@ -48,37 +54,43 @@ class MouvementDistrict
     private $usermodifcation;
 
     /**
-     * @ORM\ManyToOne(targetEntity=typemouvement::class)
+     * @ORM\ManyToOne(targetEntity=TypeMouvement::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("mvtdistrict")
      */
     private $typemouvement;
 
     /**
-     * @ORM\ManyToOne(targetEntity=caissedistrict::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=caissedistrict::class,cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true)
+     * @Groups("mvtdistrict")
      */
     private $caisse;
 
     /**
-     * @ORM\ManyToOne(targetEntity=periode::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=Periode::class,cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true)
+     * @Groups("mvtdistrict")
      */
     private $periode;
 
     /**
      * @ORM\ManyToOne(targetEntity=user::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("mvtdistrict")
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=District::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("mvtdistrict")
      */
     private $district;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("mvtdistrict")
      */
     private $description;
 

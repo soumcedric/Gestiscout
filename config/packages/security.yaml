@@ -81,6 +81,8 @@ security:
          - { path: /Sessions, roles: [ROLE_CD,ROLE_FORMATION]}
          - { path: /Caisse, roles: [ROLE_CD,ROLE_CD_FINANCE,ROLE_CG_FINANCE]}
          - { path: /VwOperations, roles: [ROLE_CD,ROLE_CD_FINANCE,ROLE_CG_FINANCE]}
+         - { path: /Periode, roles: [ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_CONFIG]}
+         - { path: /SousRubrique, roles: [ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_CONFIG]}
 
 
 

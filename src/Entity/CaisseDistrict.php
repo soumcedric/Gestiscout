@@ -38,9 +38,19 @@ class CaisseDistrict
     private $usercreate;
 
     /**
-     * @ORM\OneToOne(targetEntity=district::class, inversedBy="caisseDistrict", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=district::class, cascade={"persist", "remove"})
      */
     private $district;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $solde;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $dateSolde;
 
     public function getId(): ?int
     {
@@ -103,6 +113,30 @@ class CaisseDistrict
     public function setDistrict(?district $district): self
     {
         $this->district = $district;
+
+        return $this;
+    }
+
+    public function getSolde(): ?int
+    {
+        return $this->solde;
+    }
+
+    public function setSolde(int $solde): self
+    {
+        $this->solde = $solde;
+
+        return $this;
+    }
+
+    public function getDateSolde(): ?\DateTimeInterface
+    {
+        return $this->dateSolde;
+    }
+
+    public function setDateSolde(\DateTimeInterface $dateSolde): self
+    {
+        $this->dateSolde = $dateSolde;
 
         return $this;
     }

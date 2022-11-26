@@ -388,15 +388,59 @@ VwOperations:
     path: /VwOperations
     controller: App\Controller\CaisseController::VwOperations
 ListeOperations:
-    path: /ListeOperations/{origine}
-    controller: App\Controller\CaisseController::ListeOperations
+    path: /ListeOperations
+    controller: App\Controller\CaisseController::GetListeOperation
 ListeMvt:
     path: /ListeMvt
     controller: App\Controller\CaisseController::GetListeTypeMouvement
 SaveMvt:
     path: /SaveMvt
     controller: App\Controller\CaisseController::SaveMvt
-
+Solde:
+    path: /Solde
+    controller: App\Controller\CaisseController::Solde
+Periode:
+    path: /Periode
+    controller: App\Controller\ConfigurationController::Periode
+GetListPeriode:
+    path: /GetListPeriode
+    controller: App\Controller\ConfigurationController::GetListPeriode
+SavePeriode:
+    path: /SavePeriode
+    controller: App\Controller\ConfigurationController::SavePeriode
+Rubrique:
+    path: /Rubrique
+    controller: App\Controller\ConfigurationController::Rubrique
+SaveRubrique:
+    path: /SaveRubrique
+    controller: App\Controller\ConfigurationController::SaveRubrique
+GetRubriques:
+    path: /GetRubriques
+    controller: App\Controller\ConfigurationController::GetListRubrique
+SousRubrique:
+    path: /SousRubrique
+    controller: App\Controller\ConfigurationController::SousRubrique
+GetSousRubriques:
+    path: /GetSousRubriques
+    controller: App\Controller\ConfigurationController::GetListSousRubrique
+SaveSousRubrique:
+    path: /SaveSousRubrique
+    controller: App\Controller\ConfigurationController::SaveSousRubrique
+Evenement:
+    path: /Evenement
+    controller: App\Controller\CaisseController::Evenement
+GetEvenements:
+    path: /GetEvenements
+    controller: App\Controller\CaisseController::GetListEvenement
+SaveEvent:
+    path: /SaveEvent
+    controller: App\Controller\CaisseController::SaveEvent
+MouvementEvenement:
+    path: /MouvementEvenement
+    controller: App\Controller\CaisseController::MouvementEvenement
+MouvementsByEvent:
+    path: /MouvementsByEvent/{eventId}
+    controller: App\Controller\CaisseController::MouvementsByEvent
 
 
 

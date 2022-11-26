@@ -1,104 +1,55 @@
-$(function(){
-    //alert("hello");
-    GetSoldeCaisse();
-    loadMvt();
-  // TypeMouvement();
-   loadEvenement();
-   loadEventSelection();
-   $("#selevent").change(function(){
-    debugger
-    let value = $(this).val();
-    selectEvent(value);
-   });
-  
+$(function () {
+    GetListAnneePastorale();
+    GetListPeriode();
+    GetListeRubrique();
+    GetListeRubriqueJson();
+    GetListeSousRubrique();
 });
 
-function OpenModal()
+function GetListAnneePastorale()
 {
- 
-  $("#modaloperation").modal({
-     backdrop:false
-  });
-  
-}
-
-function TypeMouvement()
-{
-   $.get("/ListeMvt",function(res){
-    if(res)
-    {
-        var liste = JSON.parse(res.data)
-        $("#ListeMvt").empty;
-        $.each(liste, function(i,n){
-            $("#selmvt").append("<option value="+n.Code+">"+n.Libelle+"</option>");
-        });
-    }
-   });
-}
-
-function SaveMvt()
-{
-    debugger
-    if(validation())
-    {
+   // alert("hello");
+    $.get("/GetListeAnnee",function(res){
         debugger
-        let mvt = {
-            type : $("#selmvt").val(),
-            description : $("#txtdescription").val(),
-            montant : parseInt($("#txtmontant").val()),
-            date: $("#seldate").val()
+        if(res){
+            let defaultoption = "<option selected>---sélectionner une année pastorale---</option>";
+            $("#selanneepastorale").empty;
+            $("#selanneepastorale").append(defaultoption);
+            let liste = JSON.parse(res.data);
+            $.each(liste, function(i,n){
+                $("#selanneepastorale").append("<option value="+n.id+">"+n.CodeAnnee+"</option>");
+            });
         }
-
-        if(mvt.type=="D")
-            mvt.montant = -mvt.montant;
-        
-        $.post("/SaveMvt",{"data": mvt},function(res){
-            debugger
-            if(res)
-            {
-                swal({
-                    type:"success",
-                    title:"Opération",
-                    text: res.message
-                },(function(){
-                    loadMvt();
-                }));
-            }
-        });
-    }
+    });
 }
 
-function validation()
-{
-    debugger
-    let valid = true;
-    //get all input values
-    let description = $("#txtdescription").val();
-    let montant = $("#txtmontant").val();
-    if(!description)
-    {
-            valid = false;
-            $("#txtdescription").addClass("form-control-danger");
-            $("#messagedescription").text("Veuillez entrer une description svp!");
-            $("#messagedescription").addClass("text-danger");
-    }
-    
-    if(!montant || montant == 0)
-    {
-        valid = false;
-        $("#txtmontant").addClass("form-control-danger");
-        $("#messagemontant").text("Veuillez saisir un montant correct svp!");
-        $("#messagemontant").addClass("text-danger");
-    }
+function SavePeriode(){
+    let periode = {
+        datedebut : $("#datedebut").val(),
+        datefin : $("#datefin").val(),
+        code : $("#code").val(),
+        anneepastorale : $("#selanneepastorale").val()
+    };
 
-    return valid;
+    $.post("/SavePeriode",{"data": periode}, function(res){
+        if(res)
+        {
+            swal({
+                type:"success",
+                title:"Période",
+                text: res.message
+            },function(){
+                GetListPeriode();
+            });
+        }
+    });
 }
 
-function loadMvt()
+function GetListPeriode()
 {
     debugger
     //alert("hello");
-    var table = $("#tboperations").DataTable({
+    var table = $("#tbPeriode").DataTable({
         destroy:true,
         language: {
             processing: "Traitement en cours...",
@@ -125,20 +76,21 @@ function loadMvt()
         //         visible: false
         //     }],
         ajax:{
-            url:"/MouvementsByEvent",
+            url:"/GetListPeriode",
             type:"get",
-             success:function(res)
-                {
-                    debugger
-                    //idFormation = res.idFormation;
-                }
+            //  success:function(res)
+            //     {
+            //         debugger
+            //        // idFormation = res.idFormation;
+            //     }
         },
         columns: [
             { "data": "id" },
-            { "data": "description" },
-            { "data": "date_mvt" },
-            { "data": "montant" },
-            { "data": "type" }
+            { "data": "code" },
+            { "data": "datedebut" },
+            { "data": "datefin" },
+            { "data": "etat" },
+            { "data": "codeannee" }
            
         ],
         // data: [],
@@ -149,146 +101,34 @@ function loadMvt()
         // processing: false,
         // retrieve: true
     });
-
 }
 
-function GetSoldeCaisse()
-{
-   $.get("/Solde",function(res){
-    debugger
-    if(res)
-    {
-        debugger
-        var solde = 0;
-        var debit;
-        const speed = 200;
-        let convertedsolde = parseInt(res.solde);
-        // if(convertedsolde<0)
-        // {
-        //     debit = true;
-        //     solde = (-1)*convertedsolde;
-        // }
-            
-        //  const counters = solde.toString();
-        // // var count $("#displaysolde").val();
-        //  let upto = 0;
-        //  count.innerHtml=++upto;
-         
-         $("#displaysolde").text(convertedsolde);
-    }
-   });
-}
-
-
-function loadEvenement()
-{
-    debugger
-    //alert("hello");
-    var table = $("#tbevenements").DataTable({
-        destroy:true,
-        language: {
-            processing: "Traitement en cours...",
-            search: "Rechercher&nbsp;:",
-            lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
-            info: "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
-            infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
-            infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
-            infoPostFix: "",
-            loadingRecords: "Chargement en cours...",
-            zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
-            emptyTable: "Aucune donnée disponible dans le tableau",
-            paginate: {
-                first: "Premier",
-                previous: "Pr&eacute;c&eacute;dent",
-                next: "Suivant",
-                last: "Dernier"
-            }
-        },
-     
-        // columnDefs: [
-        //     {
-        //         targets: 0,
-        //         visible: false
-        //     }],
-        ajax:{
-            url:"/GetEvenements",
-            type:"get",
-            //  success:function(res)
-            //     {
-            //         debugger
-            //         //idFormation = res.idFormation;
-            //     }
-        },
-        columns: [
-            { "data": "id" },
-            { "data": "libelle" },
-          
-        ],
-        // data: [],
-        // rowCallback: function (row, data) { },
-        // filter: true,
-        // info: true,
-        // ordering: false,
-        // processing: false,
-        // retrieve: true
-    });
-
-}
-
-
-function SaveEvent()
-{
-    debugger
-    // if(validation())
-    // {
-        debugger
-        let event = {
-            libelle : $("#txtlibelle").val(),
-            
-        }
-
+function SaveRubrique(){
+    let rubrique = {
+        libelle : $("#txtlibelle").val(),
+        code: $("#txtCode").val()
         
-        $.post("/SaveEvent",{"data": event},function(res){
-            debugger
-            if(res)
-            {
-                swal({
-                    type:"success",
-                    title:"Opération",
-                    text: res.message
-                },(function(){
-                    loadEvenement();
-                }));
-            }
-        });
-    // }
-}
+    };
 
-
-function loadEventSelection()
-{
-    $.get("/GetEvenements",function(res)
-    {
-        debugger
+    $.post("/SaveRubrique",{"data": rubrique}, function(res){
         if(res)
         {
-            $("#selevent").empty;
-            $("#selevent").append("<option selected>--sélectionner un évènement--</option>");
-            $.each(res.data, function(i,n){
-                $("#selevent").append("<option value="+n.id+">"+n.libelle+"</option>");
-            })
-
+            swal({
+                type:"success",
+                title:"Rubrique",
+                text: res.message
+            },function(){
+                GetListeRubrique();
+            });
         }
     });
 }
 
-
-function selectEvent(id)
+function GetListeRubrique()
 {
     debugger
-    let url = "/MouvementsByEvent/"+id;
     //alert("hello");
-    var table = $("#tbevenements").DataTable({
+    var table = $("#tbRubrique").DataTable({
         destroy:true,
         language: {
             processing: "Traitement en cours...",
@@ -315,18 +155,22 @@ function selectEvent(id)
         //         visible: false
         //     }],
         ajax:{
-            url:url,
+            url:"/GetRubriques",
             type:"get",
             //  success:function(res)
             //     {
             //         debugger
-            //         //idFormation = res.idFormation;
+            //        // idFormation = res.idFormation;
             //     }
         },
         columns: [
             { "data": "id" },
+            { "data": "code" },
             { "data": "libelle" },
-          
+            { "data": "type" },
+            // { "data": "etat" },
+            // { "data": "codeannee" }
+           
         ],
         // data: [],
         // rowCallback: function (row, data) { },
@@ -335,5 +179,100 @@ function selectEvent(id)
         // ordering: false,
         // processing: false,
         // retrieve: true
+    });
+}
+
+
+function GetListeSousRubrique()
+{
+    debugger
+    //alert("hello");
+    var table = $("#tbSousRubrique").DataTable({
+        destroy:true,
+        language: {
+            processing: "Traitement en cours...",
+            search: "Rechercher&nbsp;:",
+            lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
+            info: "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+            infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+            infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+            infoPostFix: "",
+            loadingRecords: "Chargement en cours...",
+            zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
+            emptyTable: "Aucune donnée disponible dans le tableau",
+            paginate: {
+                first: "Premier",
+                previous: "Pr&eacute;c&eacute;dent",
+                next: "Suivant",
+                last: "Dernier"
+            }
+        },
+     
+        // columnDefs: [
+        //     {
+        //         targets: 0,
+        //         visible: false
+        //     }],
+        ajax:{
+            url:"/GetSousRubriques",
+            type:"get",
+            //  success:function(res)
+            //     {
+            //         debugger
+            //        // idFormation = res.idFormation;
+            //     }
+        },
+        columns: [
+            { "data": "id" },
+            { "data": "code" },
+            { "data": "libelle" },
+            { "data": "rubrique" },
+            // { "data": "etat" },
+            // { "data": "codeannee" }
+           
+        ],
+        // data: [],
+        // rowCallback: function (row, data) { },
+        // filter: true,
+        // info: true,
+        // ordering: false,
+        // processing: false,
+        // retrieve: true
+    });
+}
+
+function GetListeRubriqueJson()
+{
+    $.get("/GetRubriques",function(res){
+        $("#selrubrique").empty;
+        let defaultoption = "<option selected>----sélectionner une rubrique---</option>";
+        $("#selrubrique").append(defaultoption);
+        $.each(res.data,function(i,n){
+            $("#selrubrique").append("<option value="+n.id+">"+n.libelle+"</option>");
+        });
+
+    });
+}
+
+
+function SaveSousRubrique(){
+    let rubrique = {
+        libelle : $("#txtlibelle").val(),
+        code: $("#txtCode").val(),
+        rubrique: $("#selrubrique").val()
+        
+    };
+
+    $.post("/SaveSousRubrique",{"data": rubrique}, function(res){
+        if(res)
+        {
+            swal({
+                type:"success",
+                title:"Sous Rubrique",
+                text: res.message
+            },function(){
+                GetListeSousRubrique();
+            });
+        }
     });
 }

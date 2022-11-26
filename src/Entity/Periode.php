@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PeriodeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PeriodeRepository::class)
@@ -14,26 +15,31 @@ class Periode
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("periode")
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("periode")
      */
     private $datedebut;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("periode")
      */
     private $datefin;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("periode")
      */
     private $etat;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("periode")
      */
     private $datecreate;
 
@@ -51,6 +57,18 @@ class Periode
      * @ORM\Column(type="integer", nullable=true)
      */
     private $usermodification;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     * @Groups("periode")
+     */
+    private $code;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=AnneePastorale::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $anneepastorale;
 
     public function getId(): ?int
     {
@@ -137,6 +155,30 @@ class Periode
     public function setUsermodification(?int $usermodification): self
     {
         $this->usermodification = $usermodification;
+
+        return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    public function getAnneepastorale(): ?AnneePastorale
+    {
+        return $this->anneepastorale;
+    }
+
+    public function setAnneepastorale(?AnneePastorale $anneepastorale): self
+    {
+        $this->anneepastorale = $anneepastorale;
 
         return $this;
     }

@@ -173,7 +173,7 @@ class FormationController extends AbstractController
         //   }
           $qClass = new QueryClass($this->em);
           $listeResponsable = $qClass->GetListParticipantformation($formationToConsider->getId());
-          dump($listeResponsable);
+          //dump($listeResponsable);
         // return new JsonResponse(['ok' => true, 'data' => $serializer->serialize($listeResponsable,'json')]);
         return new JsonResponse(['ok' => true, 'data' => $listeResponsable, 'idFormation'=>$session->getId()]);
         }

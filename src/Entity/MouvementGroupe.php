@@ -43,7 +43,7 @@ class MouvementGroupe
     private $caisse;
 
     /**
-     * @ORM\ManyToOne(targetEntity=typemouvement::class)
+     * @ORM\ManyToOne(targetEntity=TypeMouvement::class)
      */
     private $typemouvement;
 

@@ -75,10 +75,10 @@ class District
      */
     private $exercerFonctions;
 
-    /**
-     * @ORM\OneToOne(targetEntity=CaisseDistrict::class, mappedBy="district", cascade={"persist", "remove"})
-     */
-    private $caisseDistrict;
+    // /**
+    //  * @ORM\OneToOne(targetEntity=CaisseDistrict::class, mappedBy="district", cascade={"persist", "remove"})
+    //  */
+    // private $caisseDistrict;
 
 
     public function __construct()

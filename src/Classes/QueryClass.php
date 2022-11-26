@@ -1107,6 +1107,58 @@ class QueryClass
     /**/
 
 
+    /*GET MOUVEMENT*/
+    public function GetMouvementDistrict($id)
+    {
+        $query = "select mouvement_district.*, type_mouvement.id, type_mouvement.libelle type
+        from mouvement_district, type_mouvement
+        where mouvement_district.typemouvement_id = type_mouvement.id
+        and  district_id = " . $id . "";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    /*GET MOUVEMENT*/
+    public function GetPeriodes()
+    {
+        $query = "select p.id, p.code, p.datedebut, p.datefin, p.etat, ap.code_annee codeannee
+        from periode p , annee_pastorale ap
+        where p.anneepastorale_id = ap.id" ;
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function GetRubriques()
+    {
+        $query = "select *
+        from rubrique" ;
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function GetSousRubriques()
+    {
+        $query = "select r.id, r.code, r.libelle, rs.libelle rubrique
+        from rubrique r, sous_rubrique rs" ;
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function GetEvenements($identite)
+    {
+        $query = "select * from evenement
+        where  id_entite=".$identite." " ;
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+    /**/
+
+
     
 
 
