@@ -65,6 +65,16 @@ class User implements UserInterface
      */
     private $bActif;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $firstConnection;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastConnection;
+
   
 
     public function getId(): ?int
@@ -208,6 +218,30 @@ class User implements UserInterface
     public function setBActif(bool $bActif): self
     {
         $this->bActif = $bActif;
+
+        return $this;
+    }
+
+    public function getFirstConnection(): ?bool
+    {
+        return $this->firstConnection;
+    }
+
+    public function setFirstConnection(bool $firstConnection): self
+    {
+        $this->firstConnection = $firstConnection;
+
+        return $this;
+    }
+
+    public function getLastConnection(): ?\DateTimeInterface
+    {
+        return $this->lastConnection;
+    }
+
+    public function setLastConnection(?\DateTimeInterface $lastConnection): self
+    {
+        $this->lastConnection = $lastConnection;
 
         return $this;
     }

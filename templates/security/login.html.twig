@@ -59,8 +59,10 @@
                     <p class="lead">Login to your account</p>
                  
 
-<form method="post" action="{{ path('app_login') }}">
-    {% if error %}
+                  {% if errorupdate is not null %}
+        <div class="alert alert-danger">{{errorupdate}}</div>
+   {% endif %}
+    {% if error is not null %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
@@ -70,6 +72,49 @@
         </div>
     {% endif %}
 
+
+   {% if firstconnection %}
+   <form method="post" action="{{ path('UpdatePassword') }}">
+  
+
+
+
+  
+    <h1 class="h3 mb-3 font-weight-normal">Modifier votre mot de passe</h1>
+    <label for="inputUsername">Nom utilisateur</label>
+    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" required autofocus>
+    <label for="inputPassword">Ancien mot de passe</label>
+    <input type="password" name="password" id="inputPassword" class="form-control" required>
+    <label for="inputPassword">Nouveau mot de passe</label>
+    <input type="password" name="newPassword" id="inputnewPassword" class="form-control" required>
+
+    {# <input type="hidden" name="_csrf_token"
+           value="{{ csrf_token('authenticate') }}"
+    > #}
+
+    <br/>
+    <button class="btn btn-lg btn-primary" type="submit">
+       Modifier
+    </button>
+</form>
+     {% else %}
+
+<form method="post" action="{{ path('app_login') }}">
+    {# {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    {% if app.user %}
+        <div class="mb-3">
+            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %} #}
+
+
+
+
+
+  
     <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
     <label for="inputUsername">Username</label>
     <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" required autofocus>
@@ -95,6 +140,11 @@
         Sign in
     </button>
 </form>
+
+
+     {% endif %}
+
+
 
 
                 </div>

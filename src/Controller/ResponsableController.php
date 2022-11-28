@@ -144,6 +144,7 @@ class ResponsableController extends AbstractController
                     ->setUserCreation("Admin")
                     ->setUserModification("Admin")
                     ->setStatut(1)
+                    ->setEmail($fromJson["email"])
                    // ->addFormation($formation)
                  //  ->addResponsableFormation($responsableformation)
                     ->setGroupe($connectedGroupe[0]);
@@ -265,76 +266,78 @@ class ResponsableController extends AbstractController
     }
 
 
-      #[Route('/ModifierResponsable', name: 'ModifierResponsable')]
-      public function UpdateResponsable(ResponsableRepository $repo, ExercerFonctionRepository $repoExercer, Request $request, SerializerInterface $serializer, AnneePastoraleRepository $repoAnnee, FONCTIONRepository $repofonction, FormationRepository $repoformation){
+    #[Route('/ModifierResponsable', name: 'ModifierResponsable')]
+    public function UpdateResponsable(ResponsableRepository $repo, ExercerFonctionRepository $repoExercer, Request $request, SerializerInterface $serializer, AnneePastoraleRepository $repoAnnee, FONCTIONRepository $repofonction, FormationRepository $repoformation)
+    {
 
-          try {
+        try {
             $qClass = new QueryClass($this->em);
-               
-               $value = $request->request->get('value');
-             //var_dump($value);
-               $id = $value['id'];
-              //dump($id);
-             $ResponsableToUpdate = $repo->findOneBy(["id"=>$id]);
- 
-               $activeYear = $repoAnnee->findActiveYear();
-               //dump($activeYear);
+
+            $value = $request->request->get('value');
+            //var_dump($value);
+            $id = $value['id'];
+            //dump($id);
+            $ResponsableToUpdate = $repo->findOneBy(["id" => $id]);
+
+            $activeYear = $repoAnnee->findActiveYear();
+            //dump($activeYear);
 
 
 
-$fonctiontoupdate = $repofonction->findOneBy(["id"=>$value['fonction']]);
-$fonction=$qClass->GetExercerfonction($ResponsableToUpdate->getId());
+            $fonctiontoupdate = $repofonction->findOneBy(["id" => $value['fonction']]);
+            $fonction = $qClass->GetExercerfonction($ResponsableToUpdate->getId());
 
 
-//get exercer fonction
-$exofonction = $repoExercer->findOneBy(["id"=>$fonction]);
+            //get exercer fonction
+            $exofonction = $repoExercer->findOneBy(["id" => $fonction]);
 
-$exofonction->setFonction($fonctiontoupdate);
+            $exofonction->setFonction($fonctiontoupdate);
 
-//get formation
-$formationToUpdate = $ResponsableToUpdate->getResponsableFormations();
-//formation selectionnée
-$selectedFormation = $repoformation->findOneBy(["id"=> $value["formation"]]);
-$formationToUpdate[0]->setFormationId($selectedFormation);
-
-
+            //get formation
+            $formationToUpdate = $ResponsableToUpdate->getResponsableFormations();
+            //formation selectionnée
+            $selectedFormation = $repoformation->findOneBy(["id" => $value["formation"]]);
+            $formationToUpdate[0]->setFormationId($selectedFormation);
 
 
 
-         // $formation = $repoformation->findOneBy(["id"=>$value["formation"]]);
-      
+
+
+            // $formation = $repoformation->findOneBy(["id"=>$value["formation"]]);
+
             //  $nom = $ResponsableUnique->getNom() == $ResponsableToUpdate->getNom() ? $ResponsableUnique->getNom() : $ResponsableToUpdate->getNom();
-              $nom = $ResponsableToUpdate->getNom() == $value["nom"] ? $ResponsableToUpdate->getNom() :  $value["nom"] ;
-              $prenoms = $ResponsableToUpdate->getPrenoms() == $value["prenoms"] ? $ResponsableToUpdate->getPrenoms() :  $value["prenoms"] ;
-              $occupation = $ResponsableToUpdate->getOccupation() == $value["occupation"] ? $ResponsableToUpdate->getOccupation() :  $value["occupation"] ;
-              $habitation = $ResponsableToUpdate->getHabitation() == $value["habitation"] ? $ResponsableToUpdate->getHabitation() :  $value["habitation"] ;
-              $telephone = $ResponsableToUpdate->getTelephone() == $value["telephone"] ? $ResponsableToUpdate->getTelephone() :  $value["telephone"] ;
-              $telephone = $ResponsableToUpdate->getTelephone() == $value["telephone"] ? $ResponsableToUpdate->getTelephone() :  $value["telephone"] ;
-         
-            $formation = $repoformation->findOneBy(["id"=>$value["formation"]]);
+            $nom = $ResponsableToUpdate->getNom() == $value["nom"] ? $ResponsableToUpdate->getNom() :  $value["nom"];
+            $prenoms = $ResponsableToUpdate->getPrenoms() == $value["prenoms"] ? $ResponsableToUpdate->getPrenoms() :  $value["prenoms"];
+            $occupation = $ResponsableToUpdate->getOccupation() == $value["occupation"] ? $ResponsableToUpdate->getOccupation() :  $value["occupation"];
+            $habitation = $ResponsableToUpdate->getHabitation() == $value["habitation"] ? $ResponsableToUpdate->getHabitation() :  $value["habitation"];
+            $telephone = $ResponsableToUpdate->getTelephone() == $value["telephone"] ? $ResponsableToUpdate->getTelephone() :  $value["telephone"];
+            $telephone = $ResponsableToUpdate->getTelephone() == $value["telephone"] ? $ResponsableToUpdate->getTelephone() :  $value["telephone"];
+            $email = $ResponsableToUpdate->getEmail() == $value["email"] ? $ResponsableToUpdate->getEmail() : $value["email"];
+            $formation = $repoformation->findOneBy(["id" => $value["formation"]]);
 
 
-              $ResponsableToUpdate->setNom($nom)
-                                ->setPrenoms($prenoms)
-                                ->setHabitation($habitation)
-                                ->setOccupation($occupation)
-                              //  ->addExercerFonction()
-//                 // ->setDob($dob)
-                            
-                                ->setTelephone($telephone) 
-                                //->addFormation($formation)
-                                ;
-             
-               $manager = $this->getDoctrine()->getManager();
-              $manager->persist($ResponsableToUpdate);
-             $manager->persist($exofonction);
-             $manager->persist($formationToUpdate[0]);
-               $manager->flush();
+            $ResponsableToUpdate->setNom($nom)
+                ->setPrenoms($prenoms)
+                ->setHabitation($habitation)
+                ->setOccupation($occupation)
+                //  ->addExercerFonction()
+                //                 // ->setDob($dob)
 
-               return new JsonResponse(["ok"=>true, "data"=>"Opération effectuée avec succès"]);
-           }catch (\Exception $e){
-            return new JsonResponse(["ok"=>false, "data"=>$e->getMessage()]);
-          }
+                ->setTelephone($telephone)
+                ->setEmail($email)
+                //->addFormation($formation)
+            ;
+
+            $manager = $this->getDoctrine()->getManager();
+            $manager->persist($ResponsableToUpdate);
+            $manager->persist($exofonction);
+            $manager->persist($formationToUpdate[0]);
+            $manager->flush();
+
+            return new JsonResponse(["ok" => true, "data" => "Opération effectuée avec succès"]);
+        } catch (\Exception $e) {
+            return new JsonResponse(["ok" => false, "data" => $e->getMessage()]);
+        }
 
     }
 

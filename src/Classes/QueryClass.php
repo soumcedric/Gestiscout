@@ -643,7 +643,7 @@ class QueryClass
         // return $stmt->fetchAllAssociative();
 
 
-        $sql = "SELECT responsables.id, responsables.nom, responsables.prenoms, responsables.dob, responsables.occupation, 
+        $sql = "SELECT responsables.id, responsables.nom, responsables.prenoms, responsables.dob, responsables.occupation, responsables.email,
         responsables.habitation, fonction.libelle fonction, responsables.telephone,formation.id formation_id, formation.libelle formation
         FROM responsable responsables, exercer_fonction exercer, groupe groupes, genre, fonction,formation, responsable_formation
         WHERE responsables.id = exercer.responsable_id
@@ -849,7 +849,7 @@ class QueryClass
 
     public function GetResponsableUnique($id)
     {
-        $query = "select responsable.id, Nom,Prenoms,Occupation,Telephone,Habitation,Dob,fonction.id fonctionId, 
+        $query = "select responsable.id, Nom,Prenoms,Occupation,Telephone,Habitation,Dob,fonction.id fonctionId, responsable.email,
         fonction.libelle fonctionlibelle, formation.id formationId, formation.libelle formationlibelle from responsable,
          exercer_fonction , fonction, responsable_formation, formation
         where responsable.id = exercer_fonction.responsable_id

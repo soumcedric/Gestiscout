@@ -2,18 +2,21 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Classes\QueryClass;
 use App\Entity\Utilisateur;
-use App\Entity\User;
-use App\Repository\GroupeRepository;
+use Symfony\Component\Mime\Email;
 
-use App\Repository\ResponsableRepository;
+use App\Repository\GroupeRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\ResponsableRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UtilisateurController extends AbstractController
@@ -22,6 +25,7 @@ class UtilisateurController extends AbstractController
     private $groupeLayer;
     private  $respoLayer;
     private $em;
+    
     function __construct(SessionInterface $session, GroupeRepository $groupe,ResponsableRepository $respo,EntityManagerInterface $em)
     {
         $this->session = $session;
@@ -39,39 +43,73 @@ class UtilisateurController extends AbstractController
     }
 
     #[Route('/Addutilisateur', name: 'Addutilisateur')]
-    public function Addutilisateur(Request $req, UserPasswordEncoderInterface $encoder)
+    public function Addutilisateur(Request $req, UserPasswordEncoderInterface $encoder, ResponsableRepository $respoRepo, MailerInterface $mailer)
     {
+        try
+        {
+       
         $fromJson = $req->request->get("value");
         $qClass = new QueryClass($this->em);
         $userExists = $qClass->CheckUserExist($fromJson["username"]);
-        if ($userExists){
-            return new Response('Cet utilisateur existe déjà',200);
-        }else
-        {
+        if ($userExists) {
+            return new JsonResponse(['ok' => false, 'message' => 'Cet utilisateur existe déjà']);
+        } else {
             $groupe = $this->session->get('groupeid');
             //get concerned group
-            $ConnectedGroupe = $this->groupeLayer->findOneBy(["id"=>$groupe->getId()]);
+            $ConnectedGroupe = $this->groupeLayer->findOneBy(["id" => $groupe->getId()]);
             //get Concerned Responsable
-            $ConcernedRespo = $this->respoLayer->findOneBy(["id"=>$fromJson["respoid"]]);
+            $ConcernedRespo = $this->respoLayer->findOneBy(["id" => $fromJson["respoid"]]);
 
 
             $user = new User();
 
-            $cryptedPass = $encoder->encodePassword($user, $fromJson["password"]);
+
+            $randonpass = $this->RandomPassword();
+            dump($randonpass);
+            $cryptedPass = $encoder->encodePassword($user, $randonpass);
+
             $user->setPassword($cryptedPass)
                 ->setUsername($fromJson["username"])
                 ->setGroupe($ConnectedGroupe)
                 ->setRoles($fromJson["roles"])
                 ->setResponsable($ConcernedRespo)
                 ->setDateCreation(new \DateTime())
+                ->setBActif(true)
+                ->setFirstConnection(true)
                 ->setUserCreation("Admin");
 
             $manager = $this->getDoctrine()->getManager();
             $manager->persist($user);
             $manager->flush();
-            return new Response('success',200);
-        }
+            //send mail to the user with his default password
+            //get email
+            $respo = $respoRepo->findOneBy(["id" => $ConcernedRespo->getId()]);
+            $email = $respo->getEmail();
+            $nom = $respo->getNom();
+            $prenoms = $respo->getPrenoms();
 
+            $email = (new Email())
+                ->from('scout2@scout.com')
+                ->to($email)
+                ->subject('Création de compte')
+                ->html('Bonjour ' . $nom . ' ' . $prenoms . ', <br/>Votre inscription à la plateforme Gestiscout à été effectuée avec succès. <br\>Afin de vous connecter, veuillez utiliser
+                    les identifiants ci-dessous: <br/>
+                    nom utilisateur : ' . $user->getUsername()
+                    . '<br/>
+                    mot de passe: ' . $randonpass);
+
+          $result =   $mailer->send($email);
+          
+
+            return new JsonResponse(['ok' => false, 'message' => 'Compte créé avec succès']);
+        }
+             
+        }
+        catch(\Exception $e)
+        {
+            return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
+            dump($e->getMessage());
+        }
     }
 
 
@@ -112,6 +150,19 @@ class UtilisateurController extends AbstractController
             return new Response('success',200);
         }
 
+    }
+
+
+    function RandomPassword()
+    {
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i < 8; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass); //turn the array into a string
     }
 
 

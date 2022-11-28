@@ -378,8 +378,9 @@ DownloadDocument:
 ModifierResponsable:
     path: /ModifierResponsable
     controller: App\Controller\ResponsableController::UpdateResponsable
-    
-    
+UpdatePassword:
+    path: /UpdatePassword
+    controller: App\Controller\LoginCustomController::UpdatePassword
 
 
 

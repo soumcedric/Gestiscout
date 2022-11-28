@@ -185,10 +185,10 @@
                                     <label>Nom Utilisateur</label>
                                     <input type="text" class="form-control" required id="Username">
                                 </div>
-                                <div class="form-group">
+                                {# <div class="form-group">
                                     <label>Mot de passe</label>
                                     <input type="password" class="form-control" required id="password">
-                                </div>
+                                </div> #}
 
                                                      <br>
 
@@ -205,10 +205,10 @@
                                         <option value="ROLE_CONSULTANT">Consultant</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                {# <div class="form-group">
                                     <label>Confirmer mot de passe</label>
                                     <input type="password" class="form-control" required id="confirmpass">
-                                </div>
+                                </div> #}
 
 
                             </form>
@@ -612,18 +612,18 @@ $("#saveuser").click(function(){
                 success:function(res)
                 {
                     debugger
-                    if (res=='success')
+                    if (res.ok)
                     {
                         swal({
                             type:"success",
-                            title:"",
+                            title:"Création utilisateur",
                             text:"Opération effectuée avec succès"
                         });
                     }else{
                         swal({
                             type:"error",
-                            title:"",
-                            text: res
+                            title:"Créateur utilisateur",
+                            text: res.message
                         });
                     }
                 },
@@ -649,6 +649,8 @@ $("#saveuser").click(function(){
             });
 $("#tbrespo tbody").on('click',' tr > td > a[id=add]',function (){
                 debugger
+                $("#Username").val('');
+                $("#role").val(0);
                 $("#modalcompte").modal("show");
                 var row = table.row( $(this).parents('tr') ).data();
                 respoId = row.ID;

@@ -145,6 +145,12 @@ class Responsable
      */
     private $sessionFormationResponsables;
 
+    /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     * @Groups({"show_chef"})
+     */
+    private $email;
+
 
 
 //    /**
@@ -570,6 +576,18 @@ public function removeSessionFormationResponsable(SessionFormationResponsable $s
             $sessionFormationResponsable->setResponsableId(null);
         }
     }
+
+    return $this;
+}
+
+public function getEmail(): ?string
+{
+    return $this->email;
+}
+
+public function setEmail(?string $email): self
+{
+    $this->email = $email;
 
     return $this;
 }
