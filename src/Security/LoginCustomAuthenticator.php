@@ -125,8 +125,8 @@ class LoginCustomAuthenticator extends AbstractFormLoginAuthenticator implements
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        //return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
-        return true;
+       return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
+        //return true;
     }
 
     /**
@@ -153,32 +153,46 @@ class LoginCustomAuthenticator extends AbstractFormLoginAuthenticator implements
             if($user->getUsername()!="superadmin")
             {
                   $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $user->getUsername()]);
+                  $user->setlastconnection(new \DateTime());
+                  $this->entityManager->persist($user);
+                  $this->entityManager->flush();
                   //get groupe
                //   $groupe = $this->entityManager->getRepository(Groupe::class)->findOneBy([''])
                 // if (!$user) {
                     $request->getSession()->set("id",$user->getId());
                     $request->getSession()->set('nom',"ddddd");
                     $request->getSession()->set('groupeid',$user->getGroupe());
+                    
              }
        
 
-
+        if($user->getFirstConnection())
+        {
+            $request->getSession()->set("firstconnection",true);
+            $this->target=self::LOGIN_ROUTE;
+        }
+        else
+        {
+          
+          
+            if(in_array('ROLE_CONFIG',$user->getRoles(),true))
+            {
+                $this->target="DashAdmin";
+            }
+            else if(in_array('ROLE_DISTRICT_USER',$user->getRoles(),true)){
+                $this->target="DistrictDash";
+            }
+            else if(in_array('ROLE_FORMATION',$user->getRoles(),true))
+            {
+                $this->target="DistrictDash"; 
+            }
+            else if(in_array('ROLE_CG',$user->getRoles(),true))
+            {
+                $this->target="Dashboard"; 
+            }
+        }
       
-        if(in_array('ROLE_CONFIG',$user->getRoles(),true))
-        {
-            $this->target="DashAdmin";
-        }
-        else if(in_array('ROLE_ADMIN',$user->getRoles(),true)){
-            $this->target="DistrictDash";
-        }
-        else if(in_array('ROLE_FORMATION',$user->getRoles(),true))
-        {
-            $this->target="DistrictDash"; 
-        }
-        else if(in_array('ROLE_CG',$user->getRoles(),true))
-        {
-            $this->target="Dashboard"; 
-        }
+      
                  
       return new RedirectResponse($this->urlGenerator->generate($this->target));
         throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);

@@ -1,8 +1,8 @@
 security:
     encoders:
-        Symfony\Component\Security\Core\User\User: 'plaintext'
+        # Symfony\Component\Security\Core\User\User: 'plaintext'
         App\Entity\User:
-            algorithm: auto
+            algorithm: 'bcrypt'
 
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
@@ -10,13 +10,14 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         chain_provider:
             chain:
-                providers: [in_memory,user_db]
+                # providers: [in_memory,user_db]
+                providers: [user_db]
         user_db:
             entity: {class: App\Entity\User, property: username}
         in_memory:
             memory:
                 users: 
-                    superadmin: { password: superadmin, roles: [ROLE_CONFIG]}
+                    superadmin: { password: '$2y$13$LsPMlHAvgmxxyzGDsi2Z/eoM7fDoJaDTiaoDfu7cmpv09pa7/y9By', roles: [ROLE_CONFIG]}
           
                 
         # used to reload user from session & other features (e.g. switch_user)
@@ -74,11 +75,11 @@ security:
         #  - { path: /DistrictDash, roles: [ROLE_CD,"ROLE_FORMATION"]}
          - { path: /chefparformation, roles: [ROLE_CD,ROLE_FORMATION]}
          - { path: /ListeChefByChef, roles: [ROLE_CD,ROLE_FORMATION]}
-         - { path: /DashAdmin, roles: [ROLE_CONFIG]}
+         - { path: /DashAdmin, roles: [ROLE_CONFIG,ROLE_CD]}
          - { path: /GetDistrictUnique, roles: [ROLE_CONFIG]}
          - { path: /SoumettreActivite, roles: [ROLE_CG]}
          - { path: /SaveSession, roles: [ROLE_CD,ROLE_FORMATION]}
-         - { path: /Sessions, roles: [ROLE_CD,ROLE_FORMATION]}
+         - { path: /Sessions, roles: [ROLE_CD,ROLE_FORMATION,ROLE_CD_FINANCE]}
 
 
 

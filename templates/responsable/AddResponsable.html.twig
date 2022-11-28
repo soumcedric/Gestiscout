@@ -70,8 +70,10 @@
                                           <div class="form-group">
                                             <label>Formation</label>
                                             <select id="formation" class="form-control"></select>
-                                        </div>
+                                         </div>
+                                        
 
+                                      
 
 
                                         <br>
@@ -97,10 +99,10 @@
                                             <input type="text" class="form-control" required id="telephone">
                                         </div>
 
-{#                                        <div class="form-group">#}
-{#                                            <label>Groupe</label>#}
-{#                                            <select id="groupe" class="form-control"></select>#}
-{#                                        </div>#}
+                                                <div class="form-group">
+                                            <label>Email</label>
+                                            <input id="email" type="email" class="form-control" />
+                                         </div>
 
                                     </form>
                                 </div>
@@ -166,12 +168,12 @@ debugger
             loadFormation();
             function loading()
             {
-                   $('.modal').modal('show');
+                 //  $('.modal').modal('show');
 
             }
               function loadingClose()
             {
-                   $('.modal').modal('hide');
+                  // $('.modal').modal('hide');
 
             }
             function CurrentDate(){
@@ -196,6 +198,7 @@ debugger
                 $("#habitation").val('');
                 $("#occupation").val('');
                 $("#telephone").val('');
+                $("#email").val('');
                 loadFonction();
                 loadGroupe();
             }
@@ -212,7 +215,8 @@ debugger
                     fonction : $("#fonction").val(),
                     groupe: "",
                     genre: $("#genre").val(),
-                    formation: $("#formation").val()
+                    formation: $("#formation").val(),
+                    email: $("#email").val()
                 };
 
                 if (responsable.nom=='' || responsable.prenoms=='' || responsable.dob=='' ||responsable.telephone=='')

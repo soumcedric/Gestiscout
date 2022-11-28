@@ -266,7 +266,7 @@
                             {% endif %} #}
 
 
-                            {% if is_granted('ROLE_CD')%}
+                            {% if is_granted('ROLE_DISTRICT_USER')%}
                                     <li class="header">Configuration</li>
                             <li><a href="{{  path("ListeAnnePastorale") }}"><i class="fa fa-wrench"></i><span>Année pastorale</span></a></li>
                             <li><a href="{{  path("ListeBranche") }}"><i class="fa fa-wrench"></i><span>Branche</span></a></li>
