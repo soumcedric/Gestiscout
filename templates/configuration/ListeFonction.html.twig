@@ -13,72 +13,83 @@
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
-    <div class="container-fluid">
-           
-        <div class="row clearfix">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="header">
-                        <h2 class="text-center">CONFIGURER LES FONCTIONS</h2>
-                    </div>
-                    <div class="body">
-                        <div class="row">
-                      <div class="col-md-6">
-                            <div class="form-group">
-                                <label>CODE FONCTION</label>
-                                <input type="text" class="form-control" required id="code" placeholder="CD / CDA / ACD">
-                            </div>
-                      </div>
+<div class="container-fluid">
 
-                        <div class="col-md-6">
+	<div class="row clearfix">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="header">
+					<h2 class="text-center">CONFIGURER LES FONCTIONS</h2>
+				</div>
+				<div class="body">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>CODE FONCTION</label>
+								<input type="text" class="form-control" required id="code" placeholder="CD / CDA / ACD">
+							</div>
+						</div>
 
-                            <div class="form-group">
-                                <label>LIBELLE FONCTION</label>
-                                <input type="text" class="form-control" required id="libelle" placeholder="ex: commissaire de district">
-                            </div>
+						<div class="col-md-6">
 
-                        </div>
+							<div class="form-group">
+								<label>LIBELLE FONCTION</label>
+								<input type="text" class="form-control" required id="libelle" placeholder="ex: commissaire de district">
+							</div>
 
-                    </div>
+						</div>
 
-                        <div class="text-center"> 
-                            <button type="submit" class="btn btn-success" id="valider">Valider</button>
-                            <button type="submit" class="btn btn-danger">Annuler</button>
-                        </div>
-                            
-                        
-                    </div>
-                </div>
-            </div>
-          
-        </div>
-        
-    </div>
-    
-<div class="col-lg-12">
-    <div class="card">
-        <div class="header">
-            <h2 class="text-center">Liste des fonctions</h2>
-        </div>
-        <div class="body">
-            <div class="table-responsive">
-                <table class="table" id="tbFonction">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Code Fonction</th>
-                            <th>Libelle Fonction</th>
-                            <th>ACTION</th>
-                        </tr>
-                    </thead>
-                   <tbody>
+					</div>
+                    	<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>ROLE</label>
+								<input type="text" class="form-control" required id="txtrole" placeholder="">
+							</div>
+						</div>
 
-                   </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+					
+
+					</div>
+
+					<div class="text-center">
+						<button type="submit" class="btn btn-success" id="valider">Valider</button>
+						<button type="submit" class="btn btn-danger">Annuler</button>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+
 </div>
+
+<div class="col-lg-12">
+	<div class="card">
+		<div class="header">
+			<h2 class="text-center">Liste des fonctions</h2>
+		</div>
+		<div class="body">
+			<div class="table-responsive">
+				<table class="table" id="tbFonction">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>CODE</th>
+							<th>LIBELLE</th>
+                            <th>ROLE</th>
+							<th>ACTION</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
 {% endblock %}
 {% block javascripts %}
 <script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
@@ -109,13 +120,14 @@
               { "data": "ID" },
               { "data": "CODE" },
               { "data": "LIBELLE" },
+              {"data" : "ROLE"},
               { "data": "ACTION" }
           ],
-          // columnDefs: [
-          //     {
-          //         targets: 0,
-          //         visible: false
-          //     }],
+          columnDefs: [
+              {
+                  targets: 0,
+                  visible: false
+              }],
           data: [],
           rowCallback: function (row, data) { },
           filter: true,
@@ -142,6 +154,7 @@
                             "ID":n.id,
                             "CODE":n.Code,
                             "LIBELLE":n.Libelle ,
+                            "ROLE": n.Role,
                             "ACTION" :"<a><span><i class='fa fa-trash fa-2x'></i></span></a><a><span><i class='fa fa-pencil fa-2x'></i></span></a><a><span><i class='fa fa-eye fa-2x'></i></span></a>"
 
                         }]).draw();
@@ -155,7 +168,8 @@
             debugger
             var Fonction = {
                 Code : $("#code").val(),
-                Libelle : $("#libelle").val()
+                Libelle : $("#libelle").val(),
+                Role : $("#txtrole").val()
             };
 
             $.ajax({

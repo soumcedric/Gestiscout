@@ -122,6 +122,7 @@ class ConfigurationController extends AbstractController
         $fromjson = $value->request->get('value');
         $newFonction->setCode($fromjson["Code"]);
         $newFonction->setLibelle($fromjson["Libelle"]);
+        $newFonction->setRole($fromjson["Role"]);
         $newFonction->setDateCreation(new \DateTime());
         //  $newFonction->setUserCreation("Admin");
 

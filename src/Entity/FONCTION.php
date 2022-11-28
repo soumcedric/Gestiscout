@@ -62,6 +62,12 @@ class FONCTION
      */
     private $exercerFonctions;
 
+    /**
+     * @ORM\Column(type="string", length=50)
+     * @Groups("fonction")
+     */
+    private $Role;
+
     public function __construct()
     {
         $this->exercerFonctions = new ArrayCollection();
@@ -170,6 +176,18 @@ class FONCTION
                 $exercerFonction->setFonction(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRole(): ?string
+    {
+        return $this->Role;
+    }
+
+    public function setRole(string $Role): self
+    {
+        $this->Role = $Role;
 
         return $this;
     }
