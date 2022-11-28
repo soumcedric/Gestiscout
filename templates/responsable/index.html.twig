@@ -179,40 +179,19 @@
                 <input type="hidden" id="respoId">
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-12">
                             <form id="basic-form" method="post" novalidate>
                                 <div class="form-group">
                                     <label>Nom Utilisateur</label>
                                     <input type="text" class="form-control" required id="Username">
                                 </div>
-                                {# <div class="form-group">
-                                    <label>Mot de passe</label>
-                                    <input type="password" class="form-control" required id="password">
-                                </div> #}
+                               
 
                                                      <br>
 
                             </form>
                         </div>
-                        <div class="col-lg-6">
-                            <form id="basic-form" method="post" novalidate>
-                                <div class="form-group">
-                                    <label>Profil</label>
-                                    <select class="form-control" id="role">
-                                        <option value="0">---choisir un profil---</option>
-                                        <option value="ROLE_SUPERADMIN">Super Administrateur</option>
-                                        <option value="ROLE_ADMIN">Administrateur</option>
-                                        <option value="ROLE_CONSULTANT">Consultant</option>
-                                    </select>
-                                </div>
-                                {# <div class="form-group">
-                                    <label>Confirmer mot de passe</label>
-                                    <input type="password" class="form-control" required id="confirmpass">
-                                </div> #}
-
-
-                            </form>
-                        </div>
+                     
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -586,13 +565,13 @@ $("#saveuser").click(function(){
     debugger
                 var user = {
                     username : $("#Username").val(),
-                    roles : [],
-                    password : $("#password").val(),
-                    confirmpass : $("#confirmpass").val(),
+                    // roles : [],
+                    // password : $("#password").val(),
+                    // confirmpass : $("#confirmpass").val(),
                     respoid : respoId
                 };
 
-    if (user.username =="" || user.password=="" || user.confirmpass=="" || $("#role").val()==0)
+    if (user.username =="")
     {
         swal({
            type:"warning",
@@ -602,9 +581,9 @@ $("#saveuser").click(function(){
     }
     else
     {
-        if (user.password == user.confirmpass)
-        {
-            user.roles.push($("#role").val());
+        // if (user.password == user.confirmpass)
+        // {
+           // user.roles.push($("#role").val());
             $.ajax({
                 type:"POST",
                 url:"{{ path("Addutilisateur") }}",
@@ -632,15 +611,15 @@ $("#saveuser").click(function(){
 
                 }
             });
-        }
-        else
-        {
-            swal({
-                type:"error",
-                title:"",
-                text:"Les mots de passes ne concordent pas"
-            });
-        }
+        // }
+        // else
+        // {
+        //     swal({
+        //         type:"error",
+        //         title:"",
+        //         text:"Les mots de passes ne concordent pas"
+        //     });
+        // }
     }
 
 

@@ -59,19 +59,20 @@ class UtilisateurController extends AbstractController
             $ConnectedGroupe = $this->groupeLayer->findOneBy(["id" => $groupe->getId()]);
             //get Concerned Responsable
             $ConcernedRespo = $this->respoLayer->findOneBy(["id" => $fromJson["respoid"]]);
-
+            $role = $qClass->GetRespoRole($ConcernedRespo->getId());
+            //dump($role);
 
             $user = new User();
 
 
             $randonpass = $this->RandomPassword();
-            dump($randonpass);
+            //dump($randonpass);
             $cryptedPass = $encoder->encodePassword($user, $randonpass);
-
+            $roles = array($role);
             $user->setPassword($cryptedPass)
                 ->setUsername($fromJson["username"])
                 ->setGroupe($ConnectedGroupe)
-                ->setRoles($fromJson["roles"])
+                ->setRoles($roles)
                 ->setResponsable($ConcernedRespo)
                 ->setDateCreation(new \DateTime())
                 ->setBActif(true)
@@ -101,7 +102,7 @@ class UtilisateurController extends AbstractController
           $result =   $mailer->send($email);
           
 
-            return new JsonResponse(['ok' => false, 'message' => 'Compte créé avec succès']);
+            return new JsonResponse(['ok' => true, 'message' => 'Compte créé avec succès']);
         }
              
         }

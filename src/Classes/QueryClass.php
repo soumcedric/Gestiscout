@@ -1107,6 +1107,21 @@ class QueryClass
     /**/
 
 
+        /*GET RESPONSABLE ROLE*/
+        public function GetRespoRole($respoId){
+            $query = "select f.role
+            from responsable r, exercer_fonction exf, fonction f
+            where r.id = exf.responsable_id
+            and exf.fonction_id = f.Id
+            and exf.annee_pastorale_id ='".$this->activeYear->getId()."' 
+            and r.id = '".$respoId."' ";
+            $stmt = $this->em->getConnection()->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchOne();
+        }
+    
+        /**/
+
     
 
 
