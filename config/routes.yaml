@@ -381,6 +381,18 @@ ModifierResponsable:
 UpdatePassword:
     path: /UpdatePassword
     controller: App\Controller\LoginCustomController::UpdatePassword
+AddResponsableDistrictConfig:
+    path: /AddResponsableDistrictConfig
+    controller: App\Controller\DistrictController::AddResponsableDistrictConfig
+ConfigurerResponsable:
+    path: /ConfigurerResponsable
+    controller: App\Controller\DistrictController::ConfigurerResponsable
+GroupeByDistrict:
+    path: /GroupeByDistrict/{district}
+    controller: App\Controller\ConfigurationController::GroupeByDistrict
+districtconfig:
+    path: /districtconfig
+    controller: App\Controller\DistrictController::districtconfig
 
 
 
