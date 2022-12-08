@@ -393,6 +393,13 @@ GroupeByDistrict:
 districtconfig:
     path: /districtconfig
     controller: App\Controller\DistrictController::districtconfig
+updateDistrict:
+    path: /updateDistrict
+    controller: App\Controller\ConfigurationController::updateDistrict
+ListeRespoDistrictConfig:
+    path: /ListeRespoDistrictConfig
+    controller: App\Controller\DistrictController::ListeRespoDistrictConfig
+
 
 
 

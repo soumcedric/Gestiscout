@@ -75,6 +75,16 @@ class District
      */
     private $exercerFonctions;
 
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $email;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=CommissariatDistrict::class, inversedBy="districts")
+     */
+    private $CommissariatDistrict;
+
 
     public function __construct()
     {
@@ -217,6 +227,30 @@ class District
         if ($this->exercerFonctions->removeElement($exercerFonction)) {
             $exercerFonction->removeDistrict($this);
         }
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getCommissariatDistrict(): ?CommissariatDistrict
+    {
+        return $this->CommissariatDistrict;
+    }
+
+    public function setCommissariatDistrict(?CommissariatDistrict $CommissariatDistrict): self
+    {
+        $this->CommissariatDistrict = $CommissariatDistrict;
 
         return $this;
     }

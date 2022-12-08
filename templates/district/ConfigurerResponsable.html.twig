@@ -15,11 +15,7 @@
             <div class="col-md-6 col-sm-12">
 
                 <nav aria-label="breadcrumb">
-{#                    <ol class="breadcrumb">#}
-{#                        <li class="breadcrumb-item"><a href="#"><i class="fa fa-cube"></i></a></li>#}
-{#                        <li class="breadcrumb-item"><a href="#">Ajouter un responsable</a></li>#}
-{#                        <li class="breadcrumb-item active" aria-current="page">Color Table</li>#}
-{#                    </ol>#}
+
                 </nav>
             </div>
 {#            <div class="col-md-6 col-sm-12 text-right hidden-xs">#}
@@ -49,14 +45,17 @@
                                             <label>Prénoms</label>
                                             <input type="text" class="form-control" required id="prenoms">
                                         </div>
-
+                                          <div class="form-group">
+                                            <label>genre</label>
+                                            <select class="form-control" id="genre"></select>
+                                        </div>
                                         <div class="form-group">
                                             <label>Fonction</label>
                                             <select id="fonction" class="form-control"></select>
                                         </div>
                                         <div class="form-group">
-                                            <label>Date de naissance</label>
-                                            <input type="date" class="form-control" id="dob"> 
+                                            <label>Email</label>
+                                            <input type="email" class="form-control" id="email"> 
                                         </div>
                                         <div class="row">
                                             <label class="form-label">Est au groupe</label>
@@ -77,7 +76,10 @@
                                             <label>Téléphone</label>
                                             <input type="text" class="form-control" required id="telephone">
                                         </div>
-
+                                          <div class="form-group">
+                                            <label>Formation</label>
+                                            <select class="form-controle" id="formation"></select>
+                                        </div>
                                       <div class="form-group">
                                             <label>Date de naissance</label>
                                             <input type="date" class="form-control" required id="dob">
@@ -103,12 +105,65 @@
                     </div>
                 </div>
             </div>
+               <div class="table-responsive">
+                    <table class="table" id="tbrespo">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Prénoms</th>
+                            <th>Date de naissance</th>
+                            <th>Téléphone</th> 
+                            <th>Fonction</th>
+                            <th>ACTION</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
         </div>
     </div>
 
 
 
 
+
+  <div class="modal fade" id="modalcompte" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modifications du responsable</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <input type="hidden" id="respoId">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form id="basic-form" method="post" novalidate>
+                                <div class="form-group">
+                                    <label>Nom Utilisateur</label>
+                                    <input type="text" class="form-control" required id="Username">
+                                </div>
+                               
+
+                                                     <br>
+
+                            </form>
+                        </div>
+                     
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-round btn-default" data-dismiss="modal">Annuler</button>
+                    <button type="button" id="saveuser" class="btn btn-round btn-primary">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -142,6 +197,77 @@
     <script>
         $(document).ready(function(){
             reset();
+
+               var table = $("#tbrespo").DataTable({
+            destroy:true,
+            language: {
+                processing: "Traitement en cours...",
+                search: "Rechercher&nbsp;:",
+                lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
+                info: "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+                infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+                infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+                infoPostFix: "",
+                loadingRecords: "Chargement en cours...",
+                zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
+                emptyTable: "Aucune donnée disponible dans le tableau",
+                paginate: {
+                    first: "Premier",
+                    previous: "Pr&eacute;c&eacute;dent",
+                    next: "Suivant",
+                    last: "Dernier"
+                }
+            },
+            ajax:{
+                "url": "/ListeRespoDistrictConfig",
+                "type":"POST",
+                // success:function(res)
+                // {
+                //     debugger
+                // }
+              
+                
+            },
+            columns: [
+               
+                { "data": "id" },
+                 { "data": "Nom" }  , 
+                  { "data": "Prenoms" },
+                  { "data": "Dob" },
+                  { "data": "Telephone" },
+                  { "data": "fonction" },
+                   { "data": "Action" },
+                 
+              
+            ],
+            columnDefs: [
+                // {
+                //     targets: 1,
+                //     visible: false
+                // },
+                // {
+                //     targets: 5,
+                //     visible: true
+                // },
+                {
+                    targets: 4,
+                    visible: false
+                },
+                {
+                    targets:6,
+                    //visible:false,
+                    searchable: false,
+                    orderable: false,
+                    //className: 'dt-body-center',
+                    render:function(data,type,full,meta){
+                        return "<a id='delete'><span><i class='fa fa-trash fa-2x'></i></span></a>|<a id='add' onclick='selectrow("+data+");'><span><i class='fa fa-plus fa-2x'></i></span></a>";
+                    }
+                }
+            ],
+        
+         
+         
+        });
              $("#checkgroup").prop('checked',false);
             $(".selectgroupe").hide();
             loadFonction();
@@ -152,6 +278,7 @@
                 $("#prenoms").val('');
                 $("#dob").val('');
                 $("#telephone").val('');
+                 $("#email").val('');
                 loadFonction();
 
             }
@@ -179,8 +306,25 @@
                 }
              });
            });
+               $.ajax({
+                type:"GET",
+                url:"{{ path("GetListeGenre")}}",
+                success:function(resp){
+                    debugger
+                    var defaultline = '<option value=selected>---selectionner genre---</option>';
+                    $("#genre").append(defaultline);
+                    var liste = JSON.parse(resp);
+                    $.each(liste,function(i,n){
+                        debugger
+                        var line = '<option value='+n.id+'>'+n.Libelle+'</option>';
+                        $("#genre").append(line);
+
+                    });
+                }
+            });
 
                 $("#checkgroup").change(function(){
+                    debugger
                     let checked = $(this).is(':checked');
                     if(checked)
                         $(".selectgroupe").show();
@@ -191,18 +335,75 @@
 
 
             $("#save").click(function(){
-                //alert("hello");
-debugger
+                
+                debugger
                 var  responsable={
                     nom : $("#Nom").val(),
                     prenoms : $("#prenoms").val(),
                     dob : $("#dob").val(),
-                    //telephone : $("#telephone").val(),
-                    fonction : $("#fonction").val()
+                    telephone : $("#telephone").val(),
+                    fonction : $("#fonction").val(),
+                    fonction: $("#fonction").val(),
+                    district : $("#seldistrict").val(),
+                    groupe : $("#groupe").val(),
+                    email : $("#email").val(),
+                    formation : $("#formation").val(),
+                    genre : $("#genre").val(),
+                    habitation : "",
+                    occupation : "",
+                    
                     
                 };
 
-                $.ajax({
+                let checked = $("#checkgroup").is(':checked');
+                if(checked)
+                {
+                    //groupe
+                       $.ajax({
+                    type:"POST",
+                    async: true,
+                    dataType: 'json',
+                    url:"{{ path('AddResponsable') }}",
+                    data: {value : responsable},
+                    success:function(res){
+                        debugger;
+                        if (res.ok){
+
+                            swal({
+                                type:"success",
+                                title:"RESPONSABLE",
+                                text:res.message
+                            },function (){
+                                reset();
+                            });
+                        }
+                        else
+                        {
+                                  swal({
+                                type:"error",
+                                title:"RESPONSABLE",
+                                text:res.message
+                            },function (){
+                                reset();
+                            });
+                        }
+                    },
+                    error: function(res){
+                        debugger
+                        swal({
+                            type:"error",
+                            title:"RESPONSABLE",
+                            text:res.message
+                        },function (){
+                            //reset();
+                        });
+                    }
+                     });
+                }
+                else
+                {
+                    //district
+                     $.ajax({
                     type:"POST",
                     async: true,
                     dataType: 'json',
@@ -233,9 +434,36 @@ debugger
                     }
 
                 });
+                }
+               
 
 
             });
+             $.ajax({
+                    type:"GET",
+                    url:"{{ path("GetListeFormation") }}",
+                    success:function(res){
+                        debugger
+                        var liste = JSON.parse(res.data);
+                        if (liste.length>0){
+                            $("#formation").empty();
+                            var defaultline="<option value=0 selected>---Choisir une formation---</option>";
+                            $("#formation").append(defaultline);
+                            $.each(liste,function(i,n) {
+                                debugger
+                                var option = "<option value="+n.id+">"+n.libelle+"</option>";
+                                $("#formation").append(option);
+                            });
+                        }else{
+
+                        }
+
+                            },
+                    error:function(){
+
+                    }
+
+                });
             $("#reset").click(function(){
 
                 swal({
@@ -314,23 +542,7 @@ debugger
                 });
             }
 
-            $.ajax({
-                type:"GET",
-                url:"{{ path("GetListeGenre")}}",
-                success:function(resp){
-                    debugger
-                    var defaultline = '<option value=selected>---selectionner genre---</option>';
-                    $("#genre").append(defaultline);
-                    var liste = JSON.parse(resp);
-                    $.each(liste,function(i,n){
-                        debugger
-                        var line = '<option value='+n.id+'>'+n.Libelle+'</option>';
-                        $("#genre").append(line);
-
-                    });
-                }
-            });
-
+        
 
             function LoadDistrict()
             {
@@ -349,6 +561,74 @@ debugger
                     }
                 });
             }
+
+
+$("#saveuser").click(function(){
+    debugger
+                var user = {
+                    username : $("#Username").val(),
+                  //  roles : [],
+                    // password : $("#password").val(),
+                    // confirmpass : $("#confirmpass").val(),
+                    respoid : $("#respoId").val()
+                };
+
+    if (user.username =="" )
+    {
+        swal({
+           type:"warning",
+           title:"",
+           text: "Certains champs sont vide!"
         });
+    }
+    else
+    {
+        
+          //  user.roles.push($("#role").val());
+            $.ajax({
+                type:"POST",
+                url:"{{ path("Addutilisateur") }}",
+                data: { 'value' : user},
+                success:function(res)
+                {
+                    debugger
+                    if (res=='success')
+                    {
+                        swal({
+                            type:"success",
+                            title:"",
+                            text:"Opération effectuée avec succès"
+                        });
+                    }else{
+                        swal({
+                            type:"error",
+                            title:"",
+                            text: res
+                        });
+                    }
+                },
+                error: function(res)
+                {
+
+                }
+            });
+        
+    }
+
+
+
+
+            });
+
+
+            
+        });
+
+        function selectrow(r)
+            {
+                $("#modalcompte").modal("show");
+                $("#respoId").val(r);
+            }
     </script>
+    
 {% endblock %}

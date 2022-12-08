@@ -24,6 +24,7 @@
                     <div class="body">
                     <input type="hidden" id="idgroupe" />
                         <div class="row">
+                        <input type="hidden" id="districtid"/>
                       <div class="col-md-6">
                             <div class="form-group">
                                 <label>Nom</label>
@@ -371,13 +372,16 @@ function readURL(input) {
                $("#valider").hide();
             var row = table.row( $(this).parents('tr') ).data();
             var ID = row.ID;
+            $("#districtid").val(ID);
             $.get("{{path("GetDistrictUnique")}}",{value:ID}, function(res){
                 debugger
                 if (res.ok) {
                     var value = JSON.parse(res.data);
                     $("#nom").val(value.nom);
                   
-                    $("#txtphone").val(value.telephone);
+                  //  $("#txtphone").val(value.telephone);
+                    $("#txtemail").val(value.email);
+                    $("#txtphone").val(value.Telephone);
                     $("#txtemail").val(value.email);
                     var image = "/uploads/"+value.filename;
                    // var image ="LOGO.jpg";
@@ -404,34 +408,66 @@ function readURL(input) {
 
 
         $("#modifier").click(function(){
-              var  Groupe={
-                id:$("#idgroupe").val(),
-               nom : $("#nom").val(),
-               nickname : $("#nickname").val(),
-               region : $("#region").val(),
-               paroisse : $("#paroisse").val(),
-               phone1: $("#phone1").val(),
-               phone2: $("#phone2").val(),
-               email : $("#email").val()
-               //logo : formdata
-           };
-
-        $.post("{{path("UpdateGroupe")}}",{value:Groupe}, function(res){
             debugger
-            if(res.ok){
-                    swal({
-                        type:"success",
-                        title:"Groupe",
-                        text: res.message
-                    },function(){
-                        loadData();
-                        Annuler();
-                    })
-            }
-            else{
+              let filename="";
+              var datas = new FormData();
+              datas.append('img',"");
+              if($('input[type=file]').val() !="")
+              {
+              
+                filename= $('input[type=file]')[0].files[0].name;
+                  datas.append('img',$('input[type=file]')[0].files[0],filename);
+              }
+                 
+              
+           district={
+               nom : $("#nom").val(),
+               nickname : $("#nickname").val()
+             };
+        
+        
+        datas.append('nom',district.nom);
+       // datas.append('nickname',district.nickname);
+        datas.append('telephone',$("#txtphone").val());
+        datas.append('email',$("#txtemail").val());
+        datas.append("id",$("#districtid").val());
 
-            }
-        });
+               $.ajax({
+                   type: "POST",
+                   url:"{{ path("updateDistrict") }}",
+                   // enctype: 'multipart/form-data',
+                    processData:false,
+                    contentType:false,
+                   //dataType:"json",
+                //    data: {"value": district},
+                data: datas,
+                   success:function(res){
+                       debugger
+                       if (res.ok){
+                           swal({
+                               title:"DISTRICT",
+                               text:"Enregistrement effectué avec succès",
+                               type:"success"
+
+                           },function (){
+                               debugger
+                               loadData();
+                           });
+                       }else {
+                           swal({
+                               type:"error",
+                               title:"DISTRICT",
+                               text:res.message
+                           });
+                       }
+
+                   },
+                   error:function(res){
+                       debugger
+                   }
+
+               });
+            // }
 
 
         });

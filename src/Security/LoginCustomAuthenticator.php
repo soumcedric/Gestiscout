@@ -126,8 +126,8 @@ class LoginCustomAuthenticator extends AbstractFormLoginAuthenticator implements
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        //return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
-        return true;
+        return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
+       // return true;
     }
 
     /**
@@ -151,8 +151,8 @@ class LoginCustomAuthenticator extends AbstractFormLoginAuthenticator implements
         // }
 
         $user = $token->getUser();
-            if($user->getUsername()!="superadmin")
-            {
+            // if($user->getUsername()!="superadmin")
+            // {
                   $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $user->getUsername()]);
                   $user->setlastconnection(new \DateTime());
                   $this->entityManager->persist($user);
@@ -161,19 +161,19 @@ class LoginCustomAuthenticator extends AbstractFormLoginAuthenticator implements
                //   $groupe = $this->entityManager->getRepository(Groupe::class)->findOneBy([''])
                 // if (!$user) {
                     $request->getSession()->set("id",$user->getId());
-                    $request->getSession()->set('nom',"ddddd");
+                    $request->getSession()->set('nom',$user->getuserName());
                     $request->getSession()->set('groupeid',$user->getGroupe());
                     
-             }
+            // }
        
         //      dump($user);
-        // if($user->getFirstConnection())
-        // {
-        //     $request->getSession()->set("firstconnection",true);
-        //     $this->target=self::LOGIN_ROUTE;
-        // }
-        // else
-        // {
+        if($user->getFirstConnection())
+        {
+            $request->getSession()->set("firstconnection",true);
+            $this->target=self::LOGIN_ROUTE;
+        }
+        else
+        {
           
           
             if(in_array('ROLE_CONFIG',$user->getRoles(),true))
@@ -194,7 +194,7 @@ class LoginCustomAuthenticator extends AbstractFormLoginAuthenticator implements
             {
                 $this->target="Dashboard"; 
             }
-        // }
+         }
       
       
                  

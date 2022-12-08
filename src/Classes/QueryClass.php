@@ -1122,6 +1122,53 @@ class QueryClass
     
         /**/
 
+
+
+            /**/
+
+
+        /*Groupe By District*/
+        public function GetGroupeByDistrict($districtId){
+            $query = "select id, nom, nick_name,commissariat_district_id from groupe where commissariat_district_id = ".$districtId."";
+            $stmt = $this->em->getConnection()->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAllAssociative();
+        }
+    
+        /**/
+
+
+        public function GetAllMembreDistrict()
+        {
+        $query = "select d.id, d.Nom, d.Prenoms, d.dob Dob , f.libelle fonction, d.telephone Telephone, d.id 'Action'
+            from district d, exercer_fonction ef, exercer_fonction_district efd, fonction f
+            where d.id = efd.district_id
+            and efd.exercer_fonction_id = ef.id
+            and ef.fonction_id = f.id
+            UNION
+            SELECT r.id, r.nom Nom, r.prenoms Prenoms, r.dob Dob, f.libelle fonction, r.telephone, r.id 'Action'
+            FROM responsable r, exercer_fonction ef, fonction f
+            where r.id = ef.responsable_id 
+            and ef.fonction_id = f.id";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+        }
+
+        public function GetFunctionDistrict($id)
+        {
+            $query = "select  f.role 
+                    from district d, exercer_fonction ef, exercer_fonction_district efd, fonction f
+                    where d.id = efd.district_id
+                    and efd.exercer_fonction_id = ef.id
+                    and ef.fonction_id = f.id
+                    and d.id = ".$id." ";
+            $stmt = $this->em->getConnection()->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchOne();
+        }
+
+    
     
 
 

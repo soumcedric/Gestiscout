@@ -2,37 +2,38 @@
 
 namespace App\Controller;
 
-use App\Entity\Branche;
-use App\Entity\JEUNE;
 use App\Classes;
-
-use App\Repository\GenreRepository;
-use http\Client\Request;
-use App\Entity\FONCTION;
+use App\Entity\JEUNE;
 use App\Entity\Groupe;
+
+use App\Entity\Branche;
+use App\Entity\FONCTION;
+use http\Client\Request;
+use App\Entity\Formation;
+use App\Service\FileUploader;
+use App\Entity\AnneePastorale;
+use Doctrine\ORM\EntityManager;
+use App\Repository\GenreRepository;
+use App\Entity\CommissariatDistrict;
+use App\Repository\GroupeRepository;
+use App\Repository\BrancheRepository;
+use App\Repository\FormationRepository;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\TypeDocumentRepository;
 use PhpParser\Node\Scalar\MagicConst\File;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\AnneePastoraleRepository;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Repository\AnneePastoraleRepository;
-use App\Repository\GroupeRepository;
-use App\Entity\AnneePastorale;
-use App\Entity\CommissariatDistrict;
-use App\Entity\Formation;
-use App\Repository\BrancheRepository;
 use App\Repository\CommissariatDistrictRepository;
-use App\Repository\FormationRepository;
-use App\Repository\TypeDocumentRepository;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
-use App\Services\FileUploader;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
+
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 
 class ConfigurationController extends AbstractController
 {
@@ -672,4 +673,95 @@ class ConfigurationController extends AbstractController
         $typedocuments =  $serializer->serialize($liste, 'json', ['groups' => 'typedoc']);
         return new JsonResponse(["ok" => true, "data" => $typedocuments]);
     }
+
+
+    #[Route('/GroupeByDistrict/{district}', name: 'GroupeByDistrict')]
+    public function GroupeByDistrict($district)
+    {
+        try {
+           // dump($district);
+             $qClass = new Classes\QueryClass($this->EntityManager);
+             $groupes = $qClass->GetGroupeByDistrict($district);
+             //dump("test".$groupes);
+            return new JsonResponse(['ok' => true, 'data' => $groupes]);
+         // return new Response();
+            
+        } catch (\Exception $e) {
+            return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
+           // return new Response();
+        }
+    }
+
+
+
+    #[Route('/updateDistrict', name: 'updateDistrict')]
+    public function updateDistrict(HttpFoundationRequest $request, CommissariatDistrictRepository $districtRep, EntityManagerInterface $entitymanager, CommissariatDistrictRepository $cdRepo,SluggerInterface $slugger)
+    {
+        try{
+
+           // dump($request);
+            //get district to update
+            $districtToUpdate = $districtRep->findOneBy(["id"=>$request->get("id")]);
+          //  dump($request->get()));
+            if($districtToUpdate != null)
+            {
+                //get new information
+                $newDistrict = new CommissariatDistrict();
+                $newDistrict->setNom($request->get("nom"))
+                            ->setTelephone($request->get("telephone"))
+                            ->setEmail($request->get("email"));
+                           
+               // dump($newDistrict);
+
+                            $targetfile = __DIR__."/../../public/uploads";
+                            //  define ('SITE_ROOT', realpath(dirname(__FILE__)));
+                            //dump($_FILES["img"]["error"]);
+                            if($_FILES["img"]["error"]!=4)
+                            {
+                                $fichier=$_FILES["img"]["name"];
+                                $real = realpath($_FILES["img"]["tmp_name"]);
+                                $extension = $_FILES["img"]["type"];
+                                $handle = fopen($_FILES["img"]["tmp_name"],'r');
+                               if(move_uploaded_file($real,$targetfile.'/'. $fichier))   
+                               {
+                                   dump("moved");
+                                   $newDistrict->setFilename($fichier);
+                               }
+                               else
+                               {
+                                   dump("unmoved");
+                               }
+ 
+                            }
+                            
+
+                            $districtToUpdate->setNom($districtToUpdate->getNom() == $newDistrict->getNom() ? $districtToUpdate->getNom() : $newDistrict->getNom());
+                            $districtToUpdate->setTelephone($districtToUpdate->getTelephone() == $newDistrict->getTelephone() ? $districtToUpdate->getTelephone() : $newDistrict->getTelephone());
+                            $districtToUpdate->setEmail($districtToUpdate->getEmail() == $newDistrict->getEmail() ? $districtToUpdate->getEmail() : $newDistrict->getEmail());
+                            $districtToUpdate->setDatecreation(new \DateTime());
+                            $districtToUpdate->setFilename($districtToUpdate->getFilename() == $newDistrict->getFilename() ? $districtToUpdate->getFilename() : $newDistrict->getFilename());
+                            dump($districtToUpdate);
+            }
+            else
+            {
+                //district introuvable
+            }
+
+
+    
+    
+        $entitymanager->flush();
+       // return new Response();
+      // return new JsonResponse(['ok' => true, 'message' => 'opération effectuée avec succès']);
+    }
+    catch (\Exception $e) {
+      // return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
+      // return new Response();
+    }
+    return new Response();
+    }
+
+
+   
+
 } 

@@ -475,7 +475,7 @@ class ActiviteController extends AbstractController
                 $manager->flush();
 
                 $email = (new Email())
-                    ->from('infos@scoutblackfeet.com')
+                    ->from($this->getParameter('app.admin_email'))
                     ->to('csoumahoro@scoutblackfeet.com')
                     ->subject('Activité soumise pour approbation')
                     ->html('Bonjour, <br/> <p>Une activité à été soumise pour approbation par le groupe <strong>' . $activityToSubmit->getGroupe()->getNom()  . '</strong></p> <p>Nom de l\'activité: ' . $activityToSubmit->getNom() . '</p><br\> <p>Vous pouvez la consulter à partir de l\'adresse suivante:.....</p>');

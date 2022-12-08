@@ -24,7 +24,7 @@ class SecurityController extends AbstractController
     public function login(SessionInterface $session, UserRepository $UserRepo,Request $request): Response
     {
 
-
+        dump($request);
         return $this->render('security/login.html.twig');
     }
 

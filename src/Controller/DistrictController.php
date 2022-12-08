@@ -2,16 +2,18 @@
 
 namespace App\Controller;
 
-use App\Classes\QueryClass;
 use App\Entity\District;
+use App\Classes\QueryClass;
 use App\Entity\ExercerFonction;
 use App\Repository\DistrictRepository;
+use App\Repository\FONCTIONRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DistrictController extends AbstractController
 {
@@ -31,6 +33,17 @@ class DistrictController extends AbstractController
         ]);
     }
 
+    #[Route('/districtconfig', name: 'districtconfig')]
+    public function districtconfig(): Response
+    {
+
+        return $this->render('district/index_config.html.twig', [
+            'controller_name' => 'DistrictController'
+
+        ]);
+    }
+
+  
 
 
     #[Route('/VueEnregistrement', name: 'VueEnregistrement')]
@@ -163,7 +176,7 @@ class DistrictController extends AbstractController
 
 
     #[Route('/InsertRespoDistrict', name: 'InsertRespoDistrict')]
-    public function InsertRespoDistrict(Request $value)
+    public function InsertRespoDistrict(Request $value, FONCTIONRepository $fonctionRep)
     {
         $Req = $value->request->get('value');
         dump($Req);
@@ -172,11 +185,21 @@ class DistrictController extends AbstractController
         $district->setNom($Req["nom"])
                  ->setPrenoms($Req["prenoms"])
                  ->setTelephone($Req["telephone"])
-                ->setDob($Req["dob"]);
+                 ->setDob($Req["dob"])
+                 ->setEmail($Req["email"])
+                 ->setDateCreation(new \DateTime());
+
+
+        //get fonction
+        $fonction = $Req["fonction"];
+        $selectedfonction = $fonctionRep->findOneBy(["id"=>$fonction]);
+        dump($selectedfonction);
         $exercerfonction = new ExercerFonction();
         $exercerfonction->setDateDebut(new \DateTime())
                         ->setDateFin(new \DateTime())
                         ->setDateCreation(new \DateTime())
+                        ->setUserModification("Admin")
+                        ->setFonction($selectedfonction)
                         ->addDistrict($district);
 
         $manager = $this->getDoctrine()->getManager();
@@ -184,6 +207,7 @@ class DistrictController extends AbstractController
         $manager->persist($exercerfonction);
         $manager->flush();
         return new Response(true,200);
+       // return new Response();
 
     }
 
@@ -221,7 +245,23 @@ class DistrictController extends AbstractController
 
 
 
+    #[Route('/ConfigurerResponsable', name: 'ConfigurerResponsable')]
+    public function ConfigurerResponsable(): Response
+    {
+        return $this->render('district/ConfigurerResponsable.html.twig', [
+            'controller_name' => 'DistrictController',
+        ]);
+    }
 
+    #[Route('/ListeRespoDistrictConfig', name: 'ListeRespoDistrictConfig')]
+    public function ListeRespoDistrictConfig(SerializerInterface $serializer)
+    {
+        $qClass = new QueryClass($this->em);
+        $result = $qClass->GetAllMembreDistrict();
+        //$liste = $serializer->serialize($result,'json');
+        return new JsonResponse(["ok" => true, "data" => $result]);
+    }
+    
 
 
 
