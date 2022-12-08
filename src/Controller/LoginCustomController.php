@@ -37,7 +37,7 @@ class LoginCustomController extends AbstractController
         // get the login error if there is one
 
         $firstconnection = $session->get('firstconnection');
-        dump($firstconnection);
+        dump($authenticationUtils);
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
@@ -73,7 +73,7 @@ class LoginCustomController extends AbstractController
             
             $oldpass = $encoder->encodepassword($user,$oldpassword);
             $newpass = $encoder->encodepassword($user,$newpassword);
-            dump($oldpass, $user->getPassword());
+           //dump($oldpass, $user->getPassword());
             if(!$encoder->isPasswordValid($user,$oldpassword))
                 $error ="Ancien mot de passe incorrect";
             else
@@ -86,7 +86,10 @@ class LoginCustomController extends AbstractController
                          $manager = $this->getDoctrine()->getManager();
                          $manager->persist($user);
                          $manager->flush();
-                         return new RedirectResponse($this->urlGenerator->generate($this->getTarget($user)));
+                        //  $tar = $this->getTarget($user->getRoles());
+                        //  dump($user);
+                        //  dump($user->getRoles());
+                         return new RedirectResponse($this->urlGenerator->generate( $this->getTarget($user->getRoles())));
                 }
            
         }
@@ -98,25 +101,51 @@ class LoginCustomController extends AbstractController
     }
 
 
-    function getTarget(User $user)
+    function getTarget($roles)
     {
+        dump($roles);
          $target = null;
-        if(in_array('ROLE_CONFIG',$user->getRoles(),true))
+
+        foreach( $roles as $r)
         {
-            $this->target="DashAdmin";
-        }
-        else if(in_array('ROLE_DISTRICT_USER',$user->getRoles(),true)){
-            $this->target="DistrictDash";
-        }
-        else if(in_array('ROLE_FORMATION',$user->getRoles(),true))
-        {
-            $this->target="DistrictDash"; 
-        }
-        else if(in_array('ROLE_CG',$user->getRoles(),true))
-        {
-            $this->target="Dashboard"; 
+            dump(strval($r));
+            if( strval($r) == "ROLE_CONFIG")
+            {
+                $target="DashAdmin";
+                
+            }
+            else if(strval($r) == "ROLE_DISTRICT_USER"){
+                $target="DistrictDash";
+                
+            }
+            else if(strval($r) == "ROLE_FORMATION")
+            {
+                $target="DistrictDash"; 
+                
+            }
+            else if(strval($r) == "ROLE_CG")
+            {
+                $target="Dashboard"; 
+               
+            }
         }
 
+        // if(in_array('ROLE_CONFIG',$roles,true))
+        // {
+        //     $this->target="DashAdmin";
+        // }
+        // else if(in_array('ROLE_DISTRICT_USER',$roles,true)){
+        //     $this->target="DistrictDash";
+        // }
+        // else if(in_array('ROLE_FORMATION',$roles,true))
+        // {
+        //     $this->target="DistrictDash"; 
+        // }
+        // else if(in_array('ROLE_CG',$roles,true))
+        // {
+        //     $this->target="Dashboard"; 
+        // }
+      // dump("target ".$target);
         return strval($target);
     }
 }

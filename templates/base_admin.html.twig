@@ -238,7 +238,10 @@
                             <li><a href="{{ path("ListeFonction") }}"><i class="fa fa-wrench"></i><span>Fonction</span></a></li>
                             <li><a href="{{ path("Groupe") }}"><i class="fa fa-wrench"></i><span>Groupe</span></a></li>
                             <li><a href="{{ path("Groupe") }}"><i class="fa fa-wrench"></i><span>Région</span></a></li>
+                            <li><a href="{{ path("Formation") }}"><i class="fa fa-wrench"></i><span>Formation</span></a></li>
                             <li><a href="{{ path("IndexCommissariatDistrict") }}"><i class="fa fa-wrench"></i><span>District</span></a></li>
+                            <li><a href="{{ path("ConfigurerResponsable") }}"><i class="fa fa-wrench"></i><span>Responsables</span></a></li>
+
 
 
 
@@ -269,7 +272,7 @@
                         
                             {% endif %} #}
 
-                            {# {% if is_granted('ROLE_CD') %}
+                            {% if (is_granted('ROLE_CD') or is_granted('ROLE_CONFIG') ) %}
                                 <li class="header">Responsable district</li>
                                 <li><a href="{{ path("AddResponsableDistrict") }}"><i class="fa fa-bars"></i><span>Insérer Responsable</span></a></li>
                                 <li><a href="{{ path("ListeResponsable_District") }}"><i class="fa fa-bars"></i><span>Liste Responsable</span></a></li>
@@ -277,7 +280,7 @@
                                 <li><a href="{{ path("AjouterRespocg") }}"><i class="fa fa-bars"></i><span>Insérer Responsable</span></a></li>
                                 <li><a href="{{ path("ListeRespoCg") }}"><i class="fa fa-bars"></i><span>Liste Responsable</span></a></li>
 
-                            {% endif %} #}
+                            {% endif %}
 
 
                             {% if is_granted('ROLE_CD')%}
