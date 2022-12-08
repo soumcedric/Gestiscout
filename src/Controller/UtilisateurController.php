@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Classes\QueryClass;
 use App\Entity\Utilisateur;
+use App\Repository\DistrictRepository;
+use App\Repository\ExercerFonctionRepository;
 use Symfony\Component\Mime\Email;
 
 use App\Repository\GroupeRepository;
@@ -54,13 +56,15 @@ class UtilisateurController extends AbstractController
         if ($userExists) {
             return new JsonResponse(['ok' => false, 'message' => 'Cet utilisateur existe déjà']);
         } else {
-            $groupe = $this->session->get('groupeid');
+                 //get Concerned Responsable
+                 $ConcernedRespo = $this->respoLayer->findOneBy(["id" => $fromJson["respoid"]]);
+            //$groupe = $this->session->get('groupeid');
+            $groupe = $ConcernedRespo->getGroupe();
             //get concerned group
             $ConnectedGroupe = $this->groupeLayer->findOneBy(["id" => $groupe->getId()]);
-            //get Concerned Responsable
-            $ConcernedRespo = $this->respoLayer->findOneBy(["id" => $fromJson["respoid"]]);
+       
             $role = $qClass->GetRespoRole($ConcernedRespo->getId());
-            //dump($role);
+            dump($role);
 
             $user = new User();
 
@@ -90,7 +94,7 @@ class UtilisateurController extends AbstractController
             $prenoms = $respo->getPrenoms();
 
             $email = (new Email())
-                ->from('scout2@scout.com')
+                ->from($this->getParameter('app.admin_email'))
                 ->to($email)
                 ->subject('Création de compte')
                 ->html('Bonjour ' . $nom . ' ' . $prenoms . ', <br/>Votre inscription à la plateforme Gestiscout à été effectuée avec succès. <br\>Afin de vous connecter, veuillez utiliser
@@ -117,7 +121,7 @@ class UtilisateurController extends AbstractController
 
 
     #[Route('/AddUserFromDistrict', name: 'AddUserFromDistrict')]
-    public function AddUserFromDistrict(Request $req, UserPasswordEncoderInterface $encoder, ResponsableRepository $respo)
+    public function AddUserFromDistrict(Request $req, UserPasswordEncoderInterface $encoder, ResponsableRepository $respo, DistrictRepository $district, ExercerFonctionRepository $exercer, MailerInterface $mailer)
     {
         $qClass = new QueryClass($this->em);
         $fromJson = $req->request->get("value");
@@ -133,22 +137,83 @@ class UtilisateurController extends AbstractController
             //get full user information
 
             
-            $user = new User();
+            // $user = new User();
 
-            $cryptedPass = $encoder->encodePassword($user, $fromJson["password"]);
-            //$cryptedPass = $encoder->encodePassword($user, '123456');
-            $user->setPassword($cryptedPass)
+            // $cryptedPass = $encoder->encodePassword($user, $fromJson["password"]);
+            // //$cryptedPass = $encoder->encodePassword($user, '123456');
+
+
+
+
+            // $user->setPassword($cryptedPass)
+            //     ->setUsername($fromJson["username"])
+            //     ->setGroupe($ChoseRespo->getGroupe())
+            //     ->setRoles($fromJson["roles"])
+            //     ->setResponsable($ChoseRespo)
+            //     ->setDateCreation(new \DateTime())
+            //     ->setUserCreation("Admin");
+
+            // $manager = $this->getDoctrine()->getManager();
+            // $manager->persist($user);
+            // $manager->flush();
+            // return new Response('success',200);
+
+
+
+            $ConcernedRespo = $district->findOneBy(["id" => $fromJson["respoid"]]);
+            //get excercer_fonction_id en fonction de districtid
+          //  $exercerfonctiondistrict = $exercer->findOneBy(["District"=>$ConcernedRespo]);
+          //  dump($ConcernedRespo);
+            $qClass = new QueryClass($this->em);
+            $role = $qClass->GetFunctionDistrict($fromJson["respoid"]);
+            //dump($info);
+        //     $role = $qClass->GetRespoRole($ConcernedRespo->getId());
+        //     //dump($role);
+
+             $user = new User();
+
+
+             $randonpass = $this->RandomPassword();
+        //     //dump($randonpass);
+             $cryptedPass = $encoder->encodePassword($user, $randonpass);
+             $roles = array($role);
+             $user->setPassword($cryptedPass)
                 ->setUsername($fromJson["username"])
-                ->setGroupe($ChoseRespo->getGroupe())
-                ->setRoles($fromJson["roles"])
-                ->setResponsable($ChoseRespo)
+                //->setGroupe(null)
+                ->setRoles($roles)
+                ->setDistrict($ConcernedRespo)               
                 ->setDateCreation(new \DateTime())
+                ->setBActif(true)
+                ->setFirstConnection(true)
                 ->setUserCreation("Admin");
 
             $manager = $this->getDoctrine()->getManager();
             $manager->persist($user);
             $manager->flush();
-            return new Response('success',200);
+        //     //send mail to the user with his default password
+        //     //get email
+             $respo = $district->findOneBy(["id" => $ConcernedRespo->getId()]);
+            // dump($respo);
+             $email = $respo->getEmail();
+            $nom = $respo->getNom();
+             $prenoms = $respo->getPrenoms();
+
+             $email = (new Email())
+                ->from($this->getParameter('app.admin_email'))
+                ->to($email)
+                ->subject('Création de compte')
+                ->html('Bonjour ' . $nom . ' ' . $prenoms . ', <br/>Votre inscription à la plateforme Gestiscout à été effectuée avec succès. <br\>Afin de vous connecter, veuillez utiliser
+                    les identifiants ci-dessous: <br/>
+                    nom utilisateur : ' . $user->getUsername()
+                    . '<br/>
+                    mot de passe: ' . $randonpass);
+
+           $result =   $mailer->send($email);
+          
+
+            return new JsonResponse(['ok' => true, 'message' => 'Compte créé avec succès']);
+
+           return new Response();
         }
 
     }
