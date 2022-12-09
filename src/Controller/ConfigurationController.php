@@ -235,16 +235,22 @@ class ConfigurationController extends AbstractController
             //file management
             $file = $request->files->get('image_path');
 
-             $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-             $safeFilename = $slugger->slug($originalFilename);
-             $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
-             $file->move(
-                $this->getParameter('brochures_directory'),
-                $newFilename
-              );
+            $targetfile = __DIR__."/../../public/uploads/groupe";
+            define('SITE_ROOT', realpath(dirname(__FILE__)));
+            $fichier=$_FILES["image_path"]["name"];
+             $real = realpath($_FILES["image_path"]["tmp_name"]);
+             $extension = $_FILES["image_path"]["type"];
+             $handle = fopen($_FILES["image_path"]["tmp_name"],'r');
+            if(move_uploaded_file($real,$targetfile.'/'. $fichier))   
+            {
+                dump("moved");
+            }
+            else
+            {
+                dump("unmoved");
+            }
 
-
-            $newGroupe->setFilename($newFilename);
+            $newGroupe->setFilename($fichier);
 
             $manager = $this->getDoctrine()->getManager();
             $manager->persist($newGroupe);
