@@ -623,10 +623,10 @@ class ConfigurationController extends AbstractController
 
         $targetfile = __DIR__."/../../public/uploads";
         define('SITE_ROOT', realpath(dirname(__FILE__)));
-        $fichier=$_FILES["image_path"]["name"];
-         $real = realpath($_FILES["image_path"]["tmp_name"]);
-         $extension = $_FILES["image_path"]["type"];
-         $handle = fopen($_FILES["image_path"]["tmp_name"],'r');
+        $fichier=$_FILES["img"]["name"];
+         $real = realpath($_FILES["img"]["tmp_name"]);
+         $extension = $_FILES["img"]["type"];
+         $handle = fopen($_FILES["img"]["tmp_name"],'r');
         if(move_uploaded_file($real,$targetfile.'/'. $fichier))   
         {
             dump("moved");
