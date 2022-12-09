@@ -551,7 +551,7 @@ class ConfigurationController extends AbstractController
     #[Route('/Formation', name: 'Formation')]
     public function Formation(): Response
     {
-        return $this->render('Configuration/Formation.html.twig', [
+        return $this->render('configuration/Formation.html.twig', [
             'controller_name' => 'ConfigurationController',
         ]);
     }
@@ -621,20 +621,25 @@ class ConfigurationController extends AbstractController
 
         $file = $value->files->get('img');
 
-        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = $slugger->slug($originalFilename);
-        // dump($safeFilename);
-        $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
-        //  dump($newFilename);
-        $file->move(
-            $this->getParameter('brochures_directory'),
-            $newFilename
-        );
+        $targetfile = __DIR__."/../../public/uploads";
+        define('SITE_ROOT', realpath(dirname(__FILE__)));
+        $fichier=$_FILES["image_path"]["name"];
+         $real = realpath($_FILES["image_path"]["tmp_name"]);
+         $extension = $_FILES["image_path"]["type"];
+         $handle = fopen($_FILES["image_path"]["tmp_name"],'r');
+        if(move_uploaded_file($real,$targetfile.'/'. $fichier))   
+        {
+            dump("moved");
+        }
+        else
+        {
+            dump("unmoved");
+        }
         $newrecord = new CommissariatDistrict();
         $newrecord->setNom($value->request->get("nom"));
         $newrecord->setTelephone("telephone");
         $newrecord->setEmail("email");
-        $newrecord->setFilename($newFilename);
+        $newrecord->setFilename($fichier);
         // dump($newrecord->getNom());
 
         $manager = $this->getDoctrine()->getManager();
