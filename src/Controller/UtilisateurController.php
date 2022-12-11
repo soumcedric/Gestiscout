@@ -52,12 +52,13 @@ class UtilisateurController extends AbstractController
        
         $fromJson = $req->request->get("value");
         $qClass = new QueryClass($this->em);
-        $userExists = $qClass->CheckUserExist($fromJson["username"]);
+        $ConcernedRespo = $this->respoLayer->findOneBy(["id" => $fromJson["respoid"]]);
+        $userExists = $qClass->CheckUserExist($ConcernedRespo->getEmail());
         if ($userExists) {
             return new JsonResponse(['ok' => false, 'message' => 'Cet utilisateur existe déjà']);
         } else {
                  //get Concerned Responsable
-                 $ConcernedRespo = $this->respoLayer->findOneBy(["id" => $fromJson["respoid"]]);
+                
             //$groupe = $this->session->get('groupeid');
             $groupe = $ConcernedRespo->getGroupe();
             //get concerned group
@@ -74,7 +75,7 @@ class UtilisateurController extends AbstractController
             $cryptedPass = $encoder->encodePassword($user, $randonpass);
             $roles = array($role);
             $user->setPassword($cryptedPass)
-                ->setUsername($fromJson["username"])
+                ->setUsername($ConcernedRespo->getEmail())
                 ->setGroupe($ConnectedGroupe)
                 ->setRoles($roles)
                 ->setResponsable($ConcernedRespo)
@@ -101,7 +102,9 @@ class UtilisateurController extends AbstractController
                     les identifiants ci-dessous: <br/>
                     nom utilisateur : ' . $user->getUsername()
                     . '<br/>
-                    mot de passe: ' . $randonpass);
+                    mot de passe: ' . $randonpass. "<br/><br/>
+                    <i><strong>L'équipe GestiScout </strong></i>");
+
 
           $result =   $mailer->send($email);
           
@@ -178,7 +181,7 @@ class UtilisateurController extends AbstractController
              $cryptedPass = $encoder->encodePassword($user, $randonpass);
              $roles = array($role);
              $user->setPassword($cryptedPass)
-                ->setUsername($fromJson["username"])
+                ->setUsername($ConcernedRespo->getEmail())
                 //->setGroupe(null)
                 ->setRoles($roles)
                 ->setDistrict($ConcernedRespo)               
@@ -206,7 +209,8 @@ class UtilisateurController extends AbstractController
                     les identifiants ci-dessous: <br/>
                     nom utilisateur : ' . $user->getUsername()
                     . '<br/>
-                    mot de passe: ' . $randonpass);
+                    mot de passe: ' . $randonpass. "<br/><br/>
+                    <i><strong>L'équipe GestiScout </strong></i>");
 
            $result =   $mailer->send($email);
           

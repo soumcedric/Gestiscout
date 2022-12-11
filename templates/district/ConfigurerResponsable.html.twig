@@ -78,7 +78,7 @@
                                         </div>
                                           <div class="form-group">
                                             <label>Formation</label>
-                                            <select class="form-controle" id="formation"></select>
+                                            <select class="form-control" id="formation"></select>
                                         </div>
                                       <div class="form-group">
                                             <label>Date de naissance</label>
@@ -131,10 +131,10 @@
 
 
   <div class="modal fade" id="modalcompte" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modifications du responsable</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Opération en cours....</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -142,7 +142,7 @@
                 <input type="hidden" id="respoId">
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-lg-12">
+                        {# <div class="col-lg-12">
                             <form id="basic-form" method="post" novalidate>
                                 <div class="form-group">
                                     <label>Nom Utilisateur</label>
@@ -153,14 +153,16 @@
                                                      <br>
 
                             </form>
-                        </div>
+                        </div> #}
+
+                        <img src=/img_logo/symbol.png class="rounded mx-auto d-bloc" WIDTH="170" height="150"> 
                      
                     </div>
                 </div>
-                <div class="modal-footer">
+                {# <div class="modal-footer">
                     <button type="button" class="btn btn-round btn-default" data-dismiss="modal">Annuler</button>
                     <button type="button" id="saveuser" class="btn btn-round btn-primary">Enregistrer</button>
-                </div>
+                </div> #}
             </div>
         </div>
     </div>
@@ -260,7 +262,7 @@
                     orderable: false,
                     //className: 'dt-body-center',
                     render:function(data,type,full,meta){
-                        return "<a id='delete'><span><i class='fa fa-trash fa-2x'></i></span></a>|<a id='add' onclick='selectrow("+data+");'><span><i class='fa fa-plus fa-2x'></i></span></a>";
+                        return "<a id='delete'><span><i class='fa fa-trash fa-2x'></i></span></a>|<a id='add' onclick='CreateUser("+data+");'><span><i class='fa fa-plus fa-2x'></i></span></a>";
                     }
                 }
             ],
@@ -356,8 +358,13 @@
                 };
 
                 let checked = $("#checkgroup").is(':checked');
+                if(responsable.email != "")
+                {
+
+               
                 if(checked)
                 {
+                    
                     //groupe
                        $.ajax({
                     type:"POST",
@@ -435,7 +442,15 @@
 
                 });
                 }
-               
+                }
+                else
+                {
+                    swal({
+                        type:"error",
+                        title: "Responsable",
+                        text: "Veuillez renseigner l'adresse email svp!"
+                    });
+                }
 
 
             });
@@ -566,54 +581,44 @@
 $("#saveuser").click(function(){
     debugger
                 var user = {
-                    username : $("#Username").val(),
+                   // username : $("#Username").val(),
                   //  roles : [],
                     // password : $("#password").val(),
                     // confirmpass : $("#confirmpass").val(),
                     respoid : $("#respoId").val()
                 };
 
-    if (user.username =="" )
-    {
-        swal({
-           type:"warning",
-           title:"",
-           text: "Certains champs sont vide!"
-        });
-    }
-    else
-    {
-        
-          //  user.roles.push($("#role").val());
+   
             $.ajax({
                 type:"POST",
                 url:"{{ path("Addutilisateur") }}",
                 data: { 'value' : user},
                 success:function(res)
                 {
+                     $("#modalcompte").modal("hide");
                     debugger
-                    if (res=='success')
+                    if (res.ok)
                     {
                         swal({
                             type:"success",
-                            title:"",
-                            text:"Opération effectuée avec succès"
+                            title:"Création d'utilisateur",
+                            text:res.message
                         });
                     }else{
                         swal({
                             type:"error",
-                            title:"",
-                            text: res
+                            title:"Création d'utilisateur",
+                            text: res.message
                         });
                     }
                 },
                 error: function(res)
                 {
-
+                     $("#modalcompte").modal("hide");
                 }
             });
         
-    }
+   
 
 
 
@@ -624,10 +629,48 @@ $("#saveuser").click(function(){
             
         });
 
-        function selectrow(r)
+        function CreateUser(r)
             {
                 $("#modalcompte").modal("show");
                 $("#respoId").val(r);
+                 debugger
+                var user = {
+                   // username : $("#Username").val(),
+                  //  roles : [],
+                    // password : $("#password").val(),
+                    // confirmpass : $("#confirmpass").val(),
+                    respoid : r
+                };
+
+   
+            $.ajax({
+                type:"POST",
+                url:"{{ path("Addutilisateur") }}",
+                data: { 'value' : user},
+                success:function(res)
+                {
+                     $("#modalcompte").modal("hide");
+                    debugger
+                    if (res.ok)
+                    {
+                        swal({
+                            type:"success",
+                            title:"Création d'utilisateur",
+                            text:res.message
+                        });
+                    }else{
+                        swal({
+                            type:"error",
+                            title:"Création d'utilisateur",
+                            text: res.message
+                        });
+                    }
+                },
+                error: function(res)
+                {
+                     $("#modalcompte").modal("hide");
+                }
+            });
             }
     </script>
     
