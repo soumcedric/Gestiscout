@@ -178,37 +178,43 @@ class DistrictController extends AbstractController
     #[Route('/InsertRespoDistrict', name: 'InsertRespoDistrict')]
     public function InsertRespoDistrict(Request $value, FONCTIONRepository $fonctionRep)
     {
-        $Req = $value->request->get('value');
-        dump($Req);
-        $date= new \DateTime($Req["dob"]);
-        $district = new District();
-        $district->setNom($Req["nom"])
-                 ->setPrenoms($Req["prenoms"])
-                 ->setTelephone($Req["telephone"])
-                 ->setDob($Req["dob"])
-                 ->setEmail($Req["email"])
-                 ->setDateCreation(new \DateTime());
+        try {
 
 
-        //get fonction
-        $fonction = $Req["fonction"];
-        $selectedfonction = $fonctionRep->findOneBy(["id"=>$fonction]);
-        dump($selectedfonction);
-        $exercerfonction = new ExercerFonction();
-        $exercerfonction->setDateDebut(new \DateTime())
-                        ->setDateFin(new \DateTime())
-                        ->setDateCreation(new \DateTime())
-                        ->setUserModification("Admin")
-                        ->setFonction($selectedfonction)
-                        ->addDistrict($district);
+            $Req = $value->request->get('value');
+            dump($Req);
+            $date = new \DateTime($Req["dob"]);
+            $district = new District();
+            $district->setNom($Req["nom"])
+            ->setPrenoms($Req["prenoms"])
+            ->setTelephone($Req["telephone"])
+            ->setDob($Req["dob"])
+            ->setEmail($Req["email"])
+            ->setDateCreation(new \DateTime());
 
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($district);
-        $manager->persist($exercerfonction);
-        $manager->flush();
-        return new Response(true,200);
-       // return new Response();
 
+            //get fonction
+            $fonction = $Req["fonction"];
+            $selectedfonction = $fonctionRep->findOneBy(["id" => $fonction]);
+            dump($selectedfonction);
+            $exercerfonction = new ExercerFonction();
+            $exercerfonction->setDateDebut(new \DateTime())
+                ->setDateFin(new \DateTime())
+                ->setDateCreation(new \DateTime())
+                ->setUserModification("Admin")
+                ->setFonction($selectedfonction)
+                ->addDistrict($district);
+
+            $manager = $this->getDoctrine()->getManager();
+            $manager->persist($district);
+            $manager->persist($exercerfonction);
+            $manager->flush();
+            // return new Response(true,200);
+            // return new Response();
+            return new JsonResponse(['ok' => true, 'message' => "Opération effectuée avec succès"]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
+        }
     }
 
 

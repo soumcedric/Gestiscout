@@ -1140,13 +1140,13 @@ class QueryClass
 
         public function GetAllMembreDistrict()
         {
-        $query = "select d.id, d.Nom, d.Prenoms, d.dob Dob , f.libelle fonction, d.telephone Telephone, d.id 'Action'
+        $query = "select d.id, d.Nom, d.Prenoms, d.dob Dob , f.libelle fonction, d.telephone Telephone, d.id 'Action', 1 as 'district'
             from district d, exercer_fonction ef, exercer_fonction_district efd, fonction f
             where d.id = efd.district_id
             and efd.exercer_fonction_id = ef.id
             and ef.fonction_id = f.id
             UNION
-            SELECT r.id, r.nom Nom, r.prenoms Prenoms, r.dob Dob, f.libelle fonction, r.telephone, r.id 'Action'
+            SELECT r.id, r.nom Nom, r.prenoms Prenoms, r.dob Dob, f.libelle fonction, r.telephone, r.id 'Action', 0 as 'district'
             FROM responsable r, exercer_fonction ef, fonction f
             where r.id = ef.responsable_id 
             and ef.fonction_id = f.id";
@@ -1168,6 +1168,16 @@ class QueryClass
             return $stmt->fetchOne();
         }
 
+
+        public function GetStatDistrictDash()
+        {
+            $conn = $this->em->getConnection();
+            $sql = "call SP_GET_INFO_STATISTIQUE_ADMIN('".$groupe."','".$this->activeYear->getId()."');";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAllAssociative();
+
+        }
     
     
 

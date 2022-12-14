@@ -243,10 +243,10 @@
               
             ],
             columnDefs: [
-                // {
-                //     targets: 1,
-                //     visible: false
-                // },
+                {
+                    targets: 0,
+                    visible: false
+                },
                 // {
                 //     targets: 5,
                 //     visible: true
@@ -262,7 +262,7 @@
                     orderable: false,
                     //className: 'dt-body-center',
                     render:function(data,type,full,meta){
-                        return "<a id='delete'><span><i class='fa fa-trash fa-2x'></i></span></a>|<a id='add' onclick='CreateUser("+data+");'><span><i class='fa fa-plus fa-2x'></i></span></a>";
+                        return "<a id='delete'><span><i class='fa fa-trash fa-2x'></i></span></a>|<a id='add' onclick='CreateUser("+data+","+full.district+");'><span><i class='fa fa-plus fa-2x'></i></span></a>";
                     }
                 }
             ],
@@ -418,12 +418,21 @@
                     data: {value : responsable},
                     success:function(res){
                         debugger;
-                        if (res==1){
+                        if (res.ok){
 
                             swal({
                                 type:"success",
                                 title:"RESPONSABLE",
                                 text:"Enregistrement effectué avec succès"
+                            },function (){
+                                reset();
+                            });
+                        }
+                        else{
+                             swal({
+                                type:"error",
+                                title:"RESPONSABLE",
+                                text:res.message
                             },function (){
                                 reset();
                             });
@@ -629,8 +638,14 @@ $("#saveuser").click(function(){
             
         });
 
-        function CreateUser(r)
+        function CreateUser(r, district)
             {
+                debugger
+                let url = "";
+                if(district ==1)
+                    url = "{{ path("AddUserFromDistrict") }}";
+                else
+                    url = "{{ path("Addutilisateur") }}";
                 $("#modalcompte").modal("show");
                 $("#respoId").val(r);
                  debugger
@@ -645,7 +660,7 @@ $("#saveuser").click(function(){
    
             $.ajax({
                 type:"POST",
-                url:"{{ path("Addutilisateur") }}",
+                url:url,
                 data: { 'value' : user},
                 success:function(res)
                 {

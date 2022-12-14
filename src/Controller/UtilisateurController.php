@@ -128,42 +128,14 @@ class UtilisateurController extends AbstractController
     {
         $qClass = new QueryClass($this->em);
         $fromJson = $req->request->get("value");
-      //  var_dump($fromJson["respoid"]);
-        //get user info from responsable table
-        $ChoseRespo = $respo->findOneBy(["id"=>$fromJson["respoid"]]);
-        //var_dump($ChoseRespo);
-        $userExists = $qClass->CheckUserExist($fromJson["username"]);
+        $ConcernedRespo = $district->findOneBy(["id" => $fromJson["respoid"]]);
+        $userExists = $qClass->CheckUserExist($ConcernedRespo->getEmail());
         if ($userExists){
             return new Response('Cet utilisateur existe déjà',200);
         }else
         {
-            //get full user information
 
             
-            // $user = new User();
-
-            // $cryptedPass = $encoder->encodePassword($user, $fromJson["password"]);
-            // //$cryptedPass = $encoder->encodePassword($user, '123456');
-
-
-
-
-            // $user->setPassword($cryptedPass)
-            //     ->setUsername($fromJson["username"])
-            //     ->setGroupe($ChoseRespo->getGroupe())
-            //     ->setRoles($fromJson["roles"])
-            //     ->setResponsable($ChoseRespo)
-            //     ->setDateCreation(new \DateTime())
-            //     ->setUserCreation("Admin");
-
-            // $manager = $this->getDoctrine()->getManager();
-            // $manager->persist($user);
-            // $manager->flush();
-            // return new Response('success',200);
-
-
-
-            $ConcernedRespo = $district->findOneBy(["id" => $fromJson["respoid"]]);
             //get excercer_fonction_id en fonction de districtid
           //  $exercerfonctiondistrict = $exercer->findOneBy(["District"=>$ConcernedRespo]);
           //  dump($ConcernedRespo);
