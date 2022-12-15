@@ -131,7 +131,7 @@ class UtilisateurController extends AbstractController
         $ConcernedRespo = $district->findOneBy(["id" => $fromJson["respoid"]]);
         $userExists = $qClass->CheckUserExist($ConcernedRespo->getEmail());
         if ($userExists){
-            return new Response('Cet utilisateur existe déjà',200);
+            return new JsonResponse(['ok' => false, 'message' => 'Cet utilisateur existe déja!']);
         }else
         {
 

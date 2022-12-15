@@ -2,6 +2,19 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}"/>
     <link rel="stylesheet" href="{{ asset('assets/vendor/sweetalert/sweetalert.css') }}">
+     <style>
+        .bd-example-modal-lg .modal-dialog{
+            display: table;
+            position: relative;
+            margin: 0 auto;
+            top: calc(50% - 24px);
+        }
+
+        .bd-example-modal-lg .modal-dialog .modal-content{
+            background-color: transparent;
+            border: none;
+        }
+    </style>
 {% endblock %}
 {% block titre %} Ajouter un responsable {% endblock %}
 
@@ -195,12 +208,21 @@
 {% block javascripts %}
     <script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/sweetalert/sweetalert.min.js') }}"></script>
-
+    <script src="{{ asset("assets/bundles/datatablescripts.bundle.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/dataTables.buttons.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.bootstrap4.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.colVis.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.html5.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.print.min.js") }}"></script>
     <script>
         $(document).ready(function(){
             reset();
+            loadTable();
+            function loadTable()
+            {
 
-               var table = $("#tbrespo").DataTable({
+         
+             var table = $("#tbrespo").DataTable({
             destroy:true,
             language: {
                 processing: "Traitement en cours...",
@@ -270,6 +292,7 @@
          
          
         });
+           }
              $("#checkgroup").prop('checked',false);
             $(".selectgroupe").hide();
             loadFonction();
@@ -382,6 +405,7 @@
                                 text:res.message
                             },function (){
                                 reset();
+                                loadTable();
                             });
                         }
                         else
@@ -392,6 +416,7 @@
                                 text:res.message
                             },function (){
                                 reset();
+                                loadTable();
                             });
                         }
                     },
@@ -426,6 +451,7 @@
                                 text:"Enregistrement effectué avec succès"
                             },function (){
                                 reset();
+                                loadTable();
                             });
                         }
                         else{
@@ -435,6 +461,7 @@
                                 text:res.message
                             },function (){
                                 reset();
+                                loadTable();
                             });
                         }
                     },

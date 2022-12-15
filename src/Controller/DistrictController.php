@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\District;
 use App\Classes\QueryClass;
 use App\Entity\ExercerFonction;
+use App\Repository\CommissariatDistrictRepository;
 use App\Repository\DistrictRepository;
 use App\Repository\FONCTIONRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -176,13 +177,15 @@ class DistrictController extends AbstractController
 
 
     #[Route('/InsertRespoDistrict', name: 'InsertRespoDistrict')]
-    public function InsertRespoDistrict(Request $value, FONCTIONRepository $fonctionRep)
+    public function InsertRespoDistrict(Request $value, FONCTIONRepository $fonctionRep, CommissariatDistrictRepository $commissariat)
     {
         try {
 
 
             $Req = $value->request->get('value');
-            dump($Req);
+           // dump($Req);
+           //get concerned commissariat district
+            $concernedCommissariat = $commissariat->findOneBy(["id"=>$Req["district"]]);
             $date = new \DateTime($Req["dob"]);
             $district = new District();
             $district->setNom($Req["nom"])
@@ -190,7 +193,8 @@ class DistrictController extends AbstractController
             ->setTelephone($Req["telephone"])
             ->setDob($Req["dob"])
             ->setEmail($Req["email"])
-            ->setDateCreation(new \DateTime());
+            ->setDateCreation(new \DateTime())
+            ->setCommissariatDistrict($concernedCommissariat);
 
 
             //get fonction
