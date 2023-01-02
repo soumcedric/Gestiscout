@@ -1169,14 +1169,29 @@ class QueryClass
         }
 
 
-        public function GetStatDistrictDash()
+        // public function GetStatDistrictDash()
+        // {
+        //     $conn = $this->em->getConnection();
+        //     $sql = "call SP_GET_INFO_STATISTIQUE_ADMIN('".$groupe."','".$this->activeYear->getId()."');";
+        //     $stmt = $conn->prepare($sql);
+        //     $stmt->execute();
+        //     return $stmt->fetchAllAssociative();
+
+        // }
+
+
+        public function GetListMembreDistrict($districtId)
         {
-            $conn = $this->em->getConnection();
-            $sql = "call SP_GET_INFO_STATISTIQUE_ADMIN('".$groupe."','".$this->activeYear->getId()."');";
-            $stmt = $conn->prepare($sql);
+            $query = "select d.id id, d.nom Nom, d.prenoms Prenoms, f.libelle Fonction, d.telephone Telephone
+            from district d, commissariat_district cd, exercer_fonction_district efd, exercer_fonction ef, fonction f
+            where d.id = efd.district_id
+            and efd.exercer_fonction_id = ef.id
+            and ef.fonction_id = f.id
+            and d.commissariat_district_id = cd.id
+            and d.commissariat_district_id = '".$districtId."' ";
+            $stmt = $this->em->getConnection()->prepare($query);
             $stmt->execute();
             return $stmt->fetchAllAssociative();
-
         }
     
     

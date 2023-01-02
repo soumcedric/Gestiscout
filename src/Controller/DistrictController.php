@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class DistrictController extends AbstractController
 {
@@ -156,12 +157,15 @@ class DistrictController extends AbstractController
 
 
     #[Route('/ListeMembreDistrict', name: 'ListeMembreDistrict')]
-    public function ListeMembreDistrict(SerializerInterface $serializer, DistrictRepository $districtRepo): Response
+    public function ListeMembreDistrict(SerializerInterface $serializer, DistrictRepository $districtRepo, SessionInterface $session): Response
     {
-        $ListeMembre = $districtRepo->findAll();
-        //var_dump($ListeMembre);
-        $result = $serializer->serialize($ListeMembre,'json',["groups"=>"district"]);
-       return  new Response($result,200);
+        $userDistrict= $session->get('districtid');
+        $district = $districtRepo->findOneBy(["id"=>$userDistrict->getId()]);
+        $qClass = new QueryClass($this->em);
+        $result = $qClass->GetListMembreDistrict($district->getCommissariatDistrict()->getId());
+        dump($result);
+        $liste = $serializer->serialize($result,'json');
+       return  new Response($liste,200);
     }
 
 
