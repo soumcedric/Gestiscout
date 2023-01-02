@@ -5,6 +5,7 @@ namespace App\Security;
 use App\Entity\Groupe;
 use App\Entity\User;
 use App\Entity\UserLogin;
+use App\Repository\DistrictRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -140,6 +141,7 @@ class LoginCustomAuthenticator extends AbstractFormLoginAuthenticator implements
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
+        
         // if($this->userInfo->getUserName()!="superadmin")
         // {
         //     $request->getSession()->set("id",$this->userInfo->getId());
@@ -162,7 +164,22 @@ class LoginCustomAuthenticator extends AbstractFormLoginAuthenticator implements
                 // if (!$user) {
                     $request->getSession()->set("id",$user->getId());
                     $request->getSession()->set('nom',$user->getuserName());
-                    $request->getSession()->set('groupeid',$user->getGroupe());
+
+                    if($user->getGroupe()!=null)
+                    {
+                        $request->getSession()->set('groupeid',$user->getGroupe());
+                        $request->getSession()->set('entite','1');// entité connecté groupe => 1
+                    }                        
+                    else
+                        {
+                            $request->getSession()->set('districtid',$user->getcomm());
+                            $request->getSession()->set('entite','2');// entité connecté district => 2
+                        }
+
+
+
+
+                   // $request->getSession()->set('groupeid',$user->getGroupe());
                     
             // }
        
