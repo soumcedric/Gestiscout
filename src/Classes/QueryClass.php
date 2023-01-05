@@ -614,7 +614,8 @@ class QueryClass
         and jeunes.groupe_id = groupe.id
         and inscriptions.annee_id = ".$this->activeYear->getId()."
         and jeunes.statut='1'
-        and jeunes.groupe_id=".$groupe.";";
+        and jeunes.groupe_id=".$groupe."
+        order by jeunes.date_creation desc;";
 
         $stmt = $this->em->getConnection()->prepare($sql);
         $stmt->execute();

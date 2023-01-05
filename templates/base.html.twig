@@ -244,6 +244,7 @@
 
                             {% if is_granted('ROLE_CG') %}
                             <li class="header">Jeunes</li>
+                            <li><a href="{{ path("ImportJeune") }}"><i class="fa fa-plus"></i><span>Importer jeune</span></a></li>
                             <li><a href="{{ path("AddJeune") }}"><i class="fa fa-plus"></i><span>Nouveau jeune</span></a></li>
                             <li><a href="{{ path("ListeJeunes") }}"><i class="fa fa-list"></i><span>Liste des jeunes</span></a></li>
                              <li class="header">Responsable</li>

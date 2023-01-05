@@ -2,6 +2,7 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}"/>
     <link rel="stylesheet" href="{{ asset('assets/vendor/sweetalert/sweetalert.css') }}">
+     <link rel="stylesheet" href="{{ asset('bundles/mercuryseriesflashy/css/flashy.css') }}">
     <style>
         .bd-example-modal-lg .modal-dialog{
             display: table;
@@ -40,24 +41,75 @@
                     <h2>IMPORTATION DES JEUNES</h2>
                 </div>
                 <div class="body text-center">
-                    <form action="{{  path("ImportData") }}" method="post" enctype="multipart/form-data">
+                    <form action="" method="post" enctype="multipart/form-data">
                         <input type="file" id="fichier" name="fichier">
-                        <button type="submit">envoyer</button>
+                        <button type="button" class="btn btn-info" onclick="UploadFile();">envoyer</button>
 
                     </form>
+                    
 
                 </div>
+        </div>
+
+
+         <div class="card">
+                <div class="header text-center">
+                    <h2>LISTE A IMPORTER</h2>
+                </div>
+                <div class="body text-center">
+                      <div class="table-responsive">
+                <table class="table" id="tbjeune">
+                    <thead>
+                        <tr>
+                            
+                            <th>Nom</th>
+                            <th>Prénoms</th>
+                            <th>Date de Niassance</th>
+                            <th>Lieu d'habitation</th>
+                            <th>Genre</th>
+                            <th>Branche</th>
+                            <th>Occupation</th>
+                            <th>Téléphone</th>
+                            <th>Nom et Prénoms du Père</th>
+                            <th>Téléphone du père</th>
+                            <th>Nom et Prénoms de la mère</th>
+                            <th>Téléphone de la mère</th>
+                            
+                        </tr>
+                    </thead>
+                   <tbody>
+
+                   </tbody>
+                </table>
+            </div>
+                    
+
+                </div>
+        </div>
+
+        <div class="text-center">
+            <button type="button" class="btn btn-success" onclick="SaveJeune();">Valider</button>
+            <button class="btn btn-danger">Annuler</button>
         </div>
     </div>
 </div>
 
     {% block javascripts %}
-
+<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
+   <script src="{{ asset("assets/bundles/datatablescripts.bundle.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/dataTables.buttons.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.bootstrap4.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.colVis.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.html5.min.js") }}"></script>
+    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.print.min.js") }}"></script>
+    <script src="{{ asset("js/pages/jeune/importJeune.js") }}"></script>
+      <script src="{{ asset("bundle/mercuryseriesflashy/js/flashy.js") }}"></script>
     {% endblock %}
 
 
 
-
+{{ include('@MercurySeriesFlashy/flashy.html.twig') }}
 
 
 

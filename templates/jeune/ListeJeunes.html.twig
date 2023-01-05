@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">
     <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
     <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
+      <link rel="stylesheet" href="{{ asset('bundles/mercuryseriesflashy/css/flashy.css') }}">
     <style>
         .bd-example-modal-lg .modal-dialog{
             display: table;
@@ -186,7 +187,7 @@
     <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.print.min.js") }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-
+       <script src="{{ asset("bundle/mercuryseriesflashy/js/flashy.js") }}"></script>
 <script>
     $(document).ready(function(){
         debugger
@@ -565,4 +566,9 @@ debugger
    
     });
 </script>
+
+{{ include('@MercurySeriesFlashy/flashy.html.twig') }}
+
 {% endblock %}
+
+

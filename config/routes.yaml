@@ -399,6 +399,9 @@ updateDistrict:
 ListeRespoDistrictConfig:
     path: /ListeRespoDistrictConfig
     controller: App\Controller\DistrictController::ListeRespoDistrictConfig
+Import:
+    path: /Import
+    controller: App\Controller\JeuneController::Import
 
 
 
