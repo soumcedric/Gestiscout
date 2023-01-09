@@ -1,21 +1,35 @@
 $(function(){
-    //alert("hello");
-    GetSoldeCaisse();
-    loadMvt();
-  // TypeMouvement();
-   loadEvenement();
+    let eventId;
+    let EventTitre;
+    GetRubrique();
+   
+  //  GetSoldeCaisse();
+ //   loadMvt();
+   TypeMouvement();
+  // loadEvenement();
    loadEventSelection();
    $("#selevent").change(function(){
     debugger
     let value = $(this).val();
-    selectEvent(value);
+    eventId = value;
+    $("#eventid").val(eventId);
+    EventTitre = $("#selevent option:selected").text();
+    $("#spantitre").text(EventTitre);
+    loadMvt(eventId);
+    GetSoldeCaisse(eventId);
+   });
+
+   $("#selrubrique").change(function(){
+    debugger
+        let value = $(this).val();
+        GetSousRubriqueByRubrique(value);
    });
   
 });
 
 function OpenModal()
 {
- 
+  
   $("#modaloperation").modal({
      backdrop:false
   });
@@ -24,6 +38,7 @@ function OpenModal()
 
 function TypeMouvement()
 {
+    debugger
    $.get("/ListeMvt",function(res){
     if(res)
     {
@@ -42,17 +57,20 @@ function SaveMvt()
     if(validation())
     {
         debugger
+        let id = $("#eventid").val();
+        let url="/SaveMvtEvent/"+id;
         let mvt = {
             type : $("#selmvt").val(),
             description : $("#txtdescription").val(),
             montant : parseInt($("#txtmontant").val()),
-            date: $("#seldate").val()
+            date: $("#seldate").val(),
+            sousrubriqueid : $("#selsousribrique").val()
         }
 
         if(mvt.type=="D")
             mvt.montant = -mvt.montant;
         
-        $.post("/SaveMvt",{"data": mvt},function(res){
+        $.post(url,{"data": mvt},function(res){
             debugger
             if(res)
             {
@@ -61,7 +79,7 @@ function SaveMvt()
                     title:"Opération",
                     text: res.message
                 },(function(){
-                    loadMvt();
+                  //  loadMvt();
                 }));
             }
         });
@@ -94,7 +112,7 @@ function validation()
     return valid;
 }
 
-function loadMvt()
+function loadMvt(id)
 {
     debugger
     //alert("hello");
@@ -125,20 +143,21 @@ function loadMvt()
         //         visible: false
         //     }],
         ajax:{
-            url:"/MouvementsByEvent",
+            url:"/MouvementsByEventActivite/"+id,
             type:"get",
-             success:function(res)
-                {
-                    debugger
-                    //idFormation = res.idFormation;
-                }
+            //  success:function(res)
+            //     {
+            //         debugger
+            //         //idFormation = res.idFormation;
+            //     }
         },
         columns: [
-            { "data": "id" },
-            { "data": "description" },
-            { "data": "date_mvt" },
-            { "data": "montant" },
-            { "data": "type" }
+            { "data": "ID" },
+            { "data": "SOUSRUBRIQUE" },
+            { "data": "COMMENTAIRE" },
+            { "data": "DATE_MOUVEMENT" },
+            { "data": "MONTANT" }
+            // { "data": "type" }
            
         ],
         // data: [],
@@ -152,121 +171,31 @@ function loadMvt()
 
 }
 
-function GetSoldeCaisse()
+function GetSoldeCaisse(id)
 {
-   $.get("/Solde",function(res){
+   $.get("/SoldeByEvent/"+id,function(res){
     debugger
-    if(res)
+    if(res.ok)
     {
         debugger
         var solde = 0;
         var debit;
         const speed = 200;
-        let convertedsolde = parseInt(res.solde);
-        // if(convertedsolde<0)
-        // {
-        //     debit = true;
-        //     solde = (-1)*convertedsolde;
-        // }
-            
-        //  const counters = solde.toString();
-        // // var count $("#displaysolde").val();
-        //  let upto = 0;
-        //  count.innerHtml=++upto;
-         
+        let convertedsolde = parseInt(res.data);
+       
          $("#displaysolde").text(convertedsolde);
     }
    });
 }
 
 
-function loadEvenement()
-{
-    debugger
-    //alert("hello");
-    var table = $("#tbevenements").DataTable({
-        destroy:true,
-        language: {
-            processing: "Traitement en cours...",
-            search: "Rechercher&nbsp;:",
-            lengthMenu: "Afficher _MENU_ &eacute;l&eacute;ments",
-            info: "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
-            infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
-            infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
-            infoPostFix: "",
-            loadingRecords: "Chargement en cours...",
-            zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
-            emptyTable: "Aucune donnée disponible dans le tableau",
-            paginate: {
-                first: "Premier",
-                previous: "Pr&eacute;c&eacute;dent",
-                next: "Suivant",
-                last: "Dernier"
-            }
-        },
-     
-        // columnDefs: [
-        //     {
-        //         targets: 0,
-        //         visible: false
-        //     }],
-        ajax:{
-            url:"/GetEvenements",
-            type:"get",
-            //  success:function(res)
-            //     {
-            //         debugger
-            //         //idFormation = res.idFormation;
-            //     }
-        },
-        columns: [
-            { "data": "id" },
-            { "data": "libelle" },
-          
-        ],
-        // data: [],
-        // rowCallback: function (row, data) { },
-        // filter: true,
-        // info: true,
-        // ordering: false,
-        // processing: false,
-        // retrieve: true
-    });
-
-}
 
 
-function SaveEvent()
-{
-    debugger
-    // if(validation())
-    // {
-        debugger
-        let event = {
-            libelle : $("#txtlibelle").val(),
-            
-        }
-
-        
-        $.post("/SaveEvent",{"data": event},function(res){
-            debugger
-            if(res)
-            {
-                swal({
-                    type:"success",
-                    title:"Opération",
-                    text: res.message
-                },(function(){
-                    loadEvenement();
-                }));
-            }
-        });
-    // }
-}
 
 
 function loadEventSelection()
 {
+    debugger
     $.get("/GetEvenements",function(res)
     {
         debugger
@@ -275,6 +204,7 @@ function loadEventSelection()
             $("#selevent").empty;
             $("#selevent").append("<option selected>--sélectionner un évènement--</option>");
             $.each(res.data, function(i,n){
+                debugger
                 $("#selevent").append("<option value="+n.id+">"+n.libelle+"</option>");
             })
 
@@ -335,5 +265,39 @@ function selectEvent(id)
         // ordering: false,
         // processing: false,
         // retrieve: true
+    });
+}
+
+function GetRubrique()
+{
+    debugger
+    $.get("/ListeRubrique",function(res){
+        if(res.ok)
+        {
+            $("#selrubrique").empty();
+            $("#selrubrique").append("---Choisir une rubrique---");
+            let liste = JSON.parse(res.data);
+            $.each(liste, function(i,n){
+                debugger
+                $("#selrubrique").append("<option value="+n.id+">"+n.Libelle+"</option>");
+            })
+        }
+    });
+}
+
+function GetSousRubriqueByRubrique(id)
+{
+    debugger
+    $.get("/ListeSousRubrique/"+id,function(res){
+        if(res.ok)
+        {
+            $("#selsousribrique").empty();
+            $("#selsousribrique").append("---Choisir une sous rubrique---");
+            let liste = JSON.parse(res.data);
+            $.each(liste, function(i,n){
+                debugger
+                $("#selsousribrique").append("<option value="+n.id+">"+n.libelle+"</option>");
+            })
+        }
     });
 }

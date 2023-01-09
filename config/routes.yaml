@@ -441,9 +441,21 @@ MouvementEvenement:
 MouvementsByEvent:
     path: /MouvementsByEvent/{eventId}
     controller: App\Controller\CaisseController::MouvementsByEvent
-
-
-
+SaveMvtEvent:
+    path: /SaveMvtEvent/{eventId}
+    controller: App\Controller\CaisseController::SaveMvtEvent
+ListeRubrique:
+    path: /ListeRubrique
+    controller: App\Controller\CaisseController::ListeRubrique
+ListeSousRubrique:
+    path: /ListeSousRubrique/{id}
+    controller: App\Controller\CaisseController::ListeSousRubrique
+MouvementsByEventActivite:
+    path: /MouvementsByEventActivite/{id}
+    controller: App\Controller\CaisseController::MouvementsByEventActivite
+SoldeByEvent:
+    path: /SoldeByEvent/{id}
+    controller: App\Controller\CaisseController::SoldeByEvent
 
 
 

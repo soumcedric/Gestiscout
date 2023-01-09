@@ -1,4 +1,4 @@
-{% extends 'base_caisse.html.twig' %}
+{% extends 'base_caisse_new.html.twig' %}
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
 {% endblock %}
@@ -19,7 +19,7 @@
                                     <!-- Page-header end -->
                                 <div class="row text-right">
                                     <div class="col-sm-12">
-                                 <button class="btn btn-primary btn-outline-primary" onclick="OpenModal();"><i class="icofont icofont-ui-add"></i>Opération</button>
+                                 <button class="btn btn-primary btn-outline-primary" onclick="OpenModal();"><i class="icofont icofont-ui-add"></i>Evènement</button>
                                  </div>
                                 </div>
 
@@ -135,6 +135,6 @@
 {% block javascripts %}
 <script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
-<script src="{{ asset("js/pages/caisse/caisse.js") }}"></script>
+<script src="{{ asset("js/pages/caisse/Events.js") }}"></script>
 
 {% endblock %}

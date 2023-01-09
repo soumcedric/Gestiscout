@@ -1156,6 +1156,25 @@ class QueryClass
         $stmt->execute();
         return $stmt->fetchAllAssociative();
     }
+
+    public function GetSousRubrique($rubriqueid)
+    {
+        $query = "select * from sous_rubrique
+        where  rubrique_id=".$rubriqueid." " ;
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function GetMouvementsByEvent(int $eventId)
+    {
+        $conn = $this->em->getConnection();
+        $sql = "call SP_GET_MOUVEMENTS_BY_EVENT('".$eventId."');";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+
+    }
     /**/
 
 

@@ -11,6 +11,7 @@ use App\Entity\Evenement;
 use App\Entity\MouvementGroupe;
 use Doctrine\ORM\EntityManager;
 use App\Entity\MouvementDistrict;
+use App\Entity\MouvementTresoActivite;
 use App\Entity\TresorerieActivite;
 use App\Repository\UserRepository;
 use App\Repository\PeriodeRepository;
@@ -18,11 +19,15 @@ use App\Repository\DistrictRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\TypeMouvementRepository;
 use App\Repository\CaisseDistrictRepository;
+use App\Repository\CommissariatDistrictRepository;
 use App\Repository\EvenementRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repository\MouvementDistrictRepository;
+use App\Repository\RubriqueRepository;
+use App\Repository\SousRubriqueRepository;
 use App\Repository\TresorerieActiviteRepository;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -39,13 +44,22 @@ class CaisseController extends AbstractController
     private $periodeRepo;
     private $caisseDistrictRepo;
     private $qclass;
+    private $eventRepo;
+    private $sousRubriqueRepo;
+    private $rubriqueRepo;
+    private $tresoActiviteRepo;
+ 
     function __construct(
         SessionInterface $session,
         DistrictRepository $district,
         UserRepository $user,
         EntityManagerInterface $em,
         PeriodeRepository $periode,
-        CaisseDistrictRepository $caissedistrict
+        CaisseDistrictRepository $caissedistrict,
+        EvenementRepository $event,
+        SousRubriqueRepository $sr,
+        RubriqueRepository $rub,
+        TresorerieActiviteRepository $tr
     ) {
         $this->ValueSession = $session;
         $this->districtRepo = $district;
@@ -53,7 +67,10 @@ class CaisseController extends AbstractController
         $this->entityManager = $em;
         $this->periodeRepo = $periode;
         $this->caisseDistrictRepo = $caissedistrict;
-
+        $this->eventRepo = $event;
+        $this->sousRubriqueRepo = $sr;
+        $this->rubriqueRepo = $rub;
+        $this->tresoActiviteRepo = $tr;
         $this->qclass = new QueryClass($em);
     }
 
@@ -128,8 +145,9 @@ class CaisseController extends AbstractController
     /**
      * @Route("/SaveMvt", name="SaveMvt")
      */
-    public function SaveMvt(Request $req, TypeMouvementRepository $typemvt, DistrictRepository $dis): JsonResponse
+    public function SaveMvt(Request $req, TypeMouvementRepository $typemvt, CommissariatDistrictRepository $commissariatRepo,DistrictRepository $dis, UserRepository $userRepo): JsonResponse
     {
+
         $entite = $this->ValueSession->get("entite");
         $value = $req->request->get("data");
 
@@ -153,8 +171,10 @@ class CaisseController extends AbstractController
                 ->setPeriode($this->periodeRepo->findOneBy(["id" => 1]))
                 ->setUsercreate($this->ValueSession->get("id"));
 
-
-            //mise à jour du solde de ce district
+                $this->entityManager->persist($mvt);
+                $this->entityManager->flush();
+                //dump($mvt);
+                //mise à jour du solde de ce district
             //get solde district
             $soldeDistrict = $this->caisseDistrictRepo->findOneBy(["district" => $district]);
             if ($soldeDistrict != null) {
@@ -164,9 +184,24 @@ class CaisseController extends AbstractController
                 $soldeDistrict->setDatecreate(new \DateTime());
 
 
-                $this->entityManager->persist($mvt);
+              //  $this->entityManager->persist($mvt);
                 $this->entityManager->persist($soldeDistrict);
                 $this->entityManager->flush();
+            }
+            else
+            {
+                // $connectedUser = $userRepo->findOneBy(["id"=>$district]);
+                // // $distr = $connectedUser->getDistrict();
+                // // $commissariatDistrict = $commissariatRepo->findOneBy(["id"=>$distr->getcom])
+                // // $caisseDistrict = new CaisseDistrict();
+
+                // $caisseDistrict->setSolde($mvt->getMontant())
+                //                ->setDateSolde(new \DateTime('now'))
+                //                ->setDistrict($dis->findOneBy(["id"=>$district->getid]));
+
+                // dump($caisseDistrict);
+                // $this->entityManager->persist($soldeDistrict);
+                // $this->entityManager->flush();
             }
 
             return new JsonResponse(["ok" => true, "message" => "opération effectuée avec succès"]);
@@ -292,6 +327,7 @@ class CaisseController extends AbstractController
      */
     public function MouvementsByEvent($eventId,TresorerieActiviteRepository $treso, EvenementRepository $event): JsonResponse
     {
+        dump($eventId);
         $entiteId = 0;
         // 1 => district
         //  2 => groupe
@@ -316,5 +352,111 @@ class CaisseController extends AbstractController
          return new Response();
     }
 
+
+    /**
+     * @Route("/SaveMvtEvent/{eventId}", name="SaveMvtEvent")
+     */
+    public function SaveMvtEvent(int $eventId,Request $req )
+    {
+        $entite = $this->ValueSession->get("entite");
+        $user = null;
+        if($entite == 1)
+        {
+            //groupe
+            $user = null ;
+        }
+        else
+        {
+            //district
+            $district = $this->ValueSession->get("districtid")->getId(); 
+            $user = $district;
+        }
+            
+         $data = $req->request->get("data");
+         //création du mouvement activité
+         $newMvtActivite = new MouvementTresoActivite();
+         $newMvtActivite->setCommentaire($data["description"])
+                        ->setDateMouvement(new \DateTime('now'))
+                        ->setSousRubrique($this->sousRubriqueRepo->findOneBy(["id"=>$data["sousrubriqueid"]]))
+                        ->setEventId($eventId)
+                        ->setMontant((int)$data["montant"])
+                        ->setUserCreation($user)
+                        ->setPeriode($this->periodeRepo->findOneBy(["id"=>1]));// A revoir
+        
+         $this->entityManager->persist($newMvtActivite);
+         $this->entityManager->flush();
+
+        //une fois le mouvement enregistré, on modifie le solde de l'activité
+        
+        //retrouver la ligne de la caisse de l'activité
+        $tresoActivite = $this->tresoActiviteRepo->findOneBy(["EventId"=>$eventId]);
+         $newSolde = (int)0;
+        if($tresoActivite->getSolde()==0)
+            $newSolde = $newMvtActivite->getMontant();
+        else
+        {
+            $newSolde = $tresoActivite->getSolde() + ($newMvtActivite->getMontant());
+        }
+        $tresoActivite->setSolde($newSolde);
+        $tresoActivite->setDateSolde(new \DateTime('now'));
+
+        $this->entityManager->persist($tresoActivite);
+        $this->entityManager->flush();
+         return new Response();
+    }
+
+
+
+
+    
+    /**
+     * @Route("/ListeRubrique", name="ListeRubrique")
+     */
+    public function ListeRubrique(SerializerInterface $serializer): JsonResponse
+    {
+       $liste = $this->rubriqueRepo->findAll();
+       $result = $serializer->serialize($liste, 'json');
+       return new JsonResponse(["ok"=>true, "data"=>$result]);
+    }
+
+        /**
+     * @Route("/ListeSousRubrique/{id}", name="ListeSousRubrique")
+     */
+    public function ListeSousRubrique($id,SerializerInterface $serializer): JsonResponse
+    {
+       $liste = $this->qclass->GetSousRubrique($id);
+       $result = $serializer->serialize($liste, 'json');
+       return new JsonResponse(["ok"=>true, "data"=>$result]);
+    }
+
+
+        /**
+     * @Route("/MouvementsByEventActivite/{id}", name="MouvementsByEventActivite")
+     */
+    public function MouvementsByEventActivite($id,SerializerInterface $serializer)
+    {
+       //récupérer la listes des mouvements
+
+       //récupération de la listes des mouvements
+       $listeMouvements = $this->qclass->GetMouvementsByEvent($id);
+       //$result = array($listeMouvements);
+       return NEW JsonResponse(["ok"=>true, "data"=>$listeMouvements]);
+    }
+
+
+
+      /**
+     * @Route("/SoldeByEvent/{id}", name="SoldeByEvent")
+     */
+    public function SoldeByEvent($id,SerializerInterface $serializer)
+    {
+       //récupérerle solde de l'évènement
+
+       $solde = $this->tresoActiviteRepo->findOneBy(["EventId"=>$id])->getSolde();
+       //$result = array($listeMouvements);
+       return NEW JsonResponse(["ok"=>true, "data"=>$solde]);
+    }
+
+    
 
 }
