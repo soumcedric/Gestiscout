@@ -27,6 +27,7 @@ use App\Repository\MouvementDistrictRepository;
 use App\Repository\RubriqueRepository;
 use App\Repository\SousRubriqueRepository;
 use App\Repository\TresorerieActiviteRepository;
+use Exception;
 use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -286,7 +287,8 @@ class CaisseController extends AbstractController
                 ->setDateCreation(new \DateTime())
                 ->setEntite(2)
                 ->setIdEntite($district)
-                ->setUserCreation(0);
+                ->setUserCreation(0)
+                ->setStatut(0);
 
             $this->entityManager->persist($event);
             $this->entityManager->flush();
@@ -358,6 +360,10 @@ class CaisseController extends AbstractController
      */
     public function SaveMvtEvent(int $eventId,Request $req )
     {
+        try
+        {
+
+       
         $entite = $this->ValueSession->get("entite");
         $user = null;
         if($entite == 1)
@@ -402,7 +408,12 @@ class CaisseController extends AbstractController
 
         $this->entityManager->persist($tresoActivite);
         $this->entityManager->flush();
-         return new Response();
+         return new JsonResponse(["ok"=>true, "message"=>"Opération enregistrée avec succès"]);
+        }
+        catch(\Exception $e )
+        {
+            return new JsonResponse(["ok"=>false, "message"=>$e->getMessage()]);
+        }
     }
 
 
@@ -440,6 +451,8 @@ class CaisseController extends AbstractController
        //récupération de la listes des mouvements
        $listeMouvements = $this->qclass->GetMouvementsByEvent($id);
        //$result = array($listeMouvements);
+       //get statut evenet
+       
        return NEW JsonResponse(["ok"=>true, "data"=>$listeMouvements]);
     }
 
@@ -457,6 +470,17 @@ class CaisseController extends AbstractController
        return NEW JsonResponse(["ok"=>true, "data"=>$solde]);
     }
 
+    
+      /**
+     * @Route("/StatutEvent/{id}", name="StatutEvent")
+     */
+    public function GetStatutEvenement($id)
+    {
+        $statut = $this->eventRepo->findOneBy(["id"=>$id])->getStatut();
+       // 0 = ouvert
+       // 2 = cloturé
+       return new JsonResponse($statut);
+    }
     
 
 }
