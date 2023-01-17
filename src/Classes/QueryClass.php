@@ -343,18 +343,29 @@ class QueryClass
     }
     public function GetNbreJeuneParGroupe($year, $groupe)
     {
-        $sql = "SELECT count(j.id) FROM App\Entity\JEUNE j";
-        $sql = $sql. ", App\Entity\INSCRIPTION i ";
-        $sql= $sql ."where i.Jeunes = j.id ";
-        $sql = $sql. "and j.Groupe = :gr ";
-        $sql = $sql. "and i.Annee = :annee";
-        $sql = $sql. " and j.Statut = 1";
-        $query=$this->em->createQuery($sql);
-        $query->setParameter('gr',$groupe);
-        //$query->setParameter('annee',$year);
-        $query->setParameter('annee', $this->activeYear);
-        $res = $query->getSingleScalarResult();
-        return $res;
+        // $sql = "SELECT count(j.id) FROM App\Entity\JEUNE j";
+        // $sql = $sql. ", App\Entity\INSCRIPTION i ";
+        // $sql= $sql ."where i.Jeunes = j.id ";
+        // $sql = $sql. "and j.Groupe = :gr ";
+        // $sql = $sql. "and i.Annee = :annee";
+        // $sql = $sql. " and j.Statut = 1";
+        // $query=$this->em->createQuery($sql);
+        // $query->setParameter('gr',$groupe);
+        // //$query->setParameter('annee',$year);
+        // $query->setParameter('annee', $this->activeYear);
+        // $res = $query->getSingleScalarResult();
+        // return $res;
+
+
+        $query = "select count(*) from jeune j left join inscription i
+                  on j.id = i.jeunes_id
+                  where i.annee_id = ".$this->activeYear->getId()."
+                  and j.groupe_id = ".$groupe."";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchOne();
+
+
     }
 
     // public  function GetNbreResponsableCotiseParGroupe($year,$groupe) : int

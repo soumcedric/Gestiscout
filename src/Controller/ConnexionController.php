@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Request;
 use function Symfony\Component\Translation\t;
 use App;
-
+use App\Repository\DistrictRepository;
 
 class ConnexionController extends AbstractController
 {
@@ -27,16 +27,22 @@ class ConnexionController extends AbstractController
     private $JeuneLayer;
     private $ResponsableLayer;
     private $EntityManager;
-    
+    private $districtRepo;
+    private $userRepo;
+    private $gr_Repo;
     private $AnneePastorale;
-    public function __construct(RapportController $rapport, JEUNERepository $jeune, ResponsableRepository  $Responsable, EntityManagerInterface  $Emanager,App\Repository\AnneePastoraleRepository $an)
+    public function __construct(RapportController $rapport, JEUNERepository $jeune, ResponsableRepository  $Responsable,
+                     EntityManagerInterface  $Emanager,App\Repository\AnneePastoraleRepository $an
+                     , DistrictRepository $district, UserRepository $userrepo, GroupeRepository $gr)
     {
         $this->rapport = $rapport;
         $this->JeuneLayer=$jeune;
         $this->ResponsableLayer=$Responsable;
         $this->EntityManager=$Emanager;
         $this->AnneePastorale=$an;
-
+        $this->districtRepo = $district;
+        $this->userRepo= $userrepo;
+        $this->gr_Repo = $gr;
 
     }
 
@@ -159,9 +165,51 @@ class ConnexionController extends AbstractController
     }
 
     #[Route('/DistrictDash', name: 'DistrictDash')]
-    public  function DashboardDistrict()
+    public  function DashboardDistrict(SessionInterface $session)
     {
+       
+        //récupéré  l'id du user (qui est forcement district)
+        $userid= null;
+        $id = $session->get("id");
+        
+        // //retrouver le district concerné
+         $user = $this->userRepo->findOneBy(["id"=>$id])->getDistrict()->getId();
+         $district = $this->districtRepo->findOneBy(["id"=>$user])->getCommissariatDistrict();
+        
+         //retrouver les groupes du district
+        $groupes = $this->gr_Repo->findBy(array("commissariatDistrict"=>$district),
+                                         array("Nom"=>"ASC"));
+
+        //récupération de toute les statistiques dans une boucle
+        
         $qClass = new App\Classes\QueryClass($this->EntityManager);
+        $statistique = array();
+        foreach($groupes as $gr)
+        {
+            $nbreRespoCotise = $qClass->GetNbreResponsableCotiseParGroupe($gr->getId());
+            $nbreJeuneCotise = $qClass->GetNbreJeuneCotiseParGroupe(0,$gr->getId());
+         
+           
+            $stat = array(
+                "id"=>$gr->getId(),
+                "nom"=>$gr->getNom(),
+                "nbreJeuneByGroupe"=>$qClass->GetNbreJeuneParGroupe(0,$gr->getId()),
+                "nbreJeuneCotiseByGroupe"=>($nbreRespoCotise+$nbreJeuneCotise)
+            );
+            array_push($statistique,$stat);
+        }
+
+         dump($statistique);
+
+
+
+
+
+
+
+
+
+
         //nombre de jeune par groupe
         //nombre de jeune saint sauveur misericordieux
         $nbreJeuneStSauveur = $qClass->GetNbreJeuneParGroupe(0,1);
@@ -214,16 +262,17 @@ class ConnexionController extends AbstractController
 
         return $this->render('connexion/DashboardDistrict.html.twig', [
             'controller_name' => 'ConnexionController',
-            'nbreJeuneSsm' => $nbreJeuneStSauveur,
-            'NbreJeuneLionKing' => $nbreJeuneLionKing,
-            'nbreJeuneLesPetroliers' =>$nbreJeuneLesPetroliers,
-            'nbreJeuneSma'=>$nbreJeuneSma,
-            'nbreJeuneNda' => $nbreJeuneNda,
-            'nbreTotalCotiseSSM'=>$nbreTotalCotiseSSM,
-            'nbreTotalCotiseSM' => $nbreTotalCotiseSM,
-            'nbreTotalCotiseJMV'=>$nbreTotalCotiseJMV,
-            'nbreTotalCotiseSMA'=>$nbreTotalCotiseSMA,
-            'nbreTotalCotiseNDA'=>$nbreTotalCotiseNDA
+            'statistiques'=>$statistique
+            // 'nbreJeuneSsm' => $nbreJeuneStSauveur,
+            // 'NbreJeuneLionKing' => $nbreJeuneLionKing,
+            // 'nbreJeuneLesPetroliers' =>$nbreJeuneLesPetroliers,
+            // 'nbreJeuneSma'=>$nbreJeuneSma,
+            // 'nbreJeuneNda' => $nbreJeuneNda,
+            // 'nbreTotalCotiseSSM'=>$nbreTotalCotiseSSM,
+            // 'nbreTotalCotiseSM' => $nbreTotalCotiseSM,
+            // 'nbreTotalCotiseJMV'=>$nbreTotalCotiseJMV,
+            // 'nbreTotalCotiseSMA'=>$nbreTotalCotiseSMA,
+            // 'nbreTotalCotiseNDA'=>$nbreTotalCotiseNDA
 
 
             ]);

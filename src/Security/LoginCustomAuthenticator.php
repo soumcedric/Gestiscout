@@ -172,7 +172,7 @@ class LoginCustomAuthenticator extends AbstractFormLoginAuthenticator implements
                     }                        
                     else
                         {
-                            $request->getSession()->set('districtid',$user->getcomm());
+                            $request->getSession()->set('districtid',$user->getDistrict());
                             $request->getSession()->set('entite','2');// entité connecté district => 2
                         }
 
