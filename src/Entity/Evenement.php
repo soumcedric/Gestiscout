@@ -52,6 +52,11 @@ class Evenement
      */
     private $IdEntite;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $statut;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -137,6 +142,18 @@ class Evenement
     public function setIdEntite(int $IdEntite): self
     {
         $this->IdEntite = $IdEntite;
+
+        return $this;
+    }
+
+    public function getStatut(): ?int
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(int $statut): self
+    {
+        $this->statut = $statut;
 
         return $this;
     }

@@ -36,6 +36,13 @@ function OpenModal()
   
 }
 
+function CloseModal()
+{
+  
+  $("#modaloperation").modal('hide');
+  
+}
+
 function TypeMouvement()
 {
     debugger
@@ -44,6 +51,7 @@ function TypeMouvement()
     {
         var liste = JSON.parse(res.data)
         $("#ListeMvt").empty;
+        $("#selmvt").append("<option value=0 selected>---sélectionner un type mouvement---</option>");
         $.each(liste, function(i,n){
             $("#selmvt").append("<option value="+n.Code+">"+n.Libelle+"</option>");
         });
@@ -72,14 +80,25 @@ function SaveMvt()
         
         $.post(url,{"data": mvt},function(res){
             debugger
-            if(res)
+            if(res.ok)
             {
                 swal({
                     type:"success",
                     title:"Opération",
                     text: res.message
                 },(function(){
+                    loadMvt($("#eventid").val());
+                    CloseModal();
+                }));
+            }
+            else{
+                swal({
+                    type:"error",
+                    title:"Opération",
+                    text: res.message
+                },(function(){
                   //  loadMvt();
+                  CloseModal();
                 }));
             }
         });
@@ -137,11 +156,11 @@ function loadMvt(id)
             }
         },
      
-        // columnDefs: [
-        //     {
-        //         targets: 0,
-        //         visible: false
-        //     }],
+        columnDefs: [
+            {
+                targets: 0,
+                visible: false
+            }],
         ajax:{
             url:"/MouvementsByEventActivite/"+id,
             type:"get",
@@ -275,7 +294,7 @@ function GetRubrique()
         if(res.ok)
         {
             $("#selrubrique").empty();
-            $("#selrubrique").append("---Choisir une rubrique---");
+            $("#selrubrique").append("<option value=0 selected>---Choisir une rubrique---</option>");
             let liste = JSON.parse(res.data);
             $.each(liste, function(i,n){
                 debugger
@@ -292,12 +311,26 @@ function GetSousRubriqueByRubrique(id)
         if(res.ok)
         {
             $("#selsousribrique").empty();
-            $("#selsousribrique").append("---Choisir une sous rubrique---");
+            $("#selsousribrique").append("<option selected value=0>---Choisir une sous rubrique---</option>");
             let liste = JSON.parse(res.data);
             $.each(liste, function(i,n){
                 debugger
                 $("#selsousribrique").append("<option value="+n.id+">"+n.libelle+"</option>");
             })
+        }
+    });
+}
+
+function GetStatutCaisse(id)
+{
+    $.get("StatutEvent/"+id,function(res){
+        if(res==1)
+        {
+            //cloture
+        }
+        else
+        {
+            //ouvert
         }
     });
 }

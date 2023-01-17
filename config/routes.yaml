@@ -456,6 +456,10 @@ MouvementsByEventActivite:
 SoldeByEvent:
     path: /SoldeByEvent/{id}
     controller: App\Controller\CaisseController::SoldeByEvent
+StatutEvent:
+    path: /StatutEvent/{id}
+    controller: App\Controller\CaisseController::GetStatutEvenement
+
 
 
 
