@@ -483,4 +483,46 @@ class CaisseController extends AbstractController
     }
     
 
+
+     /**
+     * @Route("/MouvementsCaisse", name="MouvementsCaisse")
+     */
+    public function MouvementsCaisse()
+    {
+        return $this->render('caisse/MouvementCaisseDistrict.html.twig', [
+            'controller_name' => 'CaisseController',
+        ]);
+    }
+
+
+
+     /**
+     * @Route("/GetMouvementCaisse", name="GetMouvementCaisse")
+     */
+    public function GetMouvementCaisse()
+    {
+        //récuperer l'entité connecté
+        //récuperer l'utilisateur connecté
+        //récuperer l'id de la caisse concerné
+        //récupérer les mouvements de la caisse
+
+        $entite = $this->ValueSession->get("entite");
+        $user = $this->userRepo->findOneBy(["id"=>$this->ValueSession->get("id")]);
+        if($entite == 1)
+        {
+            //groupe
+        }
+        else
+        {
+            //district
+            //récupérer l'id du responsable du district
+            $district = $this->districtRepo->findOneBy(["id"=>$user->getDistrict()->getId()]);
+            dump($district);
+
+        }
+        dump($entite);
+        dump($user);
+        return new Response();
+    }
+
 }
