@@ -15,26 +15,18 @@
             <div class="col-md-12 col-12 col-sm-12">
                 <div class="card">
                     <div class="header bg-primary">
-                        <h2 class="text-center text-white">MOUVEMENTS EVENEMENT</h2>
+                        <h2 class="text-center text-white">MOUVEMENTS CAISSE PRINCIPALE</h2>
                     </div>
                     <div class="body">
 
 						<div class="form-group row">
-							<label class="col-sm-12 col-md-12 col-12 col-lg-2 col-form-label">Evènements</label>
-							<div class="col-sm-12 col-md-12 col-12 col-lg-5">
-								<select name="select" class="form-control" id="selevent"></select>+
-							</div>
-							<div class="col-sm-12 col-md-12 col-12 col-lg-4">
+							
+							<div class="col-sm-12 col-md-12 col-12 col-lg-12 text-right">
 								<button class="btn btn-outline-primary" onclick="OpenModal();">
 									<i class="fa fa-plus"></i>Opération</button>
 							</div>
 						</div>
-						{# <div class="row text-right">
-							<div class="col-sm-12">
-								<button class="btn btn-outline-primary" onclick="OpenModal();">
-									<i class="fa fa-plus"></i>Opération</button>
-							</div>
-						</div> #}
+					
 						<br/><br/><br/>
 						<div class="row col-12">
 							<div class="col-10 text-center"><h5><strong>Liste des opérations</strong></h5></div>
@@ -165,7 +157,7 @@
 	{% block javascripts %}
 		<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
 		<script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
-		<script src="{{ asset("js/pages/caisse/caisse.js") }}"></script>
+		<script src="{{ asset("js/pages/caisse/CaisseOperationDistrict.js") }}"></script>
 
 	{% endblock %}
 

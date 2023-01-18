@@ -459,6 +459,12 @@ SoldeByEvent:
 StatutEvent:
     path: /StatutEvent/{id}
     controller: App\Controller\CaisseController::GetStatutEvenement
+MouvementsCaisse:
+    path: /MouvementsCaisse
+    controller: App\Controller\CaisseController::MouvementsCaisse
+GetMouvementCaisse:
+    path: /GetMouvementCaisse
+    controller: App\Controller\CaisseController::GetMouvementCaisse
 
 
 
