@@ -465,6 +465,9 @@ MouvementsCaisse:
 GetMouvementCaisse:
     path: /GetMouvementCaisse
     controller: App\Controller\CaisseController::GetMouvementCaisse
+SaveMvtMainCaisse:
+    path: /SaveMvtMainCaisse
+    controller: App\Controller\CaisseController::SaveMvtMainCaisse
 
 
 

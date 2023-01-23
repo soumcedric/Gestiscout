@@ -1175,6 +1175,16 @@ class QueryClass
         return $stmt->fetchAllAssociative();
 
     }
+
+
+    public function GetMouvementByEntite(int $entiteid)
+    {
+        $conn = $this->em->getConnection();
+        $sql = "call GET_MOUVEMENT_ENTITE('".$entiteid."');";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
     /**/
 
 

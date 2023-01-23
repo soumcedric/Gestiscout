@@ -514,15 +514,55 @@ class CaisseController extends AbstractController
         }
         else
         {
-            //district
+            //district --mouvement district / mouvement entite
             //récupérer l'id du responsable du district
             $district = $this->districtRepo->findOneBy(["id"=>$user->getDistrict()->getId()]);
-            dump($district);
+            //récupérer le commissariat district id
+            $commissariatDistrictId = $district->getCommissariatDistrict()->getId();
+            //get mouvement
+            $mouvements = $this->qclass->GetMouvementByEntite($commissariatDistrictId);
 
         }
-        dump($entite);
-        dump($user);
-        return new Response();
+        // dump($mouvements );
+        // dump($user);
+        return new JsonResponse(["ok"=>true, "data"=>$mouvements]);
+    }
+
+
+
+       /**
+     * @Route("/SaveMvtMainCaisse", name="SaveMvtMainCaisse")
+     */
+    public function SaveMvtMainCaisse(int $eventId,Request $req )
+    {
+        try
+        {
+
+       
+        $entite = $this->ValueSession->get("entite");
+        $userconnected = $this->ValueSession->get("id");
+        $user = null;
+        var_dump($entite);
+        if($entite == 1)
+        {
+            //groupe
+            $user = null ;
+        }
+        else
+        {
+            //district
+            $districtId = $this->ValueSession->get("districtid")->getId(); 
+          //  $userdistrict = $this->districtRepo->findOneBy(["id"=>$districtId]);
+           // $commissariatDistrictId = $userdistrict->getCommissariatDistrict()->getId();
+            dump($districtId);
+        }
+        
+         return new JsonResponse(["ok"=>true, "message"=>"Opération enregistrée avec succès"]);
+        }
+        catch(\Exception $e )
+        {
+            return new JsonResponse(["ok"=>false, "message"=>$e->getMessage()]);
+        }
     }
 
 }

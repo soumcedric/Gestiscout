@@ -4,10 +4,10 @@ $(function(){
 
 //     let eventId;
 //     let EventTitre;
-//     GetRubrique();
+     GetRubrique();
    
   
-//    TypeMouvement();
+    TypeMouvement();
 
 //    loadEventSelection();
 //    $("#selevent").change(function(){
@@ -21,11 +21,11 @@ $(function(){
 //     GetSoldeCaisse(eventId);
 //    });
 
-//    $("#selrubrique").change(function(){
-//     debugger
-//         let value = $(this).val();
-//         GetSousRubriqueByRubrique(value);
-//    });
+   $("#selrubrique").change(function(){
+    debugger
+        let value = $(this).val();
+        GetSousRubriqueByRubrique(value);
+   });
   
 });
 
@@ -332,3 +332,118 @@ function loadMvt()
 //         }
 //     });
 // }
+
+
+function OpenModal()
+{
+  
+  $("#modaloperation").modal({
+     backdrop:false
+  });
+  
+}
+
+function CloseModal()
+{
+  
+  $("#modaloperation").modal('hide');
+  
+}
+
+function GetRubrique()
+{
+    debugger
+    $.get("/ListeRubrique",function(res){
+        if(res.ok)
+        {
+            $("#selrubrique").empty();
+            $("#selrubrique").append("<option value=0 selected>---Choisir une rubrique---</option>");
+            let liste = JSON.parse(res.data);
+            $.each(liste, function(i,n){
+                debugger
+                $("#selrubrique").append("<option value="+n.id+">"+n.Libelle+"</option>");
+            })
+        }
+    });
+}
+
+function GetSousRubriqueByRubrique(id)
+{
+    debugger
+    $.get("/ListeSousRubrique/"+id,function(res){
+        if(res.ok)
+        {
+            $("#selsousribrique").empty();
+            $("#selsousribrique").append("<option selected value=0>---Choisir une sous rubrique---</option>");
+            let liste = JSON.parse(res.data);
+            $.each(liste, function(i,n){
+                debugger
+                $("#selsousribrique").append("<option value="+n.id+">"+n.libelle+"</option>");
+            })
+        }
+    });
+}
+
+
+function TypeMouvement()
+{
+    debugger
+   $.get("/ListeMvt",function(res){
+    if(res)
+    {
+        var liste = JSON.parse(res.data)
+        $("#ListeMvt").empty;
+        $("#selmvt").append("<option value=0 selected>---sélectionner un type mouvement---</option>");
+        $.each(liste, function(i,n){
+            $("#selmvt").append("<option value="+n.Code+">"+n.Libelle+"</option>");
+        });
+    }
+   });
+}
+
+
+function SaveMvt()
+{
+    debugger
+    if(validation())
+    {
+        debugger
+        let id = $("#eventid").val();
+        let url="/SaveMvtMainCaisse";
+        let mvt = {
+            type : $("#selmvt").val(),
+            description : $("#txtdescription").val(),
+            montant : parseInt($("#txtmontant").val()),
+            date: $("#seldate").val(),
+            sousrubriqueid : $("#selsousribrique").val()
+        }
+
+        if(mvt.type=="D")
+            mvt.montant = -mvt.montant;
+        
+        $.post(url,{"data": mvt},function(res){
+            debugger
+            if(res.ok)
+            {
+                swal({
+                    type:"success",
+                    title:"Opération",
+                    text: res.message
+                },(function(){
+                    loadMvt($("#eventid").val());
+                    CloseModal();
+                }));
+            }
+            else{
+                swal({
+                    type:"error",
+                    title:"Opération",
+                    text: res.message
+                },(function(){
+                  //  loadMvt();
+                  CloseModal();
+                }));
+            }
+        });
+    }
+}

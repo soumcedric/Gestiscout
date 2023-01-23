@@ -75,10 +75,15 @@ class District
      */
     private $exercerFonctions;
 
-    // /**
-    //  * @ORM\OneToOne(targetEntity=CaisseDistrict::class, mappedBy="district", cascade={"persist", "remove"})
-    //  */
-    // private $caisseDistrict;
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $email;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=CommissariatDistrict::class, inversedBy="districts")
+     */
+    private $CommissariatDistrict;
 
 
     public function __construct()
@@ -226,24 +231,26 @@ class District
         return $this;
     }
 
-    public function getCaisseDistrict(): ?CaisseDistrict
+    public function getEmail(): ?string
     {
-        return $this->caisseDistrict;
+        return $this->email;
     }
 
-    public function setCaisseDistrict(?CaisseDistrict $caisseDistrict): self
+    public function setEmail(string $email): self
     {
-        // unset the owning side of the relation if necessary
-        if ($caisseDistrict === null && $this->caisseDistrict !== null) {
-            $this->caisseDistrict->setDistrict(null);
-        }
+        $this->email = $email;
 
-        // set the owning side of the relation if necessary
-        if ($caisseDistrict !== null && $caisseDistrict->getDistrict() !== $this) {
-            $caisseDistrict->setDistrict($this);
-        }
+        return $this;
+    }
 
-        $this->caisseDistrict = $caisseDistrict;
+    public function getCommissariatDistrict(): ?CommissariatDistrict
+    {
+        return $this->CommissariatDistrict;
+    }
+
+    public function setCommissariatDistrict(?CommissariatDistrict $CommissariatDistrict): self
+    {
+        $this->CommissariatDistrict = $CommissariatDistrict;
 
         return $this;
     }
