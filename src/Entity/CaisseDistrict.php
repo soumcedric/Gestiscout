@@ -37,10 +37,7 @@ class CaisseDistrict
      */
     private $usercreate;
 
-    /**
-     * @ORM\OneToOne(targetEntity=district::class, cascade={"persist", "remove"})
-     */
-    private $district;
+  
 
     /**
      * @ORM\Column(type="integer")
@@ -105,18 +102,9 @@ class CaisseDistrict
         return $this;
     }
 
-    public function getDistrict(): ?district
-    {
-        return $this->district;
-    }
 
-    public function setDistrict(?district $district): self
-    {
-        $this->district = $district;
 
-        return $this;
-    }
-
+ 
     public function getSolde(): ?int
     {
         return $this->solde;

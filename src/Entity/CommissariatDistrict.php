@@ -48,10 +48,11 @@ class CommissariatDistrict
      */
     private $groupes;
 
-    /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="commissariatDistrictId")
-     */
-    private $users;
+    // /**
+    // //  * @ORM\OneToMany(targetEntity=User::class, mappedBy="commissariatDistrictId")
+    // *@ORM\OneToMany(targetEntity=User::class)
+    //  */
+    // private $users;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -71,10 +72,16 @@ class CommissariatDistrict
      */
     private $email;
 
+    /**
+     * @ORM\OneToMany(targetEntity=District::class, mappedBy="CommissariatDistrict")
+     */
+    private $districts;
+
     public function __construct()
     {
         $this->groupes = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->districts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -160,35 +167,35 @@ class CommissariatDistrict
         return $this;
     }
 
-    /**
-     * @return Collection|User[]
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
+    // /**
+    //  * @return Collection|User[]
+    //  */
+    // public function getUsers(): Collection
+    // {
+    //     return $this->users;
+    // }
 
-    public function addUser(User $user): self
-    {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-            $user->setCommissariatDistrictId($this);
-        }
+    // public function addUser(User $user): self
+    // {
+    //     if (!$this->users->contains($user)) {
+    //         $this->users[] = $user;
+    //         $user->setCommissariatDistrictId($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeUser(User $user): self
-    {
-        if ($this->users->removeElement($user)) {
-            // set the owning side to null (unless already changed)
-            if ($user->getCommissariatDistrictId() === $this) {
-                $user->setCommissariatDistrictId(null);
-            }
-        }
+    // public function removeUser(User $user): self
+    // {
+    //     if ($this->users->removeElement($user)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($user->getCommissariatDistrictId() === $this) {
+    //             $user->setCommissariatDistrictId(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getFilename(): ?string
     {
@@ -226,8 +233,33 @@ class CommissariatDistrict
         return $this;
     }
 
+    /**
+     * @return Collection|District[]
+     */
+    public function getDistricts(): Collection
+    {
+        return $this->districts;
+    }
 
+    public function addDistrict(District $district): self
+    {
+        if (!$this->districts->contains($district)) {
+            $this->districts[] = $district;
+            $district->setCommissariatDistrict($this);
+        }
 
+        return $this;
+    }
 
-   
+    public function removeDistrict(District $district): self
+    {
+        if ($this->districts->removeElement($district)) {
+            // set the owning side to null (unless already changed)
+            if ($district->getCommissariatDistrict() === $this) {
+                $district->setCommissariatDistrict(null);
+            }
+        }
+
+        return $this;
+    }
 }

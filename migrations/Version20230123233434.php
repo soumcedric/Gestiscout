@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230122085317 extends AbstractMigration
+final class Version20230123233434 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -20,10 +20,10 @@ final class Version20230122085317 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        // $this->addSql('CREATE TABLE mouvement_entite (id INT AUTO_INCREMENT NOT NULL, periode_id INT NOT NULL, sousrubrique_id INT NOT NULL, datemvt DATETIME NOT NULL, montant BIGINT NOT NULL, description VARCHAR(255) NOT NULL, entite_id INT NOT NULL, usermvt INT NOT NULL, INDEX IDX_60699611F384C1CF (periode_id), INDEX IDX_60699611BEE02DA1 (sousrubrique_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        // $this->addSql('ALTER TABLE mouvement_entite ADD CONSTRAINT FK_60699611F384C1CF FOREIGN KEY (periode_id) REFERENCES periode (id)');
-        // $this->addSql('ALTER TABLE mouvement_entite ADD CONSTRAINT FK_60699611BEE02DA1 FOREIGN KEY (sousrubrique_id) REFERENCES sous_rubrique (id)');
-        // // $this->addSql('ALTER TABLE district CHANGE email email VARCHAR(50) NOT NULL');
+        $this->addSql('ALTER TABLE caisse_district ADD commissariat_district_id INT NOT NULL');
+        $this->addSql('ALTER TABLE caisse_district ADD CONSTRAINT FK_E6F63F1F6066AA10 FOREIGN KEY (commissariat_district_id) REFERENCES commissariat_district (id)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_E6F63F1F6066AA10 ON caisse_district (commissariat_district_id)');
+        // $this->addSql('ALTER TABLE district CHANGE email email VARCHAR(50) NOT NULL');
         // $this->addSql('ALTER TABLE evenement CHANGE statut statut SMALLINT NOT NULL');
         // $this->addSql('ALTER TABLE jeune CHANGE groupe_id groupe_id INT NOT NULL, CHANGE genre_id genre_id INT NOT NULL');
         // $this->addSql('ALTER TABLE mouvement_district ADD CONSTRAINT FK_B2DD1195F975A74D FOREIGN KEY (typemouvement_id) REFERENCES type_mouvement (id)');
@@ -47,7 +47,9 @@ final class Version20230122085317 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        // $this->addSql('DROP TABLE mouvement_entite');
+        // $this->addSql('ALTER TABLE caisse_district DROP FOREIGN KEY FK_E6F63F1F6066AA10');
+        // $this->addSql('DROP INDEX UNIQ_E6F63F1F6066AA10 ON caisse_district');
+        // $this->addSql('ALTER TABLE caisse_district DROP commissariat_district_id');
         // $this->addSql('ALTER TABLE district CHANGE email email VARCHAR(50) CHARACTER SET utf8mb4 DEFAULT NULL COLLATE `utf8mb4_unicode_ci`');
         // $this->addSql('ALTER TABLE evenement CHANGE statut statut SMALLINT NOT NULL COMMENT \'0 = ouvert 1 = cloture\'');
         // $this->addSql('ALTER TABLE jeune CHANGE groupe_id groupe_id INT DEFAULT NULL, CHANGE genre_id genre_id INT DEFAULT NULL');
