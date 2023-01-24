@@ -7,10 +7,12 @@ use App\Classes\QueryClass;
 use App\Entity\CaisseGroupe;
 use Doctrine\ORM\Mapping\Id;
 use App\Entity\CaisseDistrict;
+use App\Entity\CommissariatDistrict;
 use App\Entity\Evenement;
 use App\Entity\MouvementGroupe;
 use Doctrine\ORM\EntityManager;
 use App\Entity\MouvementDistrict;
+use App\Entity\MouvementEntite;
 use App\Entity\MouvementTresoActivite;
 use App\Entity\TresorerieActivite;
 use App\Repository\UserRepository;
@@ -533,16 +535,16 @@ class CaisseController extends AbstractController
        /**
      * @Route("/SaveMvtMainCaisse", name="SaveMvtMainCaisse")
      */
-    public function SaveMvtMainCaisse(int $eventId,Request $req )
+    public function SaveMvtMainCaisse(Request $req, CommissariatDistrictRepository $com )
     {
         try
         {
 
-       
+        $data = $req->request->get("data");
         $entite = $this->ValueSession->get("entite");
         $userconnected = $this->ValueSession->get("id");
         $user = null;
-        var_dump($entite);
+       // var_dump($entite);
         if($entite == 1)
         {
             //groupe
@@ -552,9 +554,44 @@ class CaisseController extends AbstractController
         {
             //district
             $districtId = $this->ValueSession->get("districtid")->getId(); 
-          //  $userdistrict = $this->districtRepo->findOneBy(["id"=>$districtId]);
-           // $commissariatDistrictId = $userdistrict->getCommissariatDistrict()->getId();
-            dump($districtId);
+           $userdistrict = $this->districtRepo->findOneBy(["id"=>$districtId]);
+            $commissariatDistrictId = $userdistrict->getCommissariatDistrict()->getId();
+
+            //enregistrement du mouvement
+            $newMvt = new MouvementEntite();
+            $newMvt->setDescription($data["description"])
+                   ->setEntiteId($commissariatDistrictId)
+                   ->setDatemvt(new \DateTime($data["date"]))
+                   ->setUsermvt($userconnected)
+                   ->setMontant((int)$data["montant"])
+                   ->setSousrubrique($this->sousRubriqueRepo->findOneBy(["id"=>$data["sousrubriqueid"]]))
+                   ->setPeriode($this->periodeRepo->findOneBy(["id"=>1]));
+
+                   $this->entityManager->persist($newMvt);
+                   $this->entityManager->flush();
+
+
+                   //operation sur le solde
+
+                   //récuperer le solde de la caisse en fonction de l'identifiant commissariat district
+                   $caisse = $this->caisseDistrictRepo->findOneBy(["CommissariatDistrict"=>$com->findOneBy(["id"=>$commissariatDistrictId])]);
+                   if($caisse==null)
+                   {
+                        //créer la caisse avec solde
+                        $caisse = new CaisseDistrict();
+                        $caisse->setDatecreate(new \DateTime())
+                               ->setDateSolde(new \DateTime())
+                               ->setSolde((int)$newMvt->getMontant())
+
+                            }
+                   else
+                   {
+                        //modifier le solde
+                   }
+
+
+
+           // dump($commissariatDistrictId);
         }
         
          return new JsonResponse(["ok"=>true, "message"=>"Opération enregistrée avec succès"]);
