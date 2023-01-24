@@ -469,7 +469,9 @@ SaveMvtMainCaisse:
     path: /SaveMvtMainCaisse
     controller: App\Controller\CaisseController::SaveMvtMainCaisse
 
-
+GetSoldeEntite:
+    path: /GetSoldeEntite
+    controller: App\Controller\CaisseController::GetSoldeEntite
 
 
 
