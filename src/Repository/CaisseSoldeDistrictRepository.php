@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\CaisseDistrict;
+use App\Entity\CaisseSoldeDistrict;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method CaisseDistrict|null find($id, $lockMode = null, $lockVersion = null)
- * @method CaisseDistrict|null findOneBy(array $criteria, array $orderBy = null)
- * @method CaisseDistrict[]    findAll()
- * @method CaisseDistrict[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method CaisseSoldeDistrict|null find($id, $lockMode = null, $lockVersion = null)
+ * @method CaisseSoldeDistrict|null findOneBy(array $criteria, array $orderBy = null)
+ * @method CaisseSoldeDistrict[]    findAll()
+ * @method CaisseSoldeDistrict[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CaisseDistrictRepository extends ServiceEntityRepository
+class CaisseSoldeDistrictRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, CaisseDistrict::class);
+        parent::__construct($registry, CaisseSoldeDistrict::class);
     }
 
     // /**
-    //  * @return CaisseDistrict[] Returns an array of CaisseDistrict objects
+    //  * @return CaisseSoldeDistrict[] Returns an array of CaisseSoldeDistrict objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class CaisseDistrictRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?CaisseDistrict
+    public function findOneBySomeField($value): ?CaisseSoldeDistrict
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.exampleField = :val')

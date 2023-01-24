@@ -1185,6 +1185,15 @@ class QueryClass
         $stmt->execute();
         return $stmt->fetchAllAssociative();
     }
+
+
+    public function GetSoldeEntite($entite,$entiteid)
+    {
+        $query = "select sum(montant) from mouvement_entite where entite_id = '".$entiteid."'" ;
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchOne();
+    }
     /**/
 
 

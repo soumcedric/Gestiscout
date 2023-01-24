@@ -1,11 +1,10 @@
 $(function(){
-
+    GetSoldeCaisse();
     loadMvt();
 
-//     let eventId;
-//     let EventTitre;
+
      GetRubrique();
-   
+    
   
     TypeMouvement();
 
@@ -447,3 +446,23 @@ function SaveMvt()
         });
     }
 }
+
+
+function GetSoldeCaisse()
+{
+    debugger
+   $.get("/GetSoldeEntite",function(res){
+    debugger
+    if(res.ok)
+    {
+        debugger
+        var solde = 0;
+        var debit;
+        const speed = 200;
+        let convertedsolde = parseInt(res.data);
+       
+         $("#displaysolde").text(convertedsolde);
+    }
+   });
+}
+

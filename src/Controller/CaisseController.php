@@ -26,6 +26,7 @@ use App\Repository\EvenementRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repository\MouvementDistrictRepository;
+use App\Repository\MouvementEntiteRepository;
 use App\Repository\RubriqueRepository;
 use App\Repository\SousRubriqueRepository;
 use App\Repository\TresorerieActiviteRepository;
@@ -58,7 +59,7 @@ class CaisseController extends AbstractController
         UserRepository $user,
         EntityManagerInterface $em,
         PeriodeRepository $periode,
-        CaisseDistrictRepository $caissedistrict,
+       // CaisseDistrictRepository $caissedistrict,
         EvenementRepository $event,
         SousRubriqueRepository $sr,
         RubriqueRepository $rub,
@@ -69,7 +70,7 @@ class CaisseController extends AbstractController
         $this->userRepo = $user;
         $this->entityManager = $em;
         $this->periodeRepo = $periode;
-        $this->caisseDistrictRepo = $caissedistrict;
+       // $this->caisseDistrictRepo = $caissedistrict;
         $this->eventRepo = $event;
         $this->sousRubriqueRepo = $sr;
         $this->rubriqueRepo = $rub;
@@ -574,7 +575,7 @@ class CaisseController extends AbstractController
                    //operation sur le solde
 
                    //récuperer le solde de la caisse en fonction de l'identifiant commissariat district
-                    /caisse = $this->caisseDistrictRepo->findOneBy(["CommissariatDistrict"=>$com->findOneBy(["id"=>$commissariatDistrictId])]);
+                  //caisse = $this->caisseDistrictRepo->findOneBy(["CommissariatDistrict"=>$com->findOneBy(["id"=>$commissariatDistrictId])]);
                 //    if($caisse==null)
                 //    {
                 //         //créer la caisse avec solde
@@ -591,17 +592,54 @@ class CaisseController extends AbstractController
 
 
 
-            dump("ddd");
+           // dump("ddd");
         }
         
-        // return new JsonResponse(["ok"=>true, "message"=>"Opération enregistrée avec succès"]);
+         return new JsonResponse(["ok"=>true, "message"=>"Opération enregistrée avec succès"]);
         }
         catch(\Exception $e )
         {
-         //   return new JsonResponse(["ok"=>false, "message"=>$e->getMessage()]);
+            return new JsonResponse(["ok"=>false, "message"=>$e->getMessage()]);
         }
 
-        return new Response();
+       // return new Response();
+    }
+
+     /**
+     * @Route("/GetSoldeEntite", name="GetSoldeEntite")
+     */
+    public function GetSoldeDistrict(MouvementEntiteRepository $mvtentite)
+    {
+        try
+        {
+
+        
+        $entite = $this->ValueSession->get("entite");
+        $userconnected = $this->ValueSession->get("id");
+        $user = null;
+       // var_dump($entite);
+        if($entite == 1)
+        {
+            //groupe
+            $user = null ;
+        }
+        else
+        {
+               //district
+               $districtId = $this->ValueSession->get("districtid")->getId(); 
+               $district = $this->districtRepo->findOneBy(["id"=>$districtId]);
+               $solde = $this->qclass->GetSoldeEntite(0,$district->getCommissariatDistrict()->getId());
+              // dump($solde);
+        }
+        
+         return new JsonResponse(["ok"=>true, "data"=>$solde]);
+        }
+        catch(\Exception $e )
+        {
+            return new JsonResponse(["ok"=>false, "data"=>$e->getMessage()]);
+        }
+
+       return new Response();
     }
 
 }
