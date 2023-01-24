@@ -574,32 +574,34 @@ class CaisseController extends AbstractController
                    //operation sur le solde
 
                    //récuperer le solde de la caisse en fonction de l'identifiant commissariat district
-                   $caisse = $this->caisseDistrictRepo->findOneBy(["CommissariatDistrict"=>$com->findOneBy(["id"=>$commissariatDistrictId])]);
-                   if($caisse==null)
-                   {
-                        //créer la caisse avec solde
-                        $caisse = new CaisseDistrict();
-                        $caisse->setDatecreate(new \DateTime())
-                               ->setDateSolde(new \DateTime())
-                               ->setSolde((int)$newMvt->getMontant())
+                    /caisse = $this->caisseDistrictRepo->findOneBy(["CommissariatDistrict"=>$com->findOneBy(["id"=>$commissariatDistrictId])]);
+                //    if($caisse==null)
+                //    {
+                //         //créer la caisse avec solde
+                //         $caisse = new CaisseDistrict();
+                //         $caisse->setDatecreate(new \DateTime())
+                //                ->setDateSolde(new \DateTime())
+                //                ->setSolde((int)$newMvt->getMontant())
 
-                            }
-                   else
-                   {
-                        //modifier le solde
-                   }
+                //             }
+                //    else
+                //    {
+                //         //modifier le solde
+                //    }
 
 
 
-           // dump($commissariatDistrictId);
+            dump("ddd");
         }
         
-         return new JsonResponse(["ok"=>true, "message"=>"Opération enregistrée avec succès"]);
+        // return new JsonResponse(["ok"=>true, "message"=>"Opération enregistrée avec succès"]);
         }
         catch(\Exception $e )
         {
-            return new JsonResponse(["ok"=>false, "message"=>$e->getMessage()]);
+         //   return new JsonResponse(["ok"=>false, "message"=>$e->getMessage()]);
         }
+
+        return new Response();
     }
 
 }
