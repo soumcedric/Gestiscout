@@ -27,10 +27,10 @@ class Rubrique
      */
     private $Libelle;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
+   /**
+     * @ORM\Column(type="string", length=1)
      */
-    private $type;
+    private $Sens;
 
     public function getId(): ?int
     {
@@ -61,14 +61,15 @@ class Rubrique
         return $this;
     }
 
-    public function getType(): ?int
+
+    public function getSens(): ?string
     {
-        return $this->type;
+        return $this->Sens;
     }
 
-    public function setType(?int $type): self
+    public function setSens(string $Sens): self
     {
-        $this->type = $type;
+        $this->Sens = $Sens;
 
         return $this;
     }

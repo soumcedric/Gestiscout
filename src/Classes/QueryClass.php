@@ -1189,7 +1189,7 @@ class QueryClass
 
     public function GetSoldeEntite($entite,$entiteid)
     {
-        $query = "select sum(montant) from mouvement_entite where entite_id = '".$entiteid."'" ;
+        $query = "select sum(montant) from mouvement_entite where entite_id = '".$entiteid."' and entite='".$entite."'" ;
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchOne();

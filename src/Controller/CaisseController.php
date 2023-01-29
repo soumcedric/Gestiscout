@@ -6,7 +6,7 @@ use App\Entity\Periode;
 use App\Classes\QueryClass;
 use App\Entity\CaisseGroupe;
 use Doctrine\ORM\Mapping\Id;
-use App\Entity\CaisseDistrict;
+
 use App\Entity\CommissariatDistrict;
 use App\Entity\Evenement;
 use App\Entity\MouvementGroupe;
@@ -20,7 +20,7 @@ use App\Repository\PeriodeRepository;
 use App\Repository\DistrictRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\TypeMouvementRepository;
-use App\Repository\CaisseDistrictRepository;
+
 use App\Repository\CommissariatDistrictRepository;
 use App\Repository\EvenementRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -83,8 +83,22 @@ class CaisseController extends AbstractController
      */
     public function index(): Response
     {
+        $entite = $this->ValueSession->get("entite");
+        $solde = 0;
+
+        if($entite == 1)
+        {
+
+        }
+        else
+        {
+            //district
+            $districtId = $this->ValueSession->get("districtid")->getId(); 
+            $district = $this->districtRepo->findOneBy(["id"=>$districtId]);
+            $solde = $this->qclass->GetSoldeEntite(0,$district->getCommissariatDistrict()->getId());
+        }
         return $this->render('caisse/index.html.twig', [
-            'controller_name' => 'CaisseController',
+            'soldecaisse' => $solde,
         ]);
     }
 
@@ -129,7 +143,7 @@ class CaisseController extends AbstractController
             $operationDistrict = $this->qclass->GetMouvementDistrict($district);
 
             //get solde caisse
-            $solde = $this->caisseDistrictRepo->findOneBy(["district" => $district])->getSolde();
+           // $solde = $this->caisseDistrictRepo->findOneBy(["district" => $district])->getSolde();
             return new JsonResponse(['ok' => true, 'data' => $operationDistrict]);
         }
 
@@ -171,7 +185,7 @@ class CaisseController extends AbstractController
                 ->setUser($this->userRepo->findOneBy(["id" => $this->ValueSession->get("id")]))
                 ->setdistrict($this->districtRepo->findOneBy(["id" => $district]))
                 ->setDatecreate(new \DateTime())
-                ->setCaisse($this->caisseDistrictRepo->findOneBy(["id" => 1]))
+                //->setCaisse($this->caisseDistrictRepo->findOneBy(["id" => 1]))
                 ->setPeriode($this->periodeRepo->findOneBy(["id" => 1]))
                 ->setUsercreate($this->ValueSession->get("id"));
 
@@ -180,33 +194,33 @@ class CaisseController extends AbstractController
                 //dump($mvt);
                 //mise à jour du solde de ce district
             //get solde district
-            $soldeDistrict = $this->caisseDistrictRepo->findOneBy(["district" => $district]);
-            if ($soldeDistrict != null) {
-                $solde = $soldeDistrict->getSolde();
-                $soldeDistrict->setSolde($solde + ($mvt->getMontant()));
-                $soldeDistrict->setDateSolde(new \DateTime());
-                $soldeDistrict->setDatecreate(new \DateTime());
+          //  $soldeDistrict = $this->caisseDistrictRepo->findOneBy(["district" => $district]);
+            // if ($soldeDistrict != null) {
+            //     $solde = $soldeDistrict->getSolde();
+            //     $soldeDistrict->setSolde($solde + ($mvt->getMontant()));
+            //     $soldeDistrict->setDateSolde(new \DateTime());
+            //     $soldeDistrict->setDatecreate(new \DateTime());
 
 
-              //  $this->entityManager->persist($mvt);
-                $this->entityManager->persist($soldeDistrict);
-                $this->entityManager->flush();
-            }
-            else
-            {
-                // $connectedUser = $userRepo->findOneBy(["id"=>$district]);
-                // // $distr = $connectedUser->getDistrict();
-                // // $commissariatDistrict = $commissariatRepo->findOneBy(["id"=>$distr->getcom])
-                // // $caisseDistrict = new CaisseDistrict();
+            //   //  $this->entityManager->persist($mvt);
+            //     $this->entityManager->persist($soldeDistrict);
+            //     $this->entityManager->flush();
+            // }
+            // else
+            // {
+            //     // $connectedUser = $userRepo->findOneBy(["id"=>$district]);
+            //     // // $distr = $connectedUser->getDistrict();
+            //     // // $commissariatDistrict = $commissariatRepo->findOneBy(["id"=>$distr->getcom])
+            //     // // $caisseDistrict = new CaisseDistrict();
 
-                // $caisseDistrict->setSolde($mvt->getMontant())
-                //                ->setDateSolde(new \DateTime('now'))
-                //                ->setDistrict($dis->findOneBy(["id"=>$district->getid]));
+            //     // $caisseDistrict->setSolde($mvt->getMontant())
+            //     //                ->setDateSolde(new \DateTime('now'))
+            //     //                ->setDistrict($dis->findOneBy(["id"=>$district->getid]));
 
-                // dump($caisseDistrict);
-                // $this->entityManager->persist($soldeDistrict);
-                // $this->entityManager->flush();
-            }
+            //     // dump($caisseDistrict);
+            //     // $this->entityManager->persist($soldeDistrict);
+            //     // $this->entityManager->flush();
+            // }
 
             return new JsonResponse(["ok" => true, "message" => "opération effectuée avec succès"]);
         }
@@ -232,8 +246,8 @@ class CaisseController extends AbstractController
 
             $district = $this->ValueSession->get("districtid")->getId();
             //get solde caisse
-            $solde = $this->caisseDistrictRepo->findOneBy(["district" => $district])->getSolde();
-            return new JsonResponse(['ok' => true, 'solde' => $solde]);
+          //  $solde = $this->caisseDistrictRepo->findOneBy(["district" => $district])->getSolde();
+            return new JsonResponse(['ok' => true, 'solde' => 0]);
         }
 
         // return new Response();
@@ -540,12 +554,12 @@ class CaisseController extends AbstractController
     {
         try
         {
-
+       
         $data = $req->request->get("data");
         $entite = $this->ValueSession->get("entite");
         $userconnected = $this->ValueSession->get("id");
         $user = null;
-       // var_dump($entite);
+       // var_dump($data);
         if($entite == 1)
         {
             //groupe
@@ -555,7 +569,7 @@ class CaisseController extends AbstractController
         {
             //district
             $districtId = $this->ValueSession->get("districtid")->getId(); 
-           $userdistrict = $this->districtRepo->findOneBy(["id"=>$districtId]);
+            $userdistrict = $this->districtRepo->findOneBy(["id"=>$districtId]);
             $commissariatDistrictId = $userdistrict->getCommissariatDistrict()->getId();
 
             //enregistrement du mouvement
@@ -564,35 +578,18 @@ class CaisseController extends AbstractController
                    ->setEntiteId($commissariatDistrictId)
                    ->setDatemvt(new \DateTime($data["date"]))
                    ->setUsermvt($userconnected)
-                   ->setMontant((int)$data["montant"])
                    ->setSousrubrique($this->sousRubriqueRepo->findOneBy(["id"=>$data["sousrubriqueid"]]))
-                   ->setPeriode($this->periodeRepo->findOneBy(["id"=>1]));
+                   ->setPeriode($this->periodeRepo->findOneBy(["id"=>1]))
+                   ->setEntite(2);
+            //get sens rubrique
+            $sens = $this->rubriqueRepo->findOneBy(["id"=>$data["rubrique"]])->getSens();
+            if($sens == "D") $newMvt->setMontant(-(int)$data["montant"]);
+            else $newMvt->setMontant((int)$data["montant"]);
 
-                   $this->entityManager->persist($newMvt);
-                   $this->entityManager->flush();
-
-
-                   //operation sur le solde
-
-                   //récuperer le solde de la caisse en fonction de l'identifiant commissariat district
-                  //caisse = $this->caisseDistrictRepo->findOneBy(["CommissariatDistrict"=>$com->findOneBy(["id"=>$commissariatDistrictId])]);
-                //    if($caisse==null)
-                //    {
-                //         //créer la caisse avec solde
-                //         $caisse = new CaisseDistrict();
-                //         $caisse->setDatecreate(new \DateTime())
-                //                ->setDateSolde(new \DateTime())
-                //                ->setSolde((int)$newMvt->getMontant())
-
-                //             }
-                //    else
-                //    {
-                //         //modifier le solde
-                //    }
+            $this->entityManager->persist($newMvt);
+            $this->entityManager->flush();
 
 
-
-           // dump("ddd");
         }
         
          return new JsonResponse(["ok"=>true, "message"=>"Opération enregistrée avec succès"]);
@@ -608,7 +605,7 @@ class CaisseController extends AbstractController
      /**
      * @Route("/GetSoldeEntite", name="GetSoldeEntite")
      */
-    public function GetSoldeDistrict(MouvementEntiteRepository $mvtentite)
+    public function GetSoldeEntite(MouvementEntiteRepository $mvtentite)
     {
         try
         {
@@ -628,7 +625,7 @@ class CaisseController extends AbstractController
                //district
                $districtId = $this->ValueSession->get("districtid")->getId(); 
                $district = $this->districtRepo->findOneBy(["id"=>$districtId]);
-               $solde = $this->qclass->GetSoldeEntite(0,$district->getCommissariatDistrict()->getId());
+               $solde = $this->qclass->GetSoldeEntite(2,$district->getCommissariatDistrict()->getId());
               // dump($solde);
         }
         
@@ -640,6 +637,21 @@ class CaisseController extends AbstractController
         }
 
        return new Response();
+    }
+
+
+    public function DashboardCaisse()
+    {
+        $entite = $this->ValueSession->get("entite");
+        $solde= 0;
+        if($entite == 1)
+        {
+
+        }
+        else
+        {
+
+        }
     }
 
 }

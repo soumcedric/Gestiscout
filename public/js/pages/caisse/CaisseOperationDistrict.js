@@ -1,7 +1,7 @@
 $(function(){
     GetSoldeCaisse();
     loadMvt();
-
+  
 
      GetRubrique();
     
@@ -132,9 +132,29 @@ function validation()
     return valid;
 }
 
+
+  
+function convertDate(datetoformat){
+    var formattedDate = new Date(datetoformat);
+    var d = formattedDate.getDate();
+    var m =  formattedDate.getMonth();
+    m += 1;
+    if(m<=10) m='0'+m;  // JavaScript months are 0-11
+    var y = formattedDate.getFullYear();
+
+    return d+"-"+m+"-"+y;
+}
 function loadMvt()
 {
     debugger
+    const money = new Intl.NumberFormat('fr-FR',
+    {
+      style: 'currency',
+      currency: 'CFA',
+      minimumFractionDigits:0
+    });
+
+
     //alert("hello");
     var table = $("#tboperations").DataTable({
         destroy:true,
@@ -161,6 +181,39 @@ function loadMvt()
             {
                 targets: 0,
                 visible: false
+            },
+            {
+                targets: 4,
+                render:function(data,type,full,meta){
+                   
+                    return money.format(data).replace("CFA","")+"F CFA";
+                    
+                },
+                createdCell:function(td,cellData, rowData, row, col)
+                {
+                     let montant = 0;
+                    montant = parseInt(cellData);
+                  //  $(td).addClass('text-white');
+                    if(montant > 0) $(td).addClass('bg-success');
+                    else $(td).addClass('bg-danger');
+                  //  else return {money.format(data).replace("CFA","")+"F CFA";}
+                },
+                // createdRow:function(tr,cellData, rowData, row, col)
+                // {
+                //     //  let montant = 0;
+                //     // montant = parseInt(data[4]);
+                //     // if(montant > 0)
+                //      $(tr).addClass('bg-success');
+                //   //  else $(row).addClass('bg-danger');
+                //   //  else return {money.format(data).replace("CFA","")+"F CFA";}
+                // }
+
+            },
+            {
+                targets: 3,
+                render:function(data,type,full,meta){
+                    return convertDate(data);
+                }
             }],
         ajax:{
             url:"/GetMouvementCaisse",
@@ -410,16 +463,15 @@ function SaveMvt()
         let id = $("#eventid").val();
         let url="/SaveMvtMainCaisse";
         let mvt = {
-            type : $("#selmvt").val(),
+            
             description : $("#txtdescription").val(),
             montant : parseInt($("#txtmontant").val()),
             date: $("#seldate").val(),
-            sousrubriqueid : $("#selsousribrique").val()
+            sousrubriqueid : $("#selsousribrique").val(),
+            rubrique: $("#selrubrique").val()
         }
 
-        if(mvt.type=="D")
-            mvt.montant = -mvt.montant;
-        
+              
         $.post(url,{"data": mvt},function(res){
             debugger
             if(res.ok)
@@ -450,7 +502,15 @@ function SaveMvt()
 
 function GetSoldeCaisse()
 {
-    debugger
+    const money = new Intl.NumberFormat('fr-FR',
+    {
+      style: 'currency',
+      currency: 'CFA',
+      minimumFractionDigits:0,
+      currencyDispla: 'none'
+    })
+    
+
    $.get("/GetSoldeEntite",function(res){
     debugger
     if(res.ok)
@@ -461,7 +521,7 @@ function GetSoldeCaisse()
         const speed = 200;
         let convertedsolde = parseInt(res.data);
        
-         $("#displaysolde").text(convertedsolde);
+         $("#displaysolde").text(money.format(convertedsolde).replace("CFA",""));
     }
    });
 }

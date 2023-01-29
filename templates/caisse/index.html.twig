@@ -1,41 +1,183 @@
 {% extends 'base_caisse_new.html.twig' %}
 
 
-
-
 {% block stylesheets %}
 
-    <link rel="stylesheet" href="{{ asset('assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css') }}"/>
 {% endblock %}
-{% block titre %} Tableau de bord {% endblock %}
+{% block titre %}
+	Tableau de bord
+{% endblock %}
 
 {% block body %}
-   <div class="main-body">
-                                <div class="page-wrapper">
-
-                                    <div class="page-body">
-                                      <div class="row">
-
-                                          <div class="block-header">
-        <div class="row clearfix">
-            <div class="col-md-6 col-sm-12">
-                <h1>Tableau de bord</h1>
+	<div class="block-header">
+		<div class="row clearfix">
+			<div class="col-md-6 col-sm-12">
+				<h1>Tableau de bord</h1>
 
 
-            </div>
-            <div class="col-md-6 col-sm-12 text-right hidden-xs">
-                <h1 style="color=red;">année pastorale</h1>
-{#                <a href="javascript:void(0);" class="btn btn-sm btn-primary" title="">Create Campaign</a>#}
-            </div>
-        </div>
-    </div>
-                                
-                                        </div>
-                                    </div>
+			</div>
+			<div class="col-md-6 col-sm-12 text-right hidden-xs">
+				<h1 style="color=red;">année pastorale</h1>
+				{#                <a href="javascript:void(0);" class="btn btn-sm btn-primary" title="">Create Campaign</a>#}
+			</div>
+		</div>
+	</div>
 
-                               
-                                </div>
-                            </div>
+	<br/>
+	<br/>
+	<div class="container-fluid">
+		<div class="row clearfix justify-content-md-center ">
+
+
+			<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+				<div class="card w_card3 border border-primary rounded">
+					<div class="body">
+						<div class="text-center">
+							<i class="fa fa-money">  Solde</i>
+							<h5 class="m-t-20 mb-0"></h5>
+							<p class="font-weight-bold text-danger">{{soldecaisse  | number_format(0,'.')}}  F CFA</p>
+
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+				<div class="card w_card3 border border-primary rounded">
+					<div class="body">
+						<div class="text-center">
+							<i class="fa fa-bar-chart-o"> Mouvement du mois</i>
+							<h5 class="m-t-20 mb-0"></h5>
+							<p class="font-weight-bold text-danger">hgg</p>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{# <div class="col-lg-3 col-md-6 col-sm-12">
+			                <div class="card w_card3">
+			                    <div class="body">
+			                        <div class="text-center"><i class="fa fa-bars"></i>
+			                            <h5 class="m-t-20 mb-0">{{ NbreJeuneLionKing }} Jeune(s)</h5>
+			                            <p class="text-muted">LION KING</p>
+			
+			                        </div>
+			                    </div>
+			                </div>
+			            </div>
+			            <div class="col-lg-3 col-md-6 col-sm-12">
+			                <div class="card w_card3">
+			                    <div class="body">
+			                        <div class="text-center"><i class="fa fa-bars"></i>
+			                            <h5 class="m-t-20 mb-0">{{ nbreJeuneLesPetroliers }} Jeune(s)</h5>
+			                            <p class="text-muted">LES PETROLIERS</p>
+			
+			                        </div>
+			                    </div>
+			                </div>
+			            </div>
+			            <div class="col-lg-3 col-md-6 col-sm-12">
+			                <div class="card w_card3">
+			                    <div class="body">
+			                        <div class="text-center"><i class="fa fa-bars"></i>
+			                            <h5 class="m-t-20 mb-0">{{ nbreJeuneSma }} Jeune(s)</h5>
+			                            <p class="text-muted">SMA</p>
+			
+			                        </div>
+			                    </div>
+			                </div>
+			            </div>
+			            <div class="col-lg-3 col-md-6 col-sm-12">
+			                <div class="card w_card3">
+			                    <div class="body">
+			                        <div class="text-center"><i class="fa fa-bars"></i>
+			                            <h5 class="m-t-20 mb-0">{{ nbreJeuneNda }} Jeune(s)</h5>
+			                            <p class="text-muted">KOTHE SCARABEE</p>
+			
+			                        </div>
+			                    </div>
+			                </div>
+			            </div> #}
+		</div>
+		<div class="row clearfix justify-content-md-center ">
+
+
+			<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+				<div class="card">
+					<div class="body top_counter border border-danger rounded">
+						<div class="icon bg-success text-white">
+							<i class="fa fa-area-chart"></i>
+						</div>
+						<div class="content">
+							<span></span>
+							<h5 class="number mb-0"></h5>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{# <div class="col-lg-3 col-md-6 col-sm-12">
+			                <div class="card">
+			                    <div class="body top_counter">
+			                        <div class="icon bg-warning text-white"><i class="fa fa-building"></i> </div>
+			                        <div class="content">
+			                            <span>Cotisés MOHICANS</span>
+			                            <h5 class="number mb-0">{{ nbreTotalCotiseSSM }}</h5>
+			                        </div>
+			                    </div>
+			                </div>
+			            </div> #}
+			{#    <div class="col-lg-3 col-md-6 col-sm-12">
+			                <div class="card">
+			                    <div class="body top_counter">
+			                        <div class="icon bg-warning text-white"><i class="fa fa-building"></i> </div>
+			                        <div class="content">
+			                            <span>Cotisés LION KING</span>
+			                            <h5 class="number mb-0">{{ nbreTotalCotiseSM }}</h5>
+			                        </div>
+			                    </div>
+			                </div>
+			            </div>
+			            <div class="col-lg-3 col-md-6 col-sm-12">
+			                <div class="card">
+			                    <div class="body top_counter">
+			                        <div class="icon bg-warning text-white"><i class="fa fa-building"></i> </div>
+			                        <div class="content">
+			                            <span>Cotisés LES PETROLIERS</span>
+			                            <h5 class="number mb-0">{{ nbreTotalCotiseJMV }}</h5>
+			                        </div>
+			                    </div>
+			                </div>
+			            </div>
+			            <div class="col-lg-3 col-md-6 col-sm-12">
+			                <div class="card">
+			                    <div class="body top_counter">
+			                        <div class="icon bg-warning text-white"><i class="fa fa-building"></i> </div>
+			                        <div class="content">
+			                            <span>Cotisés SMA</span>
+			                            <h5 class="number mb-0">{{ nbreTotalCotiseSMA }}</h5>
+			                        </div>
+			                    </div>
+			                </div>
+			            </div>
+			            <div class="col-lg-3 col-md-6 col-sm-12">
+			                <div class="card">
+			                    <div class="body top_counter">
+			                        <div class="icon bg-warning text-white"><i class="fa fa-building"></i> </div>
+			                        <div class="content">
+			                            <span>Cotisés KOTHE SCARABEE</span>
+			                            <h5 class="number mb-0">{{ nbreTotalCotiseNDA }}</h5>
+			                        </div>
+			                    </div>
+			                </div>
+			            </div>
+			
+			#}
+
+
+		</div>
+	</div>
 
 
 {% endblock %}

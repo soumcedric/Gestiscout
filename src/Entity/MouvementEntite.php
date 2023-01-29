@@ -54,6 +54,11 @@ class MouvementEntite
      */
     private $sousrubrique;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $entite;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -139,6 +144,18 @@ class MouvementEntite
     public function setSousrubrique(?sousrubrique $sousrubrique): self
     {
         $this->sousrubrique = $sousrubrique;
+
+        return $this;
+    }
+
+    public function getEntite(): ?int
+    {
+        return $this->entite;
+    }
+
+    public function setEntite(int $entite): self
+    {
+        $this->entite = $entite;
 
         return $this;
     }

@@ -1,6 +1,9 @@
 {% extends 'base_caisse_new.html.twig' %}
 {% block stylesheets %}
 	<link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+	  <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
 {% endblock %}
 {# 
 {% block title %}Hello CaisseController!{% endblock %} #}
@@ -35,13 +38,13 @@
 						</div>
 						<div class="row table-responsive">
 							<table class="table table-hover" id="tboperations">
-								<thead>
-									<tr>
+								<thead class="thead-info text-dark">
+									<tr class="">
 										<th>#</th>
-										<th>Sous Rubrique</th>
-										<th>Description</th>
-										<th>Date Mouvement</th>
-										<th>Montant</th>
+										<th class="h5">Sous Rubrique</th>
+										<th class="h5">Description</th>
+										<th class="h5">Date Mouvement</th>
+										<th class="h5">Montant</th>
 										
 									</tr>
 								</thead>
@@ -115,12 +118,7 @@
 									<select name="select" class="form-control" id="selsousribrique"></select>
 								</div>
 							</div>
-							<div class="form-group row">
-								<label class="col-sm-2 col-form-label">Type</label>
-								<div class="col-sm-10">
-									<select name="select" class="form-control" id="selmvt"></select>
-								</div>
-							</div>
+							
 							<input type="hidden" id="eventid"/>
 							<div class="form-group row">
 								<label class="col-sm-2 col-form-label">description</label>
@@ -158,6 +156,9 @@
 		<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
 		<script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
 		<script src="{{ asset("js/pages/caisse/CaisseOperationDistrict.js") }}"></script>
+		<script src="{{ asset("assets/bundles/datatablescripts.bundle.js") }}"></script>
+		    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/dataTables.buttons.min.js") }}"></script>
+
 
 	{% endblock %}
 
