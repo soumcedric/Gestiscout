@@ -193,7 +193,7 @@ function loadMvt()
                 {
                      let montant = 0;
                     montant = parseInt(cellData);
-                  //  $(td).addClass('text-white');
+                    $(td).addClass('text-white');
                     if(montant > 0) $(td).addClass('bg-success');
                     else $(td).addClass('bg-danger');
                   //  else return {money.format(data).replace("CFA","")+"F CFA";}
