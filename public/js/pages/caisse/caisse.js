@@ -68,11 +68,12 @@ function SaveMvt()
         let id = $("#eventid").val();
         let url="/SaveMvtEvent/"+id;
         let mvt = {
-            type : $("#selmvt").val(),
+            //type : $("#selmvt").val(),
             description : $("#txtdescription").val(),
             montant : parseInt($("#txtmontant").val()),
             date: $("#seldate").val(),
-            sousrubriqueid : $("#selsousribrique").val()
+            sousrubriqueid : $("#selsousribrique").val(),
+            rubrique : $("#selrubrique").val()
         }
 
         if(mvt.type=="D")
@@ -133,7 +134,13 @@ function validation()
 
 function loadMvt(id)
 {
-    debugger
+      const money = new Intl.NumberFormat('fr-FR',
+    {
+      style: 'currency',
+      currency: 'CFA',
+      minimumFractionDigits:0
+    });
+
     //alert("hello");
     var table = $("#tboperations").DataTable({
         destroy:true,
@@ -160,7 +167,28 @@ function loadMvt(id)
             {
                 targets: 0,
                 visible: false
-            }],
+            },
+            {
+                targets: 4,
+                render:function(data,type,full,meta){
+                   
+                    return money.format(data).replace("CFA","")+"F CFA";
+                    
+                },
+                createdCell:function(td,cellData, rowData, row, col)
+                {
+                     let montant = 0;
+                    montant = parseInt(cellData);
+                    $(td).addClass('text-white');
+                    if(montant > 0) $(td).addClass('bg-success');
+                    else $(td).addClass('bg-danger');
+                  //  else return {money.format(data).replace("CFA","")+"F CFA";}
+                }
+
+            }
+
+
+        ],
         ajax:{
             url:"/MouvementsByEventActivite/"+id,
             type:"get",

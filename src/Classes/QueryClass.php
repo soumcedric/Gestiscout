@@ -1194,6 +1194,17 @@ class QueryClass
         $stmt->execute();
         return $stmt->fetchOne();
     }
+
+    public function GetSoldeMvtEntiteMensule($entite,$entiteid)
+    {
+        $firstDate = date('Y-m-01');
+        $lastDate = date('Y-m-t');
+        $query = "select sum(montant) from mouvement_entite where entite_id = ".$entiteid." and entite=".$entite."
+        and datemvt>='".$firstDate."' and datemvt <= '".$lastDate."'" ;
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchOne();
+    }
     /**/
 
 

@@ -85,7 +85,7 @@ class CaisseController extends AbstractController
     {
         $entite = $this->ValueSession->get("entite");
         $solde = 0;
-
+        $soldeMvtMensuel = 0;
         if($entite == 1)
         {
 
@@ -95,10 +95,12 @@ class CaisseController extends AbstractController
             //district
             $districtId = $this->ValueSession->get("districtid")->getId(); 
             $district = $this->districtRepo->findOneBy(["id"=>$districtId]);
-            $solde = $this->qclass->GetSoldeEntite(0,$district->getCommissariatDistrict()->getId());
+            $solde = $this->qclass->GetSoldeEntite(2,$district->getCommissariatDistrict()->getId());
+            $soldeMvtMensuel = $this->qclass->GetSoldeMvtEntiteMensule(2,$district->getCommissariatDistrict()->getId());
         }
         return $this->render('caisse/index.html.twig', [
             'soldecaisse' => $solde,
+            'soldemvtmensuel' =>$soldeMvtMensuel
         ]);
     }
 
@@ -380,7 +382,7 @@ class CaisseController extends AbstractController
         try
         {
 
-       
+       dump($req);
         $entite = $this->ValueSession->get("entite");
         $user = null;
         if($entite == 1)
@@ -399,12 +401,16 @@ class CaisseController extends AbstractController
          //création du mouvement activité
          $newMvtActivite = new MouvementTresoActivite();
          $newMvtActivite->setCommentaire($data["description"])
-                        ->setDateMouvement(new \DateTime('now'))
+                        ->setDateMouvement(new \DateTime($data["date"]))
                         ->setSousRubrique($this->sousRubriqueRepo->findOneBy(["id"=>$data["sousrubriqueid"]]))
                         ->setEventId($eventId)
-                        ->setMontant((int)$data["montant"])
+                       // ->setMontant((int)$data["montant"])
                         ->setUserCreation($user)
                         ->setPeriode($this->periodeRepo->findOneBy(["id"=>1]));// A revoir
+        $sens = $this->rubriqueRepo->findOneBy(["id"=>$data["rubrique"]])->getSens();
+
+        if($sens=="C") $newMvtActivite->setMontant((int)$data["montant"]);
+        else $newMvtActivite->setMontant((int)-$data["montant"]);
         
          $this->entityManager->persist($newMvtActivite);
          $this->entityManager->flush();
