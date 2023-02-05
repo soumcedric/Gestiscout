@@ -1,0 +1,140 @@
+{% extends 'base_caisse_new.html.twig' %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+{% endblock %}
+{# 
+{% block title %}Hello CaisseController!{% endblock %} #}
+
+{% block body %}
+   <div class="main-body">
+                                <div class="page-wrapper">
+								
+									<!-- Page-header start -->
+                                    <div class="page-header card">
+                                        <div class="card-block">
+                                            <h5 class="m-b-10 text-center">Gestion des évènements</h3>
+                                         
+                                        </div>
+                                    </div>
+                                    <!-- Page-header end -->
+                                <div class="row text-right">
+                                    <div class="col-sm-12">
+                                 <button class="btn btn-primary btn-outline-primary" onclick="OpenModal();"><i class="icofont icofont-ui-add"></i>Evènement</button>
+                                 </div>
+                                </div>
+
+                                <br/>
+
+                                    <div class="page-body">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="card">
+                                                    <div class="card-header text-center">
+                                                        <h3 class="">Liste des évènements</h3>
+                                                       
+                                                        <div class="card-header-right">
+                                                        {# <h3>Solde : <strong><i id="displaysolde"></i> F CFA</strong> #}
+															{# <ul class="list-unstyled card-option">
+																<li><i class="fa fa-chevron-left"></i></li>
+																<li><i class="fa fa-window-maximize full-card"></i></li>
+																<li><i class="fa fa-minus minimize-card"></i></li>
+																<li><i class="fa fa-refresh reload-card"></i></li>
+																<li><i class="fa fa-times close-card"></i></li>
+															</ul> #}
+														</div>
+
+                                                    </div>
+                                                     
+                                                    <div class="card-block">
+                                                            <div class="card-block table-border-style">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover" id="tbevenements">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Libelle</th>
+                                                            {# <th>Date Opération</th>
+                                                            <th>Montant</th>
+                                                            <th>Type</th> #}
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="styleSelector">
+
+                            </div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="modaloperation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Enregistrer un évènement</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+            {# <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Type</label>
+                <div class="col-sm-10">
+                    <select name="select" class="form-control" id="selmvt">
+
+                    </select>
+                </div>
+            </div> #}
+
+               <div class="form-group row">
+                   <label class="col-sm-2 col-form-label">Libelle</label>
+                   <div class="col-sm-10">
+                      <input type="text" class="form-control form-control-normal " id="txtlibelle"
+                         placeholder="libellé de l'évènement">
+                       <div class="col-form-label" id="messagedescription"></div>
+                     </div>
+                    
+              </div>
+               {# <div class="form-group row">
+                   <label class="col-sm-2 col-form-label">montant</label>
+                   <div class="col-sm-10">
+                      <input type="number" class="form-control form-control-normal" id="txtmontant"
+                         placeholder="montant de l'opération">
+                       <div class="col-form-label" id="messagemontant"></div>
+                     </div>
+              </div>
+               <div class="form-group row">
+                   <label class="col-sm-2 col-form-label">date</label>
+                   <div class="col-sm-10">
+                      <input type="date" class="form-control form-control-normal" id="seldate"
+                         placeholder="date de l'opération">
+                     </div>
+              </div> #}
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="" class="btn btn-primary" onclick="SaveEvent();">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
+<script src="{{ asset("js/pages/caisse/Events.js") }}"></script>
+
+{% endblock %}

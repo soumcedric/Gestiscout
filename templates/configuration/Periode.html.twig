@@ -1,0 +1,114 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block titre %}  PERIODE {% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
+{% endblock %}
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+    <div class="container-fluid">
+           
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="header">
+                        <h2 class="text-center">CONFIGURER LES PERIODES</h2>
+                    </div>
+                    <div class="body">
+                
+                    <div class="row">
+                      <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Date Début</label>
+                                <input type="date" class="form-control" required id="datedebut" placeholder="Libelle Période">
+                            </div>
+                      </div>
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label>Date Fin</label>
+                                <input type="date" class="form-control" placeholder="ordre de la formation" id="datefin">
+                            </div>
+
+                        </div>
+
+                    </div>
+               
+
+
+                      <div class="row">
+                      <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Code</label>
+                                <input type="text" class="form-control" required id="code" placeholder="Code Période">
+                            </div>
+                      </div>
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label>Année Pastorale</label>
+                                <select class="form-control" id="selanneepastorale"></select>
+                            </div>
+
+                        </div>
+
+                    </div>
+               
+
+                        <div class="text-center"> 
+                            <button type="submit" class="btn btn-success" id="valider" onclick="SavePeriode();">Valider</button>
+                            {# <button type="submit" class="btn btn-primary" id="modifier">Modifier</button> #}
+                            <button type="submit" class="btn btn-danger" id="btnannuler">Annuler</button>
+                        </div>
+                            
+                        
+                    </div>
+                </div>
+            </div>
+          
+        </div>
+        
+    </div>
+    
+<div class="col-lg-12">
+    <div class="card">
+        <div class="header">
+            <h2 class="text-center">Liste des formations</h2>
+        </div>
+        <div class="body">
+            <div class="table-responsive">
+                <table class="table" id="tbPeriode">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>CODE</th>
+                            <th>DATE DEBUT</th>
+                            <th>DATE FIN</th>
+                            <th>Etat</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                   <tbody>
+
+                   </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
+<script src="{{ asset("js/pages/configuration.js")}} "></script>
+
+{% endblock %}

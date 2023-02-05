@@ -1119,6 +1119,17 @@ class QueryClass
     /**/
 
 
+    /*GET MOUVEMENT*/
+    public function GetMouvementDistrict($id)
+    {
+        $query = "select mouvement_district.*, type_mouvement.id, type_mouvement.libelle type
+        from mouvement_district, type_mouvement
+        where mouvement_district.typemouvement_id = type_mouvement.id
+        and  district_id = " . $id . "";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
         /*GET RESPONSABLE ROLE*/
         public function GetRespoRole($respoId){
             $query = "select f.role
@@ -1131,14 +1142,62 @@ class QueryClass
             $stmt->execute();
             return $stmt->fetchOne();
         }
-    
+
+    /*GET MOUVEMENT*/
+    public function GetPeriodes()
+    {
+        $query = "select p.id, p.code, p.datedebut, p.datefin, p.etat, ap.code_annee codeannee
+        from periode p , annee_pastorale ap
+        where p.anneepastorale_id = ap.id" ;
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
         /**/
 
+    public function GetRubriques()
+    {
+        $query = "select *
+        from rubrique" ;
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
 
+    public function GetSousRubriques()
+    {
+        $query = "select r.id, r.code, r.libelle, rs.libelle rubrique
+        from rubrique r, sous_rubrique rs" ;
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
 
-            /**/
+    public function GetEvenements($identite)
+    {
+        $query = "select * from evenement
+        where  id_entite=".$identite." " ;
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
 
+    public function GetSousRubrique($rubriqueid)
+    {
+        $query = "select * from sous_rubrique
+        where  rubrique_id=".$rubriqueid." " ;
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
 
+    public function GetMouvementsByEvent(int $eventId)
+    {
+        $conn = $this->em->getConnection();
+        $sql = "call SP_GET_MOUVEMENTS_BY_EVENT('".$eventId."');";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
         /*Groupe By District*/
         public function GetGroupeByDistrict($districtId){
             $query = "select id, nom, nick_name,commissariat_district_id from groupe where commissariat_district_id = ".$districtId."";
@@ -1147,9 +1206,18 @@ class QueryClass
             return $stmt->fetchAllAssociative();
         }
     
+    }
         /**/
 
 
+    public function GetMouvementByEntite(int $entiteid)
+    {
+        $conn = $this->em->getConnection();
+        $sql = "call GET_MOUVEMENT_ENTITE('".$entiteid."');";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
         public function GetAllMembreDistrict()
         {
         $query = "select d.id, d.Nom, d.Prenoms, d.dob Dob , f.libelle fonction, d.telephone Telephone, d.id 'Action', 1 as 'district'
@@ -1179,6 +1247,38 @@ class QueryClass
             $stmt->execute();
             return $stmt->fetchOne();
         }
+
+    public function GetSoldeEntite($entite,$entiteid)
+    {
+        $query = "select sum(montant) from mouvement_entite where entite_id = '".$entiteid."' and entite='".$entite."'" ;
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchOne();
+    }
+
+    public function GetSoldeMvtEntiteMensule($entite,$entiteid)
+    {
+        $firstDate = date('Y-m-01');
+        $lastDate = date('Y-m-t');
+        $query = "select sum(montant) from mouvement_entite where entite_id = ".$entiteid." and entite=".$entite."
+        and datemvt>='".$firstDate."' and datemvt <= '".$lastDate."'" ;
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchOne();
+    }
+    /**/
+
+
+    
+
+
+
+
+
+
+
+
+
 
 
         // public function GetStatDistrictDash()
