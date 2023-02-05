@@ -1197,7 +1197,10 @@ class QueryClass
         $sql = "call SP_GET_MOUVEMENTS_BY_EVENT('".$eventId."');";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAllAssociative();
+        return $stmt->fetchAllAssociative();   
+    
+    }
+
         /*Groupe By District*/
         public function GetGroupeByDistrict($districtId){
             $query = "select id, nom, nick_name,commissariat_district_id from groupe where commissariat_district_id = ".$districtId."";
@@ -1205,8 +1208,6 @@ class QueryClass
             $stmt->execute();
             return $stmt->fetchAllAssociative();
         }
-    
-    }
         /**/
 
 
