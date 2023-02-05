@@ -214,10 +214,11 @@ class LoginCustomAuthenticator extends AbstractFormLoginAuthenticator implements
             }
         else if(in_array('ROLE_CD_FINANCE',$user->getRoles(),true))
         {
+            
+            $this->target="Caisse"; 
          }
       
       
-            $this->target="Caisse"; 
         }   
       return new RedirectResponse($this->urlGenerator->generate($this->target));
         throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
