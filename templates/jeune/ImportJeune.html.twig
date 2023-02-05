@@ -94,6 +94,8 @@
     </div>
 </div>
 
+{{ include('@MercurySeriesFlashy/flashy.html.twig') }}
+{% endblock %}
     {% block javascripts %}
 <script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
@@ -103,94 +105,12 @@
     <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.colVis.min.js") }}"></script>
     <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.html5.min.js") }}"></script>
     <script src="{{ asset("assets/vendor/jquery-datatable/buttons/buttons.print.min.js") }}"></script>
-    <script src="{{ asset("js/pages/jeune/importJeune.js") }}"></script>
+    <script src="{{ asset("js/pages/Jeune/ImportJeune.js") }}"></script>
       <script src="{{ asset("bundle/mercuryseriesflashy/js/flashy.js") }}"></script>
     {% endblock %}
 
 
 
-{{ include('@MercurySeriesFlashy/flashy.html.twig') }}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{% endblock %}
 
