@@ -1,9 +1,9 @@
 {% extends 'base_caisse_new.html.twig' %}
 {% block stylesheets %}
 	<link rel="stylesheet" href="{{ asset("assets/vendor/sweetalert/sweetalert.css") }}"/>
-	  <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">
-    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
-    <link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
+	<link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/dataTables.bootstrap4.min.css") }}">
+	<link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
+	<link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
 {% endblock %}
 {# 
 {% block title %}Hello CaisseController!{% endblock %} #}
@@ -13,152 +13,129 @@
 		<div class="page-wrapper">
 
 
+			<div class="row clearfix">
+				<div class="col-md-12 col-12 col-sm-12">
+					<div class="card">
+						<div class="header bg-primary">
+							<h2 class="text-center text-white">MOUVEMENTS CAISSE PRINCIPALE</h2>
+						</div>
+						<div class="body">
 
-			 <div class="row clearfix">
-            <div class="col-md-12 col-12 col-sm-12">
-                <div class="card">
-                    <div class="header bg-primary">
-                        <h2 class="text-center text-white">MOUVEMENTS CAISSE PRINCIPALE</h2>
-                    </div>
-                    <div class="body">
+							<div class="form-group row">
 
-						<div class="form-group row">
-							
-							<div class="col-sm-12 col-md-12 col-12 col-lg-12 text-right">
-								<button class="btn btn-outline-primary" onclick="OpenModal();">
-									<i class="fa fa-plus"></i>Opération</button>
+								<div class="col-sm-12 col-md-12 col-12 col-lg-12 text-right">
+									<button class="btn btn-outline-primary" onclick="OpenModal();">
+										<i class="fa fa-plus"></i>Opération</button>
+								</div>
 							</div>
+
+							<br/><br/><br/>
+							<div class="row col-12">
+								<div class="col-10 text-center">
+									<h5>
+										<strong>Liste des opérations</strong>
+									</h5>
+								</div>
+								<div class="col-2 text-rigth">
+									<h5>Solde :<strong>
+											<span id="displaysolde"></span>
+											F CFA</strong>
+									</h5>
+								</div>
+
+							</div>
+							{# <div class="row table-responsive">
+								<table class="table table-hover" id="tboperations">
+									<thead class="thead-info text-dark">
+										<tr class="">
+											<th>#</th>
+											<th class="h5">Sous Rubrique</th>
+											<th class="h5">Description</th>
+											<th class="h5">Date Mouvement</th>
+											<th class="h5">Montant</th>
+
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div> #}
+
+							   {% include "_listeoperation.html.twig" %}
 						</div>
-					
-						<br/><br/><br/>
-						<div class="row col-12">
-							<div class="col-10 text-center"><h5><strong>Liste des opérations</strong></h5></div>
-							<div class="col-2 text-rigth"><h5>Solde :<strong><span id="displaysolde"></span> F CFA</strong></h5></div>
-							
-						</div>
-						<div class="row table-responsive">
-							<table class="table table-hover" id="tboperations">
-								<thead class="thead-info text-dark">
-									<tr class="">
-										<th>#</th>
-										<th class="h5">Sous Rubrique</th>
-										<th class="h5">Description</th>
-										<th class="h5">Date Mouvement</th>
-										<th class="h5">Montant</th>
-										
-									</tr>
-								</thead>
-								<tbody></tbody>
-							</table>
-						</div>
-
-
-                        
-                    </div>
-                </div>
-            </div>
-          
-        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-		
-
-		
-
-		<!-- Modal -->
-		<div class="modal fade" id="modaloperation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-			<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLongTitle">Enregistrer une opération <strong><span id="spantitre"></span></strong></h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
 					</div>
-					<div class="modal-body">
-						<form>
-							<div class="form-group row">
-								<label class="col-sm-2 col-form-label">Rubrique</label>
-								<div class="col-sm-10">
-									<select name="select" class="form-control" id="selrubrique"></select>
+				</div>
+
+			</div>
+
+
+			<!-- Modal -->
+			<div class="modal fade" id="modaloperation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLongTitle">Enregistrer une opération
+								<strong>
+									<span id="spantitre"></span>
+								</strong>
+							</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form>
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label">Rubrique</label>
+									<div class="col-sm-10">
+										<select name="select" class="form-control" id="selrubrique"></select>
+									</div>
 								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-2 col-form-label">Sous Rubrique</label>
-								<div class="col-sm-10">
-									<select name="select" class="form-control" id="selsousribrique"></select>
-								</div>
-							</div>
-							
-							<input type="hidden" id="eventid"/>
-							<div class="form-group row">
-								<label class="col-sm-2 col-form-label">description</label>
-								<div class="col-sm-10">
-									<input type="text" class="form-control form-control-normal " id="txtdescription" placeholder="description de l'opération">
-									<div class="col-form-label" id="messagedescription"></div>
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label">Sous Rubrique</label>
+									<div class="col-sm-10">
+										<select name="select" class="form-control" id="selsousribrique"></select>
+									</div>
 								</div>
 
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-2 col-form-label">montant</label>
-								<div class="col-sm-10">
-									<input type="number" class="form-control form-control-normal" id="txtmontant" placeholder="montant de l'opération">
-									<div class="col-form-label" id="messagemontant"></div>
+								<input type="hidden" id="eventid"/>
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label">description</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control form-control-normal " id="txtdescription" placeholder="description de l'opération">
+										<div class="col-form-label" id="messagedescription"></div>
+									</div>
+
 								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-2 col-form-label">date</label>
-								<div class="col-sm-10">
-									<input type="date" class="form-control form-control-normal" id="seldate" placeholder="date de l'opération">
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label">montant</label>
+									<div class="col-sm-10">
+										<input type="number" class="form-control form-control-normal" id="txtmontant" placeholder="montant de l'opération">
+										<div class="col-form-label" id="messagemontant"></div>
+									</div>
 								</div>
-							</div>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-						<button type="" class="btn btn-primary" onclick="SaveMvt();">Enregistrer</button>
+								<div class="form-group row">
+									<label class="col-sm-2 col-form-label">date</label>
+									<div class="col-sm-10">
+										<input type="date" class="form-control form-control-normal" id="seldate" placeholder="date de l'opération">
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+							<button type="" class="btn btn-primary" onclick="SaveMvt();">Enregistrer</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 	{% endblock %}
 	{% block javascripts %}
 		<script src="{{ asset('assets/vendor/jquery-datatable/jquery.dataTables.min.js') }}"></script>
 		<script src="{{ asset("assets/vendor/sweetalert/sweetalert.min.js")}} "></script>
 		<script src="{{ asset("js/pages/caisse/CaisseOperationDistrict.js") }}"></script>
 		<script src="{{ asset("assets/bundles/datatablescripts.bundle.js") }}"></script>
-		    <script src="{{ asset("assets/vendor/jquery-datatable/buttons/dataTables.buttons.min.js") }}"></script>
+		<script src="{{ asset("assets/vendor/jquery-datatable/buttons/dataTables.buttons.min.js") }}"></script>
 
 
 	{% endblock %}
-
