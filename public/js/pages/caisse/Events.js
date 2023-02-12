@@ -57,11 +57,23 @@ function loadEvenement()
             }
         },
      
-        // columnDefs: [
-        //     {
-        //         targets: 0,
-        //         visible: false
-        //     }],
+        columnDefs: [
+            {
+                targets: 0,
+                visible: true
+            },
+            {
+                targets:2,
+                visible:true,
+                render:function(data,type,full,meta){
+                    debugger
+                   if(data=="0")
+                        return '<a title="cloturer évènement" style="text-decoration:none; color:green;"><i class="fa fa-unlock"></i></a>';
+                   else
+                        return '<a title="cloturer évènement" style="text-decoration:none; color:red;"><span class="fa fa-lock"></span></a>';
+                    
+                },
+            }],
         ajax:{
             url:"/GetEvenements",
             type:"get",
@@ -74,6 +86,7 @@ function loadEvenement()
         columns: [
             { "data": "id" },
             { "data": "libelle" },
+            { "data": "statut" },
           
         ],
         // data: [],

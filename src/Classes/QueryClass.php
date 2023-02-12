@@ -1175,7 +1175,7 @@ class QueryClass
 
     public function GetEvenements($identite)
     {
-        $query = "select * from evenement
+        $query = "select *  from evenement
         where  id_entite=".$identite." " ;
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
