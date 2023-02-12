@@ -52,14 +52,14 @@ class CaisseController extends AbstractController
     private $sousRubriqueRepo;
     private $rubriqueRepo;
     private $tresoActiviteRepo;
- 
+
     function __construct(
         SessionInterface $session,
         DistrictRepository $district,
         UserRepository $user,
         EntityManagerInterface $em,
         PeriodeRepository $periode,
-       // CaisseDistrictRepository $caissedistrict,
+        // CaisseDistrictRepository $caissedistrict,
         EvenementRepository $event,
         SousRubriqueRepository $sr,
         RubriqueRepository $rub,
@@ -70,7 +70,7 @@ class CaisseController extends AbstractController
         $this->userRepo = $user;
         $this->entityManager = $em;
         $this->periodeRepo = $periode;
-       // $this->caisseDistrictRepo = $caissedistrict;
+        // $this->caisseDistrictRepo = $caissedistrict;
         $this->eventRepo = $event;
         $this->sousRubriqueRepo = $sr;
         $this->rubriqueRepo = $rub;
@@ -86,21 +86,17 @@ class CaisseController extends AbstractController
         $entite = $this->ValueSession->get("entite");
         $solde = 0;
         $soldeMvtMensuel = 0;
-        if($entite == 1)
-        {
-
-        }
-        else
-        {
+        if ($entite == 1) {
+        } else {
             //district
-            $districtId = $this->ValueSession->get("districtid")->getId(); 
-            $district = $this->districtRepo->findOneBy(["id"=>$districtId]);
-            $solde = $this->qclass->GetSoldeEntite(2,$district->getCommissariatDistrict()->getId());
-            $soldeMvtMensuel = $this->qclass->GetSoldeMvtEntiteMensule(2,$district->getCommissariatDistrict()->getId());
+            $districtId = $this->ValueSession->get("districtid")->getId();
+            $district = $this->districtRepo->findOneBy(["id" => $districtId]);
+            $solde = $this->qclass->GetSoldeEntite(2, $district->getCommissariatDistrict()->getId());
+            $soldeMvtMensuel = $this->qclass->GetSoldeMvtEntiteMensule(2, $district->getCommissariatDistrict()->getId());
         }
         return $this->render('caisse/index.html.twig', [
             'soldecaisse' => $solde,
-            'soldemvtmensuel' =>$soldeMvtMensuel
+            'soldemvtmensuel' => $soldeMvtMensuel
         ]);
     }
 
@@ -145,7 +141,7 @@ class CaisseController extends AbstractController
             $operationDistrict = $this->qclass->GetMouvementDistrict($district);
 
             //get solde caisse
-           // $solde = $this->caisseDistrictRepo->findOneBy(["district" => $district])->getSolde();
+            // $solde = $this->caisseDistrictRepo->findOneBy(["district" => $district])->getSolde();
             return new JsonResponse(['ok' => true, 'data' => $operationDistrict]);
         }
 
@@ -165,7 +161,7 @@ class CaisseController extends AbstractController
     /**
      * @Route("/SaveMvt", name="SaveMvt")
      */
-    public function SaveMvt(Request $req, TypeMouvementRepository $typemvt, CommissariatDistrictRepository $commissariatRepo,DistrictRepository $dis, UserRepository $userRepo): JsonResponse
+    public function SaveMvt(Request $req, TypeMouvementRepository $typemvt, CommissariatDistrictRepository $commissariatRepo, DistrictRepository $dis, UserRepository $userRepo): JsonResponse
     {
 
         $entite = $this->ValueSession->get("entite");
@@ -191,12 +187,12 @@ class CaisseController extends AbstractController
                 ->setPeriode($this->periodeRepo->findOneBy(["id" => 1]))
                 ->setUsercreate($this->ValueSession->get("id"));
 
-                $this->entityManager->persist($mvt);
-                $this->entityManager->flush();
-                //dump($mvt);
-                //mise à jour du solde de ce district
+            $this->entityManager->persist($mvt);
+            $this->entityManager->flush();
+            //dump($mvt);
+            //mise à jour du solde de ce district
             //get solde district
-          //  $soldeDistrict = $this->caisseDistrictRepo->findOneBy(["district" => $district]);
+            //  $soldeDistrict = $this->caisseDistrictRepo->findOneBy(["district" => $district]);
             // if ($soldeDistrict != null) {
             //     $solde = $soldeDistrict->getSolde();
             //     $soldeDistrict->setSolde($solde + ($mvt->getMontant()));
@@ -248,7 +244,7 @@ class CaisseController extends AbstractController
 
             $district = $this->ValueSession->get("districtid")->getId();
             //get solde caisse
-          //  $solde = $this->caisseDistrictRepo->findOneBy(["district" => $district])->getSolde();
+            //  $solde = $this->caisseDistrictRepo->findOneBy(["district" => $district])->getSolde();
             return new JsonResponse(['ok' => true, 'solde' => 0]);
         }
 
@@ -343,10 +339,10 @@ class CaisseController extends AbstractController
     }
 
 
-        /**
+    /**
      * @Route("/MouvementsByEvent/{eventId}", name="MouvementsByEvent")
      */
-    public function MouvementsByEvent($eventId,TresorerieActiviteRepository $treso, EvenementRepository $event): JsonResponse
+    public function MouvementsByEvent($eventId, TresorerieActiviteRepository $treso, EvenementRepository $event): JsonResponse
     {
         dump($eventId);
         $entiteId = 0;
@@ -356,158 +352,150 @@ class CaisseController extends AbstractController
         if ($entite == 1) //groupe
         {
             $entiteId = $this->ValueSession->get("groupeid")->getId();
-        } 
-        else //district
+        } else //district
         {
 
             $entiteId = $this->ValueSession->get("districtid")->getId();
         }
 
-            $mouvements = $treso->findBy(["evenement"=>$event->findOneBy(["id"=>$entiteId])]);
+        $mouvements = $treso->findBy(["evenement" => $event->findOneBy(["id" => $entiteId])]);
 
-            //get solde caisse
-          //  $solde = $this->caisseDistrictRepo->findOneBy(["district" => $district])->getSolde();
-            //return new JsonResponse(['ok' => true, 'data' => $operationDistrict]);
-    
+        //get solde caisse
+        //  $solde = $this->caisseDistrictRepo->findOneBy(["district" => $district])->getSolde();
+        //return new JsonResponse(['ok' => true, 'data' => $operationDistrict]);
 
-         return new Response();
+
+        return new Response();
     }
 
 
     /**
      * @Route("/SaveMvtEvent/{eventId}", name="SaveMvtEvent")
      */
-    public function SaveMvtEvent(int $eventId,Request $req )
+    public function SaveMvtEvent(int $eventId, Request $req)
     {
-        try
-        {
+        try {
 
-       dump($req);
-        $entite = $this->ValueSession->get("entite");
-        $user = null;
-        if($entite == 1)
-        {
-            //groupe
-            $user = null ;
-        }
-        else
-        {
-            //district
-            $district = $this->ValueSession->get("districtid")->getId(); 
-            $user = $district;
-        }
-            
-         $data = $req->request->get("data");
-         //création du mouvement activité
-         $newMvtActivite = new MouvementTresoActivite();
-         $newMvtActivite->setCommentaire($data["description"])
-                        ->setDateMouvement(new \DateTime($data["date"]))
-                        ->setSousRubrique($this->sousRubriqueRepo->findOneBy(["id"=>$data["sousrubriqueid"]]))
-                        ->setEventId($eventId)
-                       // ->setMontant((int)$data["montant"])
-                        ->setUserCreation($user)
-                        ->setPeriode($this->periodeRepo->findOneBy(["id"=>1]));// A revoir
-        $sens = $this->rubriqueRepo->findOneBy(["id"=>$data["rubrique"]])->getSens();
+            dump($req);
+            $entite = $this->ValueSession->get("entite");
+            $user = null;
+            if ($entite == 1) {
+                //groupe
+                $user = null;
+            } else {
+                //district
+                $district = $this->ValueSession->get("districtid")->getId();
+                $user = $district;
+            }
 
-        if($sens=="C") $newMvtActivite->setMontant((int)$data["montant"]);
-        else $newMvtActivite->setMontant((int)-$data["montant"]);
-        
-         $this->entityManager->persist($newMvtActivite);
-         $this->entityManager->flush();
+            $data = $req->request->get("data");
+            //création du mouvement activité
+            $newMvtActivite = new MouvementTresoActivite();
+            $newMvtActivite->setCommentaire($data["description"])
+                ->setDateMouvement(new \DateTime($data["date"]))
+                ->setSousRubrique($this->sousRubriqueRepo->findOneBy(["id" => $data["sousrubriqueid"]]))
+                ->setEventId($eventId)
+                // ->setMontant((int)$data["montant"])
+                ->setUserCreation($user)
+                ->setPeriode($this->periodeRepo->findOneBy(["id" => 1])); // A revoir
+            $sens = $this->rubriqueRepo->findOneBy(["id" => $data["rubrique"]])->getSens();
 
-        //une fois le mouvement enregistré, on modifie le solde de l'activité
-        
-        //retrouver la ligne de la caisse de l'activité
-        $tresoActivite = $this->tresoActiviteRepo->findOneBy(["EventId"=>$eventId]);
-         $newSolde = (int)0;
-        if($tresoActivite->getSolde()==0)
-            $newSolde = $newMvtActivite->getMontant();
-        else
-        {
-            $newSolde = $tresoActivite->getSolde() + ($newMvtActivite->getMontant());
-        }
-        $tresoActivite->setSolde($newSolde);
-        $tresoActivite->setDateSolde(new \DateTime('now'));
+            if ($sens == "C") $newMvtActivite->setMontant((int)$data["montant"]);
+            else $newMvtActivite->setMontant((int)-$data["montant"]);
 
-        $this->entityManager->persist($tresoActivite);
-        $this->entityManager->flush();
-         return new JsonResponse(["ok"=>true, "message"=>"Opération enregistrée avec succès"]);
-        }
-        catch(\Exception $e )
-        {
-            return new JsonResponse(["ok"=>false, "message"=>$e->getMessage()]);
+            $this->entityManager->persist($newMvtActivite);
+            $this->entityManager->flush();
+
+            //une fois le mouvement enregistré, on modifie le solde de l'activité
+
+            //retrouver la ligne de la caisse de l'activité
+            $tresoActivite = $this->tresoActiviteRepo->findOneBy(["EventId" => $eventId]);
+            $newSolde = (int)0;
+            if ($tresoActivite->getSolde() == 0)
+                $newSolde = $newMvtActivite->getMontant();
+            else {
+                $newSolde = $tresoActivite->getSolde() + ($newMvtActivite->getMontant());
+            }
+            $tresoActivite->setSolde($newSolde);
+            $tresoActivite->setDateSolde(new \DateTime('now'));
+
+            $this->entityManager->persist($tresoActivite);
+            $this->entityManager->flush();
+            return new JsonResponse(["ok" => true, "message" => "Opération enregistrée avec succès"]);
+        } catch (\Exception $e) {
+            return new JsonResponse(["ok" => false, "message" => $e->getMessage()]);
         }
     }
 
 
 
 
-    
+
     /**
      * @Route("/ListeRubrique", name="ListeRubrique")
      */
     public function ListeRubrique(SerializerInterface $serializer): JsonResponse
     {
-       $liste = $this->rubriqueRepo->findAll();
-       $result = $serializer->serialize($liste, 'json');
-       return new JsonResponse(["ok"=>true, "data"=>$result]);
+        $liste = $this->rubriqueRepo->findAll();
+        $result = $serializer->serialize($liste, 'json');
+        return new JsonResponse(["ok" => true, "data" => $result]);
     }
 
-        /**
+    /**
      * @Route("/ListeSousRubrique/{id}", name="ListeSousRubrique")
      */
-    public function ListeSousRubrique($id,SerializerInterface $serializer): JsonResponse
+    public function ListeSousRubrique($id, SerializerInterface $serializer): JsonResponse
     {
-       $liste = $this->qclass->GetSousRubrique($id);
-       $result = $serializer->serialize($liste, 'json');
-       return new JsonResponse(["ok"=>true, "data"=>$result]);
+        $liste = $this->qclass->GetSousRubrique($id);
+        $result = $serializer->serialize($liste, 'json');
+        return new JsonResponse(["ok" => true, "data" => $result]);
     }
 
 
-        /**
+    /**
      * @Route("/MouvementsByEventActivite/{id}", name="MouvementsByEventActivite")
      */
-    public function MouvementsByEventActivite($id,SerializerInterface $serializer)
+    public function MouvementsByEventActivite($id, SerializerInterface $serializer)
     {
-       //récupérer la listes des mouvements
+        //récupérer la listes des mouvements
 
-       //récupération de la listes des mouvements
-       $listeMouvements = $this->qclass->GetMouvementsByEvent($id);
-       //$result = array($listeMouvements);
-       //get statut evenet
-       
-       return NEW JsonResponse(["ok"=>true, "data"=>$listeMouvements]);
+        //récupération de la listes des mouvements
+        $listeMouvements = $this->qclass->GetMouvementsByEvent($id);
+        //$result = array($listeMouvements);
+        //get statut evenet
+
+        return new JsonResponse(["ok" => true, "data" => $listeMouvements]);
     }
 
 
 
-      /**
+    /**
      * @Route("/SoldeByEvent/{id}", name="SoldeByEvent")
      */
-    public function SoldeByEvent($id,SerializerInterface $serializer)
+    public function SoldeByEvent($id, SerializerInterface $serializer)
     {
-       //récupérerle solde de l'évènement
+        //récupérerle solde de l'évènement
 
-       $solde = $this->tresoActiviteRepo->findOneBy(["EventId"=>$id])->getSolde();
-       //$result = array($listeMouvements);
-       return NEW JsonResponse(["ok"=>true, "data"=>$solde]);
+        $solde = $this->tresoActiviteRepo->findOneBy(["EventId" => $id])->getSolde();
+        //$result = array($listeMouvements);
+        return new JsonResponse(["ok" => true, "data" => $solde]);
     }
 
-    
-      /**
+
+    /**
      * @Route("/StatutEvent/{id}", name="StatutEvent")
      */
     public function GetStatutEvenement($id)
     {
-        $statut = $this->eventRepo->findOneBy(["id"=>$id])->getStatut();
-       // 0 = ouvert
-       // 2 = cloturé
-       return new JsonResponse($statut);
+        $statut = $this->eventRepo->findOneBy(["id" => $id])->getStatut();
+        // 0 = ouvert
+        // 2 = cloturé
+        return new JsonResponse($statut);
     }
-    
 
 
-     /**
+
+    /**
      * @Route("/MouvementsCaisse", name="MouvementsCaisse")
      */
     public function MouvementsCaisse()
@@ -519,7 +507,7 @@ class CaisseController extends AbstractController
 
 
 
-     /**
+    /**
      * @Route("/GetMouvementCaisse", name="GetMouvementCaisse")
      */
     public function GetMouvementCaisse()
@@ -530,134 +518,150 @@ class CaisseController extends AbstractController
         //récupérer les mouvements de la caisse
 
         $entite = $this->ValueSession->get("entite");
-        $user = $this->userRepo->findOneBy(["id"=>$this->ValueSession->get("id")]);
-        if($entite == 1)
-        {
+        $user = $this->userRepo->findOneBy(["id" => $this->ValueSession->get("id")]);
+        if ($entite == 1) {
             //groupe
-        }
-        else
-        {
+        } else {
             //district --mouvement district / mouvement entite
             //récupérer l'id du responsable du district
-            $district = $this->districtRepo->findOneBy(["id"=>$user->getDistrict()->getId()]);
+            $district = $this->districtRepo->findOneBy(["id" => $user->getDistrict()->getId()]);
             //récupérer le commissariat district id
             $commissariatDistrictId = $district->getCommissariatDistrict()->getId();
             //get mouvement
             $mouvements = $this->qclass->GetMouvementByEntite($commissariatDistrictId);
-
         }
         // dump($mouvements );
         // dump($user);
-        return new JsonResponse(["ok"=>true, "data"=>$mouvements]);
+        return new JsonResponse(["ok" => true, "data" => $mouvements]);
     }
 
 
 
-       /**
+    /**
      * @Route("/SaveMvtMainCaisse", name="SaveMvtMainCaisse")
      */
-    public function SaveMvtMainCaisse(Request $req, CommissariatDistrictRepository $com )
+    public function SaveMvtMainCaisse(Request $req, CommissariatDistrictRepository $com)
     {
-        try
-        {
-       
-        $data = $req->request->get("data");
-        $entite = $this->ValueSession->get("entite");
-        $userconnected = $this->ValueSession->get("id");
-        $user = null;
-       // var_dump($data);
-        if($entite == 1)
-        {
-            //groupe
-            $user = null ;
-        }
-        else
-        {
-            //district
-            $districtId = $this->ValueSession->get("districtid")->getId(); 
-            $userdistrict = $this->districtRepo->findOneBy(["id"=>$districtId]);
-            $commissariatDistrictId = $userdistrict->getCommissariatDistrict()->getId();
+        try {
 
-            //enregistrement du mouvement
-            $newMvt = new MouvementEntite();
-            $newMvt->setDescription($data["description"])
-                   ->setEntiteId($commissariatDistrictId)
-                   ->setDatemvt(new \DateTime($data["date"]))
-                   ->setUsermvt($userconnected)
-                   ->setSousrubrique($this->sousRubriqueRepo->findOneBy(["id"=>$data["sousrubriqueid"]]))
-                   ->setPeriode($this->periodeRepo->findOneBy(["id"=>1]))
-                   ->setEntite(2);
-            //get sens rubrique
-            $sens = $this->rubriqueRepo->findOneBy(["id"=>$data["rubrique"]])->getSens();
-            if($sens == "D") $newMvt->setMontant(-(int)$data["montant"]);
-            else $newMvt->setMontant((int)$data["montant"]);
+            $data = $req->request->get("data");
+            $entite = $this->ValueSession->get("entite");
+            $userconnected = $this->ValueSession->get("id");
+            $user = null;
+            // var_dump($data);
+            if ($entite == 1) {
+                //groupe
+                $user = null;
+            } else {
+                //district
+                $districtId = $this->ValueSession->get("districtid")->getId();
+                $userdistrict = $this->districtRepo->findOneBy(["id" => $districtId]);
+                $commissariatDistrictId = $userdistrict->getCommissariatDistrict()->getId();
 
-            $this->entityManager->persist($newMvt);
-            $this->entityManager->flush();
+                //enregistrement du mouvement
+                $newMvt = new MouvementEntite();
+                $newMvt->setDescription($data["description"])
+                    ->setEntiteId($commissariatDistrictId)
+                    ->setDatemvt(new \DateTime($data["date"]))
+                    ->setUsermvt($userconnected)
+                    ->setSousrubrique($this->sousRubriqueRepo->findOneBy(["id" => $data["sousrubriqueid"]]))
+                    ->setPeriode($this->periodeRepo->findOneBy(["id" => 1]))
+                    ->setEntite(2);
+                //get sens rubrique
+                $sens = $this->rubriqueRepo->findOneBy(["id" => $data["rubrique"]])->getSens();
+                if ($sens == "D") $newMvt->setMontant(-(int)$data["montant"]);
+                else $newMvt->setMontant((int)$data["montant"]);
 
+                $this->entityManager->persist($newMvt);
+                $this->entityManager->flush();
+            }
 
-        }
-        
-         return new JsonResponse(["ok"=>true, "message"=>"Opération enregistrée avec succès"]);
-        }
-        catch(\Exception $e )
-        {
-            return new JsonResponse(["ok"=>false, "message"=>$e->getMessage()]);
+            return new JsonResponse(["ok" => true, "message" => "Opération enregistrée avec succès"]);
+        } catch (\Exception $e) {
+            return new JsonResponse(["ok" => false, "message" => $e->getMessage()]);
         }
 
-       // return new Response();
+        // return new Response();
     }
 
-     /**
+    /**
      * @Route("/GetSoldeEntite", name="GetSoldeEntite")
      */
     public function GetSoldeEntite(MouvementEntiteRepository $mvtentite)
     {
-        try
-        {
+        try {
 
-        
-        $entite = $this->ValueSession->get("entite");
-        $userconnected = $this->ValueSession->get("id");
-        $user = null;
-       // var_dump($entite);
-        if($entite == 1)
-        {
-            //groupe
-            $user = null ;
-        }
-        else
-        {
-               //district
-               $districtId = $this->ValueSession->get("districtid")->getId(); 
-               $district = $this->districtRepo->findOneBy(["id"=>$districtId]);
-               $solde = $this->qclass->GetSoldeEntite(2,$district->getCommissariatDistrict()->getId());
-              // dump($solde);
-        }
-        
-         return new JsonResponse(["ok"=>true, "data"=>$solde]);
-        }
-        catch(\Exception $e )
-        {
-            return new JsonResponse(["ok"=>false, "data"=>$e->getMessage()]);
+
+            $entite = $this->ValueSession->get("entite");
+            $userconnected = $this->ValueSession->get("id");
+            $user = null;
+            // var_dump($entite);
+            if ($entite == 1) {
+                //groupe
+                $user = null;
+            } else {
+                //district
+                $districtId = $this->ValueSession->get("districtid")->getId();
+                $district = $this->districtRepo->findOneBy(["id" => $districtId]);
+                $solde = $this->qclass->GetSoldeEntite(2, $district->getCommissariatDistrict()->getId());
+                // dump($solde);
+            }
+
+            return new JsonResponse(["ok" => true, "data" => $solde]);
+        } catch (\Exception $e) {
+            return new JsonResponse(["ok" => false, "data" => $e->getMessage()]);
         }
 
-       return new Response();
+        return new Response();
     }
 
 
     public function DashboardCaisse()
     {
         $entite = $this->ValueSession->get("entite");
-        $solde= 0;
-        if($entite == 1)
-        {
-
-        }
-        else
-        {
-
+        $solde = 0;
+        if ($entite == 1) {
+        } else {
         }
     }
 
+    /**
+     * @Route("/rapportcaisse", name="rapportcaisse")
+     */
+    public function rapportcaisse(): Response
+    {
+        return $this->render('caisse/report.html.twig', [
+            'controller_name' => 'CaisseController',
+        ]);
+    }
+
+
+    /**
+     * @Route("/rechercheoperation", name="rechercheoperation")
+     */
+    public function rechercheoperation(Request $req)
+    {
+        $data = $req->query->get("value");
+        $datedebut = $data["datedebut"];
+        $datefin = $data["datefin"];
+        $liste = null;
+        // dump($datedebut);
+        // dump($datefin);     
+
+        $entite = $this->ValueSession->get("entite");
+        $userconnected = $this->ValueSession->get("id");
+        $user = null;
+        // var_dump($entite);
+        if ($entite == 1) {
+            //groupe
+            $user = null;
+        } else {
+            //district
+            $districtId = $this->ValueSession->get("districtid")->getId();
+            $district = $this->districtRepo->findOneBy(["id" => $districtId]);
+            $liste = $this->qclass->getOperationParDate($datedebut,$datefin,2, $district->getCommissariatDistrict()->getId());
+         
+        }
+        return new JsonResponse(["ok" => true, "data" => $liste]);
+    }
 }

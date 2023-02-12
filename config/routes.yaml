@@ -497,8 +497,15 @@ ListeRespoDistrictConfig:
 Import:
     path: /Import
     controller: App\Controller\JeuneController::Import
-
-
+rapportcaisse:
+    path: /rapportcaisse
+    controller: App\Controller\CaisseController::rapportcaisse
+rechercheoperation:
+    path: /rechercheoperation
+    controller: App\Controller\CaisseController::rechercheoperation
+DonwloadOperationPdf:
+    path: /DonwloadOperationPdf/{datedebut}/{datefin}
+    controller: App\Controller\RapportController::DonwloadOperationPdf
 
 
 

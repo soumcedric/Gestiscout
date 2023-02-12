@@ -1267,6 +1267,21 @@ class QueryClass
         $stmt->execute();
         return $stmt->fetchOne();
     }
+
+    public function getOperationParDate($datedebut,$datefin,$entite,$entiteid)
+    {
+        // $dtdebut = new \date($datedebut);
+        // $dtfin = new \date($datefin);
+        $query = "SELECT e.id ID, sr.libelle SOUSRUBRIQUE,e.datemvt DATE_MOUVEMENT,e.montant MONTANT, e.description COMMENTAIRE
+                  FROM mouvement_entite e, sous_rubrique sr
+                  WHERE e.sousrubrique_id = sr.id
+                  and e.entite = ".$entite."
+                  and e.entite_id = ".$entiteid."
+                  and e.datemvt>'".$datedebut."' and e.datemvt <='".$datefin."' ";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
     /**/
 
 

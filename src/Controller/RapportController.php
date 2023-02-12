@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Classes\QueryClass;
 use App\Repository\BrancheRepository;
+use App\Repository\DistrictRepository;
 use App\Repository\DocumentsRepository;
 use App\Repository\GroupeRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -18,13 +19,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+//use PhpOffice\PhpSpreadsheet\Writer\Pdf\Dompdf;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use Symfony\component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\Length;
-
+use Dompdf\Dompdf;
+use PhpParser\Node\Expr\Cast\String_;
 
 class RapportController extends AbstractController
 {
@@ -1012,6 +1015,56 @@ class RapportController extends AbstractController
     
         // read the file from disk
         readfile($definitivefile);
+    }
+
+    #[Route('/DonwloadOperationPdf/{datedebut}/{datefin}', name: 'DonwloadOperationPdf')]
+    public function DonwloadOperationPdf(string $datedebut, string $datefin,EntityManagerInterface $em, SessionInterface $session, DistrictRepository $districtRepo)
+    {
+        $qclass = new QueryClass($em);
+        $entite = $session->get("entite");
+        $liste = null;
+        $convertedDateDebut = new \DateTime($datedebut);
+        $convertedDateFin = new \DateTime($datefin);
+        if($entite==1)
+        {
+
+        }
+        else
+        {
+            //district
+            $districtId = $session->get("districtid")->getId();
+            $district = $districtRepo->findOneBy(["id" => $districtId]);
+            $liste = $qclass->getOperationParDate($datedebut,$datefin,2, $district->getCommissariatDistrict()->getId());
+            //var_dump($liste);
+        }
+
+
+        $dompdf = new Dompdf();
+        $html='';
+        $file="rapport/operations.html.twig";
+        
+       // $html .= file_get_contents($file);
+     
+
+        $html .= $this->renderView($file,[
+            "datedebut"=>$convertedDateDebut,
+            "datefin"=>$convertedDateFin,
+            "entite"=>$entite,
+            "operations"=>$liste
+        ]);
+        $dompdf->loadHtml($html);
+
+        $dompdf->render();
+
+        // $pdf = base64_decode($dompdf->output());
+
+        // return new Response(json_encode(['pdf'=>$pdf]));
+       $filename = "opeations du ".$convertedDateDebut->format('d-m-Y')." au ".$convertedDateFin->format('d-m-Y');
+        return new Response(            
+            $dompdf->stream($filename),
+            Response::HTTP_OK,
+            ['Content-type'=>'application/pdf']
+        );
     }
 
 

@@ -5,8 +5,7 @@
 	<link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css") }}">
 	<link rel="stylesheet" href="{{ asset("assets/vendor/jquery-datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css") }}">
 {% endblock %}
-{# 
-{% block title %}Hello CaisseController!{% endblock %} #}
+
 
 {% block body %}
 	<div class="container-fluid">
@@ -45,22 +44,22 @@
 
 							</div>
 							{# <div class="row table-responsive">
-								<table class="table table-hover" id="tboperations">
-									<thead class="thead-info text-dark">
-										<tr class="">
-											<th>#</th>
-											<th class="h5">Sous Rubrique</th>
-											<th class="h5">Description</th>
-											<th class="h5">Date Mouvement</th>
-											<th class="h5">Montant</th>
+															<table class="table table-hover" id="tboperations">
+																<thead class="thead-info text-dark">
+																	<tr class="">
+																		<th>#</th>
+																		<th class="h5">Sous Rubrique</th>
+																		<th class="h5">Description</th>
+																		<th class="h5">Date Mouvement</th>
+																		<th class="h5">Montant</th>
+							
+																	</tr>
+																</thead>
+																<tbody></tbody>
+															</table>
+														</div> #}
 
-										</tr>
-									</thead>
-									<tbody></tbody>
-								</table>
-							</div> #}
-
-							   {% include "_listeoperation.html.twig" %}
+							{% include "/shared/_listeoperation.html.twig" %}
 						</div>
 					</div>
 				</div>
