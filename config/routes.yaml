@@ -506,6 +506,10 @@ rechercheoperation:
 DonwloadOperationPdf:
     path: /DonwloadOperationPdf/{datedebut}/{datefin}
     controller: App\Controller\RapportController::DonwloadOperationPdf
+CloturerEvent:
+    path: /CloturerEvent/{id}
+    controller: App\Controller\CaisseController::CloturerEvent
+
 
 
 

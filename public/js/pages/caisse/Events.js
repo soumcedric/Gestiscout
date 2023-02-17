@@ -66,11 +66,11 @@ function loadEvenement()
                 targets:2,
                 visible:true,
                 render:function(data,type,full,meta){
-                    debugger
+                    //debugger
                    if(data=="0")
-                        return '<a title="cloturer évènement" style="text-decoration:none; color:green;"><i class="fa fa-unlock"></i></a>';
+                        return '<a title="cloturer évènement" style="text-decoration:none; color:green;" onclick="cloturerEvenement('+full.id+');"><i class="fa fa-unlock"></i></a>';
                    else
-                        return '<a title="cloturer évènement" style="text-decoration:none; color:red;"><span class="fa fa-lock"></span></a>';
+                        return '<a title="évènement cloturé" style="text-decoration:none; color:red;"><span class="fa fa-lock"></span></a>';
                     
                 },
             }],
@@ -110,3 +110,41 @@ function OpenModal()
   });
   
 }
+
+let id = 0;
+function cloturerEvenement(id)
+{
+    let choice = false;
+   
+    swal({
+        type: "warning",
+        title : "Clôturer évènement",
+        text: "Voulez-vous vraiment clôturer cet évènement ?",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Oui, clôturer!',
+        cancelButtonText: "Annuler",
+      //  onClose:()=>{ DeclencherCloture }
+    },function(r){
+        debugger
+        if(r==true)choice = true; 
+        $("#modalproressbar").modal("show");
+        cloturerevenement(id);
+    });
+
+}
+
+function cloturerevenement(id)
+{
+    $.get("/CloturerEvent/" + id, function (res) {
+        debugger;
+        if(res.ok)
+        {$("#percent").text(res.percent);
+         $('.progress-bar').css('width', res.percent+'%').attr('aria-valuenow', res.percent); 
+      //  $('.progress-bar').attr('aria-valuenow', res.percent); 
+    }
+    });
+}
+
+

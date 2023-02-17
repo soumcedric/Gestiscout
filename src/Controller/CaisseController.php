@@ -664,4 +664,30 @@ class CaisseController extends AbstractController
         }
         return new JsonResponse(["ok" => true, "data" => $liste]);
     }
+
+
+     /**
+     * @Route("/CloturerEvent/{id}", name="CloturerEvent")
+     */
+    public function CloturerEvent($id,Request $req)
+    {
+        $event = $this->eventRepo->findOneBy(["id"=>$id]);
+        $result = false;
+        dump($event);
+        // if($event != null)
+        // {
+            $event->setStatut(1)
+                ->setDateModification(new \DateTime('now'));
+
+            $this->entityManager->persist($event);
+            $this->entityManager->flush();
+            $result = true;
+
+        // }
+        // else
+        // {
+
+        // }
+        return new JsonResponse(["ok"=>$result, "percent"=>50]);
+    }
 }
