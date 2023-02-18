@@ -509,6 +509,9 @@ DonwloadOperationPdf:
 CloturerEvent:
     path: /CloturerEvent/{id}
     controller: App\Controller\CaisseController::CloturerEvent
+BilanEvent:
+    path: /BilanEvent/{id}
+    controller: App\Controller\CaisseController::BilanEvent
 
 
 

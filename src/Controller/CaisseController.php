@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Periode;
 use App\Classes\QueryClass;
+use App\Entity\BilanTresoEvent;
+use App\Entity\Bilantresorerie;
 use App\Entity\CaisseGroupe;
 use Doctrine\ORM\Mapping\Id;
 
@@ -27,6 +29,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repository\MouvementDistrictRepository;
 use App\Repository\MouvementEntiteRepository;
+use App\Repository\MouvementTresoActiviteRepository;
 use App\Repository\RubriqueRepository;
 use App\Repository\SousRubriqueRepository;
 use App\Repository\TresorerieActiviteRepository;
@@ -689,5 +692,45 @@ class CaisseController extends AbstractController
 
         // }
         return new JsonResponse(["ok"=>$result, "percent"=>50]);
+    }
+
+
+
+    
+     /**
+     * @Route("/BilanEvent/{id}", name="BilanEvent")
+     */
+    public function BilanEvent($id, MouvementTresoActiviteRepository $mvtactivite)
+    {
+        $event = $this->eventRepo->findOneBy(["id"=>$id]);
+        $result = false;
+        
+        //retrouver les mouvements sur cet évnement
+        $mvts = $mvtactivite->findBy(array("EventId"=>$id));
+        $credits = 0;
+        $debits = 0;
+        dump($mvts);
+        foreach($mvts as $key)
+        {
+            
+            if($key->getMontant() >0)$credits += $key->getMontant();
+            else $debits += $key->getMontant();
+        }
+
+        dump($credits);
+        dump($debits);
+
+            $bilan = new BilanTresoEvent();
+            $bilan->setEventId($id)
+                  ->setTotalCredit($credits)
+                  ->setTotalDebit($debits)
+                  ->setDateBilan(new \DateTime('now'));
+
+            $this->entityManager->persist($bilan);
+            $this->entityManager->flush();
+            $result = true;
+
+      
+        return new JsonResponse(["ok"=>$result, "percent"=>100]);
     }
 }

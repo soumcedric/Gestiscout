@@ -115,6 +115,7 @@ let id = 0;
 function cloturerEvenement(id)
 {
     let choice = false;
+    $("#closemodal").prop('disabled',true);
    
     swal({
         type: "warning",
@@ -131,6 +132,8 @@ function cloturerEvenement(id)
         if(r==true)choice = true; 
         $("#modalproressbar").modal("show");
         cloturerevenement(id);
+        BilanEven(id);
+       
     });
 
 }
@@ -147,4 +150,23 @@ function cloturerevenement(id)
     });
 }
 
+
+function BilanEven(id)
+{
+    $.get("/BilanEvent/" + id, function (res) {
+       // debugger;
+        if(res.ok)
+        {$("#percent").text(res.percent);
+         $('.progress-bar').css('width', res.percent+'%').attr('aria-valuenow', res.percent); 
+         
+        $("#closemodal").prop('disabled',false);
+    }
+    });
+}
+
+function closemodal()
+{
+    $("#modalproressbar").modal("hide");
+    loadEvenement();
+}
 

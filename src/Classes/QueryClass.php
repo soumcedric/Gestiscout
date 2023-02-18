@@ -20,148 +20,141 @@ class QueryClass
 
     function __construct(EntityManagerInterface $EM)
     {
-        $this->em=$EM;
-        $this->activeYear = $this->em->getRepository(AnneePastorale::Class)->findOneBy(["bActif"=>true]);
-
+        $this->em = $EM;
+        $this->activeYear = $this->em->getRepository(AnneePastorale::Class)->findOneBy(["bActif" => true]);
     }
 
-    function ListeJeuneCotiseParGroupe($groupeid,$ActiveYear)
+    function ListeJeuneCotiseParGroupe($groupeid, $ActiveYear)
     {
         $sql = "SELECT j FROM ";
-        $sql = $sql."App\Entity\JEUNE j";
-        $sql=$sql.", App\Entity\INSCRIPTION i";
-        $sql=$sql.", App\Entity\Groupe g";
-        $sql = $sql.",App\Entity\AnneePastorale an ";
-        $sql = $sql."where j.Groupe = g.id ";
-        $sql = $sql."and j.id = i.Jeunes ";
-        $sql = $sql."and i.Annee = an.id ";
-        $sql = $sql."and g.id = :groupeid and an.id = :anneeId";
-        $sql = $sql." and j.id in (SELECT IDENTITY(co.Jeune) FROM App\Entity\Cotisation co) ";
-        $query=$this->em->createQuery($sql);
+        $sql = $sql . "App\Entity\JEUNE j";
+        $sql = $sql . ", App\Entity\INSCRIPTION i";
+        $sql = $sql . ", App\Entity\Groupe g";
+        $sql = $sql . ",App\Entity\AnneePastorale an ";
+        $sql = $sql . "where j.Groupe = g.id ";
+        $sql = $sql . "and j.id = i.Jeunes ";
+        $sql = $sql . "and i.Annee = an.id ";
+        $sql = $sql . "and g.id = :groupeid and an.id = :anneeId";
+        $sql = $sql . " and j.id in (SELECT IDENTITY(co.Jeune) FROM App\Entity\Cotisation co) ";
+        $query = $this->em->createQuery($sql);
         $query->setParameter("groupeid", $groupeid);
-        $query->setParameter("anneeId",$ActiveYear);
-        $res=$query->getResult();
-        foreach ($res as $jeune)
-        {
+        $query->setParameter("anneeId", $ActiveYear);
+        $res = $query->getResult();
+        foreach ($res as $jeune) {
             $sql1 = "SELECT c.Matricule from App\Entity\Cotisation c where c.Jeune = :id";
             $q = $this->em->createQuery($sql1);
             //$id = $jeune->set
-            $q->setParameter('id',$jeune->getId());
+            $q->setParameter('id', $jeune->getId());
             $resultat = $q->getSingleResult();
-            $matricule=$resultat["Matricule"];
+            $matricule = $resultat["Matricule"];
             $jeune->setMatricule($matricule);
         }
         return $res;
     }
 
 
-    public function GetJeuneNonCotise($groupeid,$ActiveYear)
+    public function GetJeuneNonCotise($groupeid, $ActiveYear)
     {
 
         $sql = "SELECT j FROM ";
-        $sql = $sql."App\Entity\JEUNE j";
-        $sql=$sql.", App\Entity\INSCRIPTION i ";
-        $sql = $sql."where ";
-        $sql = $sql." j.id = i.Jeunes ";
-        $sql = $sql." and j.Statut = 1 ";
-        $sql = $sql." and j.Groupe = :groupeid ";
-        $sql = $sql." and i.Annee = :anneeId ";
-        $sql=$sql." and j.id not in (select IDENTITY(c.Jeune) from App\Entity\Cotisation c where c.Jeune is not null)";
-        $query=$this->em->createQuery($sql);
+        $sql = $sql . "App\Entity\JEUNE j";
+        $sql = $sql . ", App\Entity\INSCRIPTION i ";
+        $sql = $sql . "where ";
+        $sql = $sql . " j.id = i.Jeunes ";
+        $sql = $sql . " and j.Statut = 1 ";
+        $sql = $sql . " and j.Groupe = :groupeid ";
+        $sql = $sql . " and i.Annee = :anneeId ";
+        $sql = $sql . " and j.id not in (select IDENTITY(c.Jeune) from App\Entity\Cotisation c where c.Jeune is not null)";
+        $query = $this->em->createQuery($sql);
         $query->setParameter("groupeid", $groupeid);
-        $query->setParameter("anneeId",$ActiveYear);
-        $res=$query->getResult();
+        $query->setParameter("anneeId", $ActiveYear);
+        $res = $query->getResult();
         //var_dump($res);
         //echo $res;
         return $res;
-
-
     }
 
-    function NbreJeuneCotise($groupeid,$ActiveYear)
+    function NbreJeuneCotise($groupeid, $ActiveYear)
     {
         $sql = "SELECT count(j) FROM ";
-        $sql = $sql."App\Entity\JEUNE j";
-        $sql=$sql.", App\Entity\INSCRIPTION i";
-        $sql=$sql.", App\Entity\Groupe g";
-        $sql = $sql.",App\Entity\AnneePastorale an ";
-        $sql = $sql."where j.Groupe = g.id ";
-        $sql = $sql."and j.id = i.Jeunes ";
-        $sql = $sql."and i.Annee = an.id ";
-        $sql = $sql."and g.id = :groupeid and an.id = :anneeId";
-        $sql = $sql." and j.id in (SELECT IDENTITY(co.Jeune) FROM App\Entity\Cotisation co) ";
-        $query=$this->em->createQuery($sql);
+        $sql = $sql . "App\Entity\JEUNE j";
+        $sql = $sql . ", App\Entity\INSCRIPTION i";
+        $sql = $sql . ", App\Entity\Groupe g";
+        $sql = $sql . ",App\Entity\AnneePastorale an ";
+        $sql = $sql . "where j.Groupe = g.id ";
+        $sql = $sql . "and j.id = i.Jeunes ";
+        $sql = $sql . "and i.Annee = an.id ";
+        $sql = $sql . "and g.id = :groupeid and an.id = :anneeId";
+        $sql = $sql . " and j.id in (SELECT IDENTITY(co.Jeune) FROM App\Entity\Cotisation co) ";
+        $query = $this->em->createQuery($sql);
         $query->setParameter("groupeid", $groupeid);
-        $query->setParameter("anneeId",$ActiveYear);
-        $res=$query->getSingleScalarResult();
+        $query->setParameter("anneeId", $ActiveYear);
+        $res = $query->getSingleScalarResult();
 
         return $res;
     }
-    public function GetResponsableNonCotise($groupeid,$ActiveYear)
+    public function GetResponsableNonCotise($groupeid, $ActiveYear)
     {
 
         $sql = "SELECT r FROM ";
-        $sql=$sql."App\Entity\Responsable r, ";
-        $sql=$sql."App\Entity\ExercerFonction ef, ";
-        $sql=$sql."App\Entity\Groupe g, ";
-        $sql=$sql."App\Entity\AnneePastorale an ";
-        $sql=$sql."where r.id = ef.Responsable ";
-        $sql=$sql."and ef.AnneePastorale = an.id ";
-        $sql=$sql."and r.groupe = g.id ";
-        $sql=$sql."and g.id = :groupeid";
-        $sql=$sql." and an.id = :anneeId";
-        $sql=$sql." and r.Statut = 1";
-        $sql=$sql." and r.id not in (select IDENTITY(c.Responsable) from App\Entity\Cotisation c where c.Responsable is not null)";
+        $sql = $sql . "App\Entity\Responsable r, ";
+        $sql = $sql . "App\Entity\ExercerFonction ef, ";
+        $sql = $sql . "App\Entity\Groupe g, ";
+        $sql = $sql . "App\Entity\AnneePastorale an ";
+        $sql = $sql . "where r.id = ef.Responsable ";
+        $sql = $sql . "and ef.AnneePastorale = an.id ";
+        $sql = $sql . "and r.groupe = g.id ";
+        $sql = $sql . "and g.id = :groupeid";
+        $sql = $sql . " and an.id = :anneeId";
+        $sql = $sql . " and r.Statut = 1";
+        $sql = $sql . " and r.id not in (select IDENTITY(c.Responsable) from App\Entity\Cotisation c where c.Responsable is not null)";
 
 
-        $query=$this->em->createQuery($sql);
+        $query = $this->em->createQuery($sql);
         $query->setParameter("groupeid", $groupeid);
-        $query->setParameter("anneeId",$ActiveYear);
-        $res=$query->getResult();
+        $query->setParameter("anneeId", $ActiveYear);
+        $res = $query->getResult();
         return $res;
-
-
     }
-    public function GetResponsableCotiseParGroupe($groupeid,$ActiveYear)
+    public function GetResponsableCotiseParGroupe($groupeid, $ActiveYear)
     {
 
         $sql = "SELECT r FROM ";
-//        $sql=$sql."App\Entity\Responsable r LEFT JOIN ";
-//        $sql=$sql." App\Entity\ExercerFonction ef ";
-//        $sql=$sql." ON r.id = ef.Responsable ";
-//        $sql=$sql." WHERE r.Status = 1 ";
-//        $sql=$sql." and g.id = :groupeid ";
-//        $sql=$sql." and an.id = :anneeId ";
-//        $sql=$sql." and r.id in (select IDENTITY(c.Responsable) from App\Entity\Cotisation c)";
-//        var_dump($sql);
+        //        $sql=$sql."App\Entity\Responsable r LEFT JOIN ";
+        //        $sql=$sql." App\Entity\ExercerFonction ef ";
+        //        $sql=$sql." ON r.id = ef.Responsable ";
+        //        $sql=$sql." WHERE r.Status = 1 ";
+        //        $sql=$sql." and g.id = :groupeid ";
+        //        $sql=$sql." and an.id = :anneeId ";
+        //        $sql=$sql." and r.id in (select IDENTITY(c.Responsable) from App\Entity\Cotisation c)";
+        //        var_dump($sql);
 
 
 
 
-        $sql=$sql."App\Entity\Responsable r, ";
-        $sql=$sql."App\Entity\ExercerFonction ef, ";
-        $sql=$sql."App\Entity\Groupe g, ";
-        $sql=$sql."App\Entity\AnneePastorale an ";
-        $sql=$sql."where r.id = ef.Responsable ";
-        $sql=$sql."and ef.AnneePastorale = an.id ";
-        $sql=$sql."and r.groupe = g.id ";
-        $sql=$sql."and g.id = :groupeid";
-        $sql=$sql." and an.id = :anneeId";
-        $sql=$sql." and r.id in (select IDENTITY(c.Responsable) from App\Entity\Cotisation c)";
+        $sql = $sql . "App\Entity\Responsable r, ";
+        $sql = $sql . "App\Entity\ExercerFonction ef, ";
+        $sql = $sql . "App\Entity\Groupe g, ";
+        $sql = $sql . "App\Entity\AnneePastorale an ";
+        $sql = $sql . "where r.id = ef.Responsable ";
+        $sql = $sql . "and ef.AnneePastorale = an.id ";
+        $sql = $sql . "and r.groupe = g.id ";
+        $sql = $sql . "and g.id = :groupeid";
+        $sql = $sql . " and an.id = :anneeId";
+        $sql = $sql . " and r.id in (select IDENTITY(c.Responsable) from App\Entity\Cotisation c)";
 
 
-        $query=$this->em->createQuery($sql);
+        $query = $this->em->createQuery($sql);
         $query->setParameter("groupeid", $groupeid);
-        $query->setParameter("anneeId",$ActiveYear);
-        $res=$query->getResult();
-        foreach ($res as $respo)
-        {
+        $query->setParameter("anneeId", $ActiveYear);
+        $res = $query->getResult();
+        foreach ($res as $respo) {
             $sql1 = "SELECT c.Matricule from App\Entity\Cotisation c where c.Responsable = :id";
             $q = $this->em->createQuery($sql1);
             //$id = $jeune->set
-            $q->setParameter('id',$respo->getId());
+            $q->setParameter('id', $respo->getId());
             $resultat = $q->getSingleResult();
-            $matricule=$resultat["Matricule"];
+            $matricule = $resultat["Matricule"];
             $respo->setMatricule($matricule);
         }
 
@@ -169,103 +162,95 @@ class QueryClass
 
 
         return $res;
-
-
     }
-    public function NbreResponsableCotise($groupeid,$ActiveYear)
+    public function NbreResponsableCotise($groupeid, $ActiveYear)
     {
 
         $sql = "SELECT count(r) FROM ";
-        $sql=$sql."App\Entity\Responsable r, ";
-        $sql=$sql."App\Entity\ExercerFonction ef, ";
-        $sql=$sql."App\Entity\Groupe g, ";
-        $sql=$sql."App\Entity\AnneePastorale an ";
-        $sql=$sql."where r.id = ef.Responsable ";
-        $sql=$sql."and ef.AnneePastorale = an.id ";
-        $sql=$sql."and r.groupe = g.id ";
-        $sql=$sql."and g.id = :groupeid";
-        $sql=$sql." and an.id = :anneeId";
-        $sql=$sql." and r.id in (select IDENTITY(c.Responsable) from App\Entity\Cotisation c)";
+        $sql = $sql . "App\Entity\Responsable r, ";
+        $sql = $sql . "App\Entity\ExercerFonction ef, ";
+        $sql = $sql . "App\Entity\Groupe g, ";
+        $sql = $sql . "App\Entity\AnneePastorale an ";
+        $sql = $sql . "where r.id = ef.Responsable ";
+        $sql = $sql . "and ef.AnneePastorale = an.id ";
+        $sql = $sql . "and r.groupe = g.id ";
+        $sql = $sql . "and g.id = :groupeid";
+        $sql = $sql . " and an.id = :anneeId";
+        $sql = $sql . " and r.id in (select IDENTITY(c.Responsable) from App\Entity\Cotisation c)";
 
 
-        $query=$this->em->createQuery($sql);
+        $query = $this->em->createQuery($sql);
         $query->setParameter("groupeid", $groupeid);
-        $query->setParameter("anneeId",$ActiveYear);
-        $res=$query->getSingleScalarResult();
+        $query->setParameter("anneeId", $ActiveYear);
+        $res = $query->getSingleScalarResult();
 
 
 
         return $res;
-
-
     }
-    public  function GetListResponsableActif($groupeid,$ActiveYear)
+    public  function GetListResponsableActif($groupeid, $ActiveYear)
     {
-        $sql="SELECT r from App\Entity\Responsable r, ";
-        $sql=$sql."App\Entity\ExercerFonction ex, ";
-        $sql=$sql."App\Entity\Fonction f, ";
-        $sql=$sql."App\Entity\AnneePastorale an, ";
-        $sql=$sql."App\Entity\Groupe g ";
-        $sql=$sql." where r.id = ex.Responsable ";
-        $sql=$sql." and ex.Fonction = f.id ";
-        $sql=$sql." and ex.AnneePastorale = an.id ";
-        $sql=$sql." and r.groupe = g.id ";
-        $sql=$sql." and g.id = :groupeid ";
-        $sql=$sql." and an.id = :anneeid ";
-        $sql=$sql." and r.Statut = 1 ";
+        $sql = "SELECT r from App\Entity\Responsable r, ";
+        $sql = $sql . "App\Entity\ExercerFonction ex, ";
+        $sql = $sql . "App\Entity\Fonction f, ";
+        $sql = $sql . "App\Entity\AnneePastorale an, ";
+        $sql = $sql . "App\Entity\Groupe g ";
+        $sql = $sql . " where r.id = ex.Responsable ";
+        $sql = $sql . " and ex.Fonction = f.id ";
+        $sql = $sql . " and ex.AnneePastorale = an.id ";
+        $sql = $sql . " and r.groupe = g.id ";
+        $sql = $sql . " and g.id = :groupeid ";
+        $sql = $sql . " and an.id = :anneeid ";
+        $sql = $sql . " and r.Statut = 1 ";
 
 
-        $query=$this->em->createQuery($sql);
+        $query = $this->em->createQuery($sql);
         $query->setParameter("groupeid", $groupeid);
-        $query->setParameter("anneeid",$ActiveYear);
-        $res=$query->getResult();
+        $query->setParameter("anneeid", $ActiveYear);
+        $res = $query->getResult();
         $ListeRespo = [];
-        foreach ($res as $respo)
-        {
+        foreach ($res as $respo) {
 
-            $sql1="SELECT f.Libelle FROM App\Entity\ExercerFonction ef, App\Entity\Fonction f ";
-            $sql1=$sql1." where f.id = ef.Fonction and ef.Responsable = :id";
-             $q=$this->em->createQuery($sql1);
+            $sql1 = "SELECT f.Libelle FROM App\Entity\ExercerFonction ef, App\Entity\Fonction f ";
+            $sql1 = $sql1 . " where f.id = ef.Fonction and ef.Responsable = :id";
+            $q = $this->em->createQuery($sql1);
             $q->setParameter("id", $respo->getId());
-            $val=$q->getSingleResult();
+            $val = $q->getSingleResult();
             $respo->setFonctionLibelle($val["Libelle"]);
-
         }
 
         return $res;
     }
 
-    public  function GetListResponsableDistrictActif($groupeid,$ActiveYear)
+    public  function GetListResponsableDistrictActif($groupeid, $ActiveYear)
     {
-        $sql="SELECT r from App\Entity\Responsable r, ";
-        $sql=$sql."App\Entity\ExercerFonction ex, ";
-        $sql=$sql."App\Entity\Fonction f, ";
-        $sql=$sql."App\Entity\AnneePastorale an, ";
-        $sql=$sql."App\Entity\Groupe g ";
-        $sql=$sql." where r.id = ex.Responsable ";
-        $sql=$sql." and ex.Fonction = f.id ";
-        $sql=$sql." and ex.AnneePastorale = an.id ";
-        $sql=$sql." and r.groupe = g.id ";
-       // $sql=$sql." and g.id = :groupeid ";
-        $sql=$sql." and an.id = :anneeid ";
-        $sql=$sql." and r.Statut = 1 ";
+        $sql = "SELECT r from App\Entity\Responsable r, ";
+        $sql = $sql . "App\Entity\ExercerFonction ex, ";
+        $sql = $sql . "App\Entity\Fonction f, ";
+        $sql = $sql . "App\Entity\AnneePastorale an, ";
+        $sql = $sql . "App\Entity\Groupe g ";
+        $sql = $sql . " where r.id = ex.Responsable ";
+        $sql = $sql . " and ex.Fonction = f.id ";
+        $sql = $sql . " and ex.AnneePastorale = an.id ";
+        $sql = $sql . " and r.groupe = g.id ";
+        // $sql=$sql." and g.id = :groupeid ";
+        $sql = $sql . " and an.id = :anneeid ";
+        $sql = $sql . " and r.Statut = 1 ";
 
 
-        $query=$this->em->createQuery($sql);
-      //  $query->setParameter("groupeid", $groupeid);
-        $query->setParameter("anneeid",$ActiveYear);
-        $res=$query->getResult();
+        $query = $this->em->createQuery($sql);
+        //  $query->setParameter("groupeid", $groupeid);
+        $query->setParameter("anneeid", $ActiveYear);
+        $res = $query->getResult();
         $ListeRespo = [];
-        foreach ($res as $respo)
-        {
+        foreach ($res as $respo) {
 
-            $sql1="SELECT f.Libelle FROM App\Entity\ExercerFonction ef, App\Entity\Fonction f ";
-            $sql1=$sql1." where f.id = ef.Fonction and ef.Responsable = :id";
-             $q=$this->em->createQuery($sql1);
+            $sql1 = "SELECT f.Libelle FROM App\Entity\ExercerFonction ef, App\Entity\Fonction f ";
+            $sql1 = $sql1 . " where f.id = ef.Fonction and ef.Responsable = :id";
+            $q = $this->em->createQuery($sql1);
             $q->setParameter("id", $respo->getId());
-            $val=$q->getSingleResult();
+            $val = $q->getSingleResult();
             $respo->setFonctionLibelle($val["Libelle"]);
-
         }
 
         return $res;
@@ -280,37 +265,37 @@ class QueryClass
 
     public  function CheckUserExist($username): ?bool
     {
-        $sql="SELECT u FROM App\Entity\User u where u.username = :username";
+        $sql = "SELECT u FROM App\Entity\User u where u.username = :username";
         $query = $this->em->createQuery($sql);
-        $query->setParameter("username",$username);
+        $query->setParameter("username", $username);
         $val = $query->getResult();
-        if(empty($val)) return false; else return true;
+        if (empty($val)) return false;
+        else return true;
     }
 
 
     public function GetNbreJeune($activeyear): ?int
     {
         $sql = " SELECT COUNT(j) FROM App\Entity\JEUNE j, app\Entity\INSCRIPTION i, App\Entity\AnneePastorale an ";
-        $sql = $sql."where j.id = i.Jeunes";
-        $sql = $sql." and an.id = i.Annee";
-        $sql = $sql." and an.id = :annee";
-        $query=$this->em->createQuery($sql);
-        $query->setParameter('annee',$activeyear);
+        $sql = $sql . "where j.id = i.Jeunes";
+        $sql = $sql . " and an.id = i.Annee";
+        $sql = $sql . " and an.id = :annee";
+        $query = $this->em->createQuery($sql);
+        $query->setParameter('annee', $activeyear);
         $res = $query->getSingleScalarResult();
         return $res;
-
     }
 
     public function GetNbreJeuneByGroupeDistrict($activeyear)
     {
         $sql = " SELECT g.Nom, count(j.id) as NbreJeune FROM App\Entity\JEUNE j, app\Entity\INSCRIPTION i, App\Entity\AnneePastorale an, App\Entity\Groupe g ";
-        $sql = $sql."where j.id = i.Jeunes";
-        $sql = $sql." and an.id = i.Annee";
-        $sql = $sql." and j.Groupe = g.id";
-        $sql = $sql." and an.id = :annee";
-        $sql = $sql." Group By g.Nom ";
-        $query=$this->em->createQuery($sql);
-        $query->setParameter('annee',$activeyear);
+        $sql = $sql . "where j.id = i.Jeunes";
+        $sql = $sql . " and an.id = i.Annee";
+        $sql = $sql . " and j.Groupe = g.id";
+        $sql = $sql . " and an.id = :annee";
+        $sql = $sql . " Group By g.Nom ";
+        $query = $this->em->createQuery($sql);
+        $query->setParameter('annee', $activeyear);
         $res = $query->getResult();
         return $res;
     }
@@ -318,11 +303,11 @@ class QueryClass
     public  function GetNbreChefDistrict($activiteyear): ?int
     {
         $sql = "SELECT count(ef) from App\Entity\ExercerFonction ef, App\Entity\Responsable r ";
-        $sql=$sql."WHERE ef.Responsable = r.id";
-        $sql=$sql." and ef.AnneePastorale = :yearid";
+        $sql = $sql . "WHERE ef.Responsable = r.id";
+        $sql = $sql . " and ef.AnneePastorale = :yearid";
 
         $query = $this->em->createQuery($sql);
-        $query->setParameter('yearid',$activiteyear);
+        $query->setParameter('yearid', $activiteyear);
         $result = $query->getSingleScalarResult();
         return $result;
     }
@@ -331,13 +316,13 @@ class QueryClass
     public function GetNbreJeuneParBranche($activeyear)
     {
         $sql = " SELECT b.Libelle, count(j.id) as NbreJeune FROM App\Entity\JEUNE j, app\Entity\INSCRIPTION i, App\Entity\AnneePastorale an, App\Entity\Branche b ";
-        $sql = $sql."where j.id = i.Jeunes";
-        $sql = $sql." and an.id = i.Annee";
-        $sql = $sql." and j.branche = b.id";
-        $sql = $sql." and an.id = :annee";
-        $sql = $sql." Group By b.Libelle ";
-        $query=$this->em->createQuery($sql);
-        $query->setParameter('annee',$activeyear);
+        $sql = $sql . "where j.id = i.Jeunes";
+        $sql = $sql . " and an.id = i.Annee";
+        $sql = $sql . " and j.branche = b.id";
+        $sql = $sql . " and an.id = :annee";
+        $sql = $sql . " Group By b.Libelle ";
+        $query = $this->em->createQuery($sql);
+        $query->setParameter('annee', $activeyear);
         $res = $query->getResult();
         return $res;
     }
@@ -359,13 +344,11 @@ class QueryClass
 
         $query = "select count(*) from jeune j left join inscription i
                   on j.id = i.jeunes_id
-                  where i.annee_id = ".$this->activeYear->getId()."
-                  and j.groupe_id = ".$groupe."";
+                  where i.annee_id = " . $this->activeYear->getId() . "
+                  and j.groupe_id = " . $groupe . "";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchOne();
-
-
     }
 
     // public  function GetNbreResponsableCotiseParGroupe($year,$groupe) : int
@@ -387,22 +370,22 @@ class QueryClass
     // }
 
 
-    public  function GetNbreJeuneCotiseParGroupe($year,$groupe) : int
+    public  function GetNbreJeuneCotiseParGroupe($year, $groupe): int
     {
         $sql = "SELECT count(j.id) FROM App\Entity\JEUNE j, App\Entity\INSCRIPTION i, App\Entity\Cotisation c where j.id = i.Jeunes and j.id = c.Jeune and i.Annee = :year and j.Groupe = :gr and j.Statut='1' ";
         $query = $this->em->createQuery($sql);
-        $query->setParameter('year',$this->activeYear);
+        $query->setParameter('year', $this->activeYear);
         $query->setParameter('gr', $groupe);
         $res = $query->getSingleScalarResult();
         return $res;
     }
 
     /*REQUETE GROUPE*/
-    public  function GetNbreResponsableByGroup($year,$groupe) : int
+    public  function GetNbreResponsableByGroup($year, $groupe): int
     {
         $sql = " select count(r.id) from App\Entity\Responsable r, App\Entity\ExercerFonction ex WHERE r.id = ex.Responsable   and ex.AnneePastorale = :year and r.Statut = 1 and r.groupe = :groupe ";
         $query = $this->em->createQuery($sql);
-        $query->setParameter('year',$this->activeYear);
+        $query->setParameter('year', $this->activeYear);
         $query->setParameter('groupe', $groupe);
         $res = $query->getSingleScalarResult();
         return $res;
@@ -410,47 +393,45 @@ class QueryClass
     /*REQUETE GROUPE*/
 
     /*----------------------- debut requete district -----------------------------*/
-        public  function GetListeJeuneByCriteria($groupe,$branche)
-        {
+    public  function GetListeJeuneByCriteria($groupe, $branche)
+    {
 
-            if($branche=="0")
-            {
-  $sql="SELECT j.id, j.Nom,j.Prenoms,j.Dob,j.Occupation,g.Nom as nomgroupe,j.Telephone,b.Libelle FROM App\Entity\JEUNE j,App\Entity\Groupe g, App\Entity\INSCRIPTION i, App\Entity\Branche b ";
-            $sql=$sql." WHERE j.Groupe = g.id";
-            $sql = $sql." AND j.id = i.Jeunes ";
-            $sql = $sql." AND j.branche = b.id ";
-            $sql = $sql."And g.id = :groupe ";
-            $sql = $sql."AND i.Annee = :year ";
-             $sql = $sql."ORDER BY b.id ASC";
-           // $sql = $sql." AND b.id = :branche";
+        if ($branche == "0") {
+            $sql = "SELECT j.id, j.Nom,j.Prenoms,j.Dob,j.Occupation,g.Nom as nomgroupe,j.Telephone,b.Libelle FROM App\Entity\JEUNE j,App\Entity\Groupe g, App\Entity\INSCRIPTION i, App\Entity\Branche b ";
+            $sql = $sql . " WHERE j.Groupe = g.id";
+            $sql = $sql . " AND j.id = i.Jeunes ";
+            $sql = $sql . " AND j.branche = b.id ";
+            $sql = $sql . "And g.id = :groupe ";
+            $sql = $sql . "AND i.Annee = :year ";
+            $sql = $sql . "ORDER BY b.id ASC";
+            // $sql = $sql." AND b.id = :branche";
 
-                 $query = $this->em->createQuery($sql);
-            $query->setParameter('groupe',$groupe);
-           // $query->setParameter('branche', $branche);
+            $query = $this->em->createQuery($sql);
+            $query->setParameter('groupe', $groupe);
+            // $query->setParameter('branche', $branche);
             $query->setParameter('year', $this->activeYear);
-            }
-            else{
-                  $sql="SELECT j.id, j.Nom,j.Prenoms,j.Dob,j.Occupation,g.Nom as nomgroupe,j.Telephone, b.Libelle FROM App\Entity\JEUNE j,App\Entity\Groupe g, App\Entity\INSCRIPTION i, App\Entity\Branche b ";
-            $sql=$sql." WHERE j.Groupe = g.id";
-            $sql = $sql." AND j.id = i.Jeunes ";
-            $sql = $sql." AND j.branche = b.id ";
-            $sql = $sql."And g.id = :groupe ";
-            $sql = $sql."AND i.Annee = :year";
-            $sql = $sql." AND b.id = :branche ";
-               $sql = $sql."ORDER BY b.id ASC";
-                 $query = $this->em->createQuery($sql);
-            $query->setParameter('groupe',$groupe);
+        } else {
+            $sql = "SELECT j.id, j.Nom,j.Prenoms,j.Dob,j.Occupation,g.Nom as nomgroupe,j.Telephone, b.Libelle FROM App\Entity\JEUNE j,App\Entity\Groupe g, App\Entity\INSCRIPTION i, App\Entity\Branche b ";
+            $sql = $sql . " WHERE j.Groupe = g.id";
+            $sql = $sql . " AND j.id = i.Jeunes ";
+            $sql = $sql . " AND j.branche = b.id ";
+            $sql = $sql . "And g.id = :groupe ";
+            $sql = $sql . "AND i.Annee = :year";
+            $sql = $sql . " AND b.id = :branche ";
+            $sql = $sql . "ORDER BY b.id ASC";
+            $query = $this->em->createQuery($sql);
+            $query->setParameter('groupe', $groupe);
             $query->setParameter('branche', $branche);
             $query->setParameter('year', $this->activeYear);
-            }
-
-
-          
-       
-            $res = $query->getResult();
-            return $res;
         }
-        public  function GetListeResponsableByCriteria($groupe)
+
+
+
+
+        $res = $query->getResult();
+        return $res;
+    }
+    public  function GetListeResponsableByCriteria($groupe)
     {
         // $sql = "SELECT r.id,r.Nom,r.Prenoms,r.Dob,r.Occupation,r.Habitation,f.Libelle,r.Telephone,g.Nom as Groupe FROM App\Entity\Responsable r, App\Entity\ExercerFonction ex, App\Entity\Groupe g, App\Entity\FONCTION f ";
         // $sql =$sql."WHERE r.id = ex.Responsable ";
@@ -474,51 +455,49 @@ class QueryClass
                     on r.id = form.responsable_id
                     left outer join formation fm
                     on form.formation_id = fm.id
-                    where r.groupe_id = ".$groupe."
-                    and ex.annee_pastorale_id=".$this->activeYear->getId()."; ";
+                    where r.groupe_id = " . $groupe . "
+                    and ex.annee_pastorale_id=" . $this->activeYear->getId() . "; ";
 
-                    $stmt = $this->em->getConnection()->prepare($query);
-                    $stmt->execute();
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
         return $stmt->fetchAllAssociative();
     }
-        public  function GetListeJeuneCotiseByCriteria($groupe,$branche)
-        {
-            if($branche=="0")
-            {
-                //tout les branches
-   $sql = "SELECT c.id,c.Matricule,j.Nom,j.Prenoms,j.Telephone,g.Nom as Groupe FROM App\Entity\Cotisation c, App\Entity\JEUNE j, App\Entity\INSCRIPTION i, App\Entity\Groupe g";
-            $sql=$sql." WHERE c.Jeune = j.id";
-            $sql=$sql." AND j.id = i.Jeunes";
-            $sql=$sql." AND j.Groupe = g.id";
-            $sql=$sql." AND j.Groupe = :groupe";
-            //$sql=$sql." AND j.branche = :branche";
-            }
-            else{
-                   $sql = "SELECT c.id,c.Matricule,j.Nom,j.Prenoms,j.Telephone,g.Nom as Groupe FROM App\Entity\Cotisation c, App\Entity\JEUNE j, App\Entity\INSCRIPTION i, App\Entity\Groupe g";
-            $sql=$sql." WHERE c.Jeune = j.id";
-            $sql=$sql." AND j.id = i.Jeunes";
-            $sql=$sql." AND j.Groupe = g.id";
-            $sql=$sql." AND j.Groupe = :groupe";
-            $sql=$sql." AND j.branche = :branche";
-            }
-         
-            $query = $this->em->createQuery($sql);
-            $query->setParameter('groupe',$groupe);
-            $query->setParameter('branche',$branche);
-            $res = $query->getResult();
-            return $res;
-        }
-        public  function GetListeRespoCotiseByCriteria($groupe)
+    public  function GetListeJeuneCotiseByCriteria($groupe, $branche)
     {
-        $sql = "SELECT c.id,c.Matricule,r.Nom,r.Prenoms,r.Telephone,g.Nom as Groupe FROM App\Entity\Cotisation c, App\Entity\Responsable r, App\Entity\ExercerFonction ex, App\Entity\Groupe g";
-        $sql=$sql." WHERE c.Responsable = r.id ";
-        $sql=$sql." AND r.id = ex.Responsable";
-        $sql=$sql." AND r.groupe = g.id";
-        $sql=$sql." AND r.Statut = 1";
-        $sql=$sql." AND r.groupe = :groupe";
+        if ($branche == "0") {
+            //tout les branches
+            $sql = "SELECT c.id,c.Matricule,j.Nom,j.Prenoms,j.Telephone,g.Nom as Groupe FROM App\Entity\Cotisation c, App\Entity\JEUNE j, App\Entity\INSCRIPTION i, App\Entity\Groupe g";
+            $sql = $sql . " WHERE c.Jeune = j.id";
+            $sql = $sql . " AND j.id = i.Jeunes";
+            $sql = $sql . " AND j.Groupe = g.id";
+            $sql = $sql . " AND j.Groupe = :groupe";
+            //$sql=$sql." AND j.branche = :branche";
+        } else {
+            $sql = "SELECT c.id,c.Matricule,j.Nom,j.Prenoms,j.Telephone,g.Nom as Groupe FROM App\Entity\Cotisation c, App\Entity\JEUNE j, App\Entity\INSCRIPTION i, App\Entity\Groupe g";
+            $sql = $sql . " WHERE c.Jeune = j.id";
+            $sql = $sql . " AND j.id = i.Jeunes";
+            $sql = $sql . " AND j.Groupe = g.id";
+            $sql = $sql . " AND j.Groupe = :groupe";
+            $sql = $sql . " AND j.branche = :branche";
+        }
 
         $query = $this->em->createQuery($sql);
-        $query->setParameter('groupe',$groupe);
+        $query->setParameter('groupe', $groupe);
+        $query->setParameter('branche', $branche);
+        $res = $query->getResult();
+        return $res;
+    }
+    public  function GetListeRespoCotiseByCriteria($groupe)
+    {
+        $sql = "SELECT c.id,c.Matricule,r.Nom,r.Prenoms,r.Telephone,g.Nom as Groupe FROM App\Entity\Cotisation c, App\Entity\Responsable r, App\Entity\ExercerFonction ex, App\Entity\Groupe g";
+        $sql = $sql . " WHERE c.Responsable = r.id ";
+        $sql = $sql . " AND r.id = ex.Responsable";
+        $sql = $sql . " AND r.groupe = g.id";
+        $sql = $sql . " AND r.Statut = 1";
+        $sql = $sql . " AND r.groupe = :groupe";
+
+        $query = $this->em->createQuery($sql);
+        $query->setParameter('groupe', $groupe);
         $res = $query->getResult();
         return $res;
     }
@@ -528,16 +507,16 @@ class QueryClass
 
 
     /*----------------------- ID JEUNE -----------------------------*/
-    public function GetLastIdJeune(){
+    public function GetLastIdJeune()
+    {
         $sql = "SELECT j.id from App\Entity\JEUNE j ";
-        $sql = $sql." ORDER BY j.DateCreation DESC ";
-        $sql = $sql."limit 1 ";
+        $sql = $sql . " ORDER BY j.DateCreation DESC ";
+        $sql = $sql . "limit 1 ";
         echo $sql;
         $query = $this->em->createQuery($sql);
         $res = $query->getResult();
-       // echo $res;
+        // echo $res;
         return $res;
-
     }
     /*----------------------- ID JEUNE -----------------------------*/
 
@@ -545,16 +524,16 @@ class QueryClass
     /*----------------------- ID RESPONSABLE -----------------------------*/
 
 
-    public  function GetNbreJeuneCotiseByCriteria($groupe,$branche)
+    public  function GetNbreJeuneCotiseByCriteria($groupe, $branche)
     {
         $sql = "SELECT count(c.id) FROM App\Entity\Cotisation c, App\Entity\JEUNE j, App\Entity\INSCRIPTION i, App\Entity\Groupe g";
-        $sql=$sql." WHERE c.Jeune = j.id";
-        $sql=$sql." AND j.id = i.Jeunes";
-        $sql=$sql." AND j.Groupe = g.id";
-        $sql=$sql." AND j.branche = :branche";
-        $sql=$sql." AND j.Groupe = :groupe";
+        $sql = $sql . " WHERE c.Jeune = j.id";
+        $sql = $sql . " AND j.id = i.Jeunes";
+        $sql = $sql . " AND j.Groupe = g.id";
+        $sql = $sql . " AND j.branche = :branche";
+        $sql = $sql . " AND j.Groupe = :groupe";
         $query = $this->em->createQuery($sql);
-        $query->setParameter('groupe',$groupe);
+        $query->setParameter('groupe', $groupe);
         $query->setParameter('branche', $branche);
 
         $res = $query->getSingleScalarResult();
@@ -589,9 +568,10 @@ class QueryClass
 
 
 
-    public function GetAllProgrammesByActivite($activiteid){
-        $query = "select id,libelle libelledetails, date datedetails, description, statut, deroulement,responsable_activite  from details where activite_id = '".$activiteid."'";
-       
+    public function GetAllProgrammesByActivite($activiteid)
+    {
+        $query = "select id,libelle libelledetails, date datedetails, description, statut, deroulement,responsable_activite  from details where activite_id = '" . $activiteid . "'";
+
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
@@ -608,7 +588,7 @@ class QueryClass
 
 
 
-    
+
     public function GetJeunesActifByGroupe($groupe)
     {
         // $conn = $this->em->getConnection();
@@ -618,32 +598,19 @@ class QueryClass
         // return $stmt->fetchAllAssociative();
 
 
-        $sql="select jeunes.id, jeunes.nom, jeunes.prenoms, jeunes.dob, jeunes.occupation, jeunes.lieu_habitation, branche.libelle branche, groupe.nom groupe, jeunes.telephone
+        $sql = "select jeunes.id, jeunes.nom, jeunes.prenoms, jeunes.dob, jeunes.occupation, jeunes.lieu_habitation, branche.libelle branche, groupe.nom groupe, jeunes.telephone
         from jeune jeunes, inscription inscriptions, branche branche, groupe groupe
         where jeunes.id = inscriptions.jeunes_id
         and jeunes.branche_id = branche.id
         and jeunes.groupe_id = groupe.id
-        and inscriptions.annee_id = ".$this->activeYear->getId()."
+        and inscriptions.annee_id = " . $this->activeYear->getId() . "
         and jeunes.statut='1'
-        and jeunes.groupe_id=".$groupe."
+        and jeunes.groupe_id=" . $groupe . "
         order by jeunes.date_creation desc;";
 
         $stmt = $this->em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
     public function GetResponsableActifByGroupe($groupe)
@@ -665,13 +632,11 @@ class QueryClass
         and responsables.id = responsable_formation.responsable_id_id
         and formation.id = responsable_formation.formation_id_id
         and responsables.statut = '1'
-        and responsables.groupe_id = ".$groupe."
-        and exercer.annee_pastorale_id = ".$this->activeYear->getId().";";
+        and responsables.groupe_id = " . $groupe . "
+        and exercer.annee_pastorale_id = " . $this->activeYear->getId() . ";";
         $stmt = $this->em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
-
-
     }
 
 
@@ -689,17 +654,17 @@ class QueryClass
         $sql = "select r.Id, r.Nom, r.Prenoms, r.Telephone
         from responsable r, exercer_fonction ex
         where r.id = ex.responsable_id
-        and ex.annee_pastorale_id=".$this->activeYear->getId()."
-        and r.groupe_id = ".$groupe."
-        and r.id not in(select c.responsable_id from cotisation c where c.annee_pastorale_id=".$this->activeYear->getId()." and c.responsable_id is not null)";
+        and ex.annee_pastorale_id=" . $this->activeYear->getId() . "
+        and r.groupe_id = " . $groupe . "
+        and r.id not in(select c.responsable_id from cotisation c where c.annee_pastorale_id=" . $this->activeYear->getId() . " and c.responsable_id is not null)";
         $stmt = $this->em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
     }
 
-    
-  
-    public function GetNbreJeuneByGroupeByBrancheByAnnee($groupe,$branche)
+
+
+    public function GetNbreJeuneByGroupeByBrancheByAnnee($groupe, $branche)
     {
         // $conn = $this->em->getConnection();
         // $sql = "call SP_GET_NBRE_JEUNE_BY_GROUPE_BRANCHE('".$groupe."','".$this->activeYear->getId()."','".$branche."');";
@@ -710,17 +675,13 @@ class QueryClass
         $sql = "SELECT count(jeunes_id)
         FROM jeune jeunes, inscription inscriptions
         where jeunes.id = inscriptions.jeunes_id
-        and inscriptions.annee_id=".$this->activeYear->getId()."
+        and inscriptions.annee_id=" . $this->activeYear->getId() . "
         and jeunes.statut = '1'
-        and jeunes.groupe_id=".$groupe."
-        and jeunes.branche_id= ".$branche.";";
+        and jeunes.groupe_id=" . $groupe . "
+        and jeunes.branche_id= " . $branche . ";";
         $stmt = $this->em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchOne();
-
-
-
-
     }
 
 
@@ -739,21 +700,15 @@ class QueryClass
         on jeune.id = inscription.jeunes_id
         LEFT outer join cotisation
         on cotisation.jeune_id = inscription.jeunes_id
-        where jeune.groupe_id = ".$groupe."
-        and inscription.annee_id = ".$this->activeYear->getId()."
+        where jeune.groupe_id = " . $groupe . "
+        and inscription.annee_id = " . $this->activeYear->getId() . "
         and cotisation.id is null";
         $stmt = $this->em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
-
-
-
-
-
-
     }
     //TOTAL JEUNE BY GENRE BY GROUPE
-    public function GetNbreJeuneByGenreByGroupe($groupe,$genre)
+    public function GetNbreJeuneByGenreByGroupe($groupe, $genre)
     {
         // $conn = $this->em->getConnection();
         // $sql = "call SP_GET_NBRE_JEUNE_BY_GROUPE_BY_GENRE_BY_ANNEE('".$genre."','".$this->activeYear->getId()."','".$groupe."');";
@@ -761,11 +716,10 @@ class QueryClass
         // $stmt->execute();
         // return $stmt->fetchOne();
 
-        $sql = "SELECT count(j.id) FROM jeune j, inscription i  where j.id = i.jeunes_id  and j.statut='1' and j.groupe_id=".$groupe." and i.annee_id=".$this->activeYear->getId()." and j.genre_id=".$genre."";
+        $sql = "SELECT count(j.id) FROM jeune j, inscription i  where j.id = i.jeunes_id  and j.statut='1' and j.groupe_id=" . $groupe . " and i.annee_id=" . $this->activeYear->getId() . " and j.genre_id=" . $genre . "";
         $stmt = $this->em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchOne();
-
     }
 
     public function GetListeJeuneCotiseParGroupe($groupe)
@@ -780,13 +734,11 @@ class QueryClass
         $sql = "select j.id, j.nom, j.prenoms, c.matricule, j.telephone 
         from cotisation c, jeune j
         where c.jeune_id = j.id
-        and c.annee_pastorale_id=".$this->activeYear->getId()."
-        and j.groupe_id = ".$groupe."";
+        and c.annee_pastorale_id=" . $this->activeYear->getId() . "
+        and j.groupe_id = " . $groupe . "";
         $stmt = $this->em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
-
-
     }
 
     public function GetListResponsablesCotisesParGroupe($groupe)
@@ -801,15 +753,11 @@ class QueryClass
         from responsable r, exercer_fonction ex, cotisation
         where r.id = ex.responsable_id
         and ex.responsable_id = cotisation.responsable_id
-        and ex.annee_pastorale_id=".$this->activeYear->getId()."
-        and r.groupe_id = ".$groupe."";
+        and ex.annee_pastorale_id=" . $this->activeYear->getId() . "
+        and r.groupe_id = " . $groupe . "";
         $stmt = $this->em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
-
-
-
-
     }
 
     public function GetNbreResponsableCotiseParGroupe($groupe)
@@ -824,21 +772,11 @@ class QueryClass
         from responsable r, exercer_fonction ex, cotisation
         where r.id = ex.responsable_id
         and ex.responsable_id = cotisation.responsable_id
-        and ex.annee_pastorale_id=".$this->activeYear->getId()."
-        and r.groupe_id = ".$groupe."";
+        and ex.annee_pastorale_id=" . $this->activeYear->getId() . "
+        and r.groupe_id = " . $groupe . "";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchOne();
-        
-
-
-
-
-
-
-
-
-
     }
 
 
@@ -850,12 +788,10 @@ class QueryClass
         // $stmt->execute();
         // return $stmt->fetchOne();
 
-        $query = "select count(jeune.id) from cotisation , jeune  where cotisation.jeune_id = jeune.id and cotisation.annee_pastorale_id=".$this->activeYear->getId()." and jeune.groupe_id = ".$groupe.";";
+        $query = "select count(jeune.id) from cotisation , jeune  where cotisation.jeune_id = jeune.id and cotisation.annee_pastorale_id=" . $this->activeYear->getId() . " and jeune.groupe_id = " . $groupe . ";";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchOne();
-        
-
     }
 
 
@@ -868,58 +804,49 @@ class QueryClass
         and exercer_fonction.fonction_id = fonction.id
         and responsable.id = responsable_formation.responsable_id_id
         and responsable_formation.formation_id_id = formation.id
-        and exercer_fonction.annee_pastorale_id = '".$this->activeYear->getId()."'
-        and responsable.id ='".$id."';";
+        and exercer_fonction.annee_pastorale_id = '" . $this->activeYear->getId() . "'
+        and responsable.id ='" . $id . "';";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
-       
     }
 
     public function GetExercerfonction($respo)
     {
-        $query="SELECT * from exercer_fonction where responsable_id = '".$respo."' and annee_pastorale_id = '".$this->activeYear->getId()."'";
+        $query = "SELECT * from exercer_fonction where responsable_id = '" . $respo . "' and annee_pastorale_id = '" . $this->activeYear->getId() . "'";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchOne();
-       
     }
 
 
     public function GetChefByFormation($groupe, $formation)
     {
 
-        if($groupe=="TOUT" && $formation<>"TOUT")
-        {
-            $query="select r.id, r.nom, r.prenoms,r.dob, f.libelle,g.paroisse from responsable r, responsable_formation rf, formation f, groupe g
+        if ($groupe == "TOUT" && $formation <> "TOUT") {
+            $query = "select r.id, r.nom, r.prenoms,r.dob, f.libelle,g.paroisse from responsable r, responsable_formation rf, formation f, groupe g
             where r.id = rf.responsable_id_id
             and rf.formation_id_id = f.id
             and r.groupe_id = g.id
-            and rf.formation_id_id = '".$formation."'";
-        }
-        else if($formation=="TOUT" && $groupe<>"TOUT") 
-        {
-            $query="select r.id, r.nom, r.prenoms,r.dob, f.libelle,g.paroisse from responsable r, responsable_formation rf, formation f, groupe g
+            and rf.formation_id_id = '" . $formation . "'";
+        } else if ($formation == "TOUT" && $groupe <> "TOUT") {
+            $query = "select r.id, r.nom, r.prenoms,r.dob, f.libelle,g.paroisse from responsable r, responsable_formation rf, formation f, groupe g
             where r.id = rf.responsable_id_id
             and rf.formation_id_id = f.id
             and r.groupe_id = g.id
-            and r.groupe_id='".$groupe."'";
-        }
-        else if($groupe=="TOUT" && $formation=="TOUT")
-        {
-            $query="select r.id, r.nom, r.prenoms,r.dob, f.libelle,g.paroisse from responsable r, responsable_formation rf, formation f, groupe g
+            and r.groupe_id='" . $groupe . "'";
+        } else if ($groupe == "TOUT" && $formation == "TOUT") {
+            $query = "select r.id, r.nom, r.prenoms,r.dob, f.libelle,g.paroisse from responsable r, responsable_formation rf, formation f, groupe g
             where r.id = rf.responsable_id_id
             and rf.formation_id_id = f.id
             and r.groupe_id = g.id";
-        }
-        else
-        {
-            $query="select r.id, r.nom, r.prenoms,r.dob, f.libelle,g.paroisse from responsable r, responsable_formation rf, formation f, groupe g
+        } else {
+            $query = "select r.id, r.nom, r.prenoms,r.dob, f.libelle,g.paroisse from responsable r, responsable_formation rf, formation f, groupe g
             where r.id = rf.responsable_id_id
             and rf.formation_id_id = f.id
             and r.groupe_id = g.id
-            and r.groupe_id='".$groupe."'
-            and rf.formation_id_id = '".$formation."'";
+            and r.groupe_id='" . $groupe . "'
+            and rf.formation_id_id = '" . $formation . "'";
         }
 
 
@@ -928,43 +855,39 @@ class QueryClass
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
-       
     }
 
 
 
 
- public function GetNextStageFormation($stage)
+    public function GetNextStageFormation($stage)
     {
 
 
-        $querystage = "select ordre from formation where id='".$stage."'";
+        $querystage = "select ordre from formation where id='" . $stage . "'";
         $stmt = $this->em->getConnection()->prepare($querystage);
         $stmt->execute();
         $order = $stmt->fetchOne();
-        $stagetogo = $order-1;
+        $stagetogo = $order - 1;
         //maintenant qu'on a l'ordre on va le convertir en int et faire - 1 pour avoir le stage précédent
 
         $querypreivision = "select r.id, r.nom,r.prenoms, r.telephone, g.nom groupe, f.libelle from responsable r,                       responsable_formation rf, formation f, groupe g
                             where r.id = rf.responsable_id_id
                             and rf.formation_id_id = f.id
                             and r.groupe_id = g.id
-                            and f.ordre = '".$stagetogo."'";
+                            and f.ordre = '" . $stagetogo . "'";
         $stmt = $this->em->getConnection()->prepare($querypreivision);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
-
-
-       
     }
 
 
 
     /*REQUETES ACTIVITES*/
 
-    public function ListActiviteByGroupe($groupe,$bsoumis)
+    public function ListActiviteByGroupe($groupe, $bsoumis)
     {
-        if($bsoumis==false){
+        if ($bsoumis == false) {
             $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis,
              commentaire,
              case 
@@ -975,10 +898,9 @@ class QueryClass
              from activites ac, annee_pastorale an, groupe gr
         where ac.groupe_id = gr.id
         and ac.anneepastorale_id = an.id
-        and gr.id = '".$groupe."'
-        and an.id = '".$this->activeYear->getId()."'";
-        }
-        else{
+        and gr.id = '" . $groupe . "'
+        and an.id = '" . $this->activeYear->getId() . "'";
+        } else {
             $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis, commentaire,
             case 
             when branche_id is null then 'GROUPE' 
@@ -988,9 +910,9 @@ class QueryClass
             from activites ac, annee_pastorale an, groupe gr
         where ac.groupe_id = gr.id
         and ac.anneepastorale_id = an.id
-        and gr.id = '".$groupe."'
+        and gr.id = '" . $groupe . "'
         and ac.b_soumis != 0
-        and an.id = '".$this->activeYear->getId()."'";
+        and an.id = '" . $this->activeYear->getId() . "'";
         }
         // $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis, commentaire
         // from activites ac, annee_pastorale an, groupe gr
@@ -1010,8 +932,8 @@ class QueryClass
     /* GET INFO GROUPE*/
     public function GetInfoGroupe($groupe)
     {
-        $query = "SELECT * FROM GROUPE WHERE id='".$groupe."'";
-      
+        $query = "SELECT * FROM GROUPE WHERE id='" . $groupe . "'";
+
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
@@ -1021,8 +943,9 @@ class QueryClass
 
 
     /*GET DISTRICT LINKIED TO A GROUP*/
-    public function GetGroupeUnique($groupeid){
-        $query = "select * from groupe where id = '".$groupeid."'";
+    public function GetGroupeUnique($groupeid)
+    {
+        $query = "select * from groupe where id = '" . $groupeid . "'";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
@@ -1032,8 +955,9 @@ class QueryClass
 
 
 
-      /*GET FORMATION SESSIONS*/
-      public function GetSessions(){
+    /*GET FORMATION SESSIONS*/
+    public function GetSessions()
+    {
         $query = "select session_formation.id id, Lieu,date_debut DateDebut,date_fin DateFin,directeur_stage DirecteurStage, formation.libelle Stage
         from session_formation, formation
         where session_formation.stage_formation_id = formation.id";
@@ -1045,17 +969,18 @@ class QueryClass
     /**/
 
 
-    
-      /*GET POTENTIAL PARTICIPANTS*/
-      public function GetListParticipantformation($formationid){
+
+    /*GET POTENTIAL PARTICIPANTS*/
+    public function GetListParticipantformation($formationid)
+    {
         $query = "SELECT responsable.id id, responsable.nom nom , responsable.prenoms prenoms , fonction.libelle fonction, groupe.nom groupe FROM RESPONSABLE, responsable_formation, groupe, exercer_fonction, fonction
         where responsable.groupe_id = groupe.id
         and responsable.id = responsable_formation.responsable_id_id
         and responsable.id = exercer_fonction.responsable_id
         and exercer_fonction.fonction_id = fonction.id
-        and responsable_formation.formation_id_id = '".$formationid."'
+        and responsable_formation.formation_id_id = '" . $formationid . "'
         and responsable.id not in (select responsable_id_id from session_formation_responsable)
-        and exercer_fonction.annee_pastorale_id = '".$this->activeYear->getId()."' ";
+        and exercer_fonction.annee_pastorale_id = '" . $this->activeYear->getId() . "' ";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
@@ -1065,8 +990,9 @@ class QueryClass
 
 
 
-     /*GET POTENTIAL PARTICIPANTS*/
-     public function GetResponsableBy_nextSession($sessionid){
+    /*GET POTENTIAL PARTICIPANTS*/
+    public function GetResponsableBy_nextSession($sessionid)
+    {
         $query = "select session_formation_responsable.id Id,
          responsable.nom Nom , responsable.prenoms Prenoms, groupe.nom Groupe
         from session_formation_responsable, responsable, groupe, exercer_fonction, fonction
@@ -1075,8 +1001,8 @@ class QueryClass
         and responsable.id = exercer_fonction.responsable_id
         and exercer_fonction.fonction_id = fonction.id
         and session_formation_responsable.bconfirm_pariticpation = 0
-        and session_id_id = '".$sessionid."'
-        and annee_pastorale_id = '".$this->activeYear->getId()."' ";
+        and session_id_id = '" . $sessionid . "'
+        and annee_pastorale_id = '" . $this->activeYear->getId() . "' ";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
@@ -1085,8 +1011,9 @@ class QueryClass
     /**/
 
 
-     /*GET  PARTICIPANTS WITH CONFIRMATION*/
-     public function GetResponsableWithConfirmationToStage($sessionid){
+    /*GET  PARTICIPANTS WITH CONFIRMATION*/
+    public function GetResponsableWithConfirmationToStage($sessionid)
+    {
         $query = "select 
          responsable.nom Nom , responsable.prenoms Prenoms, responsable.dob,responsable.occupation, fonction.libelle,responsable.telephone, groupe.nom Groupe
         from session_formation_responsable, responsable, groupe, exercer_fonction, fonction
@@ -1095,7 +1022,7 @@ class QueryClass
         and responsable.id = exercer_fonction.responsable_id
         and exercer_fonction.fonction_id = fonction.id
         and session_formation_responsable.bconfirm_pariticpation = 1
-        and session_id_id = ".$sessionid."";
+        and session_id_id = " . $sessionid . "";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
@@ -1105,12 +1032,13 @@ class QueryClass
 
 
     /*GET DOCUMENTS BY ACTIVITE*/
-    public function GetDocumentByActivite($activiteid){
+    public function GetDocumentByActivite($activiteid)
+    {
         $query = "select ac.id, dc.id docid, tp.libelle, dc.directory_path, dc.nom
         from activites ac, documents dc, type_document tp
         where ac.id = dc.activite_id
         and dc.type_document_id = tp.id
-        and ac.id = ".$activiteid."";
+        and ac.id = " . $activiteid . "";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
@@ -1130,35 +1058,36 @@ class QueryClass
         $stmt->execute();
         return $stmt->fetchAllAssociative();
     }
-        /*GET RESPONSABLE ROLE*/
-        public function GetRespoRole($respoId){
-            $query = "select f.role
+    /*GET RESPONSABLE ROLE*/
+    public function GetRespoRole($respoId)
+    {
+        $query = "select f.role
             from responsable r, exercer_fonction exf, fonction f
             where r.id = exf.responsable_id
             and exf.fonction_id = f.Id
-            and exf.annee_pastorale_id ='".$this->activeYear->getId()."' 
-            and r.id = '".$respoId."' ";
-            $stmt = $this->em->getConnection()->prepare($query);
-            $stmt->execute();
-            return $stmt->fetchOne();
-        }
+            and exf.annee_pastorale_id ='" . $this->activeYear->getId() . "' 
+            and r.id = '" . $respoId . "' ";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchOne();
+    }
 
     /*GET MOUVEMENT*/
     public function GetPeriodes()
     {
         $query = "select p.id, p.code, p.datedebut, p.datefin, p.etat, ap.code_annee codeannee
         from periode p , annee_pastorale ap
-        where p.anneepastorale_id = ap.id" ;
+        where p.anneepastorale_id = ap.id";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
     }
-        /**/
+    /**/
 
     public function GetRubriques()
     {
         $query = "select *
-        from rubrique" ;
+        from rubrique";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
@@ -1167,7 +1096,7 @@ class QueryClass
     public function GetSousRubriques()
     {
         $query = "select r.id, r.code, r.libelle, rs.libelle rubrique
-        from rubrique r, sous_rubrique rs" ;
+        from rubrique r, sous_rubrique rs";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
@@ -1176,7 +1105,7 @@ class QueryClass
     public function GetEvenements($identite)
     {
         $query = "select *  from evenement
-        where  id_entite=".$identite." " ;
+        where  id_entite=" . $identite . " ";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
@@ -1185,7 +1114,7 @@ class QueryClass
     public function GetSousRubrique($rubriqueid)
     {
         $query = "select * from sous_rubrique
-        where  rubrique_id=".$rubriqueid." " ;
+        where  rubrique_id=" . $rubriqueid . " ";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
@@ -1194,33 +1123,33 @@ class QueryClass
     public function GetMouvementsByEvent(int $eventId)
     {
         $conn = $this->em->getConnection();
-        $sql = "call SP_GET_MOUVEMENTS_BY_EVENT('".$eventId."');";
+        $sql = "call SP_GET_MOUVEMENTS_BY_EVENT('" . $eventId . "');";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAllAssociative();   
-    
+        return $stmt->fetchAllAssociative();
     }
 
-        /*Groupe By District*/
-        public function GetGroupeByDistrict($districtId){
-            $query = "select id, nom, nick_name,commissariat_district_id from groupe where commissariat_district_id = ".$districtId."";
-            $stmt = $this->em->getConnection()->prepare($query);
-            $stmt->execute();
-            return $stmt->fetchAllAssociative();
-        }
-        /**/
+    /*Groupe By District*/
+    public function GetGroupeByDistrict($districtId)
+    {
+        $query = "select id, nom, nick_name,commissariat_district_id from groupe where commissariat_district_id = " . $districtId . "";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+    /**/
 
 
     public function GetMouvementByEntite(int $entiteid)
     {
         $conn = $this->em->getConnection();
-        $sql = "call GET_MOUVEMENT_ENTITE('".$entiteid."');";
+        $sql = "call GET_MOUVEMENT_ENTITE('" . $entiteid . "');";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
     }
-        public function GetAllMembreDistrict()
-        {
+    public function GetAllMembreDistrict()
+    {
         $query = "select d.id, d.Nom, d.Prenoms, d.dob Dob , f.libelle fonction, d.telephone Telephone, d.id 'Action', 1 as 'district'
             from district d, exercer_fonction ef, exercer_fonction_district efd, fonction f
             where d.id = efd.district_id
@@ -1234,50 +1163,50 @@ class QueryClass
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
-        }
+    }
 
-        public function GetFunctionDistrict($id)
-        {
-            $query = "select  f.role 
+    public function GetFunctionDistrict($id)
+    {
+        $query = "select  f.role 
                     from district d, exercer_fonction ef, exercer_fonction_district efd, fonction f
                     where d.id = efd.district_id
                     and efd.exercer_fonction_id = ef.id
                     and ef.fonction_id = f.id
-                    and d.id = ".$id." ";
-            $stmt = $this->em->getConnection()->prepare($query);
-            $stmt->execute();
-            return $stmt->fetchOne();
-        }
-
-    public function GetSoldeEntite($entite,$entiteid)
-    {
-        $query = "select sum(montant) from mouvement_entite where entite_id = '".$entiteid."' and entite='".$entite."'" ;
+                    and d.id = " . $id . " ";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchOne();
     }
 
-    public function GetSoldeMvtEntiteMensule($entite,$entiteid)
+    public function GetSoldeEntite($entite, $entiteid)
+    {
+        $query = "select sum(montant) from mouvement_entite where entite_id = '" . $entiteid . "' and entite='" . $entite . "'";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchOne();
+    }
+
+    public function GetSoldeMvtEntiteMensule($entite, $entiteid)
     {
         $firstDate = date('Y-m-01');
         $lastDate = date('Y-m-t');
-        $query = "select sum(montant) from mouvement_entite where entite_id = ".$entiteid." and entite=".$entite."
-        and datemvt>='".$firstDate."' and datemvt <= '".$lastDate."'" ;
+        $query = "select sum(montant) from mouvement_entite where entite_id = " . $entiteid . " and entite=" . $entite . "
+        and datemvt>='" . $firstDate . "' and datemvt <= '" . $lastDate . "'";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchOne();
     }
 
-    public function getOperationParDate($datedebut,$datefin,$entite,$entiteid)
+    public function getOperationParDate($datedebut, $datefin, $entite, $entiteid)
     {
         // $dtdebut = new \date($datedebut);
         // $dtfin = new \date($datefin);
         $query = "SELECT e.id ID, sr.libelle SOUSRUBRIQUE,e.datemvt DATE_MOUVEMENT,e.montant MONTANT, e.description COMMENTAIRE
                   FROM mouvement_entite e, sous_rubrique sr
                   WHERE e.sousrubrique_id = sr.id
-                  and e.entite = ".$entite."
-                  and e.entite_id = ".$entiteid."
-                  and e.datemvt>'".$datedebut."' and e.datemvt <='".$datefin."' ";
+                  and e.entite = " . $entite . "
+                  and e.entite_id = " . $entiteid . "
+                  and e.datemvt>'" . $datedebut . "' and e.datemvt <='" . $datefin . "' ";
         $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
@@ -1285,56 +1214,30 @@ class QueryClass
     /**/
 
 
-    
+    // public function GetStatDistrictDash()
+    // {
+    //     $conn = $this->em->getConnection();
+    //     $sql = "call SP_GET_INFO_STATISTIQUE_ADMIN('".$groupe."','".$this->activeYear->getId()."');";
+    //     $stmt = $conn->prepare($sql);
+    //     $stmt->execute();
+    //     return $stmt->fetchAllAssociative();
+
+    // }
 
 
-
-
-
-
-
-
-
-
-
-        // public function GetStatDistrictDash()
-        // {
-        //     $conn = $this->em->getConnection();
-        //     $sql = "call SP_GET_INFO_STATISTIQUE_ADMIN('".$groupe."','".$this->activeYear->getId()."');";
-        //     $stmt = $conn->prepare($sql);
-        //     $stmt->execute();
-        //     return $stmt->fetchAllAssociative();
-
-        // }
-
-
-        public function GetListMembreDistrict($districtId)
-        {
-            $query = "select d.id id, d.nom Nom, d.prenoms Prenoms, f.libelle Fonction, d.telephone Telephone
+    public function GetListMembreDistrict($districtId)
+    {
+        $query = "select d.id id, d.nom Nom, d.prenoms Prenoms, f.libelle Fonction, d.telephone Telephone
             from district d, commissariat_district cd, exercer_fonction_district efd, exercer_fonction ef, fonction f
             where d.id = efd.district_id
             and efd.exercer_fonction_id = ef.id
             and ef.fonction_id = f.id
             and d.commissariat_district_id = cd.id
-            and d.commissariat_district_id = '".$districtId."' ";
-            $stmt = $this->em->getConnection()->prepare($query);
-            $stmt->execute();
-            return $stmt->fetchAllAssociative();
-        }
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
+            and d.commissariat_district_id = '" . $districtId . "' ";
+        $stmt = $this->em->getConnection()->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
 
 
 
