@@ -128,6 +128,11 @@ class LoginCustomController extends AbstractController
                 $target="Dashboard"; 
                
             }
+            else if(strval($r) == "ROLE_CD_FINANCE")
+            {
+                $target="Caisse"; 
+               
+            }
         }
 
         // if(in_array('ROLE_CONFIG',$roles,true))

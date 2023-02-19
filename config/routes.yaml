@@ -379,7 +379,7 @@ ModifierResponsable:
     path: /ModifierResponsable
     controller: App\Controller\ResponsableController::UpdateResponsable
 Caisse:
-    path: /Caisse
+    path: /Caissecaisse
     controller: App\Controller\CaisseController::index
 CreerCaisse:
     path: /CreerCaisse

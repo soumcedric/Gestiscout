@@ -82,7 +82,7 @@ class CaisseController extends AbstractController
     }
 
     /**
-     * @Route("/caisse", name="caisse")
+     * @Route("/Caisse", name="Caisse")
      */
     public function index(): Response
     {
