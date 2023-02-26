@@ -46,7 +46,7 @@ function loadEvenement()
             infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
             infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
             infoPostFix: "",
-            loadingRecords: "Chargement en cours...",
+            loadingRecords: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
             zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
             emptyTable: "Aucune donnée disponible dans le tableau",
             paginate: {
@@ -140,6 +140,9 @@ function cloturerEvenement(id)
 
 function cloturerevenement(id)
 {
+    debugger
+    $('.progress-bar').css('width','0%').attr('aria-valuenow', 0);
+    $('.progress-bar').css('width','10%').attr('aria-valuenow', 10);
     $.get("/CloturerEvent/" + id, function (res) {
         debugger;
         if(res.ok)
@@ -155,12 +158,18 @@ function BilanEven(id)
 {
     $.get("/BilanEvent/" + id, function (res) {
        // debugger;
-        if(res.ok)
-        {$("#percent").text(res.percent);
-         $('.progress-bar').css('width', res.percent+'%').attr('aria-valuenow', res.percent); 
-         
-        $("#closemodal").prop('disabled',false);
-    }
+        if (res.ok) {
+            debugger
+            $("#percent").text(res.percent);
+            $('.progress-bar').css('width', res.percent + '%').attr('aria-valuenow', res.percent);
+            
+            setTimeout(() => {
+                $("#closemodal").prop('disabled', false);
+            }, 2000);
+
+           // $("#closemodal").prop('disabled', false);
+            //$("#closemodal").addClass('disabled', false);
+        }
     });
 }
 

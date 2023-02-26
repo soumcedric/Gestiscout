@@ -152,7 +152,7 @@ function loadMvt(id)
             infoEmpty: "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
             infoFiltered: "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
             infoPostFix: "",
-            loadingRecords: "Chargement en cours...",
+            loadingRecords: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
             zeroRecords: "Aucun &eacute;l&eacute;ment &agrave; afficher",
             emptyTable: "Aucune donnée disponible dans le tableau",
             paginate: {

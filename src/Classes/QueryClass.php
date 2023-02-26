@@ -1122,9 +1122,17 @@ class QueryClass
 
     public function GetMouvementsByEvent(int $eventId)
     {
-        $conn = $this->em->getConnection();
-        $sql = "call SP_GET_MOUVEMENTS_BY_EVENT('" . $eventId . "');";
-        $stmt = $conn->prepare($sql);
+        // $conn = $this->em->getConnection();
+        // $sql = "call SP_GET_MOUVEMENTS_BY_EVENT('" . $eventId . "');";
+        // $stmt = $conn->prepare($sql);
+        // $stmt->execute();
+        // return $stmt->fetchAllAssociative();
+        $query = "SELECT TR.ID, RS.LIBELLE SOUSRUBRIQUE, TR.MONTANT, TR.DATE_MOUVEMENT,TR.COMMENTAIRE
+        FROM MOUVEMENT_TRESO_ACTIVITE TR, SOUS_RUBRIQUE RS
+        where TR.sous_rubrique_id = rs.id
+        and tr.event_id = ".$eventId."
+        order by tr.date_mouvement DESC";
+        $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
     }
@@ -1142,9 +1150,17 @@ class QueryClass
 
     public function GetMouvementByEntite(int $entiteid)
     {
-        $conn = $this->em->getConnection();
-        $sql = "call GET_MOUVEMENT_ENTITE('" . $entiteid . "');";
-        $stmt = $conn->prepare($sql);
+        // $conn = $this->em->getConnection();
+        // $sql = "call GET_MOUVEMENT_ENTITE('" . $entiteid . "');";
+        // $stmt = $conn->prepare($sql);
+        // $stmt->execute();
+        // return $stmt->fetchAllAssociative();
+
+        $query = "SELECT mouvement_entite.id ID, mouvement_entite.montant MONTANT, mouvement_entite.description COMMENTAIRE, sous_rubrique.libelle SOUSRUBRIQUE, mouvement_entite.datemvt DATE_MOUVEMENT
+        FROM mouvement_entite left join sous_rubrique
+        on mouvement_entite.sousrubrique_id = sous_rubrique.id
+        where entite_id =".$entiteid;
+        $stmt = $this->em->getConnection()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
     }

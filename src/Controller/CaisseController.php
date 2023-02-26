@@ -709,7 +709,7 @@ class CaisseController extends AbstractController
         $mvts = $mvtactivite->findBy(array("EventId"=>$id));
         $credits = 0;
         $debits = 0;
-        dump($mvts);
+       // dump($mvts);
         foreach($mvts as $key)
         {
             
@@ -717,8 +717,8 @@ class CaisseController extends AbstractController
             else $debits += $key->getMontant();
         }
 
-        dump($credits);
-        dump($debits);
+        // dump($credits);
+        // dump($debits);
 
             $bilan = new BilanTresoEvent();
             $bilan->setEventId($id)
