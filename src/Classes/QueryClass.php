@@ -1127,9 +1127,9 @@ class QueryClass
         // $stmt = $conn->prepare($sql);
         // $stmt->execute();
         // return $stmt->fetchAllAssociative();
-        $query = "SELECT TR.ID, RS.LIBELLE SOUSRUBRIQUE, TR.MONTANT, TR.DATE_MOUVEMENT,TR.COMMENTAIRE
-        FROM MOUVEMENT_TRESO_ACTIVITE TR, SOUS_RUBRIQUE RS
-        where TR.sous_rubrique_id = rs.id
+        $query = "SELECT tr.ID, rs.LIBELLE SOUSRUBRIQUE, tr.MONTANT, tr.DATE_MOUVEMENT,tr.COMMENTAIRE
+        FROM mouvement_treso_activite tr, sous_rubrique rs
+        where tr.sous_rubrique_id = rs.id
         and tr.event_id = ".$eventId."
         order by tr.date_mouvement DESC";
         $stmt = $this->em->getConnection()->prepare($query);
