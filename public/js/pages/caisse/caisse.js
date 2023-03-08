@@ -252,7 +252,8 @@ function loadEventSelection()
             $("#selevent").append("<option selected>--sélectionner un évènement--</option>");
             $.each(res.data, function(i,n){
                 debugger
-                $("#selevent").append("<option value="+n.id+">"+n.libelle+"</option>");
+                if(n.statut!="1") 
+                     $("#selevent").append("<option value="+n.id+">"+n.libelle+"</option>");
             })
 
         }

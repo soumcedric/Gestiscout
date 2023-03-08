@@ -34,6 +34,7 @@ use App\Repository\RubriqueRepository;
 use App\Repository\SousRubriqueRepository;
 use App\Repository\TresorerieActiviteRepository;
 use Exception;
+use phpDocumentor\Reflection\Types\Boolean;
 use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -272,12 +273,12 @@ class CaisseController extends AbstractController
         //  2 => district
         $entite = $this->ValueSession->get("entite");
         if ($entite == 2) {
-            $entiteId =  $this->ValueSession->get("districtid")->getId();
+            $iduserdistrict=  $this->ValueSession->get("districtid")->getId();
+            $entiteId = $this->districtRepo->findOneBy(["id"=>$iduserdistrict])->getCommissariatDistrict()->getId();
         } else {
             $entiteId = $this->ValueSession->get("groupeid")->getId();
         }
-        //    dump($entite);
-        dump($entiteId);
+        
         $liste = $this->qclass->GetEvenements($entiteId);
         return new JsonResponse(["ok" => true, "data" => $liste]);
         // return new Response();
@@ -299,12 +300,13 @@ class CaisseController extends AbstractController
         } else //distrit
         {
             $district = $this->ValueSession->get("districtid")->getId();
-
+            //get commissariat district
+            $comdistrict = $this->districtRepo->findOneBy(["id"=>$district])->getCommissariatDistrict()->getId();
             $event = new Evenement();
             $event->setLibelle($value["libelle"])
                 ->setDateCreation(new \DateTime())
                 ->setEntite(2)
-                ->setIdEntite($district)
+                ->setIdEntite($comdistrict)
                 ->setUserCreation(0)
                 ->setStatut(0);
 
@@ -728,9 +730,63 @@ class CaisseController extends AbstractController
 
             $this->entityManager->persist($bilan);
             $this->entityManager->flush();
+
+
+
+            //calcul du solde
+            $solde = $bilan->getTotalCredit()-(-($bilan->getTotalDebit()));
+
+
+
+
+           //district
+           $userconnected = $this->ValueSession->get("id");
+           $districtId = $this->ValueSession->get("districtid")->getId();
+           $userdistrict = $this->districtRepo->findOneBy(["id" => $districtId]);
+           $commissariatDistrictId = $userdistrict->getCommissariatDistrict()->getId();
+
+           //enregistrement du mouvement
+           $newMvt = new MouvementEntite();
+           $newMvt->setDescription($event->getLibelle())
+               ->setEntiteId($commissariatDistrictId)
+               ->setDatemvt(new \DateTime())
+               ->setUsermvt($userconnected)
+               //->setSousrubrique($this->sousRubriqueRepo->findOneBy(["id" => $data["sousrubriqueid"]]))
+               ->setPeriode($this->periodeRepo->findOneBy(["id" => 1]))
+               ->setEntite(2);
+
+
+
+           //get sens rubrique
+           $rubrique = null;
+           if($solde>0) $rubrique = $this->rubriqueRepo->findOneBy(["Sens" => "C"]);
+           else $rubrique = $this->rubriqueRepo->findOneBy(["Sens" => "D"]);
+
+            $sens = $rubrique->getId();
+            $newMvt->setMontant($solde);
+           $sousrubrique = $this->sousRubriqueRepo->findOneBy(array(
+            'Rubrique'=>$rubrique,
+            'Libelle' => 'Activite'
+           ));
+           $newMvt->setSousrubrique($sousrubrique);
+           $this->entityManager->persist($newMvt);
+            $this->entityManager->flush();
+
+
             $result = true;
 
-      
+            //return new Response();
         return new JsonResponse(["ok"=>$result, "percent"=>100]);
     }
+
+
+    function _checkEventState($eventid):bool
+    {
+        $event = $this->eventRepo->findOneBy(["id"=>$eventid]);
+        if($event->getStatut()==false) return false;
+        else return true;
+    }
+   
 }
+
+
