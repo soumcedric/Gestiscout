@@ -72,7 +72,7 @@ $(document).ready(function() {
 
 	// sidebar nav scrolling
 	$('#left-sidebar .sidebar-scroll').slimScroll({
-		height: 'calc(100vh - 50px)',
+		height: 'calc(100vh - 500px)',
 		wheelStep: 10,
 		touchScrollStep: 50,
 		color: '#f5f5f5',
