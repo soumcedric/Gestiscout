@@ -12,7 +12,6 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Symfony\Bundle\SecurityBundle\CacheWarmer\ExpressionCacheWarmer;
-use Symfony\Bundle\SecurityBundle\EventListener\FirewallEventBubblingListener;
 use Symfony\Bundle\SecurityBundle\EventListener\FirewallListener;
 use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
 use Symfony\Bundle\SecurityBundle\Security\FirewallContext;
@@ -32,21 +31,18 @@ use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Core\Authorization\Voter\ExpressionVoter;
 use Symfony\Component\Security\Core\Authorization\Voter\RoleHierarchyVoter;
 use Symfony\Component\Security\Core\Authorization\Voter\RoleVoter;
-use Symfony\Component\Security\Core\Encoder\EncoderFactory;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Role\RoleHierarchy;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\ChainUserProvider;
+use Symfony\Component\Security\Core\User\InMemoryUserChecker;
 use Symfony\Component\Security\Core\User\InMemoryUserProvider;
 use Symfony\Component\Security\Core\User\MissingUserProvider;
-use Symfony\Component\Security\Core\User\UserChecker;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPasswordValidator;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Controller\UserValueResolver;
 use Symfony\Component\Security\Http\Firewall;
+use Symfony\Component\Security\Http\FirewallMapInterface;
 use Symfony\Component\Security\Http\HttpUtils;
 use Symfony\Component\Security\Http\Impersonate\ImpersonateUrlGenerator;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
@@ -60,21 +56,17 @@ return static function (ContainerConfigurator $container) {
 
     $container->services()
         ->set('security.authorization_checker', AuthorizationChecker::class)
-            ->public()
             ->args([
                 service('security.token_storage'),
-                service('security.authentication.manager'),
                 service('security.access.decision_manager'),
-                param('security.access.always_authenticate_before_granting'),
             ])
         ->alias(AuthorizationCheckerInterface::class, 'security.authorization_checker')
 
         ->set('security.token_storage', UsageTrackingTokenStorage::class)
-            ->public()
             ->args([
                 service('security.untracked_token_storage'),
                 service_locator([
-                    'session' => service('session'),
+                    'request_stack' => service('request_stack'),
                 ]),
             ])
             ->tag('kernel.reset', ['method' => 'disableUsageTracking'])
@@ -100,25 +92,16 @@ return static function (ContainerConfigurator $container) {
         ->set('security.authentication.trust_resolver', AuthenticationTrustResolver::class)
 
         ->set('security.authentication.session_strategy', SessionAuthenticationStrategy::class)
-            ->args([param('security.authentication.session_strategy.strategy')])
+            ->args([
+                param('security.authentication.session_strategy.strategy'),
+                service('security.csrf.token_storage')->ignoreOnInvalid(),
+            ])
         ->alias(SessionAuthenticationStrategyInterface::class, 'security.authentication.session_strategy')
 
         ->set('security.authentication.session_strategy_noop', SessionAuthenticationStrategy::class)
             ->args(['none'])
 
-        ->set('security.encoder_factory.generic', EncoderFactory::class)
-            ->args([
-                [],
-            ])
-        ->alias('security.encoder_factory', 'security.encoder_factory.generic')
-        ->alias(EncoderFactoryInterface::class, 'security.encoder_factory')
-
-        ->set('security.user_password_encoder.generic', UserPasswordEncoder::class)
-            ->args([service('security.encoder_factory')])
-        ->alias('security.password_encoder', 'security.user_password_encoder.generic')->public()
-        ->alias(UserPasswordEncoderInterface::class, 'security.password_encoder')
-
-        ->set('security.user_checker', UserChecker::class)
+        ->set('security.user_checker', InMemoryUserChecker::class)
 
         ->set('security.expression_language', ExpressionLanguage::class)
             ->args([service('cache.security_expression_language')->nullOnInvalid()])
@@ -126,10 +109,6 @@ return static function (ContainerConfigurator $container) {
         ->set('security.authentication_utils', AuthenticationUtils::class)
             ->args([service('request_stack')])
         ->alias(AuthenticationUtils::class, 'security.authentication_utils')
-
-        ->set('security.event_dispatcher.event_bubbling_listener', FirewallEventBubblingListener::class)
-            ->abstract()
-            ->args([service('event_dispatcher')])
 
         // Authorization related services
         ->set('security.access.decision_manager', AccessDecisionManager::class)
@@ -183,6 +162,7 @@ return static function (ContainerConfigurator $container) {
                 abstract_arg('Firewall context locator'),
                 abstract_arg('Request matchers'),
             ])
+        ->alias(FirewallMapInterface::class, 'security.firewall.map')
 
         ->set('security.firewall.context', FirewallContext::class)
             ->abstract()
@@ -265,7 +245,7 @@ return static function (ContainerConfigurator $container) {
         ->set('security.validator.user_password', UserPasswordValidator::class)
             ->args([
                 service('security.token_storage'),
-                service('security.encoder_factory'),
+                service('security.password_hasher_factory'),
             ])
             ->tag('validator.constraint_validator', ['alias' => 'security.validator.user_password'])
 

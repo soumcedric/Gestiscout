@@ -12,7 +12,6 @@
 namespace Symfony\Bundle\MakerBundle\Util;
 
 use Symfony\Bundle\MakerBundle\FileManager;
-use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * @author Jesse Rushlow <jr@rushlow.dev>
@@ -21,26 +20,8 @@ use Symfony\Component\HttpKernel\Kernel;
  */
 class PhpCompatUtil
 {
-    /** @var FileManager */
-    private $fileManager;
-
-    public function __construct(FileManager $fileManager)
+    public function __construct(private FileManager $fileManager)
     {
-        $this->fileManager = $fileManager;
-    }
-
-    public function canUseAttributes(): bool
-    {
-        $version = $this->getPhpVersion();
-
-        return version_compare($version, '8alpha', '>=') && Kernel::VERSION_ID >= 50200;
-    }
-
-    public function canUseTypedProperties(): bool
-    {
-        $version = $this->getPhpVersion();
-
-        return version_compare($version, '7.4', '>=');
     }
 
     protected function getPhpVersion(): string
@@ -50,13 +31,13 @@ class PhpCompatUtil
         $composerLockPath = sprintf('%s/composer.lock', $rootDirectory);
 
         if (!$this->fileManager->fileExists($composerLockPath)) {
-            return PHP_VERSION;
+            return \PHP_VERSION;
         }
 
         $lockFileContents = json_decode($this->fileManager->getFileContents($composerLockPath), true);
 
         if (empty($lockFileContents['platform-overrides']) || empty($lockFileContents['platform-overrides']['php'])) {
-            return PHP_VERSION;
+            return \PHP_VERSION;
         }
 
         return $lockFileContents['platform-overrides']['php'];

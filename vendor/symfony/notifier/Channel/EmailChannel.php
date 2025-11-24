@@ -15,6 +15,7 @@ use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mailer\Messenger\SendEmailMessage;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Notifier\Exception\LogicException;
 use Symfony\Component\Notifier\Message\EmailMessage;
@@ -25,14 +26,12 @@ use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
- *
- * @experimental in 5.2
  */
 class EmailChannel implements ChannelInterface
 {
     private $transport;
     private $bus;
-    private $from;
+    private string|Address|null $from;
     private $envelope;
 
     public function __construct(TransportInterface $transport = null, MessageBusInterface $bus = null, string $from = null, Envelope $envelope = null)
@@ -43,7 +42,7 @@ class EmailChannel implements ChannelInterface
 
         $this->transport = $transport;
         $this->bus = $bus;
-        $this->from = $from ?: ($envelope ? $envelope->getSender() : null);
+        $this->from = $from ?: $envelope?->getSender();
         $this->envelope = $envelope;
     }
 
@@ -59,7 +58,7 @@ class EmailChannel implements ChannelInterface
         if ($email instanceof Email) {
             if (!$email->getFrom()) {
                 if (null === $this->from) {
-                    throw new LogicException(sprintf('To send the "%s" notification by email, you should either configure a global "from" or set it in the "asEmailMessage()" method.', get_debug_type($notification)));
+                    throw new LogicException(sprintf('To send the "%s" notification by email, you should either configure a global "from" header, set a sender in the global "envelope" of the mailer configuration or set a "from" header in the "asEmailMessage()" method.', get_debug_type($notification)));
                 }
 
                 $email->from($this->from);

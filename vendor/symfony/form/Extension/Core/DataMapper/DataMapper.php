@@ -38,7 +38,7 @@ class DataMapper implements DataMapperInterface
     /**
      * {@inheritdoc}
      */
-    public function mapDataToForms($data, iterable $forms): void
+    public function mapDataToForms(mixed $data, \Traversable $forms): void
     {
         $empty = null === $data || [] === $data;
 
@@ -60,7 +60,7 @@ class DataMapper implements DataMapperInterface
     /**
      * {@inheritdoc}
      */
-    public function mapFormsToData(iterable $forms, &$data): void
+    public function mapFormsToData(\Traversable $forms, mixed &$data): void
     {
         if (null === $data) {
             return;

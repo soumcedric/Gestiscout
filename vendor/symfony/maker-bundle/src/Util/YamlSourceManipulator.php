@@ -24,22 +24,20 @@ use Symfony\Component\Yaml\Yaml;
  */
 class YamlSourceManipulator
 {
-    const EMPTY_LINE_PLACEHOLDER_VALUE = '__EMPTY_LINE__';
-    const COMMENT_PLACEHOLDER_VALUE = '__COMMENT__';
+    public const EMPTY_LINE_PLACEHOLDER_VALUE = '__EMPTY_LINE__';
+    public const COMMENT_PLACEHOLDER_VALUE = '__COMMENT__';
 
-    const UNSET_KEY_FLAG = '__MAKER_VALUE_UNSET';
-    const ARRAY_FORMAT_MULTILINE = 'multi';
-    const ARRAY_FORMAT_INLINE = 'inline';
+    public const UNSET_KEY_FLAG = '__MAKER_VALUE_UNSET';
+    public const ARRAY_FORMAT_MULTILINE = 'multi';
+    public const ARRAY_FORMAT_INLINE = 'inline';
 
-    const ARRAY_TYPE_SEQUENCE = 'sequence';
-    const ARRAY_TYPE_HASH = 'hash';
+    public const ARRAY_TYPE_SEQUENCE = 'sequence';
+    public const ARRAY_TYPE_HASH = 'hash';
 
     /**
      * @var LoggerInterface|null
      */
     private $logger;
-
-    private $contents;
     private $currentData;
 
     private $currentPosition = 0;
@@ -50,9 +48,9 @@ class YamlSourceManipulator
     private $arrayFormatForDepths = [];
     private $arrayTypeForDepths = [];
 
-    public function __construct(string $contents)
-    {
-        $this->contents = $contents;
+    public function __construct(
+        private string $contents,
+    ) {
         $this->currentData = Yaml::parse($contents);
 
         if (!\is_array($this->currentData)) {
@@ -267,9 +265,6 @@ class YamlSourceManipulator
      *
      * The position should be set *right* where this new key
      * should be inserted.
-     *
-     * @param mixed $key
-     * @param mixed $value
      */
     private function addNewKeyToYaml($key, $value)
     {
@@ -472,14 +467,14 @@ class YamlSourceManipulator
         // In case of multiline, $value is converted as plain string like "Foo\nBar"
         // We need to keep it "as is"
         $newYamlValue = $isMultilineValue ? rtrim($value, "\n") : $this->convertToYaml($value);
-        if ((!\is_array($originalVal) && \is_array($value)) ||
-            ($this->isMultilineString($originalVal) && $this->isMultilineString($value))
+        if ((!\is_array($originalVal) && \is_array($value))
+            || ($this->isMultilineString($originalVal) && $this->isMultilineString($value))
         ) {
             // we're converting from a scalar to a (multiline) array
             // this means we need to break onto the next line
 
             // increase(override) the indentation
-            $newYamlValue = "\n".$this->indentMultilineYamlArray($newYamlValue, ($this->indentationForDepths[$this->depth] + $this->getPreferredIndentationSize()));
+            $newYamlValue = "\n".$this->indentMultilineYamlArray($newYamlValue, $this->indentationForDepths[$this->depth] + $this->getPreferredIndentationSize());
         } elseif ($this->isCurrentArrayMultiline() && $this->isCurrentArraySequence()) {
             // we are a multi-line sequence, so drop to next line, indent and add "- " in front
             $newYamlValue = "\n".$this->indentMultilineYamlArray('- '.$newYamlValue);
@@ -570,7 +565,7 @@ class YamlSourceManipulator
 
     private function getEndOfKeyPosition($key)
     {
-        preg_match($this->getKeyRegex($key), $this->contents, $matches, PREG_OFFSET_CAPTURE, $this->currentPosition);
+        preg_match($this->getKeyRegex($key), $this->contents, $matches, \PREG_OFFSET_CAPTURE, $this->currentPosition);
 
         if (empty($matches)) {
             // for integers, the key may not be explicitly printed
@@ -589,7 +584,7 @@ class YamlSourceManipulator
      */
     private function getEndOfPreviousKeyPosition($key): int
     {
-        preg_match($this->getKeyRegex($key), $this->contents, $matches, PREG_OFFSET_CAPTURE, $this->currentPosition);
+        preg_match($this->getKeyRegex($key), $this->contents, $matches, \PREG_OFFSET_CAPTURE, $this->currentPosition);
 
         if (empty($matches)) {
             // for integers, the key may not be explicitly printed
@@ -628,7 +623,7 @@ class YamlSourceManipulator
         }
 
         // find either a line break or a , that is the end of the previous key
-        while (\in_array(($char = substr($this->contents, $startOfKey - 1, 1)), [',', "\n"])) {
+        while (\in_array($char = substr($this->contents, $startOfKey - 1, 1), [',', "\n"])) {
             --$startOfKey;
         }
 
@@ -684,7 +679,7 @@ class YamlSourceManipulator
 
     private function getKeyRegex($key)
     {
-        return sprintf('#%s( )*:#', preg_quote($key));
+        return sprintf('#(?<!\w)\$?%s\'?( )*:#', preg_quote($key));
     }
 
     private function updateContents(string $newContents, array $newData, int $newPosition)
@@ -714,7 +709,7 @@ class YamlSourceManipulator
     private function convertToYaml($data)
     {
         $indent = $this->depth > 0 && isset($this->indentationForDepths[$this->depth])
-            ? $this->indentationForDepths[$this->depth] / $this->depth
+            ? intdiv($this->indentationForDepths[$this->depth], $this->depth)
             : 4;
 
         $newDataString = Yaml::dump($data, 4, $indent);
@@ -805,8 +800,6 @@ class YamlSourceManipulator
      * This could fail if the currentPath is for new data.
      *
      * @param int $limitLevels If set to 1, the data 1 level up will be returned
-     *
-     * @return mixed
      */
     private function getCurrentData(int $limitLevels = 0)
     {
@@ -835,7 +828,7 @@ class YamlSourceManipulator
             return $endKeyPosition;
         }
 
-        if (is_scalar($value) || null === $value) {
+        if (\is_scalar($value) || null === $value) {
             $offset = null === $offset ? $this->currentPosition : $offset;
 
             if (\is_bool($value)) {
@@ -863,7 +856,7 @@ class YamlSourceManipulator
                 return $offset;
             }
 
-            preg_match(sprintf('#%s#', $pattern), $this->contents, $matches, PREG_OFFSET_CAPTURE, $offset);
+            preg_match(sprintf('#%s#', $pattern), $this->contents, $matches, \PREG_OFFSET_CAPTURE, $offset);
             if (empty($matches)) {
                 throw new YamlManipulationFailedException(sprintf('Cannot find the original value "%s"', $value));
             }
@@ -925,7 +918,7 @@ class YamlSourceManipulator
             return;
         }
 
-        if (false !== strpos($advancedContent, "\n")) {
+        if (str_contains($advancedContent, "\n")) {
             $lines = explode("\n", $advancedContent);
             if (!empty($lines)) {
                 $lastLine = $lines[\count($lines) - 1];
@@ -968,7 +961,7 @@ class YamlSourceManipulator
         }
 
         $context = [
-            'key' => isset($this->currentPath[$this->depth]) ? $this->currentPath[$this->depth] : 'n/a',
+            'key' => $this->currentPath[$this->depth] ?? 'n/a',
             'depth' => $this->depth,
             'position' => $this->currentPosition,
             'indentation' => $this->indentationForDepths[$this->depth],
@@ -1132,7 +1125,7 @@ class YamlSourceManipulator
                 unset($data[$key]);
             }
 
-            if (0 === strpos($val, self::COMMENT_PLACEHOLDER_VALUE)) {
+            if (null !== $val && str_starts_with($val, self::COMMENT_PLACEHOLDER_VALUE)) {
                 unset($data[$key]);
             }
         }
@@ -1336,6 +1329,6 @@ class YamlSourceManipulator
 
     private function isMultilineString($value): bool
     {
-        return \is_string($value) && false !== strpos($value, "\n");
+        return \is_string($value) && str_contains($value, "\n");
     }
 }

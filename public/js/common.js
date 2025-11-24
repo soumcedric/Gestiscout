@@ -1,7 +1,7 @@
 $(function() {
 	"use strict";
 	skinChanger();
-    initSparkline();
+    //initSparkline();
     
     setTimeout(function() {
         $('.page-loader-wrapper').fadeOut();
@@ -14,12 +14,12 @@ $(function() {
         height: 15,
         barColor: '#0E9BE2'
     };
-    $('#mini-bar-chart1').sparkline(values2[0], paramsBar);
-    paramsBar.barColor = '#7CAC25';
-    $('#mini-bar-chart2').sparkline(values2[1], paramsBar);
-    paramsBar.barColor = '#FF4402';
-    $('#mini-bar-chart3').sparkline(values2[2], paramsBar);
-	paramsBar.barColor = '#ff9800';
+    // $('#mini-bar-chart1').sparkline(values2[0], paramsBar);
+    // paramsBar.barColor = '#7CAC25';
+    // $('#mini-bar-chart2').sparkline(values2[1], paramsBar);
+    // paramsBar.barColor = '#FF4402';
+    // $('#mini-bar-chart3').sparkline(values2[2], paramsBar);
+	// paramsBar.barColor = '#ff9800';
 
 	function getRandomValues() {
         // data setup
@@ -40,15 +40,15 @@ $(function() {
 });
 
 // Sparkline
-function initSparkline() {
-	$(".sparkline").each(function() {
-		var $this = $(this);
-		$this.sparkline('html', $this.data());
-	});
+// function initSparkline() {
+// 	$(".sparkline").each(function() {
+// 		var $this = $(this);
+// 		$this.sparkline('html', $this.data());
+// 	});
 
-	// Bar charts using inline values
-	$('.sparkbar').sparkline('html', { type: 'bar' });	
-}
+// 	// Bar charts using inline values
+// 	$('.sparkbar').sparkline('html', { type: 'bar' });	
+// }
 
 //Skin changer
 function skinChanger() {

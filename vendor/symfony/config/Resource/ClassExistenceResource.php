@@ -32,27 +32,21 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
 
     /**
      * @param string    $resource The fully-qualified class name
-     * @param bool|null $exists   Boolean when the existency check has already been done
+     * @param bool|null $exists   Boolean when the existence check has already been done
      */
-    public function __construct(string $resource, bool $exists = null)
+    public function __construct(string $resource, ?bool $exists = null)
     {
         $this->resource = $resource;
         if (null !== $exists) {
-            $this->exists = [(bool) $exists, null];
+            $this->exists = [$exists, null];
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function __toString(): string
     {
         return $this->resource;
     }
 
-    /**
-     * @return string The file path to the resource
-     */
     public function getResource(): string
     {
         return $this->resource;
@@ -149,7 +143,7 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
      *
      * @internal
      */
-    public static function throwOnRequiredClass(string $class, \Exception $previous = null)
+    public static function throwOnRequiredClass(string $class, ?\Exception $previous = null)
     {
         // If the passed class is the resource being checked, we shouldn't throw.
         if (null === $previous && self::$autoloadedClass === $class) {
@@ -219,14 +213,14 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
             }
 
             $props = [
-                'file' => isset($callerFrame['file']) ? $callerFrame['file'] : null,
-                'line' => isset($callerFrame['line']) ? $callerFrame['line'] : null,
+                'file' => $callerFrame['file'] ?? null,
+                'line' => $callerFrame['line'] ?? null,
                 'trace' => \array_slice($trace, 1 + $i),
             ];
 
             foreach ($props as $p => $v) {
                 if (null !== $v) {
-                    $r = new \ReflectionProperty('Exception', $p);
+                    $r = new \ReflectionProperty(\Exception::class, $p);
                     $r->setAccessible(true);
                     $r->setValue($e, $v);
                 }

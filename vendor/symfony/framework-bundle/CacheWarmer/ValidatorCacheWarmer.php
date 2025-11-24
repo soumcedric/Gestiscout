@@ -42,7 +42,7 @@ class ValidatorCacheWarmer extends AbstractPhpFileCacheWarmer
     /**
      * {@inheritdoc}
      */
-    protected function doWarmUp(string $cacheDir, ArrayAdapter $arrayAdapter)
+    protected function doWarmUp(string $cacheDir, ArrayAdapter $arrayAdapter): bool
     {
         if (!method_exists($this->validatorBuilder, 'getLoaders')) {
             return false;
@@ -71,10 +71,12 @@ class ValidatorCacheWarmer extends AbstractPhpFileCacheWarmer
     /**
      * @return string[] A list of classes to preload on PHP 7.4+
      */
-    protected function warmUpPhpArrayAdapter(PhpArrayAdapter $phpArrayAdapter, array $values)
+    protected function warmUpPhpArrayAdapter(PhpArrayAdapter $phpArrayAdapter, array $values): array
     {
         // make sure we don't cache null values
-        return parent::warmUpPhpArrayAdapter($phpArrayAdapter, array_filter($values));
+        $values = array_filter($values, function ($val) { return null !== $val; });
+
+        return parent::warmUpPhpArrayAdapter($phpArrayAdapter, $values);
     }
 
     /**

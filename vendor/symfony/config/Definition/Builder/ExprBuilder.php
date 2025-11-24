@@ -35,9 +35,9 @@ class ExprBuilder
      *
      * @return $this
      */
-    public function always(\Closure $then = null)
+    public function always(?\Closure $then = null)
     {
-        $this->ifPart = function ($v) { return true; };
+        $this->ifPart = function () { return true; };
 
         if (null !== $then) {
             $this->thenPart = $then;
@@ -53,7 +53,7 @@ class ExprBuilder
      *
      * @return $this
      */
-    public function ifTrue(\Closure $closure = null)
+    public function ifTrue(?\Closure $closure = null)
     {
         if (null === $closure) {
             $closure = function ($v) { return true === $v; };
@@ -91,7 +91,7 @@ class ExprBuilder
     /**
      * Tests if the value is empty.
      *
-     * @return ExprBuilder
+     * @return $this
      */
     public function ifEmpty()
     {
@@ -168,7 +168,7 @@ class ExprBuilder
      */
     public function thenEmptyArray()
     {
-        $this->thenPart = function ($v) { return []; };
+        $this->thenPart = function () { return []; };
 
         return $this;
     }
@@ -198,7 +198,7 @@ class ExprBuilder
      */
     public function thenUnset()
     {
-        $this->thenPart = function ($v) { throw new UnsetKeyException('Unsetting key.'); };
+        $this->thenPart = function () { throw new UnsetKeyException('Unsetting key.'); };
 
         return $this;
     }

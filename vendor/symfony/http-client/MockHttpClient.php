@@ -17,24 +17,34 @@ use Symfony\Component\HttpClient\Response\ResponseStream;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\ResponseStreamInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * A test-friendly HttpClient that doesn't make actual HTTP requests.
  *
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class MockHttpClient implements HttpClientInterface
+class MockHttpClient implements HttpClientInterface, ResetInterface
 {
     use HttpClientTrait;
 
     private $responseFactory;
-    private $baseUri;
-    private $requestsCount = 0;
+    private int $requestsCount = 0;
+    private array $defaultOptions = [];
 
     /**
      * @param callable|callable[]|ResponseInterface|ResponseInterface[]|iterable|null $responseFactory
      */
-    public function __construct($responseFactory = null, string $baseUri = null)
+    public function __construct(callable|iterable|ResponseInterface $responseFactory = null, ?string $baseUri = 'https://example.com')
+    {
+        $this->setResponseFactory($responseFactory);
+        $this->defaultOptions['base_uri'] = $baseUri;
+    }
+
+    /**
+     * @param callable|callable[]|ResponseInterface|ResponseInterface[]|iterable|null $responseFactory
+     */
+    public function setResponseFactory($responseFactory): void
     {
         if ($responseFactory instanceof ResponseInterface) {
             $responseFactory = [$responseFactory];
@@ -46,8 +56,7 @@ class MockHttpClient implements HttpClientInterface
             })();
         }
 
-        $this->responseFactory = $responseFactory;
-        $this->baseUri = $baseUri;
+        $this->responseFactory = !\is_callable($responseFactory) || $responseFactory instanceof \Closure ? $responseFactory : \Closure::fromCallable($responseFactory);
     }
 
     /**
@@ -55,7 +64,7 @@ class MockHttpClient implements HttpClientInterface
      */
     public function request(string $method, string $url, array $options = []): ResponseInterface
     {
-        [$url, $options] = $this->prepareRequest($method, $url, $options, ['base_uri' => $this->baseUri], true);
+        [$url, $options] = $this->prepareRequest($method, $url, $options, $this->defaultOptions, true);
         $url = implode('', $url);
 
         if (null === $this->responseFactory) {
@@ -81,12 +90,10 @@ class MockHttpClient implements HttpClientInterface
     /**
      * {@inheritdoc}
      */
-    public function stream($responses, float $timeout = null): ResponseStreamInterface
+    public function stream(ResponseInterface|iterable $responses, float $timeout = null): ResponseStreamInterface
     {
         if ($responses instanceof ResponseInterface) {
             $responses = [$responses];
-        } elseif (!is_iterable($responses)) {
-            throw new \TypeError(sprintf('"%s()" expects parameter 1 to be an iterable of MockResponse objects, "%s" given.', __METHOD__, get_debug_type($responses)));
         }
 
         return new ResponseStream(MockResponse::stream($responses, $timeout));
@@ -95,5 +102,21 @@ class MockHttpClient implements HttpClientInterface
     public function getRequestsCount(): int
     {
         return $this->requestsCount;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function withOptions(array $options): static
+    {
+        $clone = clone $this;
+        $clone->defaultOptions = self::mergeDefaultOptions($options, $this->defaultOptions, true);
+
+        return $clone;
+    }
+
+    public function reset()
+    {
+        $this->requestsCount = 0;
     }
 }

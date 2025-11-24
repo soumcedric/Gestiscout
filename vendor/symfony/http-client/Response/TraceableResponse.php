@@ -33,7 +33,7 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
 {
     private $client;
     private $response;
-    private $content;
+    private mixed $content;
     private $event;
 
     public function __construct(HttpClientInterface $client, ResponseInterface $response, &$content, StopwatchEvent $event = null)
@@ -42,6 +42,16 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
         $this->response = $response;
         $this->content = &$content;
         $this->event = $event;
+    }
+
+    public function __sleep(): array
+    {
+        throw new \BadMethodCallException('Cannot serialize '.__CLASS__);
+    }
+
+    public function __wakeup()
+    {
+        throw new \BadMethodCallException('Cannot unserialize '.__CLASS__);
     }
 
     public function __destruct()
@@ -83,6 +93,7 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
             if (false === $this->content) {
                 return $this->response->getContent($throw);
             }
+
             return $this->content = $this->response->getContent(false);
         } finally {
             if ($this->event && $this->event->isStarted()) {
@@ -100,6 +111,7 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
             if (false === $this->content) {
                 return $this->response->toArray($throw);
             }
+
             return $this->content = $this->response->toArray(false);
         } finally {
             if ($this->event && $this->event->isStarted()) {
@@ -120,7 +132,7 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
         }
     }
 
-    public function getInfo(string $type = null)
+    public function getInfo(string $type = null): mixed
     {
         return $this->response->getInfo($type);
     }
@@ -190,7 +202,7 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
         }
     }
 
-    private function checkStatusCode($code)
+    private function checkStatusCode(int $code)
     {
         if (500 <= $code) {
             throw new ServerException($this);

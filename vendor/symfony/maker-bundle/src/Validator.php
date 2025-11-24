@@ -84,7 +84,7 @@ final class Validator
             return $length;
         }
 
-        $result = filter_var($length, FILTER_VALIDATE_INT, [
+        $result = filter_var($length, \FILTER_VALIDATE_INT, [
             'options' => ['min_range' => 1],
         ]);
 
@@ -101,7 +101,7 @@ final class Validator
             return $precision;
         }
 
-        $result = filter_var($precision, FILTER_VALIDATE_INT, [
+        $result = filter_var($precision, \FILTER_VALIDATE_INT, [
             'options' => ['min_range' => 1, 'max_range' => 65],
         ]);
 
@@ -118,7 +118,7 @@ final class Validator
             return $scale;
         }
 
-        $result = filter_var($scale, FILTER_VALIDATE_INT, [
+        $result = filter_var($scale, \FILTER_VALIDATE_INT, [
             'options' => ['min_range' => 0, 'max_range' => 30],
         ]);
 
@@ -139,30 +139,27 @@ final class Validator
             return false;
         }
 
-        if (null === $valueAsBool = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)) {
+        if (null === $valueAsBool = filter_var($value, \FILTER_VALIDATE_BOOLEAN, \FILTER_NULL_ON_FAILURE)) {
             throw new RuntimeCommandException(sprintf('Invalid bool value "%s".', $value));
         }
 
         return $valueAsBool;
     }
 
-    public static function validatePropertyName(string $name)
+    public static function validatePropertyName(string $name): string
     {
         // check for valid PHP variable name
-        if (null !== $name && !Str::isValidPhpVariableName($name)) {
+        if (!Str::isValidPhpVariableName($name)) {
             throw new \InvalidArgumentException(sprintf('"%s" is not a valid PHP property name.', $name));
         }
 
         return $name;
     }
 
-    /**
-     * @param ManagerRegistry|LegacyManagerRegistry $registry
-     */
-    public static function validateDoctrineFieldName(string $name, $registry)
+    public static function validateDoctrineFieldName(string $name, ManagerRegistry|LegacyManagerRegistry $registry): string
     {
         if (!$registry instanceof ManagerRegistry && !$registry instanceof LegacyManagerRegistry) {
-            throw new \InvalidArgumentException(sprintf('Argument 2 to %s::validateDoctrineFieldName must be an instance of %s, %s passed.', __CLASS__, ManagerRegistry::class, \is_object($registry) ? \get_class($registry) : \gettype($registry)));
+            throw new \InvalidArgumentException(sprintf('Argument 2 to %s::validateDoctrineFieldName must be an instance of %s, %s passed.', __CLASS__, ManagerRegistry::class, \is_object($registry) ? $registry::class : \gettype($registry)));
         }
 
         // check reserved words
@@ -177,19 +174,19 @@ final class Validator
 
     public static function validateEmailAddress(?string $email): string
     {
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($email, \FILTER_VALIDATE_EMAIL)) {
             throw new RuntimeCommandException(sprintf('"%s" is not a valid email address.', $email));
         }
 
         return $email;
     }
 
-    public static function existsOrNull(string $className = null, array $entities = [])
+    public static function existsOrNull(string $className = null, array $entities = []): ?string
     {
         if (null !== $className) {
             self::validateClassName($className);
 
-            if (0 === strpos($className, '\\')) {
+            if (str_starts_with($className, '\\')) {
                 self::classExists($className);
             } else {
                 self::entityExists($className, $entities);
@@ -220,7 +217,7 @@ final class Validator
             throw new RuntimeCommandException('There are no registered entities; please create an entity before using this command.');
         }
 
-        if (0 === strpos($className, '\\')) {
+        if (str_starts_with($className, '\\')) {
             self::classExists($className, sprintf('Entity "%s" doesn\'t exist; please enter an existing one or create a new one.', $className));
         }
 

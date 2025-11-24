@@ -9,21 +9,18 @@ use App\Repository\DistrictRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
-use Symfony\Component\Security\Guard\PasswordAuthenticatedInterface;
+use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-class LoginCustomAuthenticator extends AbstractFormLoginAuthenticator implements PasswordAuthenticatedInterface
+class LoginCustomAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
@@ -31,201 +28,104 @@ class LoginCustomAuthenticator extends AbstractFormLoginAuthenticator implements
 
     private $entityManager;
     private $urlGenerator;
-    private $csrfTokenManager;
-    private $passwordEncoder;
     private $target;
-    private $userInfo;
 
-    public function __construct(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator)
     {
         $this->entityManager = $entityManager;
         $this->urlGenerator = $urlGenerator;
-        $this->csrfTokenManager = $csrfTokenManager;
-        $this->passwordEncoder = $passwordEncoder;
     }
 
-    public function supports(Request $request)
+    public function authenticate(Request $request): Passport
     {
-       // dump($request->attributes->get('_route'));
-        return self::LOGIN_ROUTE === $request->attributes->get('_route')
-            && $request->isMethod('POST');
-    }
+        $username = $request->request->get('username', '');
+        $password = $request->request->get('password', '');
+        $csrfToken = $request->request->get('_csrf_token');
 
-    public function getCredentials(Request $request)
-    {
-       // dump($request);
-        $credentials = [
-            'username' => $request->request->get('username'),
-            'password' => $request->request->get('password'),
-            'csrf_token' => $request->request->get('_csrf_token'),
-        ];
-        $request->getSession()->set(
-            Security::LAST_USERNAME,
-            $credentials['username']
+        $request->getSession()->set('_security.last_username', $username);
+
+        return new Passport(
+            new UserBadge($username),
+            new PasswordCredentials($password),
+            [
+                new CsrfTokenBadge('authenticate', $csrfToken),
+            ]
         );
-
-        return $credentials;
     }
 
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        $token = new CsrfToken('authenticate', $credentials['csrf_token']);
-        
-        if (!$this->csrfTokenManager->isTokenValid($token)) {
-            throw new InvalidCsrfTokenException();
-        }
-
-        // if($credentials['username']=='superadmin' || $credentials['password']=='superadmin')
-        // {
-          
-        //     $this->userInfo = new UserLogin();
-        //     $this->userInfo->setUsername("superadmin");
-        //     $this->userInfo->setId(0000000000000000001);
-        //    // $this->userInfo->setGroupe($user->getGroupe());
-        //           $this->target="DashAdmin";
-                   
-        //           return new User();
-                 
-          
-           
-        // }
-        // else
-        // {               
-
-            //     $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $credentials['username']]);
-            //     if (!$user) {
-            //         // fail authentication with a custom error
-            //         throw new CustomUserMessageAuthenticationException('Username could not be found.');
-            //     }
-            //     $this->userInfo = new UserLogin();
-            //     $this->userInfo->setUsername($user->getUsername());
-            //     $this->userInfo->setId($user->getId());
-            //     $this->userInfo->setGroupe($user->getGroupe());
-            //    // $this->userInfo = $user;
-                  
-                
-
-            //     if($user->getDistrict()!=null)
-            //         $this->target="DistrictDash";
-            //     else
-            //         $this->target = "Dashboard";
-
-            //         return $user;
-        // } 
-
-        $this->target="DashAdmin";
-       // return $this->userInfo;        
-       return $userProvider->loadUserByUsername($credentials['username']);
-    //     $this->userInfo = new UserLogin();
-    //     $this->userInfo->setUsername("superadmin");
-    //     $this->userInfo->setId(000000000);
-    //   //  $this->userInfo->setGroupe();
-      
-        
-      
-    }
-
-    public function checkCredentials($credentials, UserInterface $user)
-    {
-        return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
-       // return true;
-    }
-
-    /**
-     * Used to upgrade (rehash) the user's password automatically over time.
-     */
-    public function getPassword($credentials): ?string
-    {
-        return $credentials['password'];
-    }
-
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
-    {
-        
-        // if($this->userInfo->getUserName()!="superadmin")
-        // {
-        //     $request->getSession()->set("id",$this->userInfo->getId());
-        //     $request->getSession()->set('nom',$this->userInfo->getUserName());
-        //     $request->getSession()->set('groupeid',$this->userInfo->getGroupe());
-        //     if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
-        //         return new RedirectResponse($targetPath);
-        //     }
-        // }
-
         $user = $token->getUser();
-            // if($user->getUsername()!="superadmin")
-            // {
-                  $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $user->getUsername()]);
-                  $user->setlastconnection(new \DateTime());
-                  $this->entityManager->persist($user);
-                  $this->entityManager->flush();
-                  //get groupe
-               //   $groupe = $this->entityManager->getRepository(Groupe::class)->findOneBy([''])
-                // if (!$user) {
-                    $request->getSession()->set("USER",$user);
-                    $request->getSession()->set("id",$user->getId());
-                    $request->getSession()->set('nom',$user->getuserName());
-
-                    if($user->getGroupe()!=null)
-                    {
-                        $request->getSession()->set('groupeid',$user->getGroupe());
-                        $request->getSession()->set('entite','1');// entité connecté groupe => 1
-                    }                        
-                    else
-                        {
-                            $request->getSession()->set('districtid',$user->getDistrict());
-                            $request->getSession()->set('entite','2');// entité connecté district => 2
-                        }
-
-
-
-
-                   // $request->getSession()->set('groupeid',$user->getGroupe());
-                    
-            // }
-       
-        //      dump($user);
-        if($user->getFirstConnection())
-        {
-            $request->getSession()->set("firstconnection",true);
-            $this->target=self::LOGIN_ROUTE;
+        
+        if (!$user instanceof User) {
+            throw new CustomUserMessageAuthenticationException('Invalid user type.');
         }
-        else
-        {
-          
-          
-            if(in_array('ROLE_CONFIG',$user->getRoles(),true))
-            {
-                $this->target="DashAdmin";
+
+        // Mise à jour de la dernière connexion
+        $userEntity = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $user->getUsername()]);
+        
+        if ($userEntity) {
+            $userEntity->setLastConnection(new \DateTime());
+            $this->entityManager->persist($userEntity);
+            $this->entityManager->flush();
+
+            // Enregistrer les données en session
+            $request->getSession()->set("USER", $userEntity);
+            $request->getSession()->set("id", $userEntity->getId());
+            $request->getSession()->set('nom', $userEntity->getUsername());
+
+            if ($userEntity->getGroupe() != null) {
+                $request->getSession()->set('groupeid', $userEntity->getGroupe());
+                $request->getSession()->set('entite', '1'); // entité connectée groupe => 1
+            } else {
+                $request->getSession()->set('districtid', $userEntity->getDistrict());
+                $request->getSession()->set('entite', '2'); // entité connectée district => 2
             }
-            else if(in_array('ROLE_DISTRICT_USER',$user->getRoles(),true)){
-                $this->target="DistrictDash";
-            }
-            else if(in_array('ROLE_DISTRICT_CONFIG',$user->getRoles(),true)){
-                $this->target="districtconfig";
-            }
-            else if(in_array('ROLE_FORMATION',$user->getRoles(),true))
-            {
-                $this->target="DistrictDash"; 
-            }
-            else if(in_array('ROLE_CG',$user->getRoles(),true))
-            {
-                $this->target="Dashboard"; 
-            }
-        else if(in_array('ROLE_CD_FINANCE',$user->getRoles(),true))
-        {
-            
-            $this->target="Caisse"; 
-         }
-      
-      
-        }   
-      return new RedirectResponse($this->urlGenerator->generate($this->target));
-        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+        }
+
+        // Gestion de la première connexion
+        if ($userEntity && $userEntity->getFirstConnection()) {
+            $request->getSession()->set("firstconnection", true);
+            $this->target = self::LOGIN_ROUTE;
+        } else {
+            // Déterminer la cible en fonction des rôles
+            $this->target = $this->determineTargetByRoles($userEntity->getRoles());
+        }
+
+        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+            return new RedirectResponse($targetPath);
+        }
+
+        return new RedirectResponse($this->urlGenerator->generate($this->target));
     }
 
-    protected function getLoginUrl()
+    protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
+    }
+
+    private function determineTargetByRoles(array $roles): string
+    {
+        if (in_array('ROLE_CONFIG', $roles, true)) {
+            return "DashAdmin";
+        }
+        if (in_array('ROLE_DISTRICT_USER', $roles, true)) {
+            return "DistrictDash";
+        }
+        if (in_array('ROLE_DISTRICT_CONFIG', $roles, true)) {
+            return "districtconfig";
+        }
+        if (in_array('ROLE_FORMATION', $roles, true)) {
+            return "DistrictDash";
+        }
+        if (in_array('ROLE_CG', $roles, true)) {
+            return "Dashboard";
+        }
+        if (in_array('ROLE_CD_FINANCE', $roles, true)) {
+            return "Caisse";
+        }
+
+        // Route par défaut
+        return "Dashboard";
     }
 }

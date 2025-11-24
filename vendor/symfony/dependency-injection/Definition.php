@@ -22,6 +22,8 @@ use Symfony\Component\DependencyInjection\Exception\OutOfBoundsException;
  */
 class Definition
 {
+    private const DEFAULT_DEPRECATION_TEMPLATE = 'The "%service_id%" service is deprecated. You should stop using it, as it will be removed in the future.';
+
     private $class;
     private $file;
     private $factory;
@@ -45,8 +47,6 @@ class Definition
 
     protected $arguments = [];
 
-    private static $defaultDeprecationTemplate = 'The "%service_id%" service is deprecated. You should stop using it, as it will be removed in the future.';
-
     /**
      * @internal
      *
@@ -61,7 +61,7 @@ class Definition
      */
     public $decorationOnInvalid;
 
-    public function __construct(string $class = null, array $arguments = [])
+    public function __construct(?string $class = null, array $arguments = [])
     {
         if (null !== $class) {
             $this->setClass($class);
@@ -72,7 +72,7 @@ class Definition
     /**
      * Returns all changes tracked for the Definition object.
      *
-     * @return array An array of changes for this Definition
+     * @return array
      */
     public function getChanges()
     {
@@ -96,7 +96,7 @@ class Definition
     /**
      * Sets a factory.
      *
-     * @param string|array|Reference $factory A PHP function, reference or an array containing a class/Reference and a method to call
+     * @param string|array|Reference|null $factory A PHP function, reference or an array containing a class/Reference and a method to call
      *
      * @return $this
      */
@@ -104,7 +104,7 @@ class Definition
     {
         $this->changes['factory'] = true;
 
-        if (\is_string($factory) && false !== strpos($factory, '::')) {
+        if (\is_string($factory) && str_contains($factory, '::')) {
             $factory = explode('::', $factory, 2);
         } elseif ($factory instanceof Reference) {
             $factory = [$factory, '__invoke'];
@@ -146,7 +146,7 @@ class Definition
         if (null === $id) {
             $this->decoratedService = null;
         } else {
-            $this->decoratedService = [$id, $renamedId, (int) $priority];
+            $this->decoratedService = [$id, $renamedId, $priority];
 
             if (ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE !== $invalidBehavior) {
                 $this->decoratedService[] = $invalidBehavior;
@@ -183,7 +183,7 @@ class Definition
     /**
      * Gets the service class.
      *
-     * @return string|null The service class
+     * @return string|null
      */
     public function getClass()
     {
@@ -265,15 +265,15 @@ class Definition
     public function replaceArgument($index, $argument)
     {
         if (0 === \count($this->arguments)) {
-            throw new OutOfBoundsException('Cannot replace arguments if none have been configured yet.');
+            throw new OutOfBoundsException(sprintf('Cannot replace arguments for class "%s" if none have been configured yet.', $this->class));
         }
 
         if (\is_int($index) && ($index < 0 || $index > \count($this->arguments) - 1)) {
-            throw new OutOfBoundsException(sprintf('The index "%d" is not in the range [0, %d].', $index, \count($this->arguments) - 1));
+            throw new OutOfBoundsException(sprintf('The index "%d" is not in the range [0, %d] of the arguments of class "%s".', $index, \count($this->arguments) - 1, $this->class));
         }
 
         if (!\array_key_exists($index, $this->arguments)) {
-            throw new OutOfBoundsException(sprintf('The argument "%s" doesn\'t exist.', $index));
+            throw new OutOfBoundsException(sprintf('The argument "%s" doesn\'t exist in class "%s".', $index, $this->class));
         }
 
         $this->arguments[$index] = $argument;
@@ -299,7 +299,7 @@ class Definition
     /**
      * Gets the arguments to pass to the service constructor/factory method.
      *
-     * @return array The array of arguments
+     * @return array
      */
     public function getArguments()
     {
@@ -311,14 +311,14 @@ class Definition
      *
      * @param int|string $index
      *
-     * @return mixed The argument value
+     * @return mixed
      *
      * @throws OutOfBoundsException When the argument does not exist
      */
     public function getArgument($index)
     {
         if (!\array_key_exists($index, $this->arguments)) {
-            throw new OutOfBoundsException(sprintf('The argument "%s" doesn\'t exist.', $index));
+            throw new OutOfBoundsException(sprintf('The argument "%s" doesn\'t exist in class "%s".', $index, $this->class));
         }
 
         return $this->arguments[$index];
@@ -370,7 +370,6 @@ class Definition
         foreach ($this->calls as $i => $call) {
             if ($call[0] === $method) {
                 unset($this->calls[$i]);
-                break;
             }
         }
 
@@ -396,7 +395,7 @@ class Definition
     /**
      * Gets the methods to call after service initialization.
      *
-     * @return array An array of method calls
+     * @return array
      */
     public function getMethodCalls()
     {
@@ -464,7 +463,7 @@ class Definition
     /**
      * Returns all tags.
      *
-     * @return array An array of tags
+     * @return array
      */
     public function getTags()
     {
@@ -474,11 +473,11 @@ class Definition
     /**
      * Gets a tag by name.
      *
-     * @return array An array of attributes
+     * @return array
      */
     public function getTag(string $name)
     {
-        return isset($this->tags[$name]) ? $this->tags[$name] : [];
+        return $this->tags[$name] ?? [];
     }
 
     /**
@@ -544,7 +543,7 @@ class Definition
     /**
      * Gets the file to require before creating the service.
      *
-     * @return string|null The full pathname to include
+     * @return string|null
      */
     public function getFile()
     {
@@ -738,13 +737,13 @@ class Definition
                 throw new InvalidArgumentException('Invalid characters found in deprecation template.');
             }
 
-            if (false === strpos($message, '%service_id%')) {
+            if (!str_contains($message, '%service_id%')) {
                 throw new InvalidArgumentException('The deprecation template must contain the "%service_id%" placeholder.');
             }
         }
 
         $this->changes['deprecated'] = true;
-        $this->deprecation = $status ? ['package' => $package, 'version' => $version, 'message' => $message ?: self::$defaultDeprecationTemplate] : [];
+        $this->deprecation = $status ? ['package' => $package, 'version' => $version, 'message' => $message ?: self::DEFAULT_DEPRECATION_TEMPLATE] : [];
 
         return $this;
     }
@@ -791,7 +790,7 @@ class Definition
     /**
      * Sets a configurator to call after the service is fully initialized.
      *
-     * @param string|array|Reference $configurator A PHP function, reference or an array containing a class/Reference and a method to call
+     * @param string|array|Reference|null $configurator A PHP function, reference or an array containing a class/Reference and a method to call
      *
      * @return $this
      */
@@ -799,7 +798,7 @@ class Definition
     {
         $this->changes['configurator'] = true;
 
-        if (\is_string($configurator) && false !== strpos($configurator, '::')) {
+        if (\is_string($configurator) && str_contains($configurator, '::')) {
             $configurator = explode('::', $configurator, 2);
         } elseif ($configurator instanceof Reference) {
             $configurator = [$configurator, '__invoke'];
@@ -813,7 +812,7 @@ class Definition
     /**
      * Gets the configurator to call after the service is fully initialized.
      *
-     * @return callable|array|null
+     * @return string|array|null
      */
     public function getConfigurator()
     {
@@ -847,7 +846,7 @@ class Definition
     /**
      * Gets bindings.
      *
-     * @return array|BoundArgument[]
+     * @return BoundArgument[]
      */
     public function getBindings()
     {

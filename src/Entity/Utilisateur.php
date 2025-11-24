@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @ORM\Entity(repositoryClass=UtilisateurRepository::class)
  */
-class Utilisateur implements UserInterface
+abstract class Utilisateur implements UserInterface
 {
     /**
      * @ORM\Id
@@ -159,7 +159,7 @@ class Utilisateur implements UserInterface
         // TODO: Implement eraseCredentials() method.
     }
 
-    public  function getRoles()
+    public  function getRoles(): array
     {
         // TODO: Implement getRoles() method.
         return ['ROLE_USER'];

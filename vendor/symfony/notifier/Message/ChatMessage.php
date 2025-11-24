@@ -15,15 +15,13 @@ use Symfony\Component\Notifier\Notification\Notification;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
- *
- * @experimental in 5.2
  */
 final class ChatMessage implements MessageInterface
 {
-    private $transport;
-    private $subject;
+    private ?string $transport = null;
+    private string $subject;
     private $options;
-    private $notification;
+    private $notification = null;
 
     public function __construct(string $subject, MessageOptionsInterface $options = null)
     {
@@ -42,7 +40,7 @@ final class ChatMessage implements MessageInterface
     /**
      * @return $this
      */
-    public function subject(string $subject): self
+    public function subject(string $subject): static
     {
         $this->subject = $subject;
 
@@ -62,7 +60,7 @@ final class ChatMessage implements MessageInterface
     /**
      * @return $this
      */
-    public function options(MessageOptionsInterface $options): self
+    public function options(MessageOptionsInterface $options): static
     {
         $this->options = $options;
 
@@ -77,7 +75,7 @@ final class ChatMessage implements MessageInterface
     /**
      * @return $this
      */
-    public function transport(?string $transport): self
+    public function transport(?string $transport): static
     {
         $this->transport = $transport;
 

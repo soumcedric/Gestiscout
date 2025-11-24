@@ -5,18 +5,15 @@ declare(strict_types=1);
 namespace Doctrine\SqlFormatter;
 
 use function sprintf;
-use const PHP_EOL;
 
 final class CliHighlighter implements Highlighter
 {
     public const HIGHLIGHT_FUNCTIONS = 'functions';
 
     /** @var array<string, string> */
-    private $escapeSequences;
+    private array $escapeSequences;
 
-    /**
-     * @param array<string, string> $escapeSequences
-     */
+    /** @param array<string, string> $escapeSequences */
     public function __construct(array $escapeSequences = [])
     {
         $this->escapeSequences = $escapeSequences + [
@@ -33,9 +30,9 @@ final class CliHighlighter implements Highlighter
         ];
     }
 
-    public function highlightToken(int $type, string $value) : string
+    public function highlightToken(int $type, string $value): string
     {
-        if ($type === Token::TOKEN_TYPE_BOUNDARY && ($value==='(' || $value===')')) {
+        if ($type === Token::TOKEN_TYPE_BOUNDARY && ($value === '(' || $value === ')')) {
             return $value;
         }
 
@@ -47,7 +44,8 @@ final class CliHighlighter implements Highlighter
         return $prefix . $value . "\x1b[0m";
     }
 
-    private function prefix(int $type) : ?string
+    /** @param Token::TOKEN_TYPE_* $type */
+    private function prefix(int $type): string|null
     {
         if (! isset(self::TOKEN_TYPE_TO_HIGHLIGHT[$type])) {
             return null;
@@ -56,23 +54,23 @@ final class CliHighlighter implements Highlighter
         return $this->escapeSequences[self::TOKEN_TYPE_TO_HIGHLIGHT[$type]];
     }
 
-    public function highlightError(string $value) : string
+    public function highlightError(string $value): string
     {
         return sprintf(
             '%s%s%s%s',
-            PHP_EOL,
+            "\n",
             $this->escapeSequences[self::HIGHLIGHT_ERROR],
             $value,
-            "\x1b[0m"
+            "\x1b[0m",
         );
     }
 
-    public function highlightErrorMessage(string $value) : string
+    public function highlightErrorMessage(string $value): string
     {
         return $this->highlightError($value);
     }
 
-    public function output(string $string) : string
+    public function output(string $string): string
     {
         return $string . "\n";
     }

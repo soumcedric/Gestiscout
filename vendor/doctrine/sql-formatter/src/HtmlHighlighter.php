@@ -7,29 +7,25 @@ namespace Doctrine\SqlFormatter;
 use function htmlentities;
 use function sprintf;
 use function trim;
+
 use const ENT_COMPAT;
 use const ENT_IGNORE;
-use const PHP_EOL;
 
 final class HtmlHighlighter implements Highlighter
 {
     public const HIGHLIGHT_PRE = 'pre';
 
-    /**
-     * This flag tells us if queries need to be enclosed in <pre> tags
-     *
-     * @var bool
-     */
-    private $usePre;
-
     /** @var array<string, string> */
-    private $htmlAttributes;
+    private readonly array $htmlAttributes;
 
     /**
      * @param array<string, string> $htmlAttributes
+     * @param bool                  $usePre         This flag tells us if queries need to be enclosed in <pre> tags
      */
-    public function __construct(array $htmlAttributes = [], bool $usePre = true)
-    {
+    public function __construct(
+        array $htmlAttributes = [],
+        private readonly bool $usePre = true,
+    ) {
         $this->htmlAttributes = $htmlAttributes + [
             self::HIGHLIGHT_QUOTE => 'style="color: blue;"',
             self::HIGHLIGHT_BACKTICK_QUOTE => 'style="color: purple;"',
@@ -42,14 +38,13 @@ final class HtmlHighlighter implements Highlighter
             self::HIGHLIGHT_VARIABLE => 'style="color: orange;"',
             self::HIGHLIGHT_PRE => 'style="color: black; background-color: white;"',
         ];
-        $this->usePre         = $usePre;
     }
 
-    public function highlightToken(int $type, string $value) : string
+    public function highlightToken(int $type, string $value): string
     {
         $value = htmlentities($value, ENT_COMPAT | ENT_IGNORE, 'UTF-8');
 
-        if ($type === Token::TOKEN_TYPE_BOUNDARY && ($value==='(' || $value===')')) {
+        if ($type === Token::TOKEN_TYPE_BOUNDARY && ($value === '(' || $value === ')')) {
             return $value;
         }
 
@@ -61,7 +56,8 @@ final class HtmlHighlighter implements Highlighter
         return '<span ' . $attributes . '>' . $value . '</span>';
     }
 
-    public function attributes(int $type) : ?string
+    /** @param Token::TOKEN_TYPE_* $type */
+    public function attributes(int $type): string|null
     {
         if (! isset(self::TOKEN_TYPE_TO_HIGHLIGHT[$type])) {
             return null;
@@ -70,24 +66,24 @@ final class HtmlHighlighter implements Highlighter
         return $this->htmlAttributes[self::TOKEN_TYPE_TO_HIGHLIGHT[$type]];
     }
 
-    public function highlightError(string $value) : string
+    public function highlightError(string $value): string
     {
         return sprintf(
             '%s<span %s>%s</span>',
-            PHP_EOL,
+            "\n",
             $this->htmlAttributes[self::HIGHLIGHT_ERROR],
-            $value
+            $value,
         );
     }
 
-    public function highlightErrorMessage(string $value) : string
+    public function highlightErrorMessage(string $value): string
     {
         return $this->highlightError($value);
     }
 
-    public function output(string $string) : string
+    public function output(string $string): string
     {
-        $string =trim($string);
+        $string = trim($string);
         if (! $this->usePre) {
             return $string;
         }

@@ -17,8 +17,6 @@ use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
- *
- * @experimental in 5.2
  */
 class Notification
 {
@@ -38,13 +36,13 @@ class Notification
     public const IMPORTANCE_MEDIUM = 'medium';
     public const IMPORTANCE_LOW = 'low';
 
-    private $channels = [];
-    private $subject = '';
-    private $content = '';
-    private $emoji = '';
-    private $exception;
-    private $exceptionAsString = '';
-    private $importance = self::IMPORTANCE_HIGH;
+    private array $channels = [];
+    private string $subject = '';
+    private string $content = '';
+    private string $emoji = '';
+    private $exception = null;
+    private string $exceptionAsString = '';
+    private string $importance = self::IMPORTANCE_HIGH;
 
     public function __construct(string $subject = '', array $channels = [])
     {
@@ -68,7 +66,7 @@ class Notification
     /**
      * @return $this
      */
-    public function subject(string $subject): self
+    public function subject(string $subject): static
     {
         $this->subject = $subject;
 
@@ -83,7 +81,7 @@ class Notification
     /**
      * @return $this
      */
-    public function content(string $content): self
+    public function content(string $content): static
     {
         $this->content = $content;
 
@@ -98,7 +96,7 @@ class Notification
     /**
      * @return $this
      */
-    public function importance(string $importance): self
+    public function importance(string $importance): static
     {
         $this->importance = $importance;
 
@@ -115,7 +113,7 @@ class Notification
      *
      * @return $this
      */
-    public function importanceFromLogLevelName(string $level): self
+    public function importanceFromLogLevelName(string $level): static
     {
         $level = self::LEVELS[strtolower($level)];
         $this->importance = $level >= 500 ? self::IMPORTANCE_URGENT : ($level >= 400 ? self::IMPORTANCE_HIGH : self::IMPORTANCE_LOW);
@@ -126,7 +124,7 @@ class Notification
     /**
      * @return $this
      */
-    public function emoji(string $emoji): self
+    public function emoji(string $emoji): static
     {
         $this->emoji = $emoji;
 
@@ -151,7 +149,7 @@ class Notification
     /**
      * @return $this
      */
-    public function channels(array $channels): self
+    public function channels(array $channels): static
     {
         $this->channels = $channels;
 

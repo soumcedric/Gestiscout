@@ -62,9 +62,9 @@ class JeuneController extends AbstractController
 
 
     #[Route('/jeune', name: 'jeune')]
-    public function index(FlashyNotifier $flashy): Response
+    public function index(): Response
     {
-        $flashy->success('Event created!', 'http://your-awesome-link.com');
+        $this->addFlash('success', 'Event created!');
         return $this->render('jeune/index.html.twig', [
             'controller_name' => 'JeuneController',
         ]);
@@ -72,9 +72,9 @@ class JeuneController extends AbstractController
 
 
     #[Route('/test', name: 'test')]
-    public function test(FlashyNotifier $flashy): Response
+    public function test(): Response
     {
-        $flashy->success('Event created!', 'http://your-awesome-link.com');
+        $this->addFlash('success', 'Event created!');
         return $this->redirectToRoute('about');
     }
 
@@ -163,11 +163,11 @@ class JeuneController extends AbstractController
 
 
     #[Route('/AddJeune', name: 'AddJeune')]
-    public function AddJeune(FlashyNotifier $flashy,SessionInterface $session): Response
+    public function AddJeune(SessionInterface $session): Response
     {
         $groupeId= $session->get('groupeid');
         $id=$groupeId->getId();
-        $flashy->success('Event created!', 'http://your-awesome-link.com');
+        $this->addFlash('success', 'Event created!');
           return $this->render('jeune/AddJeune.html.twig', [
             'controller_name' => 'JeuneController',
             'groupeid' => $id
@@ -360,7 +360,7 @@ class JeuneController extends AbstractController
         return new Response(true,200);
     }
     #[Route('/ImportData', name: 'ImportData')]
-    function ImportData(Request $value, JEUNERepository $RepoJeune,SessionInterface $session,FlashyNotifier $flashy, UserRepository $userRepo)
+    function ImportData(Request $value, JEUNERepository $RepoJeune,SessionInterface $session, UserRepository $userRepo)
     {
 
         try
@@ -489,7 +489,7 @@ class JeuneController extends AbstractController
         }
         catch(\Exception $e)
         {
-            $flashy->success('Event created!', 'http://your-awesome-link.com');
+            $this->addFlash('success', 'Event created!');
            // var_dump($e);
            // return  $this->redirectToRoute("error");
             //return  new \http\Env\Response(true,200);
@@ -504,7 +504,7 @@ class JeuneController extends AbstractController
        // return null;
     }
     #[Route('/ImportJeune', name: 'ImportJeune')]
-    function ImportationJeune(FlashyNotifier $flashy)
+    function ImportationJeune()
     {
 
         return $this->render('jeune/ImportJeune.html.twig', [
@@ -514,7 +514,7 @@ class JeuneController extends AbstractController
 
 
     #[Route('/Import', name: 'Import')]
-    function Import(FlashyNotifier $flashy, Request $request, SessionInterface $session, 
+    function Import(Request $request, SessionInterface $session, 
                         GroupeRepository $groupeRepo, SerializerInterface $serializer)
     {
         $groupe= $session->get('groupeid');

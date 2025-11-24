@@ -1,6 +1,21 @@
 CHANGELOG
 =========
 
+6.0
+---
+
+ * The `HttpTransportException` class takes a string at first argument
+
+5.4
+---
+
+ * Enable the mailer to operate on any PSR-14-compatible event dispatcher
+
+5.3
+---
+
+ * added the `mailer` monolog channel and set it on all transport definitions
+
 5.2.0
 -----
 

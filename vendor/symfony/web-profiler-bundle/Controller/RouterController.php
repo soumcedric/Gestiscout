@@ -24,8 +24,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
 
 /**
- * RouterController.
- *
  * @author Fabien Potencier <fabien@symfony.com>
  *
  * @internal
@@ -42,7 +40,7 @@ class RouterController
      */
     private $expressionLanguageProviders = [];
 
-    public function __construct(Profiler $profiler = null, Environment $twig, UrlMatcherInterface $matcher = null, RouteCollection $routes = null, iterable $expressionLanguageProviders = [])
+    public function __construct(?Profiler $profiler, Environment $twig, ?UrlMatcherInterface $matcher = null, ?RouteCollection $routes = null, iterable $expressionLanguageProviders = [])
     {
         $this->profiler = $profiler;
         $this->twig = $twig;
@@ -54,11 +52,9 @@ class RouterController
     /**
      * Renders the profiler panel for the given token.
      *
-     * @return Response A Response instance
-     *
      * @throws NotFoundHttpException
      */
-    public function panelAction(string $token)
+    public function panelAction(string $token): Response
     {
         if (null === $this->profiler) {
             throw new NotFoundHttpException('The profiler must be enabled.');
@@ -87,10 +83,10 @@ class RouterController
      */
     private function getTraces(RequestDataCollector $request, string $method): array
     {
-        $traceRequest = Request::create(
-            $request->getPathInfo(),
-            $request->getRequestServer(true)->get('REQUEST_METHOD'),
-            [],
+        $traceRequest = new Request(
+            $request->getRequestQuery()->all(),
+            $request->getRequestRequest()->all(),
+            $request->getRequestAttributes()->all(),
             $request->getRequestCookies(true)->all(),
             [],
             $request->getRequestServer(true)->all()

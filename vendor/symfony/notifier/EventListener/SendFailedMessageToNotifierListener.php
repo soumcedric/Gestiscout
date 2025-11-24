@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the Symfony package.
  *
@@ -20,8 +21,6 @@ use Symfony\Component\Notifier\Notifier;
  * Sends a rejected message to the notifier.
  *
  * @author Fabien Potencier <fabien@symfony.com>
- *
- * @experimental in 5.2
  */
 class SendFailedMessageToNotifierListener implements EventSubscriberInterface
 {
@@ -49,7 +48,7 @@ class SendFailedMessageToNotifierListener implements EventSubscriberInterface
         $this->notifier->send($notification, ...$this->notifier->getAdminRecipients());
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             WorkerMessageFailedEvent::class => 'onMessageFailed',

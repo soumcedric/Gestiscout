@@ -15,7 +15,7 @@ Run this command to install and enable this bundle in your application:
 
 .. code-block:: terminal
 
-    $ composer require symfony/maker-bundle --dev
+    $ composer require --dev symfony/maker-bundle
 
 Usage
 -----
@@ -43,6 +43,27 @@ optional arguments and options. Check them out with the ``--help`` option:
 
     $ php bin/console make:controller --help
 
+
+Linting Generated Code
+______________________
+
+MakerBundle uses php-cs-fixer to enforce coding standards when generating ``.php``
+files. When running a ``make`` command, MakerBundle will use a ``php-cs-fixer``
+version and configuration that is packaged with this bundle.
+
+You can explicitly set a custom path to a php-cs-fixer binary and/or configuration
+file by their respective environment variables:
+
+- ``MAKER_PHP_CS_FIXER_BINARY_PATH`` e.g. tools/vendor/bin/php-cs-fixer
+- ``MAKER_PHP_CS_FIXER_CONFIG_PATH`` e.g. .php-cs-fixer.config.php
+
+
+.. tip::
+
+    Is PHP-CS-Fixer installed globally? To avoid needing to set these in every
+    project, you can instead set these on your operating system.
+
+
 Configuration
 -------------
 
@@ -54,7 +75,7 @@ the root namespace that is used to "guess" what classes you want to generate:
     # config/packages/dev/maker.yaml
     # create this file if you need to configure anything
     maker:
-        # tell MakerBundle that all of your classes lives in an
+        # tell MakerBundle that all of your classes live in an
         # Acme namespace, instead of the default App
         # (e.g. Acme\Entity\Article, Acme\Command\MyCommand, etc)
         root_namespace: 'Acme'

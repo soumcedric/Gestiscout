@@ -43,13 +43,13 @@ class MouvementEntite
     private $usermvt;
 
     /**
-     * @ORM\ManyToOne(targetEntity=periode::class)
+     * @ORM\ManyToOne(targetEntity=Periode::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private $periode;
 
     /**
-     * @ORM\ManyToOne(targetEntity=sousrubrique::class)
+     * @ORM\ManyToOne(targetEntity=SousRubrique::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private $sousrubrique;
@@ -124,24 +124,24 @@ class MouvementEntite
         return $this;
     }
 
-    public function getPeriode(): ?periode
+    public function getPeriode(): ?Periode
     {
         return $this->periode;
     }
 
-    public function setPeriode(?periode $periode): self
+    public function setPeriode(?Periode $periode): self
     {
         $this->periode = $periode;
 
         return $this;
     }
 
-    public function getSousrubrique(): ?sousrubrique
+    public function getSousrubrique(): ?SousRubrique
     {
         return $this->sousrubrique;
     }
 
-    public function setSousrubrique(?sousrubrique $sousrubrique): self
+    public function setSousrubrique(?SousRubrique $sousrubrique): self
     {
         $this->sousrubrique = $sousrubrique;
 

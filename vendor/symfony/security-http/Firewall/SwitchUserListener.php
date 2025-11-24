@@ -52,7 +52,7 @@ class SwitchUserListener extends AbstractListener
     private $dispatcher;
     private $stateless;
 
-    public function __construct(TokenStorageInterface $tokenStorage, UserProviderInterface $provider, UserCheckerInterface $userChecker, string $firewallName, AccessDecisionManagerInterface $accessDecisionManager, LoggerInterface $logger = null, string $usernameParameter = '_switch_user', string $role = 'ROLE_ALLOWED_TO_SWITCH', EventDispatcherInterface $dispatcher = null, bool $stateless = false)
+    public function __construct(TokenStorageInterface $tokenStorage, UserProviderInterface $provider, UserCheckerInterface $userChecker, string $firewallName, AccessDecisionManagerInterface $accessDecisionManager, ?LoggerInterface $logger = null, string $usernameParameter = '_switch_user', string $role = 'ROLE_ALLOWED_TO_SWITCH', ?EventDispatcherInterface $dispatcher = null, bool $stateless = false)
     {
         if ('' === $firewallName) {
             throw new \InvalidArgumentException('$firewallName must not be empty.');
@@ -109,7 +109,7 @@ class SwitchUserListener extends AbstractListener
         }
 
         if (self::EXIT_VALUE === $username) {
-            $this->tokenStorage->setToken($this->attemptExitUser($request));
+            $this->attemptExitUser($request);
         } else {
             try {
                 $this->tokenStorage->setToken($this->attemptSwitchUser($request, $username));
@@ -140,7 +140,8 @@ class SwitchUserListener extends AbstractListener
         $originalToken = $this->getOriginalToken($token);
 
         if (null !== $originalToken) {
-            if ($token->getUsername() === $username) {
+            // @deprecated since Symfony 5.3, change to $token->getUserIdentifier() in 6.0
+            if ((method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername()) === $username) {
                 return $token;
             }
 
@@ -148,20 +149,27 @@ class SwitchUserListener extends AbstractListener
             $token = $this->attemptExitUser($request);
         }
 
-        $currentUsername = $token->getUsername();
+        // @deprecated since Symfony 5.3, change to $token->getUserIdentifier() in 6.0
+        $currentUsername = method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername();
         $nonExistentUsername = '_'.md5(random_bytes(8).$username);
 
         // To protect against user enumeration via timing measurements
         // we always load both successfully and unsuccessfully
+        $methodName = 'loadUserByIdentifier';
+        if (!method_exists($this->provider, $methodName)) {
+            trigger_deprecation('symfony/security-core', '5.3', 'Not implementing method "loadUserByIdentifier()" in user provider "%s" is deprecated. This method will replace "loadUserByUsername()" in Symfony 6.0.', get_debug_type($this->provider));
+
+            $methodName = 'loadUserByUsername';
+        }
         try {
-            $user = $this->provider->loadUserByUsername($username);
+            $user = $this->provider->$methodName($username);
 
             try {
-                $this->provider->loadUserByUsername($nonExistentUsername);
+                $this->provider->$methodName($nonExistentUsername);
             } catch (\Exception $e) {
             }
         } catch (AuthenticationException $e) {
-            $this->provider->loadUserByUsername($currentUsername);
+            $this->provider->$methodName($currentUsername);
 
             throw $e;
         }
@@ -182,7 +190,7 @@ class SwitchUserListener extends AbstractListener
         $roles = $user->getRoles();
         $roles[] = 'ROLE_PREVIOUS_ADMIN';
         $originatedFromUri = str_replace('/&', '/?', preg_replace('#[&?]'.$this->usernameParameter.'=[^&]*#', '', $request->getRequestUri()));
-        $token = new SwitchUserToken($user, $user->getPassword(), $this->firewallName, $roles, $token, $originatedFromUri);
+        $token = new SwitchUserToken($user, $this->firewallName, $roles, $token, $originatedFromUri);
 
         if (null !== $this->dispatcher) {
             $switchEvent = new SwitchUserEvent($request, $token->getUser(), $token);
@@ -207,10 +215,13 @@ class SwitchUserListener extends AbstractListener
 
         if (null !== $this->dispatcher && $original->getUser() instanceof UserInterface) {
             $user = $this->provider->refreshUser($original->getUser());
+            $original->setUser($user);
             $switchEvent = new SwitchUserEvent($request, $user, $original);
             $this->dispatcher->dispatch($switchEvent, SecurityEvents::SWITCH_USER);
             $original = $switchEvent->getToken();
         }
+
+        $this->tokenStorage->setToken($original);
 
         return $original;
     }

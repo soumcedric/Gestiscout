@@ -33,7 +33,7 @@ class Request
      * @param array  $server     An array of server parameters
      * @param string $content    The raw body data
      */
-    public function __construct(string $uri, string $method, array $parameters = [], array $files = [], array $cookies = [], array $server = [], string $content = null)
+    public function __construct(string $uri, string $method, array $parameters = [], array $files = [], array $cookies = [], array $server = [], ?string $content = null)
     {
         $this->uri = $uri;
         $this->method = $method;
@@ -52,7 +52,7 @@ class Request
     /**
      * Gets the request URI.
      *
-     * @return string The request URI
+     * @return string
      */
     public function getUri()
     {
@@ -62,7 +62,7 @@ class Request
     /**
      * Gets the request HTTP method.
      *
-     * @return string The request HTTP method
+     * @return string
      */
     public function getMethod()
     {
@@ -72,7 +72,7 @@ class Request
     /**
      * Gets the request parameters.
      *
-     * @return array The request parameters
+     * @return array
      */
     public function getParameters()
     {
@@ -82,7 +82,7 @@ class Request
     /**
      * Gets the request server files.
      *
-     * @return array The request files
+     * @return array
      */
     public function getFiles()
     {
@@ -92,7 +92,7 @@ class Request
     /**
      * Gets the request cookies.
      *
-     * @return array The request cookies
+     * @return array
      */
     public function getCookies()
     {
@@ -102,7 +102,7 @@ class Request
     /**
      * Gets the request server parameters.
      *
-     * @return array The request server parameters
+     * @return array
      */
     public function getServer()
     {
@@ -112,7 +112,7 @@ class Request
     /**
      * Gets the request raw body data.
      *
-     * @return string|null The request raw body data
+     * @return string|null
      */
     public function getContent()
     {

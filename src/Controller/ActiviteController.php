@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Classes\ClsMail;
 use App\Classes\QueryClass;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,46 +9,41 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\entity\ACTIVITES;
-use App\Entity\AnneePastorale;
-use App\Entity\Branche;
-use App\Entity\Groupe;
+
 use App\Repository\ACTIVITESRepository;
 use DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\BrancheRepository;
 use App\Repository\GroupeRepository;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Filesystem\Filesystem;
+
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Entity\DETAILS;
 use App\Entity\Documents;
 use App\Repository\AnneePastoraleRepository;
-use App\Repository\AnnePastoraleRepository;
+
 use App\Repository\DETAILSRepository;
 use App\Repository\DocumentsRepository;
 use App\Repository\TypeDocumentRepository;
-use Doctrine\DBAL\Schema\View;
-use PhpParser\Node\Expr\Cast\Bool_;
+
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Validator\Constraints\Json;
+
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mailer\Messenger\SendEmailMessage;
+
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Mailer\Transport\SendmailTransport;
-use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
+
 
 class ActiviteController extends AbstractController
 {
     private $em;
     private $activiteRepo;
     private $annePastorale;
-    // private $rpBranche;
+     private $rpBranche;
     public function __construct(EntityManagerInterface $em, BrancheRepository $rpbranche, ACTIVITESRepository $activite, AnneePastoraleRepository $annee)
     {
         $this->em = $em;
         $this->activiteRepo = $activite;
         $this->annePastorale = $annee;
-        //$rpBranche = $rpbranche;
+        $this->rpBranche = $rpbranche;
     }
 
 

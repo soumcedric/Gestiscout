@@ -22,12 +22,90 @@ services:
             - '../src/Kernel.php'
             - '../src/Tests/'
 
+     # Enregistrer explicitement SessionInterface
+    Symfony\Component\HttpFoundation\Session\SessionInterface:
+        class: Symfony\Component\HttpFoundation\Session\Session
+
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
+      # Définir explicitement les repositories
+    App\Repository\BrancheRepository:
+        tags: ['doctrine.repository_service']
+
+    App\Repository\ACTIVITESRepository:
+        tags: ['doctrine.repository_service']
+
+    App\Repository\AnneePastoraleRepository:
+        tags: ['doctrine.repository_service']
+
+    App\Repository\DistrictRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\PeriodeRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\EvenementRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\SousRubriqueRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\BilantresorerieRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\CaisseActiviteRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\CaisseGroupeRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\CaisseSoldeDistrictRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\CotisationRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\DETAILSRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\DocumentsRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\ExercerFonctionRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\FONCTIONRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\FormationRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\GenreRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\GroupeRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\INSCRIPTIONRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\JEUNERepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\MAITRISERepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\MouvementDistrictRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\MouvementEntiteRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\RegionRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\ResponsableDistrictRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\RubriqueBudgetRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\RubriqueRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\SensRubriqueRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\SessionFormationRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\SessionFormationResponsableRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\TresorerieActiviteRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\TypeDocumentRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\TypeMouvementRepository:
+        tags: ['doctrine.repository_service']
+    App\Repository\ResponsableRepository:
+        tags: ['doctrine.repository_service']
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     App\Service\FileUploader:

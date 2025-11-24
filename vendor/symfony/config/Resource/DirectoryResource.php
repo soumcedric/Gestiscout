@@ -29,7 +29,7 @@ class DirectoryResource implements SelfCheckingResourceInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(string $resource, string $pattern = null)
+    public function __construct(string $resource, ?string $pattern = null)
     {
         $this->resource = realpath($resource) ?: (file_exists($resource) ? $resource : false);
         $this->pattern = $pattern;
@@ -39,25 +39,16 @@ class DirectoryResource implements SelfCheckingResourceInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function __toString(): string
     {
         return md5(serialize([$this->resource, $this->pattern]));
     }
 
-    /**
-     * @return string The file path to the resource
-     */
     public function getResource(): string
     {
         return $this->resource;
     }
 
-    /**
-     * Returns the pattern to restrict monitored files.
-     */
     public function getPattern(): ?string
     {
         return $this->pattern;
@@ -84,7 +75,7 @@ class DirectoryResource implements SelfCheckingResourceInterface
 
             // always monitor directories for changes, except the .. entries
             // (otherwise deleted files wouldn't get detected)
-            if ($file->isDir() && '/..' === substr($file, -3)) {
+            if ($file->isDir() && str_ends_with($file, '/..')) {
                 continue;
             }
 
