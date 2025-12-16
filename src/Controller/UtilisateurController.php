@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UtilisateurController extends AbstractController
 {
@@ -45,25 +45,24 @@ class UtilisateurController extends AbstractController
     }
 
     #[Route('/Addutilisateur', name: 'Addutilisateur')]
-    public function Addutilisateur(Request $req, UserPasswordEncoderInterface $encoder, ResponsableRepository $respoRepo, MailerInterface $mailer)
+    public function Addutilisateur(Request $req, UserPasswordHasherInterface $passHasher, ResponsableRepository $respoRepo, MailerInterface $mailer)
     {
         try
         {
        
-        $fromJson = $req->request->get("value");
+       // $fromJson = $req->request->get("value");
         $qClass = new QueryClass($this->em);
-        $ConcernedRespo = $this->respoLayer->findOneBy(["id" => $fromJson["respoid"]]);
+        $ConcernedRespo = $this->respoLayer->findOneBy(["id" => $req->request->get("respoid")]);
         $userExists = $qClass->CheckUserExist($ConcernedRespo->getEmail());
+        
         if ($userExists) {
             return new JsonResponse(['ok' => false, 'message' => 'Cet utilisateur existe déjà']);
         } else {
-                 //get Concerned Responsable
-                
-            //$groupe = $this->session->get('groupeid');
+          
             $groupe = $ConcernedRespo->getGroupe();
             //get concerned group
             $ConnectedGroupe = $this->groupeLayer->findOneBy(["id" => $groupe->getId()]);
-       
+           // dump($ConnectedGroupe);
             $role = $qClass->GetRespoRole($ConcernedRespo->getId());
             dump($role);
 
@@ -71,8 +70,8 @@ class UtilisateurController extends AbstractController
 
 
             $randonpass = $this->RandomPassword();
-            //dump($randonpass);
-            $cryptedPass = $encoder->encodePassword($user, $randonpass);
+            
+            $cryptedPass = $passHasher->hashPassword($user, $randonpass);
             $roles = array($role);
             $user->setPassword($cryptedPass)
                 ->setUsername($ConcernedRespo->getEmail())
@@ -84,9 +83,9 @@ class UtilisateurController extends AbstractController
                 ->setFirstConnection(true)
                 ->setUserCreation("Admin");
 
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($user);
-            $manager->flush();
+          
+            $this->em->persist($user);
+            $this->em->flush();
             //send mail to the user with his default password
             //get email
             $respo = $respoRepo->findOneBy(["id" => $ConcernedRespo->getId()]);
@@ -100,12 +99,12 @@ class UtilisateurController extends AbstractController
                 ->subject('Création de compte')
                 ->html('Bonjour ' . $nom . ' ' . $prenoms . ', <br/>Votre inscription à la plateforme Gestiscout à été effectuée avec succès. <br\>Afin de vous connecter, veuillez utiliser
                     les identifiants ci-dessous: <br/>
-                    nom utilisateur : ' . $user->getUsername()
+                    nom utilisateur : ' . $user->getUserIdentifier()
                     . '<br/>
                     mot de passe: ' . $randonpass. "<br/><br/>
                     <i><strong>L'équipe GestiScout </strong></i>");
 
-
+            dump($email);
           $result =   $mailer->send($email);
           
 
@@ -162,9 +161,9 @@ class UtilisateurController extends AbstractController
                 ->setFirstConnection(true)
                 ->setUserCreation("Admin");
 
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($user);
-            $manager->flush();
+            
+            $this->em->persist($user);
+            $this->em->flush();
         //     //send mail to the user with his default password
         //     //get email
              $respo = $district->findOneBy(["id" => $ConcernedRespo->getId()]);

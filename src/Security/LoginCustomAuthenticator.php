@@ -62,7 +62,7 @@ class LoginCustomAuthenticator extends AbstractLoginFormAuthenticator
         }
 
         // Mise à jour de la dernière connexion
-        $userEntity = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $user->getUsername()]);
+        $userEntity = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $user->getUserIdentifier()]);
         
         if ($userEntity) {
             $userEntity->setLastConnection(new \DateTime());
@@ -72,7 +72,7 @@ class LoginCustomAuthenticator extends AbstractLoginFormAuthenticator
             // Enregistrer les données en session
             $request->getSession()->set("USER", $userEntity);
             $request->getSession()->set("id", $userEntity->getId());
-            $request->getSession()->set('nom', $userEntity->getUsername());
+            $request->getSession()->set('nom', $userEntity->getUserIdentifier());
 
             if ($userEntity->getGroupe() != null) {
                 $request->getSession()->set('groupeid', $userEntity->getGroupe());

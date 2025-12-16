@@ -235,7 +235,7 @@ function convertDateEnglish(dateToConvert){
                     type: "POST",
                     url:"{{ path("AddAnnee") }}",
                     dataType:"json",
-                    data:{"value" : AnneeP},
+                    data: AnneeP,
                     success:function(res){
                         debugger
                         swal({

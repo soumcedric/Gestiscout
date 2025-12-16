@@ -13,14 +13,17 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 class LoginCustomController extends AbstractController
 {
     private $urlGenerator;
+    private $em;
 
-    function __construct(UrlGeneratorInterface $urlGenerator)
+    function __construct(UrlGeneratorInterface $urlGenerator, EntityManagerInterface $em)
     {
         $this->urlGenerator = $urlGenerator;
+        $this->em = $em;
     }
 
     #[Route('/login', name: 'app_login')]
@@ -74,10 +77,9 @@ class LoginCustomController extends AbstractController
                      ->setFirstConnection(false)
                      ->setLastConnection(new \DateTime());
 
-                $manager = $this->getDoctrine()->getManager();
-                $manager->persist($user);
-                $manager->flush();
-                
+                $this->em->persist($user);
+                $this->em->flush();
+
                 return new RedirectResponse($this->urlGenerator->generate($this->getTarget($user->getRoles())));
             }
         }

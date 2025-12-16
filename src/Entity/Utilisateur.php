@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @ORM\Entity(repositoryClass=UtilisateurRepository::class)
  */
-abstract class Utilisateur implements UserInterface
+abstract class Utilisateur implements PasswordAuthenticatedUserInterface 
 {
     /**
      * @ORM\Id
@@ -61,7 +61,9 @@ abstract class Utilisateur implements UserInterface
     }
 
 
-
+/**
+     * @see PasswordAuthenticatedUserInterface
+     */
 
     public function getPassword(): ?string
     {

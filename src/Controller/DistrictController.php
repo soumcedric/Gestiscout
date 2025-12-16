@@ -187,9 +187,10 @@ class DistrictController extends AbstractController
 
 
             $Req = $value->request->get('value');
-           // dump($Req);
+       
            //get concerned commissariat district
             $concernedCommissariat = $commissariat->findOneBy(["id"=>$Req["district"]]);
+           
             $date = new \DateTime($Req["dob"]);
             $district = new District();
             $district->setNom($Req["nom"])
@@ -200,11 +201,12 @@ class DistrictController extends AbstractController
             ->setDateCreation(new \DateTime())
             ->setCommissariatDistrict($concernedCommissariat);
 
+            
 
             //get fonction
             $fonction = $Req["fonction"];
             $selectedfonction = $fonctionRep->findOneBy(["id" => $fonction]);
-            dump($selectedfonction);
+           // dump($selectedfonction);
             $exercerfonction = new ExercerFonction();
             $exercerfonction->setDateDebut(new \DateTime())
                 ->setDateFin(new \DateTime())
@@ -213,10 +215,14 @@ class DistrictController extends AbstractController
                 ->setFonction($selectedfonction)
                 ->addDistrict($district);
 
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($district);
-            $manager->persist($exercerfonction);
-            $manager->flush();
+            dump($concernedCommissariat);
+            dump($district);
+            dump($selectedfonction);
+
+            //$manager = $this->getDoctrine()->getManager();
+            $this->em->persist($district);
+            //$this->em->persist($exercerfonction);
+            $this->em->flush();
             // return new Response(true,200);
             // return new Response();
             return new JsonResponse(['ok' => true, 'message' => "Opération effectuée avec succès"]);
@@ -272,6 +278,7 @@ class DistrictController extends AbstractController
     {
         $qClass = new QueryClass($this->em);
         $result = $qClass->GetAllMembreDistrict();
+        dump($result);
         //$liste = $serializer->serialize($result,'json');
         return new JsonResponse(["ok" => true, "data" => $result]);
     }
