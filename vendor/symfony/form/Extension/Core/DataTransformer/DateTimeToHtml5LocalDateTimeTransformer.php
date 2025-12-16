@@ -26,17 +26,15 @@ class DateTimeToHtml5LocalDateTimeTransformer extends BaseDateTimeTransformer
      * Transforms a \DateTime into a local date and time string.
      *
      * According to the HTML standard, the input string of a datetime-local
-     * input is a RFC3339 date followed by 'T', followed by a RFC3339 time.
+     * input is an RFC3339 date followed by 'T', followed by an RFC3339 time.
      * https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-local-date-and-time-string
      *
      * @param \DateTime|\DateTimeInterface $dateTime A DateTime object
      *
-     * @return string The formatted date
-     *
      * @throws TransformationFailedException If the given value is not an
      *                                       instance of \DateTime or \DateTimeInterface
      */
-    public function transform($dateTime)
+    public function transform(mixed $dateTime): string
     {
         if (null === $dateTime) {
             return '';
@@ -66,12 +64,10 @@ class DateTimeToHtml5LocalDateTimeTransformer extends BaseDateTimeTransformer
      *
      * @param string $dateTimeLocal Formatted string
      *
-     * @return \DateTime|null Normalized date
-     *
      * @throws TransformationFailedException If the given value is not a string,
      *                                       if the value could not be transformed
      */
-    public function reverseTransform($dateTimeLocal)
+    public function reverseTransform(mixed $dateTimeLocal): ?\DateTime
     {
         if (!\is_string($dateTimeLocal)) {
             throw new TransformationFailedException('Expected a string.');

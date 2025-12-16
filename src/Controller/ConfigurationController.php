@@ -83,29 +83,29 @@ class ConfigurationController extends AbstractController
 
 
     #[Route('/AddAnnee', name: 'AddAnnee')]
-    public function AddAnnee(\Symfony\Component\HttpFoundation\Request $value): Response
+    public function AddAnnee(\Symfony\Component\HttpFoundation\Request $request): Response
     {
 
         $NewYear = new AnneePastorale();
-        $fromjson = $value->request->get('value');
-        $date = $fromjson["Debut"];
-        $code = $fromjson["Code"];
-        $datedebut = new \DateTime($fromjson["Debut"]);
-        $datefin = new \DateTime($fromjson["Fin"]);
+        $fromjson = $request->request->get('value');
+        $date =  $request->request->get('Debut');
+        $code =  $request->request->get('Code');
+        $datedebut = new \DateTime( $request->request->get('Debut'));
+        $datefin = new \DateTime( $request->request->get('Fin'));
 
         $currenttime = date('H:i:s \O\n d/m/Y');
-        $NewYear->setCodeAnnee($fromjson["Code"])
+        $NewYear->setCodeAnnee($code)
             ->setDateDebut($datedebut)
             ->setDateFin($datefin)
-            ->setBActif($fromjson["bActif"])
+            ->setBActif( $request->request->get('bActif'))
             ->setUserCreation("admin");
         $NewYear->setDateCreation(new \DateTime());
 
 
 
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($NewYear);
-        $manager->flush();
+        //$manager = $this->getDoctrine()->getManager();
+        $this->EntityManager->persist($NewYear);
+        $this->EntityManager->flush();
         return  new \Symfony\Component\HttpFoundation\Response(true, 200);
         //        $time  = strtotime($young["dob"]);
         //        $date = new \DateTime($young["dob"]);
@@ -121,28 +121,21 @@ class ConfigurationController extends AbstractController
     }
 
     #[Route('/AddFonction', name: 'AddFonction')]
-    public function AddFonction(\App\Repository\FONCTIONRepository  $repo, \Symfony\Component\HttpFoundation\Request $value): Response
+    public function AddFonction(\App\Repository\FONCTIONRepository  $repo, \Symfony\Component\HttpFoundation\Request $request): Response
     {
 
         $newFonction = new FONCTION();
-
-        $fromjson = $value->request->get('value');
-        $newFonction->setCode($fromjson["Code"]);
-        $newFonction->setLibelle($fromjson["Libelle"]);
-        $newFonction->setRole($fromjson["Role"]);
+        dump();
+        $newFonction->setCode($request->request->get('Code'));
+        $newFonction->setLibelle($request->request->get('Libelle'));
+        $newFonction->setRole($request->request->get('Role'));
         $newFonction->setDateCreation(new \DateTime());
-        //  $newFonction->setUserCreation("Admin");
-
-
-
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($newFonction);
-        $manager->flush();
+  
+        $this->EntityManager->persist($newFonction);
+        $this->EntityManager->flush();
 
         return  new \Symfony\Component\HttpFoundation\Response(true, 200);
-        //        return $this->render('configuration/ListeFonction.html.twig', [
-        //            'controller_name' => 'ConfigurationController',
-        //        ]);
+   
     }
 
 
@@ -150,7 +143,7 @@ class ConfigurationController extends AbstractController
     public function GetListeFonction(\App\Repository\FONCTIONRepository  $repo, SerializerInterface $serializer): Response
     {
         $listeFonction = $repo->findAll();
-
+        dump($listeFonction);
         $result = $serializer->serialize($listeFonction, 'json', ['groups' => 'fonction']);
         return  new \Symfony\Component\HttpFoundation\Response($result, 200);
     }
@@ -158,9 +151,7 @@ class ConfigurationController extends AbstractController
     #[Route('/GetListBranche', name: 'GetListBranche')]
     public function GetListBranche(\App\Repository\BrancheRepository  $repo, NormalizerInterface $normalizer, SerializerInterface $serializer): Response
     {
-        $listeBranche = $repo->findAll();
-        //        $listeNormalized =  $normalizer->normalize($listeBranche,null,["groups"=>"branche"]);//,null,['groups'=>'post:read']);
-        //        $result = json_encode($listeNormalized);
+        $listeBranche = $repo->findAll();    
         $result = $serializer->serialize($listeBranche, 'json', ['groups' => 'branche']);
         return  new \Symfony\Component\HttpFoundation\Response($result, 200);
     }
@@ -177,24 +168,21 @@ class ConfigurationController extends AbstractController
     #[Route('/AddBranche', name: 'AddBranche')]
     public function AddBranche(\App\Repository\BrancheRepository  $repo, \Symfony\Component\HttpFoundation\Request $value): Response
     {
-
         $newBranche = new Branche();
 
-        $fromjson = $value->request->get('value');
-        $newBranche->setLibelle($fromjson["Libelle"]);
-        $newBranche->setTrancheAge($fromjson["Age"]);
-        $newBranche->setDateCreation(new \DateTime());
+         $fromjson = $value->request->get('value');
+        
+         dump($value);
+         $newBranche->setLibelle($value->request->get('Libelle'));
+         $newBranche->setTrancheAge($value->request->get('Age'));
+        // $newBranche->setDateCreation(new \DateTime());
 
-
-
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($newBranche);
-        $manager->flush();
+    
+        $this->EntityManager->persist($newBranche);
+        $this->EntityManager->flush();
 
         return  new \Symfony\Component\HttpFoundation\Response(true, 200);
-        //        return $this->render('configuration/ListeFonction.html.twig', [
-        //            'controller_name' => 'ConfigurationController',
-        //        ]);
+     
     }
 
     #[Route('/Groupe', name: 'Groupe')]
@@ -206,18 +194,10 @@ class ConfigurationController extends AbstractController
     }
 
     #[Route('/AddGroupe', name: 'AddGroupe')]
-    public function AddGroupe(\Symfony\Component\HttpFoundation\Request $request, FileUploader $fileupload, CommissariatDistrictRepository $cdRepository,SluggerInterface $slugger): Response
+    public function AddGroupe(\Symfony\Component\HttpFoundation\Request $request, /*FileUploader $fileupload,*/ CommissariatDistrictRepository $cdRepository,SluggerInterface $slugger): Response
     {
-        try {
-            
-           // $values = $request->request->get('groupe'); 
-    
-            // $img = $values["img"];
-
-            // $strindex = strpos($img, '.');
-            // $extension = substr($img, $strindex);
-
-            //$value->request->get("nom")
+        try {           
+           
             $newGroupe = new Groupe();
             $newGroupe->setNom($request->get("nom"))
                 ->setNickName($request->get("nickname"))
@@ -228,12 +208,8 @@ class ConfigurationController extends AbstractController
                 ->setRegion($request->get("region"))
                 ->setParoisse($request->get("paroisse"))
                 ->setDateCreation(new \DateTime());
-               // ->setExtension($extension)
-              //  ->setFilebasetext($values["logo"])
-               // ->setFilename($values["nom"] . trim(""));
-              
 
-
+             var_dump($newGroupe);   
              //get district
              $districtSelected = $cdRepository->findOneBy(["id" => $request->get("District")]);
              $newGroupe->setCommissariatDistrict($districtSelected);
@@ -258,9 +234,9 @@ class ConfigurationController extends AbstractController
 
             $newGroupe->setFilename($fichier);
 
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($newGroupe);
-            $manager->flush();
+            //$manager = $this->getDoctrine()->getManager();
+            $this->EntityManager->persist($newGroupe);
+            $this->EntityManager->flush();
 
             return new JsonResponse(['ok' => true, 'message' => "Opération effectuée avec succès"]);
           
@@ -396,17 +372,7 @@ class ConfigurationController extends AbstractController
             //file management
             $file = $request->files->get('image_path');
 
-            //  $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            //  $safeFilename = $slugger->slug($originalFilename);
-            //  $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
-
-
-
-
-
-
-
-
+           
             $baseDir = realpath(__DIR__ . '/../../img_logo');
             $fichier=$_FILES["fichier"]["name"];
             $real = realpath($_FILES["fichier"]["tmp_name"]);
@@ -415,30 +381,7 @@ class ConfigurationController extends AbstractController
             move_uploaded_file($_FILES["fichier"]["tmp_name"],$baseDir.'//'.$fichier);
             $newfile = $baseDir.'//'.$fichier;
 
-           // dump($real);
-
-
-            //var_dump($newfile);
-            // $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xls');
-            // $spreadsheet = $reader->load($newfile);
-            // $highetsrow = $spreadsheet->getActiveSheet()->getHighestDataRow();
-            // $highestColumn = $spreadsheet->getActiveSheet()->getHighestDataColumn();
-            // $numberOfColumn = $this->MapAlphabeticLetter($highestColumn);
-
-
-
-
-
-
-
-
-            //  $file->move(
-            //     $this->getParameter('brochures_directory'),
-            //     $newFilename
-            //   );
-
-
-            // $newGroupe->setFilename($newFilename);
+          
 
 
             //get groupe to update
@@ -565,21 +508,17 @@ class ConfigurationController extends AbstractController
 
 
     #[Route('/AddFormation', name: 'AddFormation')]
-    public function AddFormation(\App\Repository\FormationRepository  $form, \Symfony\Component\HttpFoundation\Request $value): Response
+    public function AddFormation(\App\Repository\FormationRepository  $form, \Symfony\Component\HttpFoundation\Request $request): Response
     {
         try {
             $newFormation = new Formation();
 
-            $fromjson = $value->request->get('value');
-            $newFormation->setLibelle($fromjson["Libelle"]);
-            $newFormation->setOrdre($fromjson["Ordre"]);
+           // $fromjson = $value->request->get('value');
+            $newFormation->setLibelle($request->request->get('Libelle'));
+            $newFormation->setOrdre($request->request->get('Ordre'));
 
-
-
-
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($newFormation);
-            $manager->flush();
+            $this->EntityManager->persist($newFormation);
+            $this->EntityManager->flush();
             return new JsonResponse(["ok" => true, "data" => "Opération effectuée avec succès"]);
         } catch (\Exception $e) {
             return new JsonResponse(["ok" => true, "data" => $e->getMessage()]);
@@ -605,7 +544,7 @@ class ConfigurationController extends AbstractController
         $listedistrict =  $serializer->serialize($liste, 'json', ['groups' => 'dst']);
         //dump($listedistrict);
         return new JsonResponse(["ok" => true, "data" => $listedistrict]);
-        //return new Response();
+        
     }
 
 
@@ -648,9 +587,9 @@ class ConfigurationController extends AbstractController
         $newrecord->setFilename($fichier);
         // dump($newrecord->getNom());
 
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($newrecord);
-        $manager->flush();
+       // $manager = $this->getDoctrine()->getManager();
+        $this->EntityManager->persist($newrecord);
+        $this->EntityManager->flush();
         return new JsonResponse(["ok" => true, "data" => "Opération effectuée avec succès"]);
         return new Response();
     }
@@ -724,9 +663,9 @@ class ConfigurationController extends AbstractController
             ->setDatecreate(new \DateTime())
             ->setUsercreate(0);
 
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($newPeriode);
-        $manager->flush();
+        //$manager = $this->getDoctrine()->getManager();
+        $this->EntityManager->persist($newPeriode);
+        $this->EntityManager->flush();
         return new JsonResponse(["ok" => true, "message" => "Opération réussie"]);
     }
 
@@ -748,9 +687,9 @@ class ConfigurationController extends AbstractController
         $newRubrique = new Rubrique();
         $newRubrique->setLibelle($data["libelle"])
                     ->setCode($data["code"]);
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($newRubrique);
-        $manager->flush();
+        
+        $this->EntityManager->persist($newRubrique);
+        $this->EntityManager->flush();
         return new JsonResponse(["ok" => true, "message" => "Opération réussie"]);
                     
     }
@@ -791,9 +730,9 @@ class ConfigurationController extends AbstractController
                     ->setCode($data["code"])
                     ->setDateCreation(new \DateTime())
                     ->setRubrique($rubrique->findOneBy(["id"=>$data["rubrique"]]));
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($newRubrique);
-        $manager->flush();
+        //$manager = $this->getDoctrine()->getManager();
+        $this->EntityManager->persist($newRubrique);
+        $this->EntityManager->flush();
         return new JsonResponse(["ok" => true, "message" => "Opération réussie"]);
                     
     }
@@ -808,12 +747,10 @@ class ConfigurationController extends AbstractController
     public function GroupeByDistrict($district)
     {
         try {
-           // dump($district);
-             $qClass = new Classes\QueryClass($this->EntityManager);
-             $groupes = $qClass->GetGroupeByDistrict($district);
-             //dump("test".$groupes);
-            return new JsonResponse(['ok' => true, 'data' => $groupes]);
-         // return new Response();
+           
+            $qClass = new Classes\QueryClass($this->EntityManager);
+            $groupes = $qClass->GetGroupeByDistrict($district);             
+            return new JsonResponse(['ok' => true, 'data' => $groupes]);       
             
         } catch (\Exception $e) {
             return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);

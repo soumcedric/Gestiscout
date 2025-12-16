@@ -33,7 +33,7 @@ class MouvementGroupe
     private $groupe;
 
     /**
-     * @ORM\ManyToOne(targetEntity=periode::class)
+     * @ORM\ManyToOne(targetEntity=Periode::class)
      */
     private $periode;
 
@@ -108,12 +108,12 @@ class MouvementGroupe
         return $this;
     }
 
-    public function getPeriode(): ?periode
+    public function getPeriode(): ?Periode
     {
         return $this->periode;
     }
 
-    public function setPeriode(?periode $periode): self
+    public function setPeriode(?Periode $periode): self
     {
         $this->periode = $periode;
 

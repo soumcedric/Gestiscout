@@ -52,13 +52,19 @@ class Configuration
     private $baselineDeprecations = [];
 
     /**
-     * @param int[]  $thresholds       A hash associating groups to thresholds
-     * @param string $regex            Will be matched against messages, to decide whether to display a stack trace
-     * @param bool[] $verboseOutput    Keyed by groups
-     * @param bool   $generateBaseline Whether to generate or update the baseline file
-     * @param string $baselineFile     The path to the baseline file
+     * @var string|null
      */
-    private function __construct(array $thresholds = [], $regex = '', $verboseOutput = [], $generateBaseline = false, $baselineFile = '')
+    private $logFile = null;
+
+    /**
+     * @param int[]       $thresholds       A hash associating groups to thresholds
+     * @param string      $regex            Will be matched against messages, to decide whether to display a stack trace
+     * @param bool[]      $verboseOutput    Keyed by groups
+     * @param bool        $generateBaseline Whether to generate or update the baseline file
+     * @param string      $baselineFile     The path to the baseline file
+     * @param string|null $logFile          The path to the log file
+     */
+    private function __construct(array $thresholds = [], $regex = '', $verboseOutput = [], $generateBaseline = false, $baselineFile = '', $logFile = null)
     {
         $groups = ['total', 'indirect', 'direct', 'self'];
 
@@ -101,7 +107,7 @@ class Configuration
             if (!isset($this->verboseOutput[$group])) {
                 throw new \InvalidArgumentException(sprintf('Unsupported verbosity group "%s", expected one of "%s".', $group, implode('", "', array_keys($this->verboseOutput))));
             }
-            $this->verboseOutput[$group] = (bool) $status;
+            $this->verboseOutput[$group] = $status;
         }
 
         if ($generateBaseline && !$baselineFile) {
@@ -119,6 +125,8 @@ class Configuration
                 throw new \InvalidArgumentException(sprintf('The baselineFile "%s" does not exist.', $this->baselineFile));
             }
         }
+
+        $this->logFile = $logFile;
     }
 
     /**
@@ -158,11 +166,43 @@ class Configuration
     }
 
     /**
+     * @param array<string,DeprecationGroup> $deprecationGroups
+     *
+     * @return bool true if the threshold is not reached for the deprecation type nor for the total
+     */
+    public function toleratesForGroup(string $groupName, array $deprecationGroups): bool
+    {
+        $grandTotal = 0;
+
+        foreach ($deprecationGroups as $type => $group) {
+            if ('legacy' !== $type) {
+                $grandTotal += $group->count();
+            }
+        }
+
+        if ($grandTotal > $this->thresholds['total']) {
+            return false;
+        }
+
+        if (\in_array($groupName, ['self', 'direct', 'indirect'], true) && $deprecationGroups[$groupName]->count() > $this->thresholds[$groupName]) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @return bool
      */
     public function isBaselineDeprecation(Deprecation $deprecation)
     {
-        if ($deprecation->originatesFromAnObject()) {
+        if ($deprecation->isLegacy()) {
+            return false;
+        }
+
+        if ($deprecation->originatesFromDebugClassLoader()) {
+            $location = $deprecation->triggeringClass();
+        } elseif ($deprecation->originatesFromAnObject()) {
             $location = $deprecation->originatingClass().'::'.$deprecation->originatingMethod();
         } else {
             $location = 'procedural code';
@@ -238,6 +278,16 @@ class Configuration
         return $this->verboseOutput[$group];
     }
 
+    public function shouldWriteToLogFile()
+    {
+        return null !== $this->logFile;
+    }
+
+    public function getLogFile()
+    {
+        return $this->logFile;
+    }
+
     /**
      * @param string $serializedConfiguration an encoded string, for instance
      *                                        max[total]=1234&max[indirect]=42
@@ -248,7 +298,7 @@ class Configuration
     {
         parse_str($serializedConfiguration, $normalizedConfiguration);
         foreach (array_keys($normalizedConfiguration) as $key) {
-            if (!\in_array($key, ['max', 'disabled', 'verbose', 'quiet', 'generateBaseline', 'baselineFile'], true)) {
+            if (!\in_array($key, ['max', 'disabled', 'verbose', 'quiet', 'generateBaseline', 'baselineFile', 'logFile'], true)) {
                 throw new \InvalidArgumentException(sprintf('Unknown configuration option "%s".', $key));
             }
         }
@@ -260,6 +310,7 @@ class Configuration
             'quiet' => [],
             'generateBaseline' => false,
             'baselineFile' => '',
+            'logFile' => null,
         ];
 
         if ('' === $normalizedConfiguration['disabled'] || filter_var($normalizedConfiguration['disabled'], \FILTER_VALIDATE_BOOLEAN)) {
@@ -278,11 +329,12 @@ class Configuration
         }
 
         return new self(
-            isset($normalizedConfiguration['max']) ? $normalizedConfiguration['max'] : [],
+            $normalizedConfiguration['max'] ?? [],
             '',
             $verboseOutput,
             filter_var($normalizedConfiguration['generateBaseline'], \FILTER_VALIDATE_BOOLEAN),
-            $normalizedConfiguration['baselineFile']
+            $normalizedConfiguration['baselineFile'],
+            $normalizedConfiguration['logFile']
         );
     }
 

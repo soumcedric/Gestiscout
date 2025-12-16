@@ -19,13 +19,6 @@ use Symfony\Component\HttpClient\TraceableHttpClient;
 
 final class HttpClientPass implements CompilerPassInterface
 {
-    private $clientTag;
-
-    public function __construct(string $clientTag = 'http_client.client')
-    {
-        $this->clientTag = $clientTag;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -35,10 +28,11 @@ final class HttpClientPass implements CompilerPassInterface
             return;
         }
 
-        foreach ($container->findTaggedServiceIds($this->clientTag) as $id => $tags) {
+        foreach ($container->findTaggedServiceIds('http_client.client') as $id => $tags) {
             $container->register('.debug.'.$id, TraceableHttpClient::class)
                 ->setArguments([new Reference('.debug.'.$id.'.inner'), new Reference('debug.stopwatch', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)])
-                ->setDecoratedService($id);
+                ->addTag('kernel.reset', ['method' => 'reset'])
+                ->setDecoratedService($id, null, 5);
             $container->getDefinition('data_collector.http_client')
                 ->addMethodCall('registerClient', [$id, new Reference('.debug.'.$id)]);
         }

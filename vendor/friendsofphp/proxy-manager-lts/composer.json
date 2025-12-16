@@ -15,11 +15,11 @@
         {
             "name":     "Marco Pivetta",
             "email":    "ocramius@gmail.com",
-            "homepage": "http://ocramius.github.io/"
+            "homepage": "https://ocramius.github.io/"
         },
         {
-            "name": "Nicolas Grekas",
-            "email": "p@tchwork.com"
+            "name":     "Nicolas Grekas",
+            "email":    "p@tchwork.com"
         }
     ],
     "replace": {
@@ -27,8 +27,8 @@
     },
     "require": {
         "php":                       ">=7.1",
-        "laminas/laminas-code":      "^3.4.1",
-        "symfony/filesystem":        "^4.4.17|^5.0"
+        "laminas/laminas-code":      "~3.4.1|^4.0",
+        "symfony/filesystem":        "^4.4.17|^5.0|^6.0|^7.0|^8.0"
     },
     "conflict": {
         "zendframework/zend-stdlib": "<3.2.1",
@@ -36,7 +36,7 @@
     },
     "require-dev": {
         "ext-phar":                     "*",
-        "symfony/phpunit-bridge":       "^5.2"
+        "symfony/phpunit-bridge":       "^5.4|^6.0|^7.0"
     },
     "autoload": {
         "psr-4": {

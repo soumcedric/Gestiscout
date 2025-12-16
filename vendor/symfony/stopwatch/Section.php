@@ -47,7 +47,7 @@ class Section
      * @param float|null $origin        Set the origin of the events in this section, use null to set their origin to their start time
      * @param bool       $morePrecision If true, time is stored as float to keep the original microsecond precision
      */
-    public function __construct(float $origin = null, bool $morePrecision = false)
+    public function __construct(?float $origin = null, bool $morePrecision = false)
     {
         $this->origin = $origin;
         $this->morePrecision = $morePrecision;
@@ -56,7 +56,7 @@ class Section
     /**
      * Returns the child section.
      *
-     * @return self|null The child section or null when none found
+     * @return self|null
      */
     public function get(string $id)
     {
@@ -86,7 +86,7 @@ class Section
     }
 
     /**
-     * @return string The identifier of the section
+     * @return string
      */
     public function getId()
     {
@@ -108,7 +108,7 @@ class Section
     /**
      * Starts an event.
      *
-     * @return StopwatchEvent The event
+     * @return StopwatchEvent
      */
     public function startEvent(string $name, ?string $category)
     {
@@ -132,7 +132,7 @@ class Section
     /**
      * Stops an event.
      *
-     * @return StopwatchEvent The event
+     * @return StopwatchEvent
      *
      * @throws \LogicException When the event has not been started
      */
@@ -148,7 +148,7 @@ class Section
     /**
      * Stops then restarts an event.
      *
-     * @return StopwatchEvent The event
+     * @return StopwatchEvent
      *
      * @throws \LogicException When the event has not been started
      */
@@ -160,7 +160,7 @@ class Section
     /**
      * Returns a specific event by name.
      *
-     * @return StopwatchEvent The event
+     * @return StopwatchEvent
      *
      * @throws \LogicException When the event is not known
      */
@@ -176,7 +176,7 @@ class Section
     /**
      * Returns the events from this section.
      *
-     * @return StopwatchEvent[] An array of StopwatchEvent instances
+     * @return StopwatchEvent[]
      */
     public function getEvents()
     {

@@ -25,11 +25,13 @@ class Count extends Constraint
 {
     public const TOO_FEW_ERROR = 'bef8e338-6ae5-4caf-b8e2-50e7b0579e69';
     public const TOO_MANY_ERROR = '756b1212-697c-468d-a9ad-50dd783bb169';
+    public const NOT_EQUAL_COUNT_ERROR = '9fe5d43f-3784-4ece-a0e1-473fc02dadbc';
     public const NOT_DIVISIBLE_BY_ERROR = DivisibleBy::NOT_DIVISIBLE_BY;
 
     protected static $errorNames = [
         self::TOO_FEW_ERROR => 'TOO_FEW_ERROR',
         self::TOO_MANY_ERROR => 'TOO_MANY_ERROR',
+        self::NOT_EQUAL_COUNT_ERROR => 'NOT_EQUAL_COUNT_ERROR',
         self::NOT_DIVISIBLE_BY_ERROR => 'NOT_DIVISIBLE_BY_ERROR',
     ];
 
@@ -41,13 +43,8 @@ class Count extends Constraint
     public $max;
     public $divisibleBy;
 
-    /**
-     * {@inheritdoc}
-     *
-     * @param int|array|null $exactly The expected exact count or a set of options
-     */
     public function __construct(
-        $exactly = null,
+        int|array $exactly = null,
         int $min = null,
         int $max = null,
         int $divisibleBy = null,
@@ -56,7 +53,7 @@ class Count extends Constraint
         string $maxMessage = null,
         string $divisibleByMessage = null,
         array $groups = null,
-        $payload = null,
+        mixed $payload = null,
         array $options = []
     ) {
         if (\is_array($exactly)) {

@@ -20,8 +20,8 @@ use Symfony\Component\Form\Exception\InvalidArgumentException;
  */
 class PreloadedExtension implements FormExtensionInterface
 {
-    private $types = [];
-    private $typeExtensions = [];
+    private array $types = [];
+    private array $typeExtensions = [];
     private $typeGuesser;
 
     /**
@@ -43,10 +43,10 @@ class PreloadedExtension implements FormExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function getType(string $name)
+    public function getType(string $name): FormTypeInterface
     {
         if (!isset($this->types[$name])) {
-            throw new InvalidArgumentException(sprintf('The type "%s" can not be loaded by this extension.', $name));
+            throw new InvalidArgumentException(sprintf('The type "%s" cannot be loaded by this extension.', $name));
         }
 
         return $this->types[$name];
@@ -55,7 +55,7 @@ class PreloadedExtension implements FormExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function hasType(string $name)
+    public function hasType(string $name): bool
     {
         return isset($this->types[$name]);
     }
@@ -63,17 +63,16 @@ class PreloadedExtension implements FormExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function getTypeExtensions(string $name)
+    public function getTypeExtensions(string $name): array
     {
-        return isset($this->typeExtensions[$name])
-            ? $this->typeExtensions[$name]
-            : [];
+        return $this->typeExtensions[$name]
+            ?? [];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function hasTypeExtensions(string $name)
+    public function hasTypeExtensions(string $name): bool
     {
         return !empty($this->typeExtensions[$name]);
     }
@@ -81,7 +80,7 @@ class PreloadedExtension implements FormExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function getTypeGuesser()
+    public function getTypeGuesser(): ?FormTypeGuesserInterface
     {
         return $this->typeGuesser;
     }

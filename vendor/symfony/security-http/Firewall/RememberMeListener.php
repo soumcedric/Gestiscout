@@ -24,12 +24,16 @@ use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+trigger_deprecation('symfony/security-http', '5.3', 'The "%s" class is deprecated, use the new authenticator system instead.', RememberMeListener::class);
+
 /**
  * RememberMeListener implements authentication capabilities via a cookie.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  *
  * @final
+ *
+ * @deprecated since Symfony 5.3, use the new authenticator system instead
  */
 class RememberMeListener extends AbstractListener
 {
@@ -41,7 +45,7 @@ class RememberMeListener extends AbstractListener
     private $catchExceptions = true;
     private $sessionStrategy;
 
-    public function __construct(TokenStorageInterface $tokenStorage, RememberMeServicesInterface $rememberMeServices, AuthenticationManagerInterface $authenticationManager, LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null, bool $catchExceptions = true, SessionAuthenticationStrategyInterface $sessionStrategy = null)
+    public function __construct(TokenStorageInterface $tokenStorage, RememberMeServicesInterface $rememberMeServices, AuthenticationManagerInterface $authenticationManager, ?LoggerInterface $logger = null, ?EventDispatcherInterface $dispatcher = null, bool $catchExceptions = true, ?SessionAuthenticationStrategyInterface $sessionStrategy = null)
     {
         $this->tokenStorage = $tokenStorage;
         $this->rememberMeServices = $rememberMeServices;
@@ -49,7 +53,7 @@ class RememberMeListener extends AbstractListener
         $this->logger = $logger;
         $this->dispatcher = $dispatcher;
         $this->catchExceptions = $catchExceptions;
-        $this->sessionStrategy = null === $sessionStrategy ? new SessionAuthenticationStrategy(SessionAuthenticationStrategy::MIGRATE) : $sessionStrategy;
+        $this->sessionStrategy = $sessionStrategy ?? new SessionAuthenticationStrategy(SessionAuthenticationStrategy::MIGRATE);
     }
 
     /**

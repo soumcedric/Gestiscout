@@ -30,7 +30,7 @@ class FileValidator extends ConstraintValidator
     public const KIB_BYTES = 1024;
     public const MIB_BYTES = 1048576;
 
-    private static $suffices = [
+    private const SUFFICES = [
         1 => 'bytes',
         self::KB_BYTES => 'kB',
         self::MB_BYTES => 'MB',
@@ -41,7 +41,7 @@ class FileValidator extends ConstraintValidator
     /**
      * {@inheritdoc}
      */
-    public function validate($value, Constraint $constraint)
+    public function validate(mixed $value, Constraint $constraint)
     {
         if (!$constraint instanceof File) {
             throw new UnexpectedTypeException($constraint, File::class);
@@ -60,7 +60,7 @@ class FileValidator extends ConstraintValidator
                         $binaryFormat = $constraint->binaryFormat;
                     } else {
                         $limitInBytes = $iniLimitSize;
-                        $binaryFormat = null === $constraint->binaryFormat ? true : $constraint->binaryFormat;
+                        $binaryFormat = $constraint->binaryFormat ?? true;
                     }
 
                     [, $limitAsString, $suffix] = $this->factorizeSizes(0, $limitInBytes, $binaryFormat);
@@ -116,7 +116,7 @@ class FileValidator extends ConstraintValidator
             }
         }
 
-        if (!is_scalar($value) && !$value instanceof FileObject && !(\is_object($value) && method_exists($value, '__toString'))) {
+        if (!\is_scalar($value) && !$value instanceof FileObject && !$value instanceof \Stringable) {
             throw new UnexpectedValueException($value, 'string');
         }
 
@@ -215,7 +215,7 @@ class FileValidator extends ConstraintValidator
      * Convert the limit to the smallest possible number
      * (i.e. try "MB", then "kB", then "bytes").
      */
-    private function factorizeSizes(int $size, int $limit, bool $binaryFormat): array
+    private function factorizeSizes(int $size, int|float $limit, bool $binaryFormat): array
     {
         if ($binaryFormat) {
             $coef = self::MIB_BYTES;
@@ -245,6 +245,6 @@ class FileValidator extends ConstraintValidator
             $sizeAsString = (string) round($size / $coef, 2);
         }
 
-        return [$sizeAsString, $limitAsString, self::$suffices[$coef]];
+        return [$sizeAsString, $limitAsString, self::SUFFICES[$coef]];
     }
 }

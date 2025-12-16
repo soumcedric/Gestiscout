@@ -20,32 +20,29 @@ use Symfony\Component\Form\Extension\Core\CoreExtension;
  */
 class FormFactoryBuilder implements FormFactoryBuilderInterface
 {
-    private $forceCoreExtension;
+    private bool $forceCoreExtension;
 
-    /**
-     * @var ResolvedFormTypeFactoryInterface
-     */
     private $resolvedTypeFactory;
 
     /**
      * @var FormExtensionInterface[]
      */
-    private $extensions = [];
+    private array $extensions = [];
 
     /**
      * @var FormTypeInterface[]
      */
-    private $types = [];
+    private array $types = [];
 
     /**
-     * @var FormTypeExtensionInterface[]
+     * @var FormTypeExtensionInterface[][]
      */
-    private $typeExtensions = [];
+    private array $typeExtensions = [];
 
     /**
      * @var FormTypeGuesserInterface[]
      */
-    private $typeGuessers = [];
+    private array $typeGuessers = [];
 
     public function __construct(bool $forceCoreExtension = false)
     {
@@ -55,7 +52,7 @@ class FormFactoryBuilder implements FormFactoryBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function setResolvedTypeFactory(ResolvedFormTypeFactoryInterface $resolvedTypeFactory)
+    public function setResolvedTypeFactory(ResolvedFormTypeFactoryInterface $resolvedTypeFactory): static
     {
         $this->resolvedTypeFactory = $resolvedTypeFactory;
 
@@ -65,7 +62,7 @@ class FormFactoryBuilder implements FormFactoryBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function addExtension(FormExtensionInterface $extension)
+    public function addExtension(FormExtensionInterface $extension): static
     {
         $this->extensions[] = $extension;
 
@@ -75,7 +72,7 @@ class FormFactoryBuilder implements FormFactoryBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function addExtensions(array $extensions)
+    public function addExtensions(array $extensions): static
     {
         $this->extensions = array_merge($this->extensions, $extensions);
 
@@ -85,7 +82,7 @@ class FormFactoryBuilder implements FormFactoryBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function addType(FormTypeInterface $type)
+    public function addType(FormTypeInterface $type): static
     {
         $this->types[] = $type;
 
@@ -95,7 +92,7 @@ class FormFactoryBuilder implements FormFactoryBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function addTypes(array $types)
+    public function addTypes(array $types): static
     {
         foreach ($types as $type) {
             $this->types[] = $type;
@@ -107,7 +104,7 @@ class FormFactoryBuilder implements FormFactoryBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function addTypeExtension(FormTypeExtensionInterface $typeExtension)
+    public function addTypeExtension(FormTypeExtensionInterface $typeExtension): static
     {
         foreach ($typeExtension::getExtendedTypes() as $extendedType) {
             $this->typeExtensions[$extendedType][] = $typeExtension;
@@ -119,7 +116,7 @@ class FormFactoryBuilder implements FormFactoryBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function addTypeExtensions(array $typeExtensions)
+    public function addTypeExtensions(array $typeExtensions): static
     {
         foreach ($typeExtensions as $typeExtension) {
             $this->addTypeExtension($typeExtension);
@@ -131,7 +128,7 @@ class FormFactoryBuilder implements FormFactoryBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function addTypeGuesser(FormTypeGuesserInterface $typeGuesser)
+    public function addTypeGuesser(FormTypeGuesserInterface $typeGuesser): static
     {
         $this->typeGuessers[] = $typeGuesser;
 
@@ -141,7 +138,7 @@ class FormFactoryBuilder implements FormFactoryBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function addTypeGuessers(array $typeGuessers)
+    public function addTypeGuessers(array $typeGuessers): static
     {
         $this->typeGuessers = array_merge($this->typeGuessers, $typeGuessers);
 
@@ -151,7 +148,7 @@ class FormFactoryBuilder implements FormFactoryBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getFormFactory()
+    public function getFormFactory(): FormFactoryInterface
     {
         $extensions = $this->extensions;
 
@@ -174,13 +171,13 @@ class FormFactoryBuilder implements FormFactoryBuilderInterface
             if (\count($this->typeGuessers) > 1) {
                 $typeGuesser = new FormTypeGuesserChain($this->typeGuessers);
             } else {
-                $typeGuesser = isset($this->typeGuessers[0]) ? $this->typeGuessers[0] : null;
+                $typeGuesser = $this->typeGuessers[0] ?? null;
             }
 
             $extensions[] = new PreloadedExtension($this->types, $this->typeExtensions, $typeGuesser);
         }
 
-        $registry = new FormRegistry($extensions, $this->resolvedTypeFactory ?: new ResolvedFormTypeFactory());
+        $registry = new FormRegistry($extensions, $this->resolvedTypeFactory ?? new ResolvedFormTypeFactory());
 
         return new FormFactory($registry);
     }

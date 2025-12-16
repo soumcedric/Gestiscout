@@ -11,6 +11,7 @@
 
 namespace Symfony\Bundle\FrameworkBundle\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -26,10 +27,9 @@ use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerAggregate;
  *
  * @final
  */
+#[AsCommand(name: 'cache:warmup', description: 'Warm up an empty cache')]
 class CacheWarmupCommand extends Command
 {
-    protected static $defaultName = 'cache:warmup';
-
     private $cacheWarmer;
 
     public function __construct(CacheWarmerAggregate $cacheWarmer)
@@ -48,16 +48,10 @@ class CacheWarmupCommand extends Command
             ->setDefinition([
                 new InputOption('no-optional-warmers', '', InputOption::VALUE_NONE, 'Skip optional cache warmers (faster)'),
             ])
-            ->setDescription('Warms up an empty cache')
             ->setHelp(<<<'EOF'
 The <info>%command.name%</info> command warms up the cache.
 
 Before running this command, the cache must be empty.
-
-This command does not generate the classes cache (as when executing this
-command, too many classes that should be part of the cache are already loaded
-in memory). Use <comment>curl</comment> or any other similar tool to warm up
-the classes cache if you want.
 
 EOF
             )

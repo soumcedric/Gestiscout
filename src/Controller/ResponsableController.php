@@ -89,9 +89,17 @@ class ResponsableController extends AbstractController
 
 
     #[Route('/AddResponsable', name: 'AddResponsable')]
-    public function AddResponsable(GenreRepository $genrerepo, SessionInterface $session, Request $value, ResponsableRepository $repoRespo, FONCTIONRepository $repoFonction, AnneePastoraleRepository $repoAnnee, GroupeRepository  $groupeRepo, FormationRepository $formrepo, ResponsableFormationRepository $rfrepo)
+    public function AddResponsable(GenreRepository $genrerepo,
+                                             SessionInterface $session,
+                                              Request $request, 
+                                              ResponsableRepository $repoRespo, 
+                                              FONCTIONRepository $repoFonction, 
+                                              AnneePastoraleRepository $repoAnnee, 
+                                              GroupeRepository  $groupeRepo, 
+                                              FormationRepository $formrepo, 
+                                              ResponsableFormationRepository $rfrepo)
     {
-        // dump($value);
+         //dump($request);
         try {
             $lastid = $repoRespo->findBy(array(), array('id' => 'DESC'), 1, 0);
             $id = 0;
@@ -100,42 +108,41 @@ class ResponsableController extends AbstractController
             } else {
                 $id =  $lastid[0]->getId() + 1;
             }
-            $fromJson = $value->request->get('value');
+           // $fromJson = $value->request->get('value');
             //get formation
             $responsableformation = new ResponsableFormation();
-            if (!empty($fromJson["formation"])) {
-                $formation = $formrepo->findOneBy(['id' => $fromJson["formation"]]);
+            if (!empty($request->request->get("formation"))) {
+                $formation = $formrepo->findOneBy(['id' => $request->request->get("formation")]);
                 //new responsable formation
 
                 $responsableformation->setFormationId($formation)
                     ->setDatecreation(new \DateTime());
             }
 
-            if (empty($fromJson['groupe'])) {
-                dump("voila moi");
-                $groupeId = $session->get('groupeid');
-                $connectedGroupe = $groupeRepo->findGroupeById($groupeId->getId());
+            if (empty($request->request->get("groupe"))) {
+                var_dump("voila moi 1");
+
+                //$groupeId = $session->get('groupeid');
+                $connectedGroupe = $groupeRepo->findGroupeById($request->request->get("groupe"));
                 $responsable = new Responsable();
                 $ExerciceFonction = new ExercerFonction();
-                $idFonction = $fromJson["fonction"];
-                $genre =  $genrerepo->findOneBy(["id" => $fromJson["genre"]]);
+                $idFonction = $request->request->get("fonction");
+                $genre =  $genrerepo->findOneBy(["id" => $request->request->get("genre")]);
 
-
-
-                $date = new \DateTime($fromJson["dob"]);
-                $responsable->setNom($fromJson["nom"])
-                ->setId($id)
-                    ->setPrenoms($fromJson["prenoms"])
-                    ->setHabitation($fromJson["habitation"])
-                    ->setOccupation($fromJson["occupation"])
-                    ->setTelephone($fromJson["telephone"])
+                $date = new \DateTime($request->request->get("dob"));
+                $responsable->setNom($request->request->get("nom"))
+                    ->setId($id)
+                    ->setPrenoms($request->request->get("prenoms"))
+                    ->setHabitation($request->request->get("habitation"))
+                    ->setOccupation($request->request->get("occupation"))
+                    ->setTelephone($request->request->get("telephone"))
                     ->setDateCreation(new \DateTime())
                     ->setDob($date)
                     ->setGenre($genre)
                     ->setUserCreation("Admin")
                     ->setUserModification("Admin")
                     ->setStatut(1)
-                    ->setEmail($fromJson["email"])
+                    ->setEmail($$request->request->get("email"))
                     // ->addFormation($formation)
                     //  ->addResponsableFormation($responsableformation)
                     ->setGroupe($connectedGroupe[0]);
@@ -155,27 +162,28 @@ class ResponsableController extends AbstractController
 
                 $responsable->addExercerFonction($ExerciceFonction);
 
-                $manager = $this->getDoctrine()->getManager();
-                $manager->persist($responsable);
-                $manager->flush();
+                
+                $this->em->persist($responsable);
+                $this->em->flush();
             } else {
                 dump("voila moi");
                 //get concerned group
-                $chosenGroup = $groupeRepo->findOneBy(["id" => $fromJson['groupe']]);
+                $chosenGroup = $groupeRepo->findOneBy(["id" => $request->request->get("groupe")]);
                
                 $responsable = new Responsable();
                 $ExerciceFonction = new ExercerFonction();
-                $idFonction = $fromJson["fonction"];
-                $genre =  $genrerepo->findOneBy(["id" => $fromJson["genre"]]);
+                $idFonction = $request->request->get("fonction");
+                $genre =  $genrerepo->findOneBy(["id" => $request->request->get("genre")]);
 
-                $date = new \DateTime($fromJson["dob"]);
-                $responsable->setNom($fromJson["nom"])
+                dump($request->request->get("nom"));
+                $date = new \DateTime($request->request->get("dob"));
+                $responsable->setNom($request->request->get("nom"))
                 ->setId($id)
-                    ->setPrenoms($fromJson["prenoms"])
-                    ->setHabitation($fromJson["habitation"])
-                    ->setOccupation($fromJson["occupation"])
-                    ->setTelephone($fromJson["telephone"])
-                    ->setEmail($fromJson["email"])
+                    ->setPrenoms($request->request->get("prenoms"))
+                    ->setHabitation($request->request->get("habitation"))
+                    ->setOccupation($request->request->get("occupation"))
+                    ->setTelephone($request->request->get("telephone"))
+                    ->setEmail($request->request->get("email"))
                     ->setDateCreation(new \DateTime())
                     ->setDob($date)
                     ->setGenre($genre)
@@ -203,13 +211,13 @@ class ResponsableController extends AbstractController
                     ->setUserModification("Admin")
                     ->setUserCreation("Admin");
 
-                $responsable->addExercerFonction($ExerciceFonction);
+               $responsable->addExercerFonction($ExerciceFonction);
 
-                dump($responsable);
-                $manager = $this->getDoctrine()->getManager();
-                $manager->persist($responsable);
-                $manager->flush();
-            }
+              
+                
+                $this->em->persist($responsable);
+                $this->em->flush();
+          }
 
               return  new JsonResponse(["ok"=>true, "message"=>"Opération réussie"]);
         } catch (\Exception $e) {
@@ -230,9 +238,9 @@ class ResponsableController extends AbstractController
         //rechercher le responsable dont l'id est celui en parametre
         $responsable = $repoResponsable->findOneByID($id);
         $responsable->setStatut(0);
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($responsable);
-        $manager->flush();
+        //$manager = $this->getDoctrine()->getManager();
+        $this->em->persist($responsable);
+        $this->em->flush();
 
 
         return new Response("succes", 200);

@@ -60,17 +60,11 @@ class File extends Constraint
 
     protected $maxSize;
 
-    /**
-     * {@inheritdoc}
-     *
-     * @param int|string|null      $maxSize
-     * @param string[]|string|null $mimeTypes
-     */
     public function __construct(
         array $options = null,
-        $maxSize = null,
+        int|string $maxSize = null,
         bool $binaryFormat = null,
-        $mimeTypes = null,
+        array|string $mimeTypes = null,
         string $notFoundMessage = null,
         string $notReadableMessage = null,
         string $maxSizeMessage = null,
@@ -86,15 +80,8 @@ class File extends Constraint
         string $uploadExtensionErrorMessage = null,
         string $uploadErrorMessage = null,
         array $groups = null,
-        $payload = null
+        mixed $payload = null
     ) {
-        if (null !== $maxSize && !\is_int($maxSize) && !\is_string($maxSize)) {
-            throw new \TypeError(sprintf('"%s": Expected argument $maxSize to be either null, an integer or a string, got "%s".', __METHOD__, get_debug_type($maxSize)));
-        }
-        if (null !== $mimeTypes && !\is_array($mimeTypes) && !\is_string($mimeTypes)) {
-            throw new \TypeError(sprintf('"%s": Expected argument $mimeTypes to be either null, an array or a string, got "%s".', __METHOD__, get_debug_type($mimeTypes)));
-        }
-
         parent::__construct($options, $groups, $payload);
 
         $this->maxSize = $maxSize ?? $this->maxSize;
@@ -119,7 +106,7 @@ class File extends Constraint
         }
     }
 
-    public function __set(string $option, $value)
+    public function __set(string $option, mixed $value)
     {
         if ('maxSize' === $option) {
             $this->normalizeBinaryFormat($value);
@@ -130,7 +117,7 @@ class File extends Constraint
         parent::__set($option, $value);
     }
 
-    public function __get(string $option)
+    public function __get(string $option): mixed
     {
         if ('maxSize' === $option) {
             return $this->maxSize;
@@ -139,7 +126,7 @@ class File extends Constraint
         return parent::__get($option);
     }
 
-    public function __isset(string $option)
+    public function __isset(string $option): bool
     {
         if ('maxSize' === $option) {
             return true;
@@ -148,10 +135,7 @@ class File extends Constraint
         return parent::__isset($option);
     }
 
-    /**
-     * @param int|string $maxSize
-     */
-    private function normalizeBinaryFormat($maxSize)
+    private function normalizeBinaryFormat(int|string $maxSize)
     {
         $factors = [
             'k' => 1000,
@@ -163,12 +147,12 @@ class File extends Constraint
         ];
         if (ctype_digit((string) $maxSize)) {
             $this->maxSize = (int) $maxSize;
-            $this->binaryFormat = null === $this->binaryFormat ? false : $this->binaryFormat;
+            $this->binaryFormat = $this->binaryFormat ?? false;
         } elseif (preg_match('/^(\d++)('.implode('|', array_keys($factors)).')$/i', $maxSize, $matches)) {
             $this->maxSize = $matches[1] * $factors[$unit = strtolower($matches[2])];
-            $this->binaryFormat = null === $this->binaryFormat ? 2 === \strlen($unit) : $this->binaryFormat;
+            $this->binaryFormat = $this->binaryFormat ?? (2 === \strlen($unit));
         } else {
-            throw new ConstraintDefinitionException(sprintf('"%s" is not a valid maximum size.', $this->maxSize));
+            throw new ConstraintDefinitionException(sprintf('"%s" is not a valid maximum size.', $maxSize));
         }
     }
 }

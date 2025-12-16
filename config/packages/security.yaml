@@ -1,97 +1,75 @@
 security:
-    encoders:
-        # Symfony\Component\Security\Core\User\User: 'plaintext'
+    password_hashers:
         App\Entity\User:
             algorithm: 'bcrypt'
+        Symfony\Component\Security\Core\User\InMemoryUser:
+            algorithm: 'plaintext'
 
-
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        # used to reload user from session & other features (e.g. switch_user)
         chain_provider:
             chain:
-                providers: [user_db]
-                # providers: [user_db]
+                providers: [user_db, in_memory]
         user_db:
-            entity: {class: App\Entity\User, property: username}
+            entity: 
+                class: App\Entity\User
+                property: username
         in_memory:
             memory:
                 users: 
-                    superadmin: { password: 'superadmin', roles: [ROLE_DISTRICT_CONFIG]}
-          
-                
-        # used to reload user from session & other features (e.g. switch_user)
+                    superadmin: 
+                        password: 'superadmin'
+                        roles: [ROLE_DISTRICT_CONFIG]
+    
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
-            anonymous: ~
-            # lazy: true
+            
+        main:            
+            lazy: true
             provider: chain_provider
-
             form_login:
-                 login_path: '/login'
-                 check_path: '/login'
-                #  default_target_path: '/Dashboard'
-                #  always_use_default_target_path: false
+                login_path: app_login
+                check_path: app_login
 
+            # form_login:
+            #     login_path: '/login'
+            #     check_path: '/login'
 
-            guard:
-                authenticators:
-                      - App\Security\LoginCustomAuthenticator
-                # entry_point: App\Security\LoginFormAuthenticator
-                # entry_point: App\Security\AppCustomAuthAuthenticator
+            custom_authenticators:
+                - App\Security\LoginCustomAuthenticator
+
+            entry_point: App\Security\LoginCustomAuthenticator
+                
             logout:
                 path: app_logout
-                # where to redirect after logout
-                # target: app_any_route
-
-
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#firewalls-authentication
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-         - { path: /responsable, roles: [ROLE_USER,ROLE_ADMIN,ROLE_CD,ROLE_CG,ROLE_DISTRICT_CONFIG] }
-         - { path: /Dashboard, roles: [ROLE_CONSULT,ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_USER,ROLE_CD,ROLE_CG,"ROLE_FORMATION"] }
-         - { path: /ListeAnnePastorale, roles: [ROLE_USER,ROLE_SUPERADMIN,ROLE_CD,ROLE_CG,ROLE_CONFIG,IS_AUTHENTICATED_ANONYMOUSLY] }
-         - { path: /Groupe , roles: [ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG,ROLE_CONFIG,IS_AUTHENTICATED_ANONYMOUSLY]}
-         - { path: /ListeJeunes, roles: [ROLE_CONSULT,ROLE_ADMIN,ROLE_CONSULTANT,ROLE_CD,ROLE_CG] }
-         - { path: /ListeJeunesDistrict, roles: [ROLE_DISTRICT_USER,ROLE_CD,ROLE_CG?"ROLE_FORMATION"] }
-         - { path: ListeResponsableDistrict, roles: [ROLE_DISTRICT_USER,ROLE_CD,ROLE_CG?"ROLE_FORMATION",ROLE_DISTRICT_CONFIG]}
-         - { path: ListeResponsableDistrict, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG]}
-         - { path: /DistrictDash, roles: [ROLE_DISTRICT_CONFIG,ROLE_DISTRICT_USER,ROLE_CD,ROLE_CG,ROLE_FORMATION]}
-         - { path: /ListeAnnePastorale, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG,ROLE_CONFIG,IS_AUTHENTICATED_ANONYMOUSLY]}
-         - { path: /GetListeAnnee, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG,ROLE_CONFIG,IS_AUTHENTICATED_ANONYMOUSLY]}
-         - { path: /ListeFonction, roles: [ROLE_CD,ROLE_CG,ROLE_CONFIG,IS_AUTHENTICATED_ANONYMOUSLY]}
-         - { path: /ListeBranche, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG,ROLE_CONFIG,IS_AUTHENTICATED_ANONYMOUSLY]}
-         - { path: /AddResponsableDistrict, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG,ROLE_DISTRICT_CONFIG,ROLE_DISTRICT_USER]}
-         - { path: /DeleteJeune, roles: [ROLE_DISTRICT_CONFIG,ROLE_USER,ROLE_ADMIN,ROLE_CD,ROLE_CG]}
-        #  - { path: /DistrictDash, roles: [ROLE_CD,"ROLE_FORMATION"]}
-         - { path: /chefparformation, roles: [ROLE_CD,ROLE_FORMATION]}
-         - { path: /ListeChefByChef, roles: [ROLE_CD,ROLE_FORMATION]}
-         - { path: /DashAdmin, roles: [ROLE_CONFIG,ROLE_CD,IS_AUTHENTICATED_ANONYMOUSLY]}
-         - { path: /GetDistrictUnique, roles: [ROLE_CONFIG]}
-         - { path: /SoumettreActivite, roles: [ROLE_CG]}
-         - { path: /SaveSession, roles: [ROLE_CD,ROLE_FORMATION]}
-         - { path: /Sessions, roles: [ROLE_CD,ROLE_FORMATION,ROLE_CD_FINANCE]}
-         - { path: /ConfigurerResponsable, roles: [IS_AUTHENTICATED_ANONYMOUSLY]}
-         - { path: /AddFormation, roles: [IS_AUTHENTICATED_ANONYMOUSLY]}
-         
-         
-         
-         - { path: /Sessions, roles: [ROLE_CD,ROLE_FORMATION]}
-         - { path: /Caisse, roles: [ROLE_CD,ROLE_CD_FINANCE,ROLE_CG_FINANCE]}
-         - { path: /VwOperations, roles: [ROLE_CD,ROLE_CD_FINANCE,ROLE_CG_FINANCE]}
-         - { path: /Periode, roles: [ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_CONFIG]}
-         - { path: /SousRubrique, roles: [ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_CONFIG]}
-
-
-
-
-
+        - { path: /responsable, roles: [ROLE_USER,ROLE_ADMIN,ROLE_CD,ROLE_CG,ROLE_DISTRICT_CONFIG] }
+        - { path: /Dashboard, roles: [ROLE_CONSULT,ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_USER,ROLE_CD,ROLE_CG,ROLE_FORMATION] }
+        - { path: /ListeAnnePastorale, roles: [ROLE_CD,ROLE_CG,ROLE_CONFIG,PUBLIC_ACCESS,ROLE_DISTRICT_CONFIG]}
+        - { path: /Groupe, roles: [ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG,ROLE_CONFIG,PUBLIC_ACCESS]}
+        - { path: /ListeJeunes, roles: [ROLE_CONSULT,ROLE_ADMIN,ROLE_CONSULTANT,ROLE_CD,ROLE_CG] }
+        - { path: /ListeJeunesDistrict, roles: [ROLE_DISTRICT_USER,ROLE_CD,ROLE_CG,ROLE_FORMATION] }
+        - { path: /ListeResponsableDistrict, roles: [ROLE_DISTRICT_USER,ROLE_CD,ROLE_CG,ROLE_FORMATION,ROLE_DISTRICT_CONFIG]}
+        - { path: /DistrictDash, roles: [ROLE_DISTRICT_CONFIG,ROLE_DISTRICT_USER,ROLE_CD,ROLE_CG,ROLE_FORMATION]}
+        - { path: /GetListeAnnee, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG,ROLE_CONFIG,PUBLIC_ACCESS,ROLE_SUPERADMIN,ROLE_DISTRICT_CONFIG]}
+        - { path: /ListeFonction, roles: [ROLE_CD,ROLE_CG,ROLE_CONFIG,PUBLIC_ACCESS,ROLE_DISTRICT_CONFIG]}
+        - { path: /ListeBranche, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG,ROLE_CONFIG,PUBLIC_ACCESS]}
+        - { path: /AddResponsableDistrict, roles: [ROLE_DISTRICT_CONFIG,ROLE_CD,ROLE_CG,ROLE_DISTRICT_USER]}
+        - { path: /DeleteJeune, roles: [ROLE_DISTRICT_CONFIG,ROLE_USER,ROLE_ADMIN,ROLE_CD,ROLE_CG]}
+        - { path: /chefparformation, roles: [ROLE_CD,ROLE_FORMATION]}
+        - { path: /ListeChefByChef, roles: [ROLE_CD,ROLE_FORMATION]}
+        - { path: /DashAdmin, roles: [ROLE_CONFIG,ROLE_CD,PUBLIC_ACCESS]}
+        - { path: /GetDistrictUnique, roles: [ROLE_CONFIG]}
+        - { path: /SoumettreActivite, roles: [ROLE_CG]}
+        - { path: /SaveSession, roles: [ROLE_CD,ROLE_FORMATION]}
+        - { path: /Sessions, roles: [ROLE_CD,ROLE_FORMATION,ROLE_CD_FINANCE]}
+        - { path: /ConfigurerResponsable, roles: [PUBLIC_ACCESS]}
+        - { path: /AddFormation, roles: [PUBLIC_ACCESS]}
+        - { path: /Caisse, roles: [ROLE_CD,ROLE_CD_FINANCE,ROLE_CG_FINANCE]}
+        - { path: /VwOperations, roles: [ROLE_CD,ROLE_CD_FINANCE,ROLE_CG_FINANCE]}
+        - { path: /Periode, roles: [ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_CONFIG]}
+        - { path: /SousRubrique, roles: [ROLE_SUPERADMIN,ROLE_ADMIN,ROLE_CONFIG]}

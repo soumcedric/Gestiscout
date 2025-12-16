@@ -328,49 +328,26 @@ class QueryClass
     }
     public function GetNbreJeuneParGroupe($year, $groupe)
     {
-        // $sql = "SELECT count(j.id) FROM App\Entity\JEUNE j";
-        // $sql = $sql. ", App\Entity\INSCRIPTION i ";
-        // $sql= $sql ."where i.Jeunes = j.id ";
-        // $sql = $sql. "and j.Groupe = :gr ";
-        // $sql = $sql. "and i.Annee = :annee";
-        // $sql = $sql. " and j.Statut = 1";
-        // $query=$this->em->createQuery($sql);
-        // $query->setParameter('gr',$groupe);
-        // //$query->setParameter('annee',$year);
-        // $query->setParameter('annee', $this->activeYear);
-        // $res = $query->getSingleScalarResult();
-        // return $res;
-
-
+      
         $query = "select count(*) from jeune j left join inscription i
                   on j.id = i.jeunes_id
-                  where i.annee_id = " . $this->activeYear->getId() . "
-                  and j.groupe_id = " . $groupe . "";
-        $stmt = $this->em->getConnection()->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchOne();
+                  where i.annee_id = :anneeId
+                  and j.groupe_id = :groupeid";
+      $connection = $this->em->getConnection();
+    
+    // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+    $result = $connection->executeQuery(
+        $query,
+        [
+            'anneeId' => $this->activeYear->getId(),
+            'groupeid' => $groupe
+        ]
+    ); 
+
+    return $result->fetchOne();
     }
 
-    // public  function GetNbreResponsableCotiseParGroupe($year,$groupe) : int
-    // {
-    //    $sql = "SELECT COUNT(r.id) FROM ";
-    //    $sql = $sql."App\Entity\Responsable r,";
-    //    $sql = $sql."App\Entity\ExercerFonction ex ";
-    //    $sql = $sql."WHERE r.id = ex.Responsable ";
-    //    $sql = $sql."AND r.Statut = 1 ";
-    //    $sql = $sql."AND r.groupe = :groupe ";
-    //     $sql = $sql."AND ex.AnneePastorale = :year ";
-    //    $sql = $sql." and r.id in (SELECT IDENTITY(co.Responsable) FROM App\Entity\Cotisation co) ";
-
-    //    $query = $this->em->createQuery($sql);
-    //    $query->setParameter('year',$this->activeYear);
-    //    $query->setParameter('groupe', $groupe);
-    //    $res = $query->getSingleScalarResult();
-    //    return $res;
-    // }
-
-
-    public  function GetNbreJeuneCotiseParGroupe($year, $groupe): int
+     public  function GetNbreJeuneCotiseParGroupe($year, $groupe): int
     {
         $sql = "SELECT count(j.id) FROM App\Entity\JEUNE j, App\Entity\INSCRIPTION i, App\Entity\Cotisation c where j.id = i.Jeunes and j.id = c.Jeune and i.Annee = :year and j.Groupe = :gr and j.Statut='1' ";
         $query = $this->em->createQuery($sql);
@@ -570,11 +547,25 @@ class QueryClass
 
     public function GetAllProgrammesByActivite($activiteid)
     {
-        $query = "select id,libelle libelledetails, date datedetails, description, statut, deroulement,responsable_activite  from details where activite_id = '" . $activiteid . "'";
+        $query = "select 
+                  id,
+                  libelle libelledetails, 
+                  date datedetails, 
+                  description, 
+                  statut, 
+                  deroulement,
+                  responsable_activite 
+                   from details where activite_id = :activiteid;";
 
-        $stmt = $this->em->getConnection()->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAllAssociative();
+         // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+           $connection = $this->em->getConnection();
+    $result = $connection->executeQuery(
+        $query,
+        [            
+            'activiteid' => $activiteid
+        ]
+    ); 
+        return $result->fetchAllAssociative();
     }
 
 
@@ -591,13 +582,7 @@ class QueryClass
 
     public function GetJeunesActifByGroupe($groupe)
     {
-        // $conn = $this->em->getConnection();
-        // $sql = "call SP_GET_JEUNES_ACTIF_BY_GROUPE('".$groupe."','".$this->activeYear->getId()."');";
-        // $stmt = $conn->prepare($sql);
-        // $stmt->execute();
-        // return $stmt->fetchAllAssociative();
-
-
+        
         $sql = "select jeunes.id, jeunes.nom, jeunes.prenoms, jeunes.dob, jeunes.occupation, jeunes.lieu_habitation, branche.libelle branche, groupe.nom groupe, jeunes.telephone
         from jeune jeunes, inscription inscriptions, branche branche, groupe groupe
         where jeunes.id = inscriptions.jeunes_id
@@ -666,22 +651,25 @@ class QueryClass
 
     public function GetNbreJeuneByGroupeByBrancheByAnnee($groupe, $branche)
     {
-        // $conn = $this->em->getConnection();
-        // $sql = "call SP_GET_NBRE_JEUNE_BY_GROUPE_BRANCHE('".$groupe."','".$this->activeYear->getId()."','".$branche."');";
-        // $stmt = $conn->prepare($sql);
-        // $stmt->execute();
-        // return $stmt->fetchOne();
-
-        $sql = "SELECT count(jeunes_id)
+     
+        $query = "SELECT count(jeunes_id)
         FROM jeune jeunes, inscription inscriptions
         where jeunes.id = inscriptions.jeunes_id
-        and inscriptions.annee_id=" . $this->activeYear->getId() . "
+        and inscriptions.annee_id= :anneeId
         and jeunes.statut = '1'
-        and jeunes.groupe_id=" . $groupe . "
-        and jeunes.branche_id= " . $branche . ";";
-        $stmt = $this->em->getConnection()->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchOne();
+        and jeunes.groupe_id= :groupeid
+        and jeunes.branche_id= :brancheid;";
+       // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+           $connection = $this->em->getConnection();
+    $result = $connection->executeQuery(
+        $query,
+        [
+            'anneeId' => $this->activeYear->getId(),
+            'groupeid' => $groupe,
+            'brancheid' => $branche
+        ]
+    ); 
+      return $result->fetchOne();
     }
 
 
@@ -710,16 +698,24 @@ class QueryClass
     //TOTAL JEUNE BY GENRE BY GROUPE
     public function GetNbreJeuneByGenreByGroupe($groupe, $genre)
     {
-        // $conn = $this->em->getConnection();
-        // $sql = "call SP_GET_NBRE_JEUNE_BY_GROUPE_BY_GENRE_BY_ANNEE('".$genre."','".$this->activeYear->getId()."','".$groupe."');";
-        // $stmt = $conn->prepare($sql);
-        // $stmt->execute();
-        // return $stmt->fetchOne();
-
-        $sql = "SELECT count(j.id) FROM jeune j, inscription i  where j.id = i.jeunes_id  and j.statut='1' and j.groupe_id=" . $groupe . " and i.annee_id=" . $this->activeYear->getId() . " and j.genre_id=" . $genre . "";
-        $stmt = $this->em->getConnection()->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchOne();
+      
+        $query = "SELECT count(j.id) 
+                FROM jeune j, inscription i  
+                where j.id = i.jeunes_id  
+                and j.statut='1' 
+                and j.groupe_id= :groupeid
+                and i.annee_id= :anneeId
+                and j.genre_id= :genre";
+         // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+           $connection = $this->em->getConnection();
+    $result = $connection->executeQuery(
+        $query,
+        [
+            'anneeId' => $this->activeYear->getId(),
+            'groupeid' => $groupe,
+            'genre' => $genre
+        ]
+    ); 
     }
 
     public function GetListeJeuneCotiseParGroupe($groupe)
@@ -762,36 +758,46 @@ class QueryClass
 
     public function GetNbreResponsableCotiseParGroupe($groupe)
     {
-        // $conn = $this->em->getConnection();
-        // $sql = "call SP_GET_NBRE_RESPO_COTISE_PAR_GROUPE('".$this->activeYear->getId()."','".$groupe."');";
-        // $stmt = $conn->prepare($sql);
-        // $stmt->execute();
-        // return $stmt->fetchOne();
-
+        
         $query = "select count(r.id)
         from responsable r, exercer_fonction ex, cotisation
         where r.id = ex.responsable_id
         and ex.responsable_id = cotisation.responsable_id
-        and ex.annee_pastorale_id=" . $this->activeYear->getId() . "
-        and r.groupe_id = " . $groupe . "";
-        $stmt = $this->em->getConnection()->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchOne();
+        and ex.annee_pastorale_id= :anneeId
+        and r.groupe_id = :groupeid";
+        // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+           $connection = $this->em->getConnection();
+    $result = $connection->executeQuery(
+        $query,
+        [
+            'anneeId' => $this->activeYear->getId(),
+            'groupeid' => $groupe,
+            
+        ]
+    ); 
+      return $result->fetchOne();
     }
 
 
     public function GetNbreJeunesCotiseParGroupe($groupe)
     {
-        // $conn = $this->em->getConnection();
-        // $sql = "call SP_GET_NBRE_JEUNES_COTISE_PAR_GROUPE('".$this->activeYear->getId()."','".$groupe."');";
-        // $stmt = $conn->prepare($sql);
-        // $stmt->execute();
-        // return $stmt->fetchOne();
-
-        $query = "select count(jeune.id) from cotisation , jeune  where cotisation.jeune_id = jeune.id and cotisation.annee_pastorale_id=" . $this->activeYear->getId() . " and jeune.groupe_id = " . $groupe . ";";
-        $stmt = $this->em->getConnection()->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchOne();
+       
+        $query = "select count(jeune.id) 
+                from cotisation , jeune  
+                where cotisation.jeune_id = jeune.id 
+                and cotisation.annee_pastorale_id=:anneeId
+                and jeune.groupe_id = :groupeid;";
+         // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+           $connection = $this->em->getConnection();
+    $result = $connection->executeQuery(
+        $query,
+        [
+            'anneeId' => $this->activeYear->getId(),
+            'groupeid' => $groupe,
+            
+        ]
+    ); 
+      return $result->fetchOne();
     }
 
 
@@ -887,7 +893,9 @@ class QueryClass
 
     public function ListActiviteByGroupe($groupe, $bsoumis)
     {
-        if ($bsoumis == false) {
+        
+        if ($bsoumis == false) 
+        {
             $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis,
              commentaire,
              case 
@@ -898,8 +906,8 @@ class QueryClass
              from activites ac, annee_pastorale an, groupe gr
         where ac.groupe_id = gr.id
         and ac.anneepastorale_id = an.id
-        and gr.id = '" . $groupe . "'
-        and an.id = '" . $this->activeYear->getId() . "'";
+        and gr.id = :groupeid
+        and an.id = :anneeId";
         } else {
             $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis, commentaire,
             case 
@@ -910,19 +918,21 @@ class QueryClass
             from activites ac, annee_pastorale an, groupe gr
         where ac.groupe_id = gr.id
         and ac.anneepastorale_id = an.id
-        and gr.id = '" . $groupe . "'
+        and gr.id = :groupeid'
         and ac.b_soumis != 0
-        and an.id = '" . $this->activeYear->getId() . "'";
+        and an.id = :anneeId";
         }
-        // $query = "select ac.id, ac.nom nomactivite,gr.nom nomgroupe,ac.date_debut,ac.date_fin,ac.prix,ac.nbre_participant,ac.statut, b_soumis, commentaire
-        // from activites ac, annee_pastorale an, groupe gr
-        // where ac.groupe_id = gr.id
-        // and ac.anneepastorale_id = an.id
-        // and gr.id = '".$groupe."'
-        // and an.id = '".$this->activeYear->getId()."'";
-        $stmt = $this->em->getConnection()->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAllAssociative();
+            $connection = $this->em->getConnection();    
+            // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+            $result = $connection->executeQuery(
+                $query,
+                [
+                    'anneeId' => $this->activeYear->getId(),
+                    'groupeid' => $groupe
+                ]
+            ); 
+
+             return $result->fetchAllAssociative();
     }
 
     /*REQUETES ACTIVITES*/
@@ -1061,15 +1071,25 @@ class QueryClass
     /*GET RESPONSABLE ROLE*/
     public function GetRespoRole($respoId)
     {
-        $query = "select f.role
-            from responsable r, exercer_fonction exf, fonction f
-            where r.id = exf.responsable_id
-            and exf.fonction_id = f.Id
-            and exf.annee_pastorale_id ='" . $this->activeYear->getId() . "' 
-            and r.id = '" . $respoId . "' ";
-        $stmt = $this->em->getConnection()->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchOne();
+      $query = "select f.role
+              from responsable r, exercer_fonction exf, fonction f
+              where r.id = exf.responsable_id
+              and exf.fonction_id = f.Id
+              and exf.annee_pastorale_id = :anneeId 
+              and r.id = :respoId";
+              
+    $connection = $this->em->getConnection();
+    
+    // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+    $result = $connection->executeQuery(
+        $query,
+        [
+            'anneeId' => $this->activeYear->getId(),
+            'respoId' => $respoId
+        ]
+    ); 
+
+    return $result->fetchOne();
     }
 
     /*GET MOUVEMENT*/
@@ -1141,8 +1161,8 @@ class QueryClass
     public function GetGroupeByDistrict($districtId)
     {
         $query = "select id, nom, nick_name,commissariat_district_id from groupe where commissariat_district_id = " . $districtId . "";
-        $stmt = $this->em->getConnection()->prepare($query);
-        $stmt->execute();
+        $stmt = $this->em->getConnection()->executeQuery($query);
+        //$stmt->execute();
         return $stmt->fetchAllAssociative();
     }
     /**/
@@ -1176,9 +1196,9 @@ class QueryClass
             FROM responsable r, exercer_fonction ef, fonction f
             where r.id = ef.responsable_id 
             and ef.fonction_id = f.id";
-        $stmt = $this->em->getConnection()->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAllAssociative();
+        $stmt = $this->em->getConnection();
+        $result = $stmt->executeQuery($query);
+        return $result->fetchAllAssociative();
     }
 
     public function GetFunctionDistrict($id)

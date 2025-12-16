@@ -20,7 +20,6 @@ use Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\DataCollectorTra
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\LoggingTranslatorPass;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\ProfilerPass;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\RemoveUnusedSessionMarshallingHandlerPass;
-use Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\SessionPass;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\TestServiceContainerRealRefPass;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\TestServiceContainerWeakRefPass;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler\UnusedTagsPass;
@@ -122,6 +121,7 @@ class FrameworkBundle extends Bundle
         $container->addCompilerPass(new RegisterControllerArgumentLocatorsPass());
         $container->addCompilerPass(new RemoveEmptyControllerArgumentLocatorsPass(), PassConfig::TYPE_BEFORE_REMOVING);
         $container->addCompilerPass(new RoutingResolverPass());
+        $container->addCompilerPass(new DataCollectorTranslatorPass());
         $container->addCompilerPass(new ProfilerPass());
         // must be registered before removing private services as some might be listeners/subscribers
         // but as late as possible to get resolved parameters
@@ -141,14 +141,13 @@ class FrameworkBundle extends Bundle
         $container->addCompilerPass(new FragmentRendererPass());
         $this->addCompilerPassIfExists($container, SerializerPass::class);
         $this->addCompilerPassIfExists($container, PropertyInfoPass::class);
-        $container->addCompilerPass(new DataCollectorTranslatorPass());
         $container->addCompilerPass(new ControllerArgumentValueResolverPass());
         $container->addCompilerPass(new CachePoolPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 32);
         $container->addCompilerPass(new CachePoolClearerPass(), PassConfig::TYPE_AFTER_REMOVING);
         $container->addCompilerPass(new CachePoolPrunerPass(), PassConfig::TYPE_AFTER_REMOVING);
         $this->addCompilerPassIfExists($container, FormPass::class);
         $container->addCompilerPass(new WorkflowGuardListenerPass());
-        $container->addCompilerPass(new ResettableServicePass());
+        $container->addCompilerPass(new ResettableServicePass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, -32);
         $container->addCompilerPass(new RegisterLocaleAwareServicesPass());
         $container->addCompilerPass(new TestServiceContainerWeakRefPass(), PassConfig::TYPE_BEFORE_REMOVING, -32);
         $container->addCompilerPass(new TestServiceContainerRealRefPass(), PassConfig::TYPE_AFTER_REMOVING);
@@ -159,7 +158,6 @@ class FrameworkBundle extends Bundle
         $container->addCompilerPass(new RegisterReverseContainerPass(true));
         $container->addCompilerPass(new RegisterReverseContainerPass(false), PassConfig::TYPE_AFTER_REMOVING);
         $container->addCompilerPass(new RemoveUnusedSessionMarshallingHandlerPass());
-        $container->addCompilerPass(new SessionPass());
 
         if ($container->getParameter('kernel.debug')) {
             $container->addCompilerPass(new AddDebugLogProcessorPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 2);

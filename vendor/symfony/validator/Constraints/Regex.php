@@ -35,19 +35,14 @@ class Regex extends Constraint
     public $match = true;
     public $normalizer;
 
-    /**
-     * {@inheritdoc}
-     *
-     * @param string|array $pattern The pattern to evaluate or an array of options.
-     */
     public function __construct(
-        $pattern,
+        string|array|null $pattern,
         string $message = null,
         string $htmlPattern = null,
         bool $match = null,
         callable $normalizer = null,
         array $groups = null,
-        $payload = null,
+        mixed $payload = null,
         array $options = []
     ) {
         if (\is_array($pattern)) {
@@ -71,7 +66,7 @@ class Regex extends Constraint
     /**
      * {@inheritdoc}
      */
-    public function getDefaultOption()
+    public function getDefaultOption(): ?string
     {
         return 'pattern';
     }
@@ -79,7 +74,7 @@ class Regex extends Constraint
     /**
      * {@inheritdoc}
      */
-    public function getRequiredOptions()
+    public function getRequiredOptions(): array
     {
         return ['pattern'];
     }
@@ -89,14 +84,9 @@ class Regex extends Constraint
      * Example: /^[a-z]+$/ would be converted to [a-z]+
      * However, if options are specified, it cannot be converted.
      *
-     * Pattern is also ignored if match=false since the pattern should
-     * then be reversed before application.
-     *
      * @see http://dev.w3.org/html5/spec/single-page.html#the-pattern-attribute
-     *
-     * @return string|null
      */
-    public function getHtmlPattern()
+    public function getHtmlPattern(): ?string
     {
         // If htmlPattern is specified, use it
         if (null !== $this->htmlPattern) {
@@ -123,7 +113,7 @@ class Regex extends Constraint
 
         // If the pattern contains an or statement, wrap the pattern in
         // .*(pattern).* and quit. Otherwise we'd need to parse the pattern
-        if (false !== strpos($pattern, '|')) {
+        if (str_contains($pattern, '|')) {
             return '.*('.$pattern.').*';
         }
 

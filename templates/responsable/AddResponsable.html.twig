@@ -160,7 +160,7 @@
 
     <script>
         $(document).ready(function(){
-debugger
+
             let currentdate = CurrentDate();
             document.getElementById("dob").setAttribute("max", currentdate);
             reset();
@@ -204,7 +204,7 @@ debugger
             }
             $("#save").click(function(){
                 //alert("hello");
-debugger
+                debugger
                 var  responsable={
                     nom : $("#Nom").val(),
                     prenoms : $("#prenoms").val(),
@@ -213,7 +213,7 @@ debugger
                     habitation : $("#habitation").val(),
                     telephone : $("#telephone").val(),
                     fonction : $("#fonction").val(),
-                    groupe: "",
+                    groupe: $("groupe").val(),
                     genre: $("#genre").val(),
                     formation: $("#formation").val(),
                     email: $("#email").val()
@@ -229,12 +229,12 @@ debugger
                     }
                 else{
                       loading();
-                      $.ajax({
+                $.ajax({
                     type:"POST",
                     async: true,
                     dataType: 'json',
                     url:"{{ path('AddResponsable') }}",
-                    data: {value : responsable},
+                    data: responsable,
                     success:function(res){
                         debugger;
                         if (res==1){
@@ -317,11 +317,7 @@ debugger
                 });
             }
 
-
-
-
-
- function loadFormation(){
+            function loadFormation(){
                 $.ajax({
                     type:"GET",
                     url:"{{ path("GetListeFormation") }}",
@@ -348,9 +344,6 @@ debugger
 
                 });
             }
-
-
-
 
             function loadGroupe(){
                 $.ajax({

@@ -230,11 +230,7 @@
             ajax:{
                 "url": "/ListeRespoDistrictConfig",
                 "type":"POST",
-                // success:function(res)
-                // {
-                //     debugger
-                // }
-              
+                    
                 
             },
             columns: [
@@ -379,7 +375,7 @@
                     async: true,
                     dataType: 'json',
                     url:"{{ path('AddResponsable') }}",
-                    data: {value : responsable},
+                    data: responsable,
                     success:function(res){
                         debugger;
                         if (res.ok){
@@ -673,7 +669,7 @@ $("#saveuser").click(function(){
             $.ajax({
                 type:"POST",
                 url:url,
-                data: { 'value' : user},
+                data:  user,
                 success:function(res)
                 {
                      $("#modalcompte").modal("hide");

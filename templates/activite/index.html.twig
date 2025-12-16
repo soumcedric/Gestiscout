@@ -290,7 +290,7 @@
           $.ajax({
               type:"POST",
               url:"{{ path('CreateActivite') }}",
-              data:{value: acitivy},
+              data:acitivy,
               success:function(res){
                   debugger
                   if(res.ok == true)

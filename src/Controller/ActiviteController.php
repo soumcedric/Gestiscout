@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Classes\ClsMail;
 use App\Classes\QueryClass;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,46 +9,41 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\entity\ACTIVITES;
-use App\Entity\AnneePastorale;
-use App\Entity\Branche;
-use App\Entity\Groupe;
+
 use App\Repository\ACTIVITESRepository;
 use DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\BrancheRepository;
 use App\Repository\GroupeRepository;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Filesystem\Filesystem;
+
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Entity\DETAILS;
 use App\Entity\Documents;
 use App\Repository\AnneePastoraleRepository;
-use App\Repository\AnnePastoraleRepository;
+
 use App\Repository\DETAILSRepository;
 use App\Repository\DocumentsRepository;
 use App\Repository\TypeDocumentRepository;
-use Doctrine\DBAL\Schema\View;
-use PhpParser\Node\Expr\Cast\Bool_;
+
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Validator\Constraints\Json;
+
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mailer\Messenger\SendEmailMessage;
+
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Mailer\Transport\SendmailTransport;
-use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
+
 
 class ActiviteController extends AbstractController
 {
     private $em;
     private $activiteRepo;
     private $annePastorale;
-    // private $rpBranche;
+     private $rpBranche;
     public function __construct(EntityManagerInterface $em, BrancheRepository $rpbranche, ACTIVITESRepository $activite, AnneePastoraleRepository $annee)
     {
         $this->em = $em;
         $this->activiteRepo = $activite;
         $this->annePastorale = $annee;
-        //$rpBranche = $rpbranche;
+        $this->rpBranche = $rpbranche;
     }
 
 
@@ -90,21 +84,21 @@ class ActiviteController extends AbstractController
             $ActiveYear = $this->annePastorale->findActiveYear();
             $activity = new ACTIVITES();
 
-            $activity->setNom($data["Nom"])
-                ->setLocalisation($data["Localisation"])
-                ->setPrix($data["Prix"])
-                ->setDateDebut(new \DateTime($data["DateDebut"]))
-                ->setDateFin(new \DateTime($data["DateFin"]))
-                ->setHeureDebut(new \DateTime($data["HeureDebut"]))
-                ->setHeureFin((new DateTime($data["HeureFin"])))
+            $activity->setNom($value->request->get('Nom'))
+                ->setLocalisation($value->request->get('Localisation'))
+                ->setPrix($value->request->get('Prix'))
+                ->setDateDebut(new \DateTime($value->request->get('DateDebut')))
+                ->setDateFin(new \DateTime($value->request->get('DateFin')))
+                ->setHeureDebut(new \DateTime($value->request->get('HeureDebut')))
+                ->setHeureFin((new DateTime($value->request->get('HeureFin'))))
                 ->setStatut(0)
                 ->setBactif(true)
                 ->setDateCreation(new \DateTime())
-                ->setCible($data["Cible"])
+                ->setCible($value->request->get('Cible'))
                 //->setBSoumis(false)
                 // ->setBOneDay($oneDayActivity)
                 //->setAutorisation($data["Autorisation"])
-                ->setNbreParticipant($data["NbreParticipant"])
+                ->setNbreParticipant($value->request->get('NbreParticipant'))
                 ->setBSoumis(false)
                 ->setGroupe($selectedGroupe = $rpGroupe->findOneBy(["id" => $groupeId]));
             //->setBranche($data["Branche"]);
@@ -122,20 +116,19 @@ class ActiviteController extends AbstractController
 
             $activity->setBOneDay($oneDayActivity);
 
-            if (!empty($data["Branche"])) {
-                $selectedBranche = $rpBranche->findOneBy(["id" => $data["Branche"]]);
+            if (!empty($value->request->get('Branche'))) {
+                $selectedBranche = $rpBranche->findOneBy(["id" => $value->request->get('Branche')]);
                 $activity->setBranche($selectedBranche);
             }
 
             $activity->setAnneepastorale($ActiveYear[0]);
 
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($activity);
-            $manager->flush();
+            
+            $this->em->persist($activity);
+            $this->em->flush();
 
             return new JsonResponse(['ok' => true, 'message' => 'opération effectuée avec succès']);
-            //return  var_dump($activity);
-            // return new Response('true',200);
+    
         } catch (\Exception $e) {
             return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
         }
@@ -383,10 +376,10 @@ class ActiviteController extends AbstractController
         $anneeActive = $this->annePastorale->findActiveYear();
         $qClass = new QueryClass($this->em);
         $listactivites = $qClass->ListActiviteByGroupe($groupe->getId(),false);
-        //dump($listactivites);
+        dump($listactivites);
         // $result = $serializer->serialize($listactivites,'json');
         return new JsonResponse(['ok' => true, 'data' => $listactivites]);
-        //return new Response();
+        
     }
 
 

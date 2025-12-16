@@ -36,13 +36,15 @@ use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterfa
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+trigger_deprecation('symfony/security-http', '5.3', 'The "%s" class is deprecated, use the new authenticator system instead.', UsernamePasswordJsonAuthenticationListener::class);
+
 /**
  * UsernamePasswordJsonAuthenticationListener is a stateless implementation of
  * an authentication via a JSON document composed of a username and a password.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  *
- * @final
+ * @deprecated since Symfony 5.3, use the new authenticator system instead
  */
 class UsernamePasswordJsonAuthenticationListener extends AbstractListener
 {
@@ -63,7 +65,7 @@ class UsernamePasswordJsonAuthenticationListener extends AbstractListener
      */
     private $translator;
 
-    public function __construct(TokenStorageInterface $tokenStorage, AuthenticationManagerInterface $authenticationManager, HttpUtils $httpUtils, string $providerKey, AuthenticationSuccessHandlerInterface $successHandler = null, AuthenticationFailureHandlerInterface $failureHandler = null, array $options = [], LoggerInterface $logger = null, EventDispatcherInterface $eventDispatcher = null, PropertyAccessorInterface $propertyAccessor = null)
+    public function __construct(TokenStorageInterface $tokenStorage, AuthenticationManagerInterface $authenticationManager, HttpUtils $httpUtils, string $providerKey, ?AuthenticationSuccessHandlerInterface $successHandler = null, ?AuthenticationFailureHandlerInterface $failureHandler = null, array $options = [], ?LoggerInterface $logger = null, ?EventDispatcherInterface $eventDispatcher = null, ?PropertyAccessorInterface $propertyAccessor = null)
     {
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
@@ -79,8 +81,8 @@ class UsernamePasswordJsonAuthenticationListener extends AbstractListener
 
     public function supports(Request $request): ?bool
     {
-        if (false === strpos($request->getRequestFormat(), 'json')
-            && false === strpos($request->getContentType(), 'json')
+        if (!str_contains($request->getRequestFormat() ?? '', 'json')
+            && !str_contains($request->getContentType() ?? '', 'json')
         ) {
             return false;
         }
@@ -99,6 +101,7 @@ class UsernamePasswordJsonAuthenticationListener extends AbstractListener
     {
         $request = $event->getRequest();
         $data = json_decode($request->getContent());
+        $previousToken = $this->tokenStorage->getToken();
 
         try {
             if (!$data instanceof \stdClass) {
@@ -132,7 +135,7 @@ class UsernamePasswordJsonAuthenticationListener extends AbstractListener
             $token = new UsernamePasswordToken($username, $password, $this->providerKey);
 
             $authenticatedToken = $this->authenticationManager->authenticate($token);
-            $response = $this->onSuccess($request, $authenticatedToken);
+            $response = $this->onSuccess($request, $authenticatedToken, $previousToken);
         } catch (AuthenticationException $e) {
             $response = $this->onFailure($request, $e);
         } catch (BadRequestHttpException $e) {
@@ -148,13 +151,14 @@ class UsernamePasswordJsonAuthenticationListener extends AbstractListener
         $event->setResponse($response);
     }
 
-    private function onSuccess(Request $request, TokenInterface $token): ?Response
+    private function onSuccess(Request $request, TokenInterface $token, ?TokenInterface $previousToken): ?Response
     {
         if (null !== $this->logger) {
-            $this->logger->info('User has been authenticated successfully.', ['username' => $token->getUsername()]);
+            // @deprecated since Symfony 5.3, change to $token->getUserIdentifier() in 6.0
+            $this->logger->info('User has been authenticated successfully.', ['username' => method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername()]);
         }
 
-        $this->migrateSession($request, $token);
+        $this->migrateSession($request, $token, $previousToken);
 
         $this->tokenStorage->setToken($token);
 
@@ -188,10 +192,10 @@ class UsernamePasswordJsonAuthenticationListener extends AbstractListener
         }
 
         if (!$this->failureHandler) {
-            $errorMessage = $failed->getMessageKey();
-
             if (null !== $this->translator) {
                 $errorMessage = $this->translator->trans($failed->getMessageKey(), $failed->getMessageData(), 'security');
+            } else {
+                $errorMessage = strtr($failed->getMessageKey(), $failed->getMessageData());
             }
 
             return new JsonResponse(['error' => $errorMessage], 401);
@@ -221,10 +225,19 @@ class UsernamePasswordJsonAuthenticationListener extends AbstractListener
         $this->translator = $translator;
     }
 
-    private function migrateSession(Request $request, TokenInterface $token)
+    private function migrateSession(Request $request, TokenInterface $token, ?TokenInterface $previousToken)
     {
         if (!$this->sessionStrategy || !$request->hasSession() || !$request->hasPreviousSession()) {
             return;
+        }
+
+        if ($previousToken) {
+            $user = method_exists($token, 'getUserIdentifier') ? $token->getUserIdentifier() : $token->getUsername();
+            $previousUser = method_exists($previousToken, 'getUserIdentifier') ? $previousToken->getUserIdentifier() : $previousToken->getUsername();
+
+            if ('' !== ($user ?? '') && $user === $previousUser) {
+                return;
+            }
         }
 
         $this->sessionStrategy->onAuthentication($request, $token);

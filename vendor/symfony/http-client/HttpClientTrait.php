@@ -17,13 +17,24 @@ use Symfony\Component\HttpClient\Exception\TransportException;
 /**
  * Provides the common logic from writing HttpClientInterface implementations.
  *
- * All methods are static to prevent implementers from creating memory leaks via circular references.
+ * All private methods are static to prevent implementers from creating memory leaks via circular references.
  *
  * @author Nicolas Grekas <p@tchwork.com>
  */
 trait HttpClientTrait
 {
-    private static $CHUNK_SIZE = 16372;
+    private static int $CHUNK_SIZE = 16372;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function withOptions(array $options): static
+    {
+        $clone = clone $this;
+        $clone->defaultOptions = self::mergeDefaultOptions($options, $this->defaultOptions);
+
+        return $clone;
+    }
 
     /**
      * Validates and normalizes method, URL and options, and merges them with defaults.
@@ -37,7 +48,7 @@ trait HttpClientTrait
                 throw new InvalidArgumentException(sprintf('Invalid HTTP method "%s", only uppercase letters are accepted.', $method));
             }
             if (!$method) {
-                throw new InvalidArgumentException('The HTTP method can not be empty.');
+                throw new InvalidArgumentException('The HTTP method cannot be empty.');
             }
         }
 
@@ -77,16 +88,28 @@ trait HttpClientTrait
             unset($options['json']);
 
             if (!isset($options['normalized_headers']['content-type'])) {
-                $options['normalized_headers']['content-type'] = [$options['headers'][] = 'Content-Type: application/json'];
+                $options['normalized_headers']['content-type'] = ['Content-Type: application/json'];
             }
         }
 
         if (!isset($options['normalized_headers']['accept'])) {
-            $options['normalized_headers']['accept'] = [$options['headers'][] = 'Accept: */*'];
+            $options['normalized_headers']['accept'] = ['Accept: */*'];
         }
 
         if (isset($options['body'])) {
             $options['body'] = self::normalizeBody($options['body']);
+
+            if (\is_string($options['body'])
+                && (string) \strlen($options['body']) !== substr($h = $options['normalized_headers']['content-length'][0] ?? '', 16)
+                && ('' !== $h || '' !== $options['body'])
+            ) {
+                if ('chunked' === substr($options['normalized_headers']['transfer-encoding'][0] ?? '', \strlen('Transfer-Encoding: '))) {
+                    unset($options['normalized_headers']['transfer-encoding']);
+                    $options['body'] = self::dechunk($options['body']);
+                }
+
+                $options['normalized_headers']['content-length'] = [substr_replace($h ?: 'Content-Length: ', \strlen($options['body']), 16)];
+            }
         }
 
         if (isset($options['peer_fingerprint'])) {
@@ -94,7 +117,7 @@ trait HttpClientTrait
         }
 
         // Validate on_progress
-        if (!\is_callable($onProgress = $options['on_progress'] ?? 'var_dump')) {
+        if (isset($options['on_progress']) && !\is_callable($onProgress = $options['on_progress'])) {
             throw new InvalidArgumentException(sprintf('Option "on_progress" must be callable, "%s" given.', get_debug_type($onProgress)));
         }
 
@@ -127,11 +150,11 @@ trait HttpClientTrait
         if (null !== $url) {
             // Merge auth with headers
             if (($options['auth_basic'] ?? false) && !($options['normalized_headers']['authorization'] ?? false)) {
-                $options['normalized_headers']['authorization'] = [$options['headers'][] = 'Authorization: Basic '.base64_encode($options['auth_basic'])];
+                $options['normalized_headers']['authorization'] = ['Authorization: Basic '.base64_encode($options['auth_basic'])];
             }
             // Merge bearer with headers
             if (($options['auth_bearer'] ?? false) && !($options['normalized_headers']['authorization'] ?? false)) {
-                $options['normalized_headers']['authorization'] = [$options['headers'][] = 'Authorization: Bearer '.$options['auth_bearer']];
+                $options['normalized_headers']['authorization'] = ['Authorization: Bearer '.$options['auth_bearer']];
             }
 
             unset($options['auth_basic'], $options['auth_bearer']);
@@ -148,8 +171,12 @@ trait HttpClientTrait
 
         // Finalize normalization of options
         $options['http_version'] = (string) ($options['http_version'] ?? '') ?: null;
-        $options['timeout'] = (float) ($options['timeout'] ?? ini_get('default_socket_timeout'));
+        if (0 > $options['timeout'] = (float) ($options['timeout'] ?? \ini_get('default_socket_timeout'))) {
+            $options['timeout'] = 172800.0; // 2 days
+        }
+
         $options['max_duration'] = isset($options['max_duration']) ? (float) $options['max_duration'] : 0;
+        $options['headers'] = array_merge(...array_values($options['normalized_headers']));
 
         return [$url, $options];
     }
@@ -177,9 +204,13 @@ trait HttpClientTrait
         // Option "query" is never inherited from defaults
         $options['query'] = $options['query'] ?? [];
 
-        foreach ($defaultOptions as $k => $v) {
-            if ('normalized_headers' !== $k && !isset($options[$k])) {
-                $options[$k] = $v;
+        $options += $defaultOptions;
+
+        if (isset(self::$emptyDefaults)) {
+            foreach (self::$emptyDefaults as $k => $v) {
+                if (!isset($options[$k])) {
+                    $options[$k] = $v;
+                }
             }
         }
 
@@ -215,9 +246,9 @@ trait HttpClientTrait
 
             $alternatives = [];
 
-            foreach ($defaultOptions as $key => $v) {
-                if (levenshtein($name, $key) <= \strlen($name) / 3 || false !== strpos($key, $name)) {
-                    $alternatives[] = $key;
+            foreach ($defaultOptions as $k => $v) {
+                if (levenshtein($name, $k) <= \strlen($name) / 3 || str_contains($k, $name)) {
+                    $alternatives[] = $k;
                 }
             }
 
@@ -237,7 +268,7 @@ trait HttpClientTrait
         $normalizedHeaders = [];
 
         foreach ($headers as $name => $values) {
-            if (\is_object($values) && method_exists($values, '__toString')) {
+            if ($values instanceof \Stringable) {
                 $values = (string) $values;
             }
 
@@ -280,7 +311,18 @@ trait HttpClientTrait
     private static function normalizeBody($body)
     {
         if (\is_array($body)) {
-            return http_build_query($body, '', '&', \PHP_QUERY_RFC1738);
+            array_walk_recursive($body, $caster = static function (&$v) use (&$caster) {
+                if (\is_object($v)) {
+                    if ($vars = get_object_vars($v)) {
+                        array_walk_recursive($vars, $caster);
+                        $v = $vars;
+                    } elseif (method_exists($v, '__toString')) {
+                        $v = (string) $v;
+                    }
+                }
+            });
+
+            return http_build_query($body, '', '&');
         }
 
         if (\is_string($body)) {
@@ -330,12 +372,26 @@ trait HttpClientTrait
         return $body;
     }
 
+    private static function dechunk(string $body): string
+    {
+        $h = fopen('php://temp', 'w+');
+        stream_filter_append($h, 'dechunk', \STREAM_FILTER_WRITE);
+        fwrite($h, $body);
+        $body = stream_get_contents($h, -1, 0);
+        rewind($h);
+        ftruncate($h, 0);
+
+        if (fwrite($h, '-') && '' !== stream_get_contents($h, -1, 0)) {
+            throw new TransportException('Request body has broken chunked encoding.');
+        }
+
+        return $body;
+    }
+
     /**
-     * @param string|string[] $fingerprint
-     *
      * @throws InvalidArgumentException When an invalid fingerprint is passed
      */
-    private static function normalizePeerFingerprint($fingerprint): array
+    private static function normalizePeerFingerprint(mixed $fingerprint): array
     {
         if (\is_string($fingerprint)) {
             switch (\strlen($fingerprint = str_replace(':', '', $fingerprint))) {
@@ -357,22 +413,16 @@ trait HttpClientTrait
     }
 
     /**
-     * @param mixed $value
-     *
      * @throws InvalidArgumentException When the value cannot be json-encoded
      */
-    private static function jsonEncode($value, int $flags = null, int $maxDepth = 512): string
+    private static function jsonEncode(mixed $value, int $flags = null, int $maxDepth = 512): string
     {
         $flags = $flags ?? (\JSON_HEX_TAG | \JSON_HEX_APOS | \JSON_HEX_AMP | \JSON_HEX_QUOT | \JSON_PRESERVE_ZERO_FRACTION);
 
         try {
-            $value = json_encode($value, $flags | (\PHP_VERSION_ID >= 70300 ? \JSON_THROW_ON_ERROR : 0), $maxDepth);
+            $value = json_encode($value, $flags | \JSON_THROW_ON_ERROR, $maxDepth);
         } catch (\JsonException $e) {
             throw new InvalidArgumentException('Invalid value for "json" option: '.$e->getMessage());
-        }
-
-        if (\PHP_VERSION_ID < 70300 && \JSON_ERROR_NONE !== json_last_error() && (false === $value || !($flags & \JSON_PARTIAL_OUTPUT_ON_ERROR))) {
-            throw new InvalidArgumentException('Invalid value for "json" option: '.json_last_error_msg());
         }
 
         return $value;
@@ -436,6 +486,10 @@ trait HttpClientTrait
             $url['path'] = '/';
         }
 
+        if ('?' === ($url['query'] ?? '')) {
+            $url['query'] = null;
+        }
+
         return $url;
     }
 
@@ -470,7 +524,7 @@ trait HttpClientTrait
                 throw new InvalidArgumentException(sprintf('Unsupported IDN "%s", try enabling the "intl" PHP extension or running "composer require symfony/polyfill-intl-idn".', $host));
             }
 
-            $host = \defined('INTL_IDNA_VARIANT_UTS46') ? idn_to_ascii($host, \IDNA_DEFAULT, \INTL_IDNA_VARIANT_UTS46) ?: strtolower($host) : strtolower($host);
+            $host = \defined('INTL_IDNA_VARIANT_UTS46') ? idn_to_ascii($host, \IDNA_DEFAULT | \IDNA_USE_STD3_RULES | \IDNA_CHECK_BIDI | \IDNA_CHECK_CONTEXTJ | \IDNA_NONTRANSITIONAL_TO_ASCII, \INTL_IDNA_VARIANT_UTS46) ?: strtolower($host) : strtolower($host);
             $host .= $port ? ':'.$port : '';
         }
 
@@ -479,7 +533,7 @@ trait HttpClientTrait
                 continue;
             }
 
-            if (false !== strpos($parts[$part], '%')) {
+            if (str_contains($parts[$part], '%')) {
                 // https://tools.ietf.org/html/rfc3986#section-2.3
                 $parts[$part] = preg_replace_callback('/%(?:2[DE]|3[0-9]|[46][1-9A-F]|5F|[57][0-9A]|7E)++/i', function ($m) { return rawurldecode($m[0]); }, $parts[$part]);
             }
@@ -507,11 +561,11 @@ trait HttpClientTrait
         $result = '';
 
         while (!\in_array($path, ['', '.', '..'], true)) {
-            if ('.' === $path[0] && (0 === strpos($path, $p = '../') || 0 === strpos($path, $p = './'))) {
+            if ('.' === $path[0] && (str_starts_with($path, $p = '../') || str_starts_with($path, $p = './'))) {
                 $path = substr($path, \strlen($p));
-            } elseif ('/.' === $path || 0 === strpos($path, '/./')) {
+            } elseif ('/.' === $path || str_starts_with($path, '/./')) {
                 $path = substr_replace($path, '/', 0, 3);
-            } elseif ('/..' === $path || 0 === strpos($path, '/../')) {
+            } elseif ('/..' === $path || str_starts_with($path, '/../')) {
                 $i = strrpos($result, '/');
                 $result = $i ? substr($result, 0, $i) : '';
                 $path = substr_replace($path, '/', 0, 4);

@@ -54,7 +54,7 @@ class SecurityController extends AbstractController
            // dump($groupe);
             $groupeinfo = $grouperepo->findOneBy(["id"=>$groupe->getId()]);
             $request->getSession()->set("id",$user->getId());
-            $request->getSession()->set('nom',$user->getUserName());
+            $request->getSession()->set('nom',$user->getUserIdentifier());
             $request->getSession()->set('groupeid',$groupeinfo->getId());
             $url = $this->generateUrl("Dashboard");
             return new JsonResponse(["ok"=>true, "url"=>$url]);
