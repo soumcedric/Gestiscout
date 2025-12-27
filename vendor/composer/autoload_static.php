@@ -152,6 +152,7 @@ class ComposerStaticInitcd2b082f890e06aff726505dddd52030
         'M' =>
         array (
             'Monolog\\' => 8,
+            'MercurySeries\\FlashyBundle\\' => 27,
             'Matrix\\' => 7,
             'Masterminds\\' => 12,
         ),
@@ -592,6 +593,10 @@ class ComposerStaticInitcd2b082f890e06aff726505dddd52030
         'Monolog\\' =>
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'MercurySeries\\FlashyBundle\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/mercuryseries/flashy-bundle/src',
         ),
         'Matrix\\' =>
         array (
@@ -2565,6 +2570,12 @@ class ComposerStaticInitcd2b082f890e06aff726505dddd52030
         'Matrix\\Operators\\Multiplication' => __DIR__ . '/..' . '/markbaker/matrix/classes/src/Operators/Multiplication.php',
         'Matrix\\Operators\\Operator' => __DIR__ . '/..' . '/markbaker/matrix/classes/src/Operators/Operator.php',
         'Matrix\\Operators\\Subtraction' => __DIR__ . '/..' . '/markbaker/matrix/classes/src/Operators/Subtraction.php',
+        'MercurySeries\\FlashyBundle\\DependencyInjection\\Configuration' => __DIR__ . '/..' . '/mercuryseries/flashy-bundle/src/DependencyInjection/Configuration.php',
+        'MercurySeries\\FlashyBundle\\DependencyInjection\\MercurySeriesFlashyExtension' => __DIR__ . '/..' . '/mercuryseries/flashy-bundle/src/DependencyInjection/MercurySeriesFlashyExtension.php',
+        'MercurySeries\\FlashyBundle\\FlashyNotifier' => __DIR__ . '/..' . '/mercuryseries/flashy-bundle/src/FlashyNotifier.php',
+        'MercurySeries\\FlashyBundle\\MercurySeriesFlashyBundle' => __DIR__ . '/..' . '/mercuryseries/flashy-bundle/src/MercurySeriesFlashyBundle.php',
+        'MercurySeries\\FlashyBundle\\SessionStore' => __DIR__ . '/..' . '/mercuryseries/flashy-bundle/src/SessionStore.php',
+        'MercurySeries\\FlashyBundle\\SymfonySessionStore' => __DIR__ . '/..' . '/mercuryseries/flashy-bundle/src/SymfonySessionStore.php',
         'Monolog\\Attribute\\AsMonologProcessor' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Attribute/AsMonologProcessor.php',
         'Monolog\\Attribute\\WithMonologChannel' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Attribute/WithMonologChannel.php',
         'Monolog\\DateTimeImmutable' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/DateTimeImmutable.php',

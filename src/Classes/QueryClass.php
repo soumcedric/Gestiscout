@@ -592,19 +592,27 @@ class QueryClass
     public function GetJeunesActifByGroupe($groupe)
     {
         
-        $sql = "select jeunes.id, jeunes.nom, jeunes.prenoms, jeunes.dob, jeunes.occupation, jeunes.lieu_habitation, branche.libelle branche, groupe.nom groupe, jeunes.telephone
+        $query = "select jeunes.id, jeunes.nom, jeunes.prenoms, jeunes.dob, jeunes.occupation, jeunes.lieu_habitation, branche.libelle branche, groupe.nom groupe, jeunes.telephone
         from jeune jeunes, inscription inscriptions, branche branche, groupe groupe
         where jeunes.id = inscriptions.jeunes_id
         and jeunes.branche_id = branche.id
         and jeunes.groupe_id = groupe.id
-        and inscriptions.annee_id = " . $this->activeYear->getId() . "
+        and inscriptions.annee_id = :anneeId
         and jeunes.statut='1'
-        and jeunes.groupe_id=" . $groupe . "
+        and jeunes.groupe_id= :groupeid
         order by jeunes.date_creation desc;";
 
-        $stmt = $this->em->getConnection()->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAllAssociative();
+           $connection = $this->em->getConnection();    
+            // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+            $result = $connection->executeQuery(
+                $query,
+                [
+                    'anneeId' => $this->activeYear->getId(),
+                    'groupeid' => $groupe
+                ]
+            ); 
+
+             return $result->fetchAllAssociative();
     }
 
     public function GetResponsableActifByGroupe($groupe)

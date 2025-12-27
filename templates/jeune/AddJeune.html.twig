@@ -62,7 +62,7 @@
                                     <form id="basic-form" method="post" novalidate>
                                         <div class="form-group">
                                             <label>Nom</label>
-                                            <input type="text" class="form-control" required id="Nom">
+                                            <input type="text" class="form-control" required id="nom">
                                         </div>
                                         <div class="form-group">
                                             <label>Prénoms</label>
@@ -76,7 +76,7 @@
                                             <label>Date de naissance</label>
                                             <div class="">
                                             <input type="date" class="form-control " required id="dob" max="">
-{#                                          <input class="col-lg-3" type="text" disabled="disabled" value="d">#}
+
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -170,7 +170,7 @@
             return today;
         }
         $("#modal").modal("show");
-reset();
+        reset();
         function loading()
         {
             $('.modal').modal('show');
@@ -247,7 +247,7 @@ reset();
         debugger
             loading();
          var  jeune={
-               nom : $("#Nom").val(),
+               nom : $("#nom").val(),
                prenoms : $("#prenoms").val(),
                dob : $("#dob").val(),
                occupation : $("#occupation").val(),
@@ -267,16 +267,16 @@ reset();
             async: true,
             dataType: 'json',
             url:"{{ path('AddJeuneFunction') }}",
-            data: {value : jeune},
+            data:  jeune,
             success:function(res){
                 loadingClose();
 debugger;
-if (res==true){
-//loadingClose();
+if (res.ok==true){
+
                 swal({
                     type:"success",
                     title:"JEUNE",
-                    text:"Enregistrement effectué avec succès"
+                    text:res.message
                 },function (){
                    loadingClose();
                     reset();
@@ -287,7 +287,7 @@ if (res==true){
     swal({
         title:'',
         type:"error",
-        text:"Echec de l'opération"
+        text:res.message
     });
 }
             },
@@ -297,7 +297,7 @@ if (res==true){
                    swal({
                        title:'',
                        type:"error",
-                       text:"Echec de l'opération "+res.responseText
+                       text:"Echec de l'opération "+res.message
                    });
                }
 

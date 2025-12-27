@@ -173,81 +173,83 @@ class JeuneController extends AbstractController
             'groupeid' => $id
       ]);
 
-
-
-
-
-
-
-//        return $this->render('jeune/ListeJeune.html.twig', [
-//            'controller_name' => 'JeuneController',
-//        ]);
     }
 
     #[Route('/AddJeuneFunction', name: 'AddJeuneFunction')]
-    function AddJeuneFunction(JEUNERepository $repojeune, GenreRepository $genreRepo,SessionInterface $session,Request  $value, AnneePastoraleRepository  $repoAnnee, BrancheRepository  $repobranche,GroupeRepository $repoGropue){
+    function AddJeuneFunction(JEUNERepository $repojeune, GenreRepository $genreRepo, SessionInterface $session, Request $request, AnneePastoraleRepository $repoAnnee, BrancheRepository $repobranche, GroupeRepository $repoGropue)
+    {
         try {
-
-
             $qClass = new Classes\QueryClass($this->EntityManager);
-            $lastid = $repojeune->findBy(array(),array('id'=>'DESC'),1,0);
 
-            $id=0;
-            if($lastid == null)
-            {
-                $id = 1;
+            // compute next id (consider using auto-increment in DB instead)
+            $lastid = $repojeune->findBy([], ['id' => 'DESC'], 1, 0);
+            $id = ($lastid === null || count($lastid) === 0) ? 1 : ($lastid[0]->getId() + 1);
+
+            $groupeId = $session->get('groupeid');
+            $connectedGroupe = $repoGropue->findGroupeById($groupeId->getId());
+            $ActiveYear = $repoAnnee->findActiveYear();
+
+            // get and validate input
+            $nom = trim((string)$request->request->get('nom', ''));
+            $prenoms = trim((string)$request->request->get('prenoms', ''));
+            $dobRaw = $request->request->get('dob');
+            $genreId = $request->request->get('genre');
+
+            if ($nom === '' || $prenoms === '' || empty($dobRaw) || empty($genreId)) {
+                return new JsonResponse(['ok' => false, 'message' => 'Missing required fields'], 400);
             }
-            else
-            {
-                $id =  $lastid[0]->getId()+1;
+
+            try {
+                $date = new \DateTime($dobRaw);
+            } catch (\Exception $ex) {
+                return new JsonResponse(['ok' => false, 'message' => 'Invalid date format'], 400);
+            }
+            // Reject DOB in the future
+            $today = new \DateTime('today');
+            if ($date > $today) {
+                return new JsonResponse(['ok' => false, 'message' => 'Date of birth cannot be in the future'], 400);
             }
 
-        $groupeId= $session->get('groupeid');
+            $genre = $genreRepo->findOneBy(['id' => $genreId]);
+            if (!$genre) {
+                return new JsonResponse(['ok' => false, 'message' => 'Genre not found'], 404);
+            }
 
-        $connectedGroupe = $repoGropue->findGroupeById($groupeId->getId());
-        $ActiveYear = $repoAnnee->findActiveYear();
-        $jeune = new JEUNE();
-        $young = $value->request->get('value');
-        $time  = strtotime($young["dob"]);
-        $date= new \DateTime($young["dob"]);
-        $genre =  $genreRepo->findOneBy(["id"=>$young["genre"]]);
-
-        $jeune->setNom($young["nom"])
+            $jeune = new JEUNE();
+            $jeune->setNom($nom)
                 ->setId($id)
-                ->setPrenoms($young["prenoms"])
+                ->setPrenoms($prenoms)
                 ->setDob($date)
-                ->setLieuHabitation($young["habitation"])
-                ->setOccupation($young["occupation"])
-                ->setNomPere(($young["NomPere"]))
-                ->setNumMere($young["NumMere"])
-                ->setNumPere(($young["NumPere"]))
+                ->setLieuHabitation((string)$request->request->get('habitation', ''))
+                ->setOccupation((string)$request->request->get('occupation', ''))
+                ->setNomPere((string)$request->request->get('NomPere', ''))
+                ->setNumMere((string)$request->request->get('NumMere', ''))
+                ->setNumPere((string)$request->request->get('NumPere', ''))
                 ->setStatut(1)
                 ->setDateCreation(new \DateTime())
-                ->setUserCreation("Admin")
-                ->setTelephone($young["phone"])
-                ->setNomMere($young["NomMere"])
+                ->setUserCreation('Admin')
+                ->setTelephone((string)$request->request->get('phone', ''))
+                ->setNomMere((string)$request->request->get('NomMere', ''))
                 ->setGenre($genre)
                 ->setGroupe($connectedGroupe[0]);
 
+            $branche = $repobranche->findById($request->request->get('branche'));
+            if ($branche && isset($branche[0])) {
+                $jeune->setBranche($branche[0]);
+            }
 
-        $branche = $repobranche->findById($young["branche"]);
+            $inscription = new INSCRIPTION();
+            $inscription->setDateInscription(new \DateTime('now'))
+                ->setJeunes($jeune)
+                ->setAnnee($ActiveYear[0]);
+            $jeune->addInscription($inscription);
 
-        $datetime = date('Y/m/d H:i:s');
-        $inscription = new INSCRIPTION();
-        $inscription  ->setDateInscription(new \DateTime("now"))
-                      ->setJeunes($jeune)
-                      ->setAnnee($ActiveYear[0]);
-        $jeune->addInscription($inscription);
-       $jeune->setBranche($branche[0]);
-        //echo $jeune;
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($jeune);
-        $manager->flush();
+            $this->EntityManager->persist($jeune);
+            $this->EntityManager->flush();
 
-       return new Response('true',200);
-        }catch (\Exception $e){
-           // echo $e->getMessage();
-            return $this->json($e->getMessage());
+            return new JsonResponse(['ok' => true, 'message' => 'Jeune ajouté avec succès'], 200);
+        } catch (\Exception $e) {
+            return new JsonResponse(['ok' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -259,9 +261,8 @@ class JeuneController extends AbstractController
             $Id = $request->query->get('id');
             $JeuneUnique = $repo->findOneById($Id);
             $JeuneUnique->setStatut(0);
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($JeuneUnique);
-            $manager->flush();
+            $this->EntityManager->persist($JeuneUnique);
+            $this->EntityManager->flush();
             return new Response("success",200);
         }catch (\Exception $e){
             return new Response("fail",200);
@@ -273,91 +274,105 @@ class JeuneController extends AbstractController
 
 
     #[Route('/GetJeuneUnique', name: 'GetJeuneUnique')]
-    public function GetJeuneUnique(Request $request, JEUNERepository $repo, SerializerInterface $serialize): Response
+    public function GetJeuneUnique(Request $request, JEUNERepository $repo, SerializerInterface $serialize): JsonResponse
     {
-
         try {
-            $Id = $request->query->get('id');
-            $JeuneUnique = $this->JeuneUnique($Id,$repo);
-            $brancheid = $JeuneUnique->getBranche()->getId();
-            $JeuneUnique->setBrancheId($brancheid);
-            $JeuneUnique->setDateNaiss($JeuneUnique->getDob()->format('Y-m-d'));
-            $result = $serialize->serialize($JeuneUnique,'json',['groups'=>'read']);
-            return new Response($result,200);
-        }catch (\Exception $e){
-            return new Response("fail",200);
+            $id = $request->query->getInt('id');
+            if ($id <= 0) {
+                return new JsonResponse(['ok' => false, 'message' => 'Missing or invalid id'], 400);
+            }
+
+            $jeune = $this->JeuneUnique($id, $repo);
+            if (!$jeune) {
+                return new JsonResponse(['ok' => false, 'message' => 'Jeune not found'], 404);
+            }
+
+            // attach safe branche id if any
+            $branche = $jeune->getBranche();
+            $jeune->setBrancheId($branche ? $branche->getId() : null);
+
+            // normalize date of birth if present
+            $dob = $jeune->getDob();
+            if ($dob instanceof \DateTimeInterface) {
+                $jeune->setDateNaiss($dob->format('Y-m-d'));
+            }
+
+            $result = $serialize->serialize($jeune, 'json', ['groups' => 'read']);
+            $data = json_decode($result, true);
+            return new JsonResponse(['ok' => true, 'data' => $data], 200);
+        } catch (\Exception $e) {
+            return new JsonResponse(['ok' => false, 'message' => $e->getMessage()], 500);
         }
-
-
-
     }
+    
 
-    function JeuneUnique(int $id, JEUNERepository $jeune) : JEUNE
+    function JeuneUnique(int $id, JEUNERepository $jeune) : ?JEUNE
     {
         return $jeune->findOneById($id);
     }
 
     #[Route('/ModifierJeune', name: 'ModifierJeune')]
-    function ModifierJeune(Request  $value,BrancheRepository  $repobranche, JEUNERepository $jeunerepo){
+    function ModifierJeune(Request $request, BrancheRepository $repobranche, JEUNERepository $jeunerepo)
+    {
+        // Support payload in 'value' (array/json) or direct form fields
+        $payload = $request->request->get('value');
+        if (is_string($payload)) {
+            $decoded = json_decode($payload, true);
+            $payload = $decoded ?: null;
+        }
+        $input = is_array($payload) ? $payload : $request->request->all();
 
+        $id = $input['id'] ?? null;
+        if (empty($id)) {
+            return new JsonResponse(['ok' => false, 'message' => 'Missing id'], 400);
+        }
 
-        $jeune = new JEUNE();
-        $young = $value->request->get('value');
-        //$time  = strtotime($young["dob"]);
-        //$date = new \DateTime($young["dob"]);
-        $jeune->setNom($young["nom"])
-            ->setPrenoms($young["prenoms"])
-          //  ->setDob($date)
-            ->setLieuHabitation($young["habitation"])
-            ->setOccupation($young["occupation"])
-            ->setNomPere(($young["NomPere"]))
-            ->setNumMere($young["NumMere"])
-            ->setNumPere(($young["NumPere"]))
-            ->setStatut(1)
-            ->setDateCreation(new \DateTime())
-            ->setUserCreation("Admin")
-            ->setTelephone($young["phone"])
-            ->setNomMere($young["NomMere"]);
+        $jeuneUnique = $this->JeuneUnique((int)$id, $jeunerepo);
+        if (!$jeuneUnique) {
+            return new JsonResponse(['ok' => false, 'message' => 'Jeune not found'], 404);
+        }
 
-        //get branche
-        $branche = $repobranche->findOneBy(["id"=>$young["branche"]]);
-        $jeune->setBranche($branche);
+        // Helper to get field from input with fallback to null
+        $get = function ($key) use ($input) {
+            return array_key_exists($key, $input) ? $input[$key] : null;
+        };
 
+        $fieldsToUpdate = [
+            'nom' => 'setNom',
+            'prenoms' => 'setPrenoms',
+            'telephone' => 'setTelephone',
+            'habitation' => 'setLieuHabitation',
+            'occupation' => 'setOccupation',
+            'nomPere' => 'setNomPere',
+            'numPere' => 'setNumPere',
+            'numMere' => 'setNumMere',
+            'NomMere' => 'setNomMere'
+        ];
 
+        foreach ($fieldsToUpdate as $key => $setter) {
+            $val = $get($key);
+            if ($val !== null && $val !== '') {
+                $jeuneUnique->{$setter}((string)$val);
+            }
+        }
 
-        $jeuneUnique = $this->JeuneUnique($young["id"],$jeunerepo);
+        // branche
+        $brancheId = $get('branche');
+        if (!empty($brancheId)) {
+            $branche = $repobranche->findOneBy(['id' => $brancheId]);
+            if ($branche) {
+                $jeuneUnique->setBranche($branche);
+            }
+        }
 
-        $nom = $jeuneUnique->getNom()==$jeune->getNom() ? $jeuneUnique->getNom() : $jeune->getNom();
-        $prenoms = $jeuneUnique->getPrenoms()==$jeune->getPrenoms() ? $jeuneUnique->getPrenoms() : $jeune->getPrenoms();
-        $telephone = $jeuneUnique->getTelephone()==$jeune->getTelephone() ? $jeuneUnique->getTelephone() : $jeune->getTelephone();
-        $dob = $jeuneUnique->getDob()==$jeune->getDob() ? $jeuneUnique->getDob() : $jeune->getDob();
-        $nomPere = $jeuneUnique->getNomPere()==$jeune->getNomPere() ? $jeuneUnique->getNomPere() : $jeune->getNomPere();
-        $numPere = $jeuneUnique->getNumPere()==$jeune->getNumPere() ? $jeuneUnique->getNumPere() : $jeune->getNumPere();
-        $numMere = $jeuneUnique->getNumMere()==$jeune->getNumMere() ? $jeuneUnique->getNumMere() : $jeune->getNumMere();
-        $nomMere = $jeuneUnique->getNomMere()==$jeune->getNomMere() ? $jeuneUnique->getNomMere() : $jeune->getNomMere();
-        $branche = $jeuneUnique->getBranche()==$jeune->getBranche() ? $jeuneUnique->getBranche() : $jeune->getBranche();
-        $occupation = $jeuneUnique->getOccupation()==$jeune->getOccupation() ? $jeuneUnique->getOccupation() : $jeune->getOccupation();
-        $habitation = $jeuneUnique->getLieuHabitation()==$jeune->getLieuHabitation() ? $jeuneUnique->getLieuHabitation() : $jeune->getLieuHabitation();
+        // update modification metadata
+        $jeuneUnique->setDateModification(new \DateTime());
+        $jeuneUnique->setUserModification('Admin');
 
-        $jeuneUnique->setNom($nom)
-                    ->setPrenoms($prenoms)
-                    ->setTelephone($telephone)
-                    ->setLieuHabitation($telephone)
-                    ->setOccupation($occupation)
-                    ->setNomPere($nomPere)
-                    ->setNumPere($numPere)
-                    ->setNomMere($nomMere)
-                    ->setNumPere($numMere)
-                    ->setDateModification(new \DateTime())
-                    ->setUserModification("Admin")
-                    ->setBranche($branche);
+        $this->EntityManager->persist($jeuneUnique);
+        $this->EntityManager->flush();
 
-
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($jeuneUnique);
-        $manager->flush();
-
-        return new Response(true,200);
+        return new JsonResponse(['ok' => true, 'message' => 'Jeune modifié avec succès'], 200);
     }
     #[Route('/ImportData', name: 'ImportData')]
     function ImportData(Request $value, JEUNERepository $RepoJeune,SessionInterface $session, UserRepository $userRepo)
@@ -371,7 +386,7 @@ class JeuneController extends AbstractController
           
           
              $groupe= $session->get('groupeid');
-             $userconnected = $userRepo->findOneBy(["id"=>$session->get("id")])->getUsername();
+             $userconnected = $userRepo->findOneBy(["id"=>$session->get("id")])->getUserIdentifier();
              
              $id=$groupe->getId();
              $connectedGroupe = $this->repoGroupe->findOneBy(["id"=>$id]);
@@ -414,94 +429,21 @@ class JeuneController extends AbstractController
                                   ->setJeunes($newJeune)
                                   ->setAnnee($ActiveYear[0]);
                               $newJeune->addInscription($inscription);
-                              $manager = $this->getDoctrine()->getManager();
-                                  $manager->persist($newJeune);
-                                  $manager->flush();
-             //   dump($newJeune);
+                               $this->EntityManager->persist($newJeune);
+                                  $this->EntityManager->flush();
+             
              }
-
-            // for ($t=2;$t<=$highetsrow;$t++)
-            // {
-            //     if(is_null($spreadsheet->getActiveSheet()->getCellByColumnAndRow(3,$t)->getValue())){
-
-            //     }
-            //     else{
-
          
-            //     $qClass = new Classes\QueryClass($this->EntityManager);
-            //     $lastid = $RepoJeune->findBy(array(),array('id'=>'DESC'),1,0);
-
-            //     $id=0;
-            //     if($lastid == null)
-            //     {
-            //         $id = 1;
-            //     }
-            //     else
-            //     {
-            //         $id =  $lastid[0]->getId()+1;
-            //     }
-
-            //     //get date de naissance and convert it
-            //     $datenaiss=$spreadsheet->getActiveSheet()->getCellByColumnAndRow(3,$t)->getValue();
-            //     $intermediate = date_create_from_format('yyyy-mm-dd',trim($datenaiss));
-
-            //     $Dob= new \DateTime($intermediate);
-            //     //get branche
-            //     $brancheFromExcel = $spreadsheet->getActiveSheet()->getCellByColumnAndRow(12,$t)->getValue();
-            //     $genreFromExcel = $spreadsheet->getActiveSheet()->getCellByColumnAndRow(4,$t)->getValue();
-            //     $branche = $this->brancheLayer->findOneBy(["Libelle"=>$brancheFromExcel]);
-
-            //     $genre = $this->GenreLayer->findOneBy(["Libelle"=>$genreFromExcel]);
-            //     $jeune = new JEUNE();
-            //     $jeune->setNom($spreadsheet->getActiveSheet()->getCellByColumnAndRow(1,$t)->getValue())
-            //         ->setId($id)
-            //         ->setPrenoms($spreadsheet->getActiveSheet()->getCellByColumnAndRow(2,$t)->getValue())
-            //         ->setDob($Dob)
-            //         ->setGenre($genre)
-            //         ->setLieuHabitation($spreadsheet->getActiveSheet()->getCellByColumnAndRow(5,$t)->getValue())
-            //         ->setOccupation($spreadsheet->getActiveSheet()->getCellByColumnAndRow(6,$t)->getValue())
-            //         ->setTelephone($spreadsheet->getActiveSheet()->getCellByColumnAndRow(7,$t)->getValue())
-            //         ->setNomPere($spreadsheet->getActiveSheet()->getCellByColumnAndRow(8,$t)->getValue())
-            //         ->setNumPere($spreadsheet->getActiveSheet()->getCellByColumnAndRow(9,$t)->getValue())
-            //         ->setNomMere($spreadsheet->getActiveSheet()->getCellByColumnAndRow(10,$t)->getValue())
-            //         ->setNumMere($spreadsheet->getActiveSheet()->getCellByColumnAndRow(11,$t)->getValue())
-            //         ->setBranche($branche)
-            //         ->setDateCreation(new \DateTime())
-            //         ->setStatut(1)
-            //         ->setGroupe($connectedGroupe[0])
-            //         ->setUserCreation("ADMIN");
-            //     $inscription = new INSCRIPTION();
-            //     $ActiveYear = $this->repoYear->findActiveYear();
-            //     $inscription->setDateInscription(new \DateTime("now"))
-            //         ->setJeunes($jeune)
-            //         ->setAnnee($ActiveYear[0]);
-            //     $jeune->addInscription($inscription);
-            //     $manager = $this->getDoctrine()->getManager();
-            //     $manager->persist($jeune);
-            //     $manager->flush();
-            // }
-
-            // }
-           //  $flashy->success('Event created!', 'http://your-awesome-link.com');
-           //  return  $this->redirectToRoute("ListeJeunes");
 
             return new JsonResponse(["ok"=>true, "message"=>"Opération effectuée avec succès"]);
         }
         catch(\Exception $e)
         {
             $this->addFlash('success', 'Event created!');
-           // var_dump($e);
-           // return  $this->redirectToRoute("error");
-            //return  new \http\Env\Response(true,200);
-            dump(($e));
             return new JsonResponse(["ok"=>false, "message"=>$e->getMessage()]);
     
         }
 
-
-
-
-       // return null;
     }
     #[Route('/ImportJeune', name: 'ImportJeune')]
     function ImportationJeune()
@@ -517,29 +459,44 @@ class JeuneController extends AbstractController
     function Import(Request $request, SessionInterface $session, 
                         GroupeRepository $groupeRepo, SerializerInterface $serializer)
     {
-        $groupe= $session->get('groupeid');
-        $groupeName = $groupeRepo->findOneBy(["id"=>$groupe->getid()])->getNom();
-        $targetfile = __DIR__."/../../public/uploads";
-        define ('SITE_ROOT', realpath(dirname(__FILE__)));
-        
-         $fichier=$_FILES["file"]["name"];
-         $real = realpath($_FILES["file"]["tmp_name"]);
-        // $extension = $_FILES["file"]["type"];
+        $groupe = $session->get('groupeid');
+        $groupeName = $groupeRepo->findOneBy(["id" => $groupe->getId()])->getNom();
 
+        // target directory inside project public/uploads
+        $targetfile = $this->getParameter('kernel.project_dir').'/public/uploads/importjeune';
 
-
-          $extension = pathinfo($fichier,PATHINFO_EXTENSION);
-          $filename = pathinfo($fichier,PATHINFO_FILENAME);
-          $newFileName = str_replace(" ","_",$filename.'_'.$groupeName.'_'.uniqid().'.'.$extension);
-         
-         $handle = fopen($_FILES["file"]["tmp_name"],'r');
-        if(move_uploaded_file($real,$targetfile.'/'. $newFileName))   
-        {
-            dump("moved");
+        $fs = new Filesystem();
+        try {
+            if (!$fs->exists($targetfile)) {
+                $fs->mkdir($targetfile, 0775);
+            }
+        } catch (IOExceptionInterface $e) {
+            return new JsonResponse(["ok" => false, "message" => 'Unable to create target directory: ' . $e->getMessage()]);
         }
-        else
-        {
-            dump("unmoved");
+
+        $uploadedFile = $request->files->get('file');
+        if ($uploadedFile && $uploadedFile instanceof \Symfony\Component\HttpFoundation\File\UploadedFile) {
+            $originalName = $uploadedFile->getClientOriginalName();
+            $extension = $uploadedFile->guessExtension() ?: pathinfo($originalName, PATHINFO_EXTENSION);
+            $filename = pathinfo($originalName, PATHINFO_FILENAME);
+            $newFileName = str_replace(' ', '_', $filename . '_' . $groupeName . '_' . uniqid() . '.' . $extension);
+            try {
+                $uploadedFile->move($targetfile, $newFileName);
+            } catch (\Exception $e) {
+                return new JsonResponse(["ok" => false, "message" => 'Upload failed: ' . $e->getMessage()]);
+            }
+        } else {
+            // legacy fallback to PHP globals
+            if (!isset($_FILES['file']['tmp_name']) || !is_uploaded_file($_FILES['file']['tmp_name'])) {
+                return new JsonResponse(["ok" => false, "message" => 'No uploaded file found']);
+            }
+            $originalName = $_FILES['file']['name'];
+            $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+            $filename = pathinfo($originalName, PATHINFO_FILENAME);
+            $newFileName = str_replace(' ', '_', $filename . '_' . $groupeName . '_' . uniqid() . '.' . $extension);
+            if (!move_uploaded_file($_FILES['file']['tmp_name'], $targetfile . '/' . $newFileName)) {
+                return new JsonResponse(["ok" => false, "message" => 'Could not move uploaded file']);
+            }
         }
 
         $lines = array();
