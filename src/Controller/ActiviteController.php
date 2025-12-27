@@ -212,30 +212,29 @@ class ActiviteController extends AbstractController
             $data =  $value->request->get('value');
 
             $details = new DETAILS();
-            $details->setLibelle($data["Nom"])
-                ->setDeroulement($data["Deroulement"])
-                ->setObjectif($data["Objectif"])
-                ->setDate(new \DateTime($data["Date"]))
-                ->setHeuredebut(new \DateTime($data["HeureDebut"]))
-                ->setHeureFin(new \DateTime($data["HeureFin"]))
-                ->setResponsableActivite($data["Responsable"])
-                ->setContact($data["Contact"])
+            $details->setLibelle($value->request->get('Nom'))
+                ->setDeroulement($value->request->get('Deroulement'))
+                ->setObjectif($value->request->get('Objectif'))
+                ->setDate(new \DateTime($value->request->get('Date')))
+                ->setHeuredebut(new \DateTime($value->request->get('HeureDebut')))
+                ->setHeureFin(new \DateTime($value->request->get('HeureFin')))
+                ->setResponsableActivite($value->request->get('Responsable'))
+                ->setContact($value->request->get('Contact'))
                 ->setBactif(true)
                 ->setStatut(0)
-                ->setCible($data["Cible"])
+                ->setCible($value->request->get('Cible'))
                 ->setDescription("dddd")
                 ->setDateCreation(new \DateTime());
 
             //set activity
-            $activite = $this->activiteRepo->findOneBy(["id" => $data["Activity"]]);
+            $activite = $this->activiteRepo->findOneBy(["id" => $value->request->get('Activity')]);
             //dump($data["Activity"]);
             $details->setActivite($activite);
             //set branche
-            $branche = $rpBranche->findOneBy(["id" => $data["Branche"]]);
+            $branche = $rpBranche->findOneBy(["id" => $value->request->get('Branche')]);
             $details->setBranche($branche);
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($details);
-            $manager->flush();
+            $this->em->persist($details);
+            $this->em->flush();
             return new JsonResponse(['ok' => true, 'data' => "Opération effectuée avec succès"]);
         } catch (\Exception $e) {
             return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
@@ -391,12 +390,12 @@ class ActiviteController extends AbstractController
     {
         try {
             $value = $query->query->get('groupe');
-
+           
             $anneeActive = $this->annePastorale->findActiveYear();
             $qClass = new QueryClass($this->em);
             $listactivites = $qClass->ListActiviteByGroupe($value,true);
-
-            // $result = $serializer->serialize($listactivites,'json');
+           // dump($listactivites);
+            
             return new JsonResponse(['ok' => true, 'data' => $listactivites]);
         } catch (\Exception $e) {
             return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
@@ -439,9 +438,9 @@ class ActiviteController extends AbstractController
             $activite->setStatut(2);//Refuser
             $activite->setCommentaire($commentaire);
        
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($activite);
-        $manager->flush();
+       // $manager = $this->getDoctrine()->getManager();
+        $this->em->persist($activite);
+        $this->em->flush();
         return new JsonResponse(['ok' => true, 'message' => "Décision enregistrée avec succès"]);
     }
 
@@ -463,9 +462,9 @@ class ActiviteController extends AbstractController
             if ($check == true) {
                 $activityToSubmit->setBSoumis(true);
                 $activityToSubmit->setDateModification(new \DateTime());
-                $manager = $this->getDoctrine()->getManager();
-                $manager->persist($activityToSubmit);
-                $manager->flush();
+                
+                $this->em->persist($activityToSubmit);
+                $this->em->flush();
 
                 $email = (new Email())
                     ->from($this->getParameter('app.admin_email'))
@@ -474,7 +473,7 @@ class ActiviteController extends AbstractController
                     ->html('Bonjour, <br/> <p>Une activité à été soumise pour approbation par le groupe <strong>' . $activityToSubmit->getGroupe()->getNom()  . '</strong></p> <p>Nom de l\'activité: ' . $activityToSubmit->getNom() . '</p><br\> <p>Vous pouvez la consulter à partir de l\'adresse suivante:.....</p>');
 
                 $mailer->send($email);
-
+                dump($email);
                 return new JsonResponse(['ok' => true, 'message' => 'opération effectuée avec succès']);
             } else {
                 return new JsonResponse(['ok' => false, 'message' => 'Impossible de soumettre cette activité car aucun programme n\'a été ajouté.']);

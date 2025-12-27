@@ -71,7 +71,9 @@ class ConnexionController extends AbstractController
         $qClass = new App\Classes\QueryClass($this->EntityManager);
 
         $Idgroupe = $session->get('groupeid');
+           dump($ActiveYEar); 
         $nbrejeuneCotise = $qClass->NbreJeuneCotise((int)$Idgroupe->getId(),(int)$ActiveYEar);
+     
         $nbreRespoCotise = $qClass->NbreResponsableCotise((int)$Idgroupe->getId(),(int)$ActiveYEar);
        // $nbrejeuneCotise = $qClass->get((int)$ActiveYEar,(int)$Idgroupe->getId());
         //$JeuneGrope = $this->JeuneLayer->GetTotalJeuneByGroup((int)$Idgroupe->getId());

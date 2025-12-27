@@ -151,7 +151,7 @@ debugger
                     async: true,
                     dataType: 'json',
                     url:"{{ path('InsertRespoDistrict') }}",
-                    data: {value : responsable},
+                    data: responsable,
                     success:function(res){
                         debugger;
                         if (res==1){
