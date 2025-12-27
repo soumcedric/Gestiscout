@@ -203,20 +203,7 @@
             });
      $("#valider").click(function(){
          debugger   
-            // let details = {
-            //         Nom:$("#nom").val(),
-            //         Deroulement:$("#txtderoulement").val() =="undefined" ? "" : $("#txtderoulement").val() ,
-            //         Objectif: $("#objectif").val() == "undefined" ? "" :  $("#objectif").val(),
-            //         Date:$("#date").val(),
-            //         HeureDebut: $("#heuredebut").val(),
-            //         HeureFin:$("#heuredebut").val(),
-            //         Cible : $("#cible").val() == "undefined" ? "" :  $("#cible").val() ,
-            //         Responsable : $("#responsable").val(),
-            //         Branche: $("#selbranche").val(),
-            //         Contact : $("#contact").val() == "undefined" ? "" : $("#contact").val(),
-            //         Activity:$("#activityid").val()
-
-            // };
+           
             let details = {
                     Nom:$("#nom").val(),
                     Deroulement:"",
@@ -234,7 +221,7 @@
           $.ajax({
               type:"POST",
               url:"{{ path('AddDetails') }}",
-              data:{value: details},
+              data:details,
               success:function(res){
                   debugger
                   if(res.ok == true)

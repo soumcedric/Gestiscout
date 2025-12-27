@@ -123,11 +123,12 @@ class UtilisateurController extends AbstractController
 
 
     #[Route('/AddUserFromDistrict', name: 'AddUserFromDistrict')]
-    public function AddUserFromDistrict(Request $req, UserPasswordEncoderInterface $encoder, ResponsableRepository $respo, DistrictRepository $district, ExercerFonctionRepository $exercer, MailerInterface $mailer)
+    public function AddUserFromDistrict(Request $req, UserPasswordHasherInterface $encoder, ResponsableRepository $respo, DistrictRepository $district, ExercerFonctionRepository $exercer, MailerInterface $mailer)
     {
         $qClass = new QueryClass($this->em);
-        $fromJson = $req->request->get("value");
-        $ConcernedRespo = $district->findOneBy(["id" => $fromJson["respoid"]]);
+        //$fromJson = $req->request->get("value");
+        $ConcernedRespo = $district->findOneBy(["id" => $req->request->get("respoid")]);
+        dump($ConcernedRespo);
         $userExists = $qClass->CheckUserExist($ConcernedRespo->getEmail());
         if ($userExists){
             return new JsonResponse(['ok' => false, 'message' => 'Cet utilisateur existe déja!']);
@@ -139,7 +140,7 @@ class UtilisateurController extends AbstractController
           //  $exercerfonctiondistrict = $exercer->findOneBy(["District"=>$ConcernedRespo]);
           //  dump($ConcernedRespo);
             $qClass = new QueryClass($this->em);
-            $role = $qClass->GetFunctionDistrict($fromJson["respoid"]);
+            $role = $qClass->GetFunctionDistrict($req->request->get("respoid"));
             //dump($info);
         //     $role = $qClass->GetRespoRole($ConcernedRespo->getId());
         //     //dump($role);
@@ -149,7 +150,7 @@ class UtilisateurController extends AbstractController
 
              $randonpass = $this->RandomPassword();
         //     //dump($randonpass);
-             $cryptedPass = $encoder->encodePassword($user, $randonpass);
+             $cryptedPass = $encoder->hashPassword($user, $randonpass);
              $roles = array($role);
              $user->setPassword($cryptedPass)
                 ->setUsername($ConcernedRespo->getEmail())
@@ -178,10 +179,12 @@ class UtilisateurController extends AbstractController
                 ->subject('Création de compte')
                 ->html('Bonjour ' . $nom . ' ' . $prenoms . ', <br/>Votre inscription à la plateforme Gestiscout à été effectuée avec succès. <br\>Afin de vous connecter, veuillez utiliser
                     les identifiants ci-dessous: <br/>
-                    nom utilisateur : ' . $user->getUsername()
+                    nom utilisateur : ' . $user->getUserIdentifier()
                     . '<br/>
                     mot de passe: ' . $randonpass. "<br/><br/>
                     <i><strong>L'équipe GestiScout </strong></i>");
+
+            dump($email);
 
            $result =   $mailer->send($email);
           

@@ -181,30 +181,29 @@ class DistrictController extends AbstractController
 
 
     #[Route('/InsertRespoDistrict', name: 'InsertRespoDistrict')]
-    public function InsertRespoDistrict(Request $value, FONCTIONRepository $fonctionRep, CommissariatDistrictRepository $commissariat)
+    public function InsertRespoDistrict(Request $request, FONCTIONRepository $fonctionRep, CommissariatDistrictRepository $commissariat)
     {
         try {
 
-
-            $Req = $value->request->get('value');
+            $Req = $request->request->get('value');
        
            //get concerned commissariat district
-            $concernedCommissariat = $commissariat->findOneBy(["id"=>$Req["district"]]);
+            $concernedCommissariat = $commissariat->findOneBy(["id"=>$request->request->get('district')]);
            
-            $date = new \DateTime($Req["dob"]);
+            $date = new \DateTime($request->request->get('dob'));
             $district = new District();
-            $district->setNom($Req["nom"])
-            ->setPrenoms($Req["prenoms"])
-            ->setTelephone($Req["telephone"])
-            ->setDob($Req["dob"])
-            ->setEmail($Req["email"])
+            $district->setNom($request->request->get('nom'))
+            ->setPrenoms($request->request->get('prenoms'))
+            ->setTelephone($request->request->get('telephone'))
+            ->setDob($request->request->get('dob'))
+            ->setEmail($request->request->get('email'))
             ->setDateCreation(new \DateTime())
             ->setCommissariatDistrict($concernedCommissariat);
 
             
 
             //get fonction
-            $fonction = $Req["fonction"];
+            $fonction = $request->request->get('fonction');
             $selectedfonction = $fonctionRep->findOneBy(["id" => $fonction]);
            // dump($selectedfonction);
             $exercerfonction = new ExercerFonction();
@@ -218,10 +217,11 @@ class DistrictController extends AbstractController
             dump($concernedCommissariat);
             dump($district);
             dump($selectedfonction);
+            dump($exercerfonction);
 
             //$manager = $this->getDoctrine()->getManager();
             $this->em->persist($district);
-            //$this->em->persist($exercerfonction);
+            $this->em->persist($exercerfonction);
             $this->em->flush();
             // return new Response(true,200);
             // return new Response();

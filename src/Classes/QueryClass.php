@@ -76,22 +76,31 @@ class QueryClass
 
     function NbreJeuneCotise($groupeid, $ActiveYear)
     {
-        $sql = "SELECT count(j) FROM ";
-        $sql = $sql . "App\Entity\JEUNE j";
-        $sql = $sql . ", App\Entity\INSCRIPTION i";
-        $sql = $sql . ", App\Entity\Groupe g";
-        $sql = $sql . ",App\Entity\AnneePastorale an ";
-        $sql = $sql . "where j.Groupe = g.id ";
-        $sql = $sql . "and j.id = i.Jeunes ";
-        $sql = $sql . "and i.Annee = an.id ";
-        $sql = $sql . "and g.id = :groupeid and an.id = :anneeId";
-        $sql = $sql . " and j.id in (SELECT IDENTITY(co.Jeune) FROM App\Entity\Cotisation co) ";
-        $query = $this->em->createQuery($sql);
-        $query->setParameter("groupeid", $groupeid);
-        $query->setParameter("anneeId", $ActiveYear);
-        $res = $query->getSingleScalarResult();
 
-        return $res;
+        $query = "
+            SELECT count(jeunes_id) FROM jeune jeunes, inscription inscriptions, groupe groupes, annee_pastorale annee
+            where jeunes.groupe_id = groupes.id
+            and jeunes.id = inscriptions.jeunes_id
+            and inscriptions.annee_id = annee.id
+            and groupes.id = :groupeid
+            and annee.id = :anneeId
+            and jeunes.id in (SELECT cotisation.jeune_id FROM cotisation cotisation);        
+        ";
+
+
+        $connection = $this->em->getConnection();    
+            // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+            $result = $connection->executeQuery(
+                $query,
+                [
+                    'anneeId' => $this->activeYear->getId(),
+                    'groupeid' => $groupeid
+                ]
+            ); 
+
+             return $result->fetchOne();
+
+       // return $res;
     }
     public function GetResponsableNonCotise($groupeid, $ActiveYear)
     {
@@ -918,7 +927,7 @@ class QueryClass
             from activites ac, annee_pastorale an, groupe gr
         where ac.groupe_id = gr.id
         and ac.anneepastorale_id = an.id
-        and gr.id = :groupeid'
+        and gr.id = :groupeid
         and ac.b_soumis != 0
         and an.id = :anneeId";
         }
@@ -1048,10 +1057,17 @@ class QueryClass
         from activites ac, documents dc, type_document tp
         where ac.id = dc.activite_id
         and dc.type_document_id = tp.id
-        and ac.id = " . $activiteid . "";
-        $stmt = $this->em->getConnection()->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAllAssociative();
+        and ac.id = :activiteid;";
+         $connection = $this->em->getConnection();    
+            // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+            $result = $connection->executeQuery(
+                $query,
+                [
+                    'activiteid' => $activiteid
+                ]
+            ); 
+
+             return $result->fetchAllAssociative();
     }
 
     /**/
@@ -1208,10 +1224,18 @@ class QueryClass
                     where d.id = efd.district_id
                     and efd.exercer_fonction_id = ef.id
                     and ef.fonction_id = f.id
-                    and d.id = " . $id . " ";
-        $stmt = $this->em->getConnection()->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchOne();
+                    and d.id = :id";
+        $connection = $this->em->getConnection();
+    
+    // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+    $result = $connection->executeQuery(
+        $query,
+        [
+            'id' => $id
+        ]
+    ); 
+
+    return $result->fetchOne();
     }
 
     public function GetSoldeEntite($entite, $entiteid)

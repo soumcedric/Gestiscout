@@ -75,9 +75,6 @@
 
    {% if firstconnection %}
    <form method="post" action="{{ path('UpdatePassword') }}">
-  
-
-
 
   
     <h1 class="h3 mb-3 font-weight-normal">Modifier votre mot de passe</h1>
@@ -96,10 +93,10 @@
     <button class="btn btn-lg btn-primary" type="submit">
        Modifier
     </button>
-</form>
+    </form>
      {% else %}
 
-<form method="post" action="{{ path('app_login') }}">
+    <form method="post" action="{{ path('app_login') }}">
     {# {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
