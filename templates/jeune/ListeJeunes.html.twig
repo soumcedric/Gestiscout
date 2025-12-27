@@ -410,8 +410,8 @@ debugger
                 success:function(res){
                     loadingClose();
                     debugger
-                    if (res!==null){
-                    var JeuneUnique = JSON.parse(res);
+                     if (res!==null){
+                    var JeuneUnique = res.data;
 
                     var branche = JeuneUnique.branche[0];
                     $("#jeuneId").val(JeuneUnique.id);
@@ -467,10 +467,10 @@ debugger
             $.ajax({
                 type:"POST",
                 url:"{{ path("ModifierJeune") }}",
-                data:{ value : jeune },
+                data:jeune ,
                 success:function(res){
                     debugger
-                    if (res=="1"){
+                    if (res.ok==true){
                         swal({
                            type:"success",
                            title: "JEUNE",
@@ -523,7 +523,7 @@ debugger
                     loadingClose();
                     $("#modalmodif").modal('show');
                     if (res!==null){
-                        var JeuneUnique = JSON.parse(res);
+                        var JeuneUnique = res.data;
                         $("#jeuneId").val(JeuneUnique.id);
                         $("#Nom").val(JeuneUnique.Nom);
                         $("#prenoms").val(JeuneUnique.Prenoms);
@@ -566,8 +566,8 @@ debugger
    
     });
 </script>
-
-{{ include('@MercurySeriesFlashy/flashy.html.twig') }}
+{# 
+{{ include('@MercurySeriesFlashy/flashy.html.twig') }} #}
 
 {% endblock %}
 

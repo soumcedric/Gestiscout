@@ -52,6 +52,7 @@ function UploadFile()
         processing: false,
         retrieve: true
     });
+    table.clear().draw();
     var formData = new FormData();
     let filename = $('input[type=file]')[0].files[0];
     if(filename == undefined)
@@ -72,6 +73,10 @@ function UploadFile()
             processData:false,
             contentType:false,
             data:formData,
+            processing: true,
+            language: {
+                processing: "Traitement en cours..."
+            },
             success:function(res)
             {
                 debugger

@@ -3,7 +3,7 @@
         'name' => '__root__',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '8d5bc8c262a27866f4d98e02f45c28b1bb3b3804',
+        'reference' => '2c17ed9dec35c76101d601d80e80e36f0d8acb1e',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         '__root__' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '8d5bc8c262a27866f4d98e02f45c28b1bb3b3804',
+            'reference' => '2c17ed9dec35c76101d601d80e80e36f0d8acb1e',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -306,6 +306,15 @@
             'install_path' => __DIR__ . '/../masterminds/html5',
             'aliases' => array(),
             'dev_requirement' => true,
+        ),
+        'mercuryseries/flashy-bundle' => array(
+            'pretty_version' => 'v5.1.0',
+            'version' => '5.1.0.0',
+            'reference' => '9d89512068c310eb1e3b2670a59197b6a2d67b63',
+            'type' => 'symfony-bundle',
+            'install_path' => __DIR__ . '/../mercuryseries/flashy-bundle',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'monolog/monolog' => array(
             'pretty_version' => '3.9.0',
