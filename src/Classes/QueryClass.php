@@ -335,13 +335,14 @@ class QueryClass
         $res = $query->getResult();
         return $res;
     }
-    public function GetNbreJeuneParGroupe($year, $groupe)
+    public function GetNbreJeuneParGroupe($groupe)
     {
       
         $query = "select count(*) from jeune j left join inscription i
                   on j.id = i.jeunes_id
                   where i.annee_id = :anneeId
-                  and j.groupe_id = :groupeid";
+                  and j.groupe_id = :groupeid
+                  and j.statut='1';";
       $connection = $this->em->getConnection();
     
     // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
@@ -725,7 +726,7 @@ class QueryClass
                 and j.genre_id= :genre";
          // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
            $connection = $this->em->getConnection();
-    $result = $connection->executeQuery(
+         $result = $connection->executeQuery(
         $query,
         [
             'anneeId' => $this->activeYear->getId(),
@@ -733,6 +734,8 @@ class QueryClass
             'genre' => $genre
         ]
     ); 
+
+      return $result->fetchOne();
     }
 
     public function GetListeJeuneCotiseParGroupe($groupe)

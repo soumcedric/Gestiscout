@@ -77,7 +77,7 @@ class ConnexionController extends AbstractController
         $nbreRespoCotise = $qClass->NbreResponsableCotise((int)$Idgroupe->getId(),(int)$ActiveYEar);
        // $nbrejeuneCotise = $qClass->get((int)$ActiveYEar,(int)$Idgroupe->getId());
         //$JeuneGrope = $this->JeuneLayer->GetTotalJeuneByGroup((int)$Idgroupe->getId());
-        $JeuneGrope = $qClass->GetNbreJeuneParGroupe(0,(int)$Idgroupe->getId());
+        $JeuneGrope = $qClass->GetNbreJeuneParGroupe((int)$Idgroupe->getId());
 
         //$RespoGroupe = $this->ResponsableLayer->GetResponsabeByGroupe((int)$Idgroupe->getId());
         $RespoGroupe = $qClass->GetNbreResponsableByGroup(0,(int)$Idgroupe->getId());
@@ -86,7 +86,8 @@ class ConnexionController extends AbstractController
         $TotalJeuneMasculin = $qClass->GetNbreJeuneByGenreByGroupe($Idgroupe->getId(),'1');
         $TotalJeuneFeminin = $qClass->GetNbreJeuneByGenreByGroupe($Idgroupe->getId(),'2');
        
-
+        dump("fille ".$TotalJeuneFeminin);
+        dump("garcon ".$TotalJeuneMasculin);
 
 
         $TotalLouveteau = $qClass->GetNbreJeuneByGroupeByBrancheByAnnee($Idgroupe->getId(),1);
