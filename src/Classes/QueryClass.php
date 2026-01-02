@@ -272,14 +272,18 @@ class QueryClass
 
 
 
-    public  function CheckUserExist($username): ?bool
+    public  function CheckUserExist($username)
     {
-        $sql = "SELECT u FROM App\Entity\User u where u.username = :username";
-        $query = $this->em->createQuery($sql);
-        $query->setParameter("username", $username);
-        $val = $query->getResult();
-        if (empty($val)) return false;
-        else return true;
+        $query = "SELECT * FROM user u where u.username = :username";
+        $connection = $this->em->getConnection();    
+    // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+        $result = $connection->executeQuery(
+        $query,
+        [
+            'username' => $username
+        ]
+    );      
+    return $result->fetchOne();
     }
 
 
@@ -618,43 +622,37 @@ class QueryClass
 
     public function GetResponsableActifByGroupe($groupe)
     {
-        // $conn = $this->em->getConnection();
-        // $sql = "call SP_GET_RESPONSABLE_ACTIF_BY_GROUPE('".$groupe."','".$this->activeYear->getId()."');";
-        // $stmt = $conn->prepare($sql);
-        // $stmt->execute();
-        // return $stmt->fetchAllAssociative();
+        $query = "SELECT r.id, r.nom, r.prenoms, r.dob, r.occupation, r.email,
+                        r.habitation, fonc.libelle fonction, r.telephone,f.id formation_id, f.libelle formation
+                  FROM 
+	                    responsable r inner join exercer_fonction ef on r.id  = ef.responsable_id	
+                        inner join fonction fonc on ef.fonction_id  = fonc.id 
+                        inner join responsable_formation rf  on r.id  = rf.responsable_id_id 
+                        inner join formation f on rf.formation_id_id  = f.id 
+                        inner join groupe g on r.groupe_id  = g.id 
+                        inner join genre gr on gr.id = r.genre_id 
+                    WHERE
+                        r.statut  = '1'
+                        and ef.annee_pastorale_id  = :anneeId
+                        and r.groupe_id  = :groupeid;";
+        $connection = $this->em->getConnection();    
+        // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+            $result = $connection->executeQuery(
+                $query,
+                [
+                    'anneeId' => $this->activeYear->getId(),
+                    'groupeid' => $groupe
+                ]
+            ); 
 
-
-        $sql = "SELECT responsables.id, responsables.nom, responsables.prenoms, responsables.dob, responsables.occupation, responsables.email,
-        responsables.habitation, fonction.libelle fonction, responsables.telephone,formation.id formation_id, formation.libelle formation
-        FROM responsable responsables, exercer_fonction exercer, groupe groupes, genre, fonction,formation, responsable_formation
-        WHERE responsables.id = exercer.responsable_id
-        and responsables.groupe_id = groupes.id
-        and responsables.genre_id = genre.id
-        and exercer.fonction_id = fonction.id
-        and responsables.id = responsable_formation.responsable_id_id
-        and formation.id = responsable_formation.formation_id_id
-        and responsables.statut = '1'
-        and responsables.groupe_id = " . $groupe . "
-        and exercer.annee_pastorale_id = " . $this->activeYear->getId() . ";";
-        $stmt = $this->em->getConnection()->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAllAssociative();
+             return $result->fetchAllAssociative();
     }
 
 
 
     public function GetResponsablesNonCotiseParGroupe($groupe)
     {
-        // $conn = $this->em->getConnection();
-        // $sql = "call SP_GET_RESPONSABLES_NON_COTISE_PAR_GROUPE('".$this->activeYear->getId()."','".$groupe."');";
-        // $stmt = $conn->prepare($sql);
-        // $stmt->execute();
-        // return $stmt->fetchAllAssociative();
-
-
-
-        $sql = "select r.Id, r.Nom, r.Prenoms, r.Telephone
+          $sql = "select r.Id, r.Nom, r.Prenoms, r.Telephone
         from responsable r, exercer_fonction ex
         where r.id = ex.responsable_id
         and ex.annee_pastorale_id=" . $this->activeYear->getId() . "
@@ -823,26 +821,47 @@ class QueryClass
 
     public function GetResponsableUnique($id)
     {
-        $query = "select responsable.id, Nom,Prenoms,Occupation,Telephone,Habitation,Dob,fonction.id fonctionId, responsable.email,
-        fonction.libelle fonctionlibelle, formation.id formationId, formation.libelle formationlibelle from responsable,
-         exercer_fonction , fonction, responsable_formation, formation
-        where responsable.id = exercer_fonction.responsable_id
-        and exercer_fonction.fonction_id = fonction.id
-        and responsable.id = responsable_formation.responsable_id_id
-        and responsable_formation.formation_id_id = formation.id
-        and exercer_fonction.annee_pastorale_id = '" . $this->activeYear->getId() . "'
-        and responsable.id ='" . $id . "';";
-        $stmt = $this->em->getConnection()->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAllAssociative();
+        $query = "SELECT r.id, r.nom, r.prenoms, r.dob, r.occupation, r.email,
+                        r.habitation, fonc.libelle fonction, r.telephone,f.id formation_id, f.libelle formation,
+                        fonc.id fonction_id, gr.libelle genre, g.nom groupe
+                  FROM 
+	                    responsable r inner join exercer_fonction ef on r.id  = ef.responsable_id	
+                        inner join fonction fonc on ef.fonction_id  = fonc.id 
+                        inner join responsable_formation rf  on r.id  = rf.responsable_id_id 
+                        inner join formation f on rf.formation_id_id  = f.id 
+                        inner join groupe g on r.groupe_id  = g.id 
+                        inner join genre gr on gr.id = r.genre_id 
+                    WHERE
+                        r.statut  = '1'
+                        and ef.annee_pastorale_id  = :anneeId
+                        and r.id = :id;";
+        $connection = $this->em->getConnection();    
+        // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+            $result = $connection->executeQuery(
+                $query,
+                [
+                    'anneeId' => $this->activeYear->getId(),
+                    'id' => $id
+                ]
+            ); 
+            return $result->fetchAllAssociative();
     }
 
     public function GetExercerfonction($respo)
     {
-        $query = "SELECT * from exercer_fonction where responsable_id = '" . $respo . "' and annee_pastorale_id = '" . $this->activeYear->getId() . "'";
-        $stmt = $this->em->getConnection()->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchOne();
+        $query = "SELECT * 
+                  from exercer_fonction 
+                  where responsable_id = :respoId 
+                  and annee_pastorale_id = :anneeId";
+        $connection = $this->em->getConnection();
+        $result = $connection->executeQuery(
+                $query,
+                [
+                    'anneeId' => $this->activeYear->getId(),
+                    'respoId' => $respo
+                ]
+            ); 
+        return $result->fetchOne();
     }
 
 

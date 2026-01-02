@@ -182,8 +182,8 @@
                         <div class="col-lg-12">
                             <form id="basic-form" method="post" novalidate>
                                 <div class="form-group">
-                                    <label>Nom Utilisateur</label>
-                                    <input type="text" class="form-control" required id="Username">
+                                    {# <label>Nom Utilisateur</label>
+                                    <input type="text" class="form-control" required id="Username"> #}
                                 </div>
                                
 
@@ -343,7 +343,7 @@
                         debugger
                         loadingClose();
                         table.clear().draw();
-                        var liste = JSON.parse(resp);
+                        var liste = resp.data;
                         $.each(liste,function(i,n){
                             debugger
 
@@ -398,21 +398,28 @@ $("#tbrespo tbody").on('click', ' tr > td > a[id=update]', function(){
                 debugger
                 loadingClose();
                 var liste = JSON.parse(res);
-             //   var date = Date.parse(liste.Dob);
+             if(liste.length==0){
+                    swal({
+                        type:"error",
+                        title:"RESPONSABLE",
+                        text: "Aucun responsable trouvé"
+                    });
+                    return;
+                }
              $.each(liste,function(i,n){
-     $("#respoId").val(n.id);
-                $("#Nom").val(n.Nom);
-                $("#prenoms").val(n.Prenoms);
-                $("#dob").val(n.Dob);
-                $("#occupation").val(n.Occupation);
-                $("#telephone").val(n.Telephone);
-                $("#habitation").val(n.Habitation);
-                $("#fonction").val(n.fonctionId);
-                $("#formation").val(n.formationId);
+                $("#respoId").val(n.id);
+                $("#Nom").val(n.nom);
+                $("#prenoms").val(n.prenoms);
+                $("#dob").val(n.dob);
+                $("#occupation").val(n.occupation);
+                $("#telephone").val(n.telephone);
+                $("#habitation").val(n.habitation);
+                $("#fonction").val(n.fonction_id);
+                $("#formation").val(n.formation_id);
                 $("#email").val(n.email);
              });
            
-                    loadingClose();
+                loadingClose();
                 $("#modalmodif").modal('show');
             }
         },
@@ -447,14 +454,14 @@ $("#saveModif").click(function(){
                $.ajax({
                    type:"POST",
                    url:"{{ path("ModifierResponsable")}}",
-                   data:{ value: responsable},
+                   data: responsable,
                    success:function(resp)
                    {
                        if (resp.ok == true) {
                            swal({
                                type:"success",
                                title:"Modification Chef",
-                               text: resp.data
+                               text: resp.message
                            },function(res){
                                location.reload();
                            });
@@ -470,11 +477,11 @@ $.ajax({
                 type:"GET",
                 url:"{{ path("GetListeFonction")}}",
                 success:function(resp){
-                    debugger
                     $("#fonction").empty();
                     var liste = JSON.parse(resp);
+                      var defaultline="<option value=0 selected>---Choisir une fonction---</option>";
+                      $("#fonction").append(defaultline);
                     $.each(liste,function(i,n){
-                        debugger
                         var line = "<option value="+n.id+">"+n.Code+"</option>";
                         $("#fonction").append(line);
                     });
@@ -489,14 +496,12 @@ $.ajax({
                     type:"GET",
                     url:"{{ path("GetListeFormation") }}",
                     success:function(res){
-                        debugger
                         var liste = JSON.parse(res.data);
                         if (liste.length>0){
                             $("#formation").empty();
                             var defaultline="<option value=0 selected>---Choisir une formation---</option>";
                             $("#formation").append(defaultline);
                             $.each(liste,function(i,n) {
-                                debugger
                                 var option = "<option value="+n.id+">"+n.libelle+"</option>";
                                 $("#formation").append(option);
                             });
@@ -565,9 +570,6 @@ $("#saveuser").click(function(){
     debugger
                 var user = {
                     username : $("#Username").val(),
-                    // roles : [],
-                    // password : $("#password").val(),
-                    // confirmpass : $("#confirmpass").val(),
                     respoid : respoId
                 };
 
@@ -581,16 +583,14 @@ $("#saveuser").click(function(){
     }
     else
     {
-        // if (user.password == user.confirmpass)
-        // {
-           // user.roles.push($("#role").val());
+      
             $.ajax({
                 type:"POST",
                 url:"{{ path("Addutilisateur") }}",
-                data: { 'value' : user},
+                data:  user,
                 success:function(res)
                 {
-                    debugger
+                    
                     if (res.ok)
                     {
                         swal({
@@ -611,15 +611,7 @@ $("#saveuser").click(function(){
 
                 }
             });
-        // }
-        // else
-        // {
-        //     swal({
-        //         type:"error",
-        //         title:"",
-        //         text:"Les mots de passes ne concordent pas"
-        //     });
-        // }
+       
     }
 
 

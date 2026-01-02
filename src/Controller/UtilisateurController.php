@@ -45,26 +45,25 @@ class UtilisateurController extends AbstractController
     }
 
     #[Route('/Addutilisateur', name: 'Addutilisateur')]
-    public function Addutilisateur(Request $req, UserPasswordHasherInterface $passHasher, ResponsableRepository $respoRepo, MailerInterface $mailer)
+    public function Addutilisateur(Request $request, UserPasswordHasherInterface $passHasher, ResponsableRepository $respoRepo, MailerInterface $mailer)
     {
         try
         {
        
        // $fromJson = $req->request->get("value");
         $qClass = new QueryClass($this->em);
-        $ConcernedRespo = $this->respoLayer->findOneBy(["id" => $req->request->get("respoid")]);
+        $ConcernedRespo = $this->respoLayer->findOneBy(["id" => $request->request->get("respoid")]);
         $userExists = $qClass->CheckUserExist($ConcernedRespo->getEmail());
-        
+    
         if ($userExists) {
             return new JsonResponse(['ok' => false, 'message' => 'Cet utilisateur existe déjà']);
-        } else {
-          
+        }          
             $groupe = $ConcernedRespo->getGroupe();
             //get concerned group
             $ConnectedGroupe = $this->groupeLayer->findOneBy(["id" => $groupe->getId()]);
            // dump($ConnectedGroupe);
             $role = $qClass->GetRespoRole($ConcernedRespo->getId());
-            dump($role);
+            
 
             $user = new User();
 
@@ -109,8 +108,7 @@ class UtilisateurController extends AbstractController
           
 
             return new JsonResponse(['ok' => true, 'message' => 'Compte créé avec succès']);
-        }
-             
+         
         }
         catch(\Exception $e)
         {
