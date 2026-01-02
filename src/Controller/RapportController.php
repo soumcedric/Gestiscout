@@ -310,15 +310,14 @@ class RapportController extends AbstractController
         
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setCellValue('A1',"LISTE DES CHEFS - ".$groupe->getNom());
-        $sheet->setCellValue('A3',"ID");
-        $sheet->setCellValue('B3',"NOM");
-        $sheet->setCellValue('C3',"PRENOMS");
-        $sheet->setCellValue('D3',"DATE DE NAISSANCE");
-        $sheet->setCellValue('E3',"OCCUPATION");
-        $sheet->setCellValue('F3',"LIEU D'HABITATION");
-        $sheet->setCellValue('G3',"FONCTION");
-        $sheet->setCellValue('H3',"TELEPHONE");
-        $sheet->setCellValue('I3',"FORMATION");
+        $sheet->setCellValue('A3',"NOM");
+        $sheet->setCellValue('B3',"PRENOMS");
+        $sheet->setCellValue('C3',"DATE DE NAISSANCE");
+        $sheet->setCellValue('D3',"OCCUPATION");
+        $sheet->setCellValue('E3',"LIEU D'HABITATION");
+        $sheet->setCellValue('F3',"FONCTION");
+        $sheet->setCellValue('G3',"TELEPHONE");
+        $sheet->setCellValue('H3',"FORMATION");
 
         $sheet->setTitle("LISTE DES CHEFS");
 
@@ -358,12 +357,6 @@ class RapportController extends AbstractController
                         ],
                     ];
                     $spreadsheet->getActiveSheet()->getStyle('A1:H1')->applyFromArray($styleArray); 
-                    
-                    
-
-
-
-
                     $styleheader = [
                         'font' => [
                             'bold' => true,
@@ -396,9 +389,6 @@ class RapportController extends AbstractController
                     $spreadsheet->getActiveSheet()->getStyle('H3')->applyFromArray($styleheader); 
                     $spreadsheet->getActiveSheet()->getStyle('I3')->applyFromArray($styleheader); 
                    // $spreadsheet->getActiveSheet()->getStyle('J3')->applyFromArray($styleArray); 
-                    
-                    
-
                     //DIMENSION
                     $sheet->getColumnDimension('A')->setAutoSize(true);
                     $sheet->getColumnDimension('B')->setAutoSize(true);
@@ -414,19 +404,6 @@ class RapportController extends AbstractController
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         //format of title
         //write in spreadsheet
         
@@ -435,10 +412,7 @@ class RapportController extends AbstractController
       
         $row = 4;
         for ($i=0; $i < count($chefs); $i++) {
-           // var_dump($jeunes[$i]);
-            // for($t=1; $t < count($jeunes[$i]); $t++){
-            //     var_dump($jeunes[$i][$t]);
-            // }
+         
             $column=1;
             foreach($chefs[$i] as $k => $jeune){
                 

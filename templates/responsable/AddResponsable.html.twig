@@ -237,7 +237,7 @@
                     data: responsable,
                     success:function(res){
                         debugger;
-                        if (res==1){
+                        if (res.ok==true){
 
                             swal({
                                 type:"success",
@@ -246,6 +246,15 @@
                             },function (){
                                 loadingClose();
                                 reset();
+                            });
+                        }else{
+                            swal({
+                                type:"error",
+                                title:"RESPONSABLE",
+                                text:res.message
+                            },function (){
+                                loadingClose();
+                                //reset();
                             });
                         }
                     },

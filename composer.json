@@ -43,6 +43,7 @@
         "symfony/translation": "6.0.*",
         "symfony/twig-bundle": "^5.2",
         "symfony/twig-pack": "^1.0",
+        "symfony/uid": "*",
         "symfony/validator": "6.0.*",
         "symfony/web-link": "6.0.*",
         "symfony/yaml": "6.0.*",

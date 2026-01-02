@@ -56,13 +56,38 @@ class ResponsableController extends AbstractController
     #[Route('/GetListResponsable', name: 'GetListResponsable')]
     public function GetListResponsable(SessionInterface $session, ExercerFonctionRepository  $exercerRepo, ResponsableRepository  $repoResponsable, SerializerInterface $serializer, AnneePastoraleRepository $anneerepo, FONCTIONRepository $fonctionrepo)
     {
-        $groupe = $session->get('groupeid');
-        $ActiveYear = $this->AnneeLayer->findActiveYear();
-        $qCls = new QueryClass($this->em);
-        $id = $groupe->getId();
-        $ListResponsable = $qCls->GetResponsableActifByGroupe($id);
-        $result = $serializer->serialize($ListResponsable, 'json',   ['groups' => 'show_chef']);
-        return new Response($result, 200);
+        try {
+            $groupe = $session->get('groupeid');
+            if (!$groupe || !method_exists($groupe, 'getId')) {
+                return new JsonResponse(['ok' => false, 'message' => 'Groupe introuvable en session'], 400);
+            }
+
+            $qCls = new QueryClass($this->em);
+            $id = $groupe->getId();
+            $listResponsable = $qCls->GetResponsableActifByGroupe($id) ?: [];
+
+            // Normalize date strings for client consumption
+           
+            foreach ($listResponsable as $respo) {
+                dump($respo);
+                 $normalizedDateOfBirth = null;
+                if(is_array($respo)) {
+
+                     $dateOfBirth = $respo['dob'];
+                if ($dateOfBirth instanceof \DateTimeInterface) {
+                    $normalizedDateOfBirth = $dateOfBirth->format('d-m-Y');
+                    $respo['dob'] = $normalizedDateOfBirth;
+                }
+               
+                }
+              
+            }
+            dump($listResponsable);
+            $data = $serializer->normalize($listResponsable, null, ['groups' => 'show_chef']);
+            return new JsonResponse(['ok' => true, 'data' => $data], 200);
+        } catch (\Exception $e) {
+            return new JsonResponse(['ok' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 
 
@@ -75,6 +100,7 @@ class ResponsableController extends AbstractController
         $qCls = new QueryClass($this->em);
         $ListResponsable = $qCls->GetListResponsableDistrictActif("", $ActiveYear[0]->getId());
         foreach ($ListResponsable as $respo) {
+            dump($respo);
             $dateOfBirth = $respo->getDob();
             $respo->setDateNaiss($dateOfBirth->format('d-m-Y'));
         }
@@ -99,16 +125,10 @@ class ResponsableController extends AbstractController
                                               FormationRepository $formrepo, 
                                               ResponsableFormationRepository $rfrepo)
     {
-         //dump($request);
+         
         try {
-            $lastid = $repoRespo->findBy(array(), array('id' => 'DESC'), 1, 0);
-            $id = 0;
-            if ($lastid == null) {
-                $id = 1;
-            } else {
-                $id =  $lastid[0]->getId() + 1;
-            }
-           // $fromJson = $value->request->get('value');
+        
+            
             //get formation
             $responsableformation = new ResponsableFormation();
             if (!empty($request->request->get("formation"))) {
@@ -119,66 +139,74 @@ class ResponsableController extends AbstractController
                     ->setDatecreation(new \DateTime());
             }
 
-            if (empty($request->request->get("groupe"))) {
-                var_dump("voila moi 1");
+            // if ($request->request->has("groupe")) {
+           
+            //     dump("here");
+            //     //$groupeId = $session->get('groupeid');
+            //     $connectedGroupe = $groupeRepo->findGroupeById($request->request->get("groupe"));
+            //     $responsable = new Responsable();
+            //     $ExerciceFonction = new ExercerFonction();
+            //     $idFonction = $request->request->get("fonction");
+            //     $genre =  $genrerepo->findOneBy(["id" => $request->request->get("genre")]);
 
-                //$groupeId = $session->get('groupeid');
-                $connectedGroupe = $groupeRepo->findGroupeById($request->request->get("groupe"));
-                $responsable = new Responsable();
-                $ExerciceFonction = new ExercerFonction();
-                $idFonction = $request->request->get("fonction");
-                $genre =  $genrerepo->findOneBy(["id" => $request->request->get("genre")]);
+            //     $date = new \DateTime($request->request->get("dob"));
+            //     $responsable->setNom($request->request->get("nom"))
+            //         ->setId($id)
+            //         ->setPrenoms($request->request->get("prenoms"))
+            //         ->setHabitation($request->request->get("habitation"))
+            //         ->setOccupation($request->request->get("occupation"))
+            //         ->setTelephone($request->request->get("telephone"))
+            //         ->setDateCreation(new \DateTime())
+            //         ->setDob($date)
+            //         ->setGenre($genre)
+            //         ->setUserCreation("Admin")
+            //         ->setUserModification("Admin")
+            //         ->setStatut(1)
+            //         ->setEmail($request->request->get("email"))
+            //         // ->addFormation($formation)
+            //         //  ->addResponsableFormation($responsableformation)
+            //         ->setGroupe($connectedGroupe[0]);
+            //     $responsableformation->setResponsableId($responsable);
+            //     dump($responsable);
+            //     $responsable->addResponsableFormation($responsableformation);
+            //     $fonction = $repoFonction->findById($idFonction);
 
-                $date = new \DateTime($request->request->get("dob"));
-                $responsable->setNom($request->request->get("nom"))
-                    ->setId($id)
-                    ->setPrenoms($request->request->get("prenoms"))
-                    ->setHabitation($request->request->get("habitation"))
-                    ->setOccupation($request->request->get("occupation"))
-                    ->setTelephone($request->request->get("telephone"))
-                    ->setDateCreation(new \DateTime())
-                    ->setDob($date)
-                    ->setGenre($genre)
-                    ->setUserCreation("Admin")
-                    ->setUserModification("Admin")
-                    ->setStatut(1)
-                    ->setEmail($$request->request->get("email"))
-                    // ->addFormation($formation)
-                    //  ->addResponsableFormation($responsableformation)
-                    ->setGroupe($connectedGroupe[0]);
-                $responsableformation->setResponsableId($responsable);
+            //     $anneePastorale = $repoAnnee->findActiveYear();
+            //     $ExerciceFonction->setFonction($fonction[0])
+            //         ->setAnneePastorale($anneePastorale[0])
+            //         ->setDateCreation(new \DateTime())
+            //         ->setDateDebut(new \DateTime())
+            //         ->setDateFin(new \DateTime())
+            //         ->setUserModification("Admin")
+            //         ->setUserCreation("Admin");
 
-                $responsable->addResponsableFormation($responsableformation);
-                $fonction = $repoFonction->findById($idFonction);
-
-                $anneePastorale = $repoAnnee->findActiveYear();
-                $ExerciceFonction->setFonction($fonction[0])
-                    ->setAnneePastorale($anneePastorale[0])
-                    ->setDateCreation(new \DateTime())
-                    ->setDateDebut(new \DateTime())
-                    ->setDateFin(new \DateTime())
-                    ->setUserModification("Admin")
-                    ->setUserCreation("Admin");
-
-                $responsable->addExercerFonction($ExerciceFonction);
+            //     $responsable->addExercerFonction($ExerciceFonction);
 
                 
-                $this->em->persist($responsable);
-                $this->em->flush();
-            } else {
-                dump("voila moi");
+            //     $this->em->persist($responsable);
+            //     $this->em->flush();
+            //     return  new JsonResponse(["ok"=>true, "message"=>"Opération réussie"]);
+            // } else {
+                dump("there");
                 //get concerned group
-                $chosenGroup = $groupeRepo->findOneBy(["id" => $request->request->get("groupe")]);
-               
+                $groupe = $session->get('groupeid');
+                
+                if (!$groupe || !method_exists($groupe, 'getId')) {
+                    return new JsonResponse(['ok' => false, 'message' => 'Groupe introuvable en session'], 400);
+                }
+                $chosenGroup = $groupeRepo->findOneBy(["id" => $groupe->getId()]);
+                if (!$chosenGroup) {
+                    return new JsonResponse(['ok' => false, 'message' => 'Groupe introuvable'], 400);
+                }
+                dump($chosenGroup);
                 $responsable = new Responsable();
                 $ExerciceFonction = new ExercerFonction();
                 $idFonction = $request->request->get("fonction");
                 $genre =  $genrerepo->findOneBy(["id" => $request->request->get("genre")]);
 
-                dump($request->request->get("nom"));
+                
                 $date = new \DateTime($request->request->get("dob"));
                 $responsable->setNom($request->request->get("nom"))
-                ->setId($id)
                     ->setPrenoms($request->request->get("prenoms"))
                     ->setHabitation($request->request->get("habitation"))
                     ->setOccupation($request->request->get("occupation"))
@@ -189,16 +217,11 @@ class ResponsableController extends AbstractController
                     ->setGenre($genre)
                     ->setUserCreation("Admin")
                     ->setUserModification("Admin")
-                    ->setStatut(1)
-                    //   ->addFormation($formation)
-                    //->addResponsableFormation($responsableformation)
+                    ->setStatut(1)            
                     ->setGroupe($chosenGroup);
-
-
-
-                $responsableformation->setResponsableId($responsable);
-                $responsable->addResponsableFormation($responsableformation);
-              //  dump($responsable);
+                
+               $responsableformation->setResponsableId($responsable);
+               $responsable->addResponsableFormation($responsableformation);      
 
 
                 $fonction = $repoFonction->findById($idFonction);
@@ -211,29 +234,26 @@ class ResponsableController extends AbstractController
                     ->setUserModification("Admin")
                     ->setUserCreation("Admin");
 
-               $responsable->addExercerFonction($ExerciceFonction);
-
-              
-                
+               $responsable->addExercerFonction($ExerciceFonction);              
+                dump($responsable);
                 $this->em->persist($responsable);
                 $this->em->flush();
-          }
+                return  new JsonResponse(["ok"=>true, "message"=>"Opération réussie"]);
+         // }
 
-              return  new JsonResponse(["ok"=>true, "message"=>"Opération réussie"]);
+              
         } catch (\Exception $e) {
-            //return new Response($e);
+            
             return  new JsonResponse(["ok"=>false, "message"=>$e->getMessage()]);
         }
-        return new Response();
+       
     }
 
 
     #[Route('/supprimerResponsable', name: 'supprimerResponsable')]
     public function supprimerResponsable(ResponsableRepository  $repoResponsable, Request $request)
     {
-        //$id= $session->get("id");
-        //find groupe
-
+        
         $id = $request->query->get('id');
         //rechercher le responsable dont l'id est celui en parametre
         $responsable = $repoResponsable->findOneByID($id);
@@ -250,103 +270,118 @@ class ResponsableController extends AbstractController
     {
         $id = $request->query->get("value");
         $qClass = new QueryClass($this->em);
-        //     $ResponsableUnique = $repo->findOneByID($id);
-        //     $activeYear = $repoAnnee->findActiveYear();
-        //     $fonction = $repoExercer->findFonctionChef($id,$activeYear)[0]->getFonction();
-        //     $ResponsableUnique->setFonctionLibelle($fonction->getLibelle());
-        //     $ResponsableUnique->setFonctionId($fonction->getId());
-        //    $date=$ResponsableUnique->getDob();
-        //    $ResponsableUnique->setDateNaiss($date->format('Y-m-d'));
         $ResponsableUnique = $qClass->GetResponsableUnique($id);
-        // var_dump($ResponsableUnique);
+        dump($ResponsableUnique);
         $result = $serializer->serialize($ResponsableUnique, 'json',   ['groups' => 'show_chef']);
         return new Response($result, 200);
     }
 
 
     #[Route('/ModifierResponsable', name: 'ModifierResponsable')]
-    public function UpdateResponsable(ResponsableRepository $repo, ExercerFonctionRepository $repoExercer, Request $request, SerializerInterface $serializer, AnneePastoraleRepository $repoAnnee, FONCTIONRepository $repofonction, FormationRepository $repoformation)
+    public function UpdateResponsable(ResponsableRepository $repo, ExercerFonctionRepository $repoExercer, 
+                                      Request $request, SerializerInterface $serializer, AnneePastoraleRepository $repoAnnee, 
+                                      FONCTIONRepository $repofonction, FormationRepository $repoformation)
     {
 
         try {
             $qClass = new QueryClass($this->em);
 
-            $value = $request->request->get('value');
-            //var_dump($value);
-            $id = $value['id'];
-            //dump($id);
+            
+            $input =  $request->request->all();
+            if(empty($input)) {
+                return new JsonResponse(["ok" => false, "data" => "Données manquantes"]);
+            }
+            
+            $id = $input['id'];
+
+            //get responsable to update
             $ResponsableToUpdate = $repo->findOneBy(["id" => $id]);
 
-            $activeYear = $repoAnnee->findActiveYear();
-            //dump($activeYear);
+                // parse input (supports form-data or raw JSON)
+                $input = $request->request->all();
+                if (empty($input)) {
+                    $content = $request->getContent();
+                    if ($content) {
+                        $decoded = json_decode($content, true);
+                        if (is_array($decoded)) {
+                            $input = $decoded;
+                        }
+                    }
+                }
 
+                if (empty($input) || !isset($input['id'])) {
+                    return new JsonResponse(['ok' => false, 'message' => 'Données manquantes ou id absent'], 400);
+                }
 
+                $id = $input['id'];
+                $ResponsableToUpdate = $repo->find($id);
+                if (!$ResponsableToUpdate) {
+                    return new JsonResponse(['ok' => false, 'message' => 'Responsable introuvable'], 404);
+                }
 
-            $fonctiontoupdate = $repofonction->findOneBy(["id" => $value['fonction']]);
-            $fonction = $qClass->GetExercerfonction($ResponsableToUpdate->getId());
+                // Update simple fields only if provided
+                $updatable = ['nom' => 'setNom', 'prenoms' => 'setPrenoms', 'habitation' => 'setHabitation',
+                              'occupation' => 'setOccupation', 'telephone' => 'setTelephone', 'email' => 'setEmail'];
+                foreach ($updatable as $key => $setter) {
+                    if (array_key_exists($key, $input) && $input[$key] !== null && $input[$key] !== '') {
+                        $ResponsableToUpdate->{$setter}((string)$input[$key]);
+                    }
+                }
 
+                dump($ResponsableToUpdate);
+               // DOB
+                if (!empty($input['dob'])) {
+                    try {
+                        $dob = new \DateTime($input['dob']);
+                        $ResponsableToUpdate->setDob($dob);
+                    } catch (\Exception $ex) {
+                        return new JsonResponse(['ok' => false, 'message' => 'Format de date invalide'], 400);
+                    }
+                }
 
-            //get exercer fonction
-            $exofonction = $repoExercer->findOneBy(["id" => $fonction]);
+                // Update fonction if provided
+                if (!empty($input['fonction'])) {
+                    $fonctionEntity = $repofonction->find($input['fonction']);
+                    if ($fonctionEntity) {
+                        $exercerId = $qClass->GetExercerfonction($ResponsableToUpdate->getId());
+                        
+                        $exofonction = null;
+                        if ($exercerId) {
+                            $exofonction = $repoExercer->find($exercerId);
+                        }
+                        if ($exofonction) {
+                            $exofonction->setFonction($fonctionEntity);
+                            $this->em->persist($exofonction);
+                        }
+                    }
+                }
+ 
+                // Update formation if provided
+                if (!empty($input['formation'])) {
+                    $selectedFormation = $repoformation->find($input['formation']);
+                    $formationToUpdate = $ResponsableToUpdate->getResponsableFormations();
+                    
+                    if ($formationToUpdate && count($formationToUpdate) > 0 && $selectedFormation) {
+                        $formationToUpdate[0]->setformationId($selectedFormation);
+                        $this->em->persist($formationToUpdate[0]);
+                    }
+                }
 
-            $exofonction->setFonction($fonctiontoupdate);
+                // metadata
+                $ResponsableToUpdate->setUserModification('Admin');
+                $ResponsableToUpdate->setDateModification((new \DateTime())->format('Y-m-d H:i:s'));
 
-            //get formation
-            $formationToUpdate = $ResponsableToUpdate->getResponsableFormations();
-            //formation selectionnée
-            $selectedFormation = $repoformation->findOneBy(["id" => $value["formation"]]);
-            $formationToUpdate[0]->setFormationId($selectedFormation);
+                $this->em->persist($ResponsableToUpdate);
+                $this->em->flush();
 
-
-
-
-
-            // $formation = $repoformation->findOneBy(["id"=>$value["formation"]]);
-
-            //  $nom = $ResponsableUnique->getNom() == $ResponsableToUpdate->getNom() ? $ResponsableUnique->getNom() : $ResponsableToUpdate->getNom();
-            $nom = $ResponsableToUpdate->getNom() == $value["nom"] ? $ResponsableToUpdate->getNom() :  $value["nom"];
-            $prenoms = $ResponsableToUpdate->getPrenoms() == $value["prenoms"] ? $ResponsableToUpdate->getPrenoms() :  $value["prenoms"];
-            $occupation = $ResponsableToUpdate->getOccupation() == $value["occupation"] ? $ResponsableToUpdate->getOccupation() :  $value["occupation"];
-            $habitation = $ResponsableToUpdate->getHabitation() == $value["habitation"] ? $ResponsableToUpdate->getHabitation() :  $value["habitation"];
-            $telephone = $ResponsableToUpdate->getTelephone() == $value["telephone"] ? $ResponsableToUpdate->getTelephone() :  $value["telephone"];
-            $telephone = $ResponsableToUpdate->getTelephone() == $value["telephone"] ? $ResponsableToUpdate->getTelephone() :  $value["telephone"];
-            $email = $ResponsableToUpdate->getEmail() == $value["email"] ? $ResponsableToUpdate->getEmail() : $value["email"];
-            $formation = $repoformation->findOneBy(["id" => $value["formation"]]);
-
-
-            $ResponsableToUpdate->setNom($nom)
-                ->setPrenoms($prenoms)
-                ->setHabitation($habitation)
-                ->setOccupation($occupation)
-                //  ->addExercerFonction()
-                //                 // ->setDob($dob)
-
-                ->setTelephone($telephone)
-                ->setEmail($email)
-                //->addFormation($formation)
-            ;
-
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($ResponsableToUpdate);
-            $manager->persist($exofonction);
-            $manager->persist($formationToUpdate[0]);
-            $manager->flush();
-
-            return new JsonResponse(["ok" => true, "data" => "Opération effectuée avec succès"]);
-        } catch (\Exception $e) {
-            return new JsonResponse(["ok" => false, "data" => $e->getMessage()]);
-        }
+                return new JsonResponse(['ok' => true, 'message' => 'Opération effectuée avec succès', 'data' => ['id' => $ResponsableToUpdate->getId()]]);
+          
+            } catch (\Exception $e) {
+                
+                return new JsonResponse(['ok' => false, 'message' => $e->getMessage()], 500);
+            }
     }
-
-
-    #[Route('/AjouterRespocg', name: 'AjouterRespocg')]
-    public function AjouterRespocg(): Response
-    {
-        return $this->render('responsable/AddResponsableGroupe.html.twig', [
-            'controller_name' => 'ResponsableController',
-        ]);
-    }
-
+    
     #[Route('/ListeRespoCg', name: 'ListeRespoCg')]
     public function ListeRespoCg(): Response
     {
