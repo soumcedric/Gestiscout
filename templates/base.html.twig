@@ -332,8 +332,13 @@
                         <div class="user-detail">
                             <div class="text-center mb-3">
                                 <img class="img-thumbnail rounded-circle" src="../assets/images/sm/avatar1.jpg" alt="">
-                                <h6 class="mt-3 mb-0">{{ app.user.responsable.getNom }}</h6>
-                                <div class="text-center text-muted">{{ app.user.responsable.getPrenoms }}</div>
+                                {% if app.user is defined and app.user and app.user.responsable is not null %}
+                                    <h6 class="mt-3 mb-0">{{ app.user.responsable.getNom }}</h6>
+                                    <div class="text-center text-muted">{{ app.user.responsable.getPrenoms }}</div>
+                                {% else %}
+                                    <h6 class="mt-3 mb-0">{{ app.user is defined and app.user ? app.user.username : 'Utilisateur' }}</h6>
+                                    <div class="text-center text-muted"></div>
+                                {% endif %}
                                 <hr>
 {#                                <small class="text-muted">Address: </small>#}
 {#                                <p> San Francisco</p>#}
