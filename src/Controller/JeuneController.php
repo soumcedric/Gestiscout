@@ -181,10 +181,7 @@ class JeuneController extends AbstractController
         try {
             $qClass = new Classes\QueryClass($this->EntityManager);
 
-            // compute next id (consider using auto-increment in DB instead)
-            $lastid = $repojeune->findBy([], ['id' => 'DESC'], 1, 0);
-            $id = ($lastid === null || count($lastid) === 0) ? 1 : ($lastid[0]->getId() + 1);
-
+           
             $groupeId = $session->get('groupeid');
             $connectedGroupe = $repoGropue->findGroupeById($groupeId->getId());
             $ActiveYear = $repoAnnee->findActiveYear();
@@ -217,7 +214,6 @@ class JeuneController extends AbstractController
 
             $jeune = new JEUNE();
             $jeune->setNom($nom)
-                ->setId($id)
                 ->setPrenoms($prenoms)
                 ->setDob($date)
                 ->setLieuHabitation((string)$request->request->get('habitation', ''))
@@ -243,7 +239,7 @@ class JeuneController extends AbstractController
                 ->setJeunes($jeune)
                 ->setAnnee($ActiveYear[0]);
             $jeune->addInscription($inscription);
-
+            
             $this->EntityManager->persist($jeune);
             $this->EntityManager->flush();
 
@@ -277,8 +273,8 @@ class JeuneController extends AbstractController
     public function GetJeuneUnique(Request $request, JEUNERepository $repo, SerializerInterface $serialize): JsonResponse
     {
         try {
-            $id = $request->query->getInt('id');
-            if ($id <= 0) {
+            $id = $request->query->get('id');
+            if (empty($id)) {
                 return new JsonResponse(['ok' => false, 'message' => 'Missing or invalid id'], 400);
             }
 
@@ -306,7 +302,7 @@ class JeuneController extends AbstractController
     }
     
 
-    function JeuneUnique(int $id, JEUNERepository $jeune) : ?JEUNE
+    function JeuneUnique(string $id, JEUNERepository $jeune) : ?JEUNE
     {
         return $jeune->findOneById($id);
     }
@@ -327,7 +323,7 @@ class JeuneController extends AbstractController
             return new JsonResponse(['ok' => false, 'message' => 'Missing id'], 400);
         }
 
-        $jeuneUnique = $this->JeuneUnique((int)$id, $jeunerepo);
+        $jeuneUnique = $this->JeuneUnique($id, $jeunerepo);
         if (!$jeuneUnique) {
             return new JsonResponse(['ok' => false, 'message' => 'Jeune not found'], 404);
         }
@@ -393,21 +389,8 @@ class JeuneController extends AbstractController
              foreach($rows as $r)
              {
                 $qClass = new Classes\QueryClass($this->EntityManager);
-                    $lastid = $RepoJeune->findBy(array(),array('id'=>'DESC'),1,0);
-    
-                    $id=0;
-                    if($lastid == null)
-                    {
-                        $id = 1;
-                    }
-                    else
-                    {
-                        $id =  $lastid[0]->getId()+1;
-                    }
-    
                 $newJeune = new JEUNE();
-                 $newJeune->setId($id)
-                          ->setNom($r["NOM"])
+                 $newJeune ->setNom($r["NOM"])
                           ->setPrenoms($r["PRENOMS"])
                           ->setDob(new \DateTime($r["DOB"]))
                           ->setLieuHabitation($r["HABITATION"])

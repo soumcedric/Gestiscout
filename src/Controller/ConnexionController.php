@@ -71,7 +71,7 @@ class ConnexionController extends AbstractController
         $qClass = new App\Classes\QueryClass($this->EntityManager);
 
         $Idgroupe = $session->get('groupeid');
-           dump($ActiveYEar); 
+        dump($ActiveYEar); 
         $nbrejeuneCotise = $qClass->NbreJeuneCotise((int)$Idgroupe->getId(),(int)$ActiveYEar);
      
         $nbreRespoCotise = $qClass->NbreResponsableCotise((int)$Idgroupe->getId(),(int)$ActiveYEar);
@@ -191,7 +191,8 @@ class ConnexionController extends AbstractController
         {
             $nbreRespoCotise = $qClass->GetNbreResponsableCotiseParGroupe($gr->getId());
             $nbreJeuneCotise = $qClass->GetNbreJeuneCotiseParGroupe(0,$gr->getId());
-         
+          
+            
            
             $stat = array(
                 "id"=>$gr->getId(),
@@ -201,17 +202,6 @@ class ConnexionController extends AbstractController
             );
             array_push($statistique,$stat);
         }
-
-         dump($statistique);
-
-
-
-
-
-
-
-
-
 
         //nombre de jeune par groupe
         //nombre de jeune saint sauveur misericordieux
@@ -224,6 +214,8 @@ class ConnexionController extends AbstractController
         $nbreJeuneSma = $qClass->GetNbreJeuneParGroupe(0,4);
         //nombre de jeune NDA
         $nbreJeuneNda = $qClass->GetNbreJeuneParGroupe(0,5);
+
+        dump("Jeune Cotisé ".$nbreJeuneStSauveur);
 
         //nombre de jeune et responsable cotisé par groupe MOHICANS
         //$nbreTotalCotiseSSM=0;
@@ -265,19 +257,7 @@ class ConnexionController extends AbstractController
 
         return $this->render('connexion/DashboardDistrict.html.twig', [
             'controller_name' => 'ConnexionController',
-            'statistiques'=>$statistique
-            // 'nbreJeuneSsm' => $nbreJeuneStSauveur,
-            // 'NbreJeuneLionKing' => $nbreJeuneLionKing,
-            // 'nbreJeuneLesPetroliers' =>$nbreJeuneLesPetroliers,
-            // 'nbreJeuneSma'=>$nbreJeuneSma,
-            // 'nbreJeuneNda' => $nbreJeuneNda,
-            // 'nbreTotalCotiseSSM'=>$nbreTotalCotiseSSM,
-            // 'nbreTotalCotiseSM' => $nbreTotalCotiseSM,
-            // 'nbreTotalCotiseJMV'=>$nbreTotalCotiseJMV,
-            // 'nbreTotalCotiseSMA'=>$nbreTotalCotiseSMA,
-            // 'nbreTotalCotiseNDA'=>$nbreTotalCotiseNDA
-
-
+            'statistiques'=>$statistique         
             ]);
     }
 

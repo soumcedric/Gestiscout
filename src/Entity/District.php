@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=DistrictRepository::class)
@@ -15,8 +16,7 @@ class District
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="guid", unique=true)
      * @Groups({"district"})
      */
     private $id;
@@ -88,10 +88,11 @@ class District
 
     public function __construct()
     {
+        $this->id = Uuid::v4()->toRfc4122();
         $this->exercerFonctions = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -99,6 +100,13 @@ class District
     public function getNom(): ?string
     {
         return $this->Nom;
+    }
+
+      public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function setNom(string $Nom): self

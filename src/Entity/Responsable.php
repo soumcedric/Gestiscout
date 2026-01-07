@@ -161,16 +161,6 @@ class Responsable
 //    private $Genre;
 
 
-
-
-
-
-
-
-
-
-
-
     public function __construct()
     {
         $this->id = Uuid::v4()->toRfc4122();

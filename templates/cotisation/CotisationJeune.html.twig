@@ -273,11 +273,11 @@
                     $.ajax({
                         type:"POST",
                         url:"{{ path('SaveCotisation') }}",
-                        data:{"value" :matricule, "JeuneId" : JSON.stringify(jeuneId)},
+                        data:{"value" :matricule, "JeuneId" : jeuneId},
                         success:function(res){
 debugger
                             //loadingClose();
-                            if (res=="success"){
+                            if (res.ok== true){
                                 swal({
                                     title : "",
                                     type:"success",
@@ -292,12 +292,12 @@ debugger
                                 loadingClose();
                                 swal({
                                     type:"error",
-                                    text:"Echec de l'opération"
+                                    text:res.message
                                 })
                             }
                         },
                         error:function(res){
-
+                                debugger
                         }
 
                     });
