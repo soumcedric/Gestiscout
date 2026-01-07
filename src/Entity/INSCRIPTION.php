@@ -12,8 +12,7 @@ class INSCRIPTION
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="guid", unique=true)
      */
     private $id;
 
@@ -34,7 +33,12 @@ class INSCRIPTION
      */
     private $Annee;
 
-    public function getId(): ?int
+    public function __construct()
+    {
+        $this->id = \Symfony\Component\Uid\Uuid::v4()->toRfc4122();
+    }
+
+    public function getId(): ?string
     {
         return $this->id;
     }

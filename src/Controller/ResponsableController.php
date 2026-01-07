@@ -31,7 +31,7 @@ class ResponsableController extends AbstractController
 {
     private $em;
     private $AnneeLayer;
-    function  __construct(EntityManagerInterface $em, AnneePastoraleRepository $annee)
+    function  __construct(EntityManagerInterface $em, AnneePastoraleRepository $annee, private GroupeRepository  $groupeRepo)
     {
         $this->em = $em;
         $this->AnneeLayer = $annee;
@@ -139,62 +139,15 @@ class ResponsableController extends AbstractController
                     ->setDatecreation(new \DateTime());
             }
 
-            // if ($request->request->has("groupe")) {
-           
-            //     dump("here");
-            //     //$groupeId = $session->get('groupeid');
-            //     $connectedGroupe = $groupeRepo->findGroupeById($request->request->get("groupe"));
-            //     $responsable = new Responsable();
-            //     $ExerciceFonction = new ExercerFonction();
-            //     $idFonction = $request->request->get("fonction");
-            //     $genre =  $genrerepo->findOneBy(["id" => $request->request->get("genre")]);
-
-            //     $date = new \DateTime($request->request->get("dob"));
-            //     $responsable->setNom($request->request->get("nom"))
-            //         ->setId($id)
-            //         ->setPrenoms($request->request->get("prenoms"))
-            //         ->setHabitation($request->request->get("habitation"))
-            //         ->setOccupation($request->request->get("occupation"))
-            //         ->setTelephone($request->request->get("telephone"))
-            //         ->setDateCreation(new \DateTime())
-            //         ->setDob($date)
-            //         ->setGenre($genre)
-            //         ->setUserCreation("Admin")
-            //         ->setUserModification("Admin")
-            //         ->setStatut(1)
-            //         ->setEmail($request->request->get("email"))
-            //         // ->addFormation($formation)
-            //         //  ->addResponsableFormation($responsableformation)
-            //         ->setGroupe($connectedGroupe[0]);
-            //     $responsableformation->setResponsableId($responsable);
-            //     dump($responsable);
-            //     $responsable->addResponsableFormation($responsableformation);
-            //     $fonction = $repoFonction->findById($idFonction);
-
-            //     $anneePastorale = $repoAnnee->findActiveYear();
-            //     $ExerciceFonction->setFonction($fonction[0])
-            //         ->setAnneePastorale($anneePastorale[0])
-            //         ->setDateCreation(new \DateTime())
-            //         ->setDateDebut(new \DateTime())
-            //         ->setDateFin(new \DateTime())
-            //         ->setUserModification("Admin")
-            //         ->setUserCreation("Admin");
-
-            //     $responsable->addExercerFonction($ExerciceFonction);
-
-                
-            //     $this->em->persist($responsable);
-            //     $this->em->flush();
-            //     return  new JsonResponse(["ok"=>true, "message"=>"Opération réussie"]);
-            // } else {
-                dump("there");
+                dump($request);
                 //get concerned group
-                $groupe = $session->get('groupeid');
-                
-                if (!$groupe || !method_exists($groupe, 'getId')) {
-                    return new JsonResponse(['ok' => false, 'message' => 'Groupe introuvable en session'], 400);
+                if (!empty($request->request->get("groupe"))) {
+                    $groupeId = $request->request->get("groupe");
+                } else {
+                    $groupeId = $session->get('groupeid')->getId();
                 }
-                $chosenGroup = $groupeRepo->findOneBy(["id" => $groupe->getId()]);
+              
+                $chosenGroup = $groupeRepo->findOneBy(["id" => $groupeId]);
                 if (!$chosenGroup) {
                     return new JsonResponse(['ok' => false, 'message' => 'Groupe introuvable'], 400);
                 }

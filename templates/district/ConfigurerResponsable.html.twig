@@ -265,7 +265,7 @@
                     orderable: false,
                     //className: 'dt-body-center',
                     render:function(data,type,full,meta){
-                        return "<a id='delete'><span><i class='fa fa-trash fa-2x'></i></span></a>|<a id='add' onclick='CreateUser("+data+","+full.district+");'><span><i class='fa fa-plus fa-2x'></i></span></a>";
+                        return "<a id=delete><span><i class=\"fa fa-trash fa-2x\"></i></span></a>|<a id=\"add\" onclick=\"CreateUser('"+data+"','"+full.district+"');\"><span><i class=\"fa fa-plus fa-2x\"></i></span></a>";
                     }
                 }
             ],
@@ -424,7 +424,7 @@
                     data: responsable,
                     success:function(res){
                         debugger;
-                        if (res.ok){
+                        if (res.ok == true){
 
                             swal({
                                 type:"success",
@@ -441,8 +441,8 @@
                                 title:"RESPONSABLE",
                                 text:res.message
                             },function (){
-                                reset();
-                                loadTable();
+                                //reset();
+                                //loadTable();
                             });
                         }
                     },

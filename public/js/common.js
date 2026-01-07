@@ -94,11 +94,20 @@ $(document).ready(function() {
 		}
 	});
 
-	// off-canvas menu toggle
+	// off-canvas menu toggle (improved)
 
-	$('.right_toggle, .overlay').on('click', function() {
+	$('.right_toggle').on('click', function() {
 		$('#rightbar').toggleClass('open');
-		$('.overlay').toggleClass('open');
+		// ensure overlay follows rightbar state
+		$('.overlay').toggleClass('open', $('#rightbar').hasClass('open'));
+	});
+
+	// clicking the overlay closes the rightbar and hides the overlay
+	$('.overlay').on('click', function() {
+		if($('#rightbar').hasClass('open')) {
+			$('#rightbar').removeClass('open');
+		}
+		$(this).removeClass('open');
 	});
 
 	$('.small_menu_btn').on('click', function() {

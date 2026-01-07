@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\Uuid;
 /**
  * @ORM\Entity(repositoryClass=JEUNERepository::class)
  */
@@ -15,7 +16,7 @@ class JEUNE
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer",nullable=false)
+     * @ORM\Column(type="guid", unique=true)
      * @Groups("read")
      */
     private $id;
@@ -158,15 +159,16 @@ class JEUNE
 
     public function __construct()
     {
+        $this->id = Uuid::v4()->toRfc4122();
         $this->inscriptions = new ArrayCollection();
     }
-    public function setId(int $id): self
+    public function setId(string $id): self
     {
         $this->id = $id;
 
         return $this;
     }
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }

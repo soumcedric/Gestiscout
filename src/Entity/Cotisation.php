@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CotisationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=CotisationRepository::class)
@@ -13,8 +14,7 @@ class Cotisation
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="guid", unique=true)
      */
     private $id;
 
@@ -26,12 +26,14 @@ class Cotisation
 
     /**
      * @ORM\ManyToOne(targetEntity=JEune::class)
+     * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
      */
     private $Jeune;
 
     /**
      * @ORM\ManyToOne(targetEntity=Responsable::class)
-     */
+    * @ORM\JoinColumn(nullable=true, onDelete="SET NULL")
+    */
     private $Responsable;
 
     /**
@@ -60,7 +62,22 @@ class Cotisation
      */
     private $UserModification;
 
-    public function getId(): ?int
+
+
+    public function __construct()
+    {
+        $this->id = Uuid::v4()->toRfc4122();
+        $this->DateCreation = new \DateTime();
+    }
+
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getId(): ?string
     {
         return $this->id;
     }

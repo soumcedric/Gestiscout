@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Uid\Uuid;
 
 class CotisationController extends AbstractController
 {
@@ -78,7 +79,7 @@ class CotisationController extends AbstractController
 
 
     #[Route('/cotisationJeune', name: 'cotisationJeune')]
-    public function CotisationJeune(SessionInterface $session,SerializerInterface $serializer): Response
+    public function CotisationJeune(SessionInterface $session,SerializerInterface $serializer): JsonResponse
     {
 
         try
@@ -100,35 +101,55 @@ class CotisationController extends AbstractController
 
 
     #[Route('/SaveCotisation', name: 'SaveCotisation')]
-    public function SaveCotisation(SessionInterface $session, \Symfony\Component\HttpFoundation\Request $request,AnneePastoraleRepository $annee): Response
+    public function SaveCotisation(SessionInterface $session,
+                             \Symfony\Component\HttpFoundation\Request $request,AnneePastoraleRepository $annee)
     {
-
         try{
             $activeYear = $annee->findActiveYear();
-            $cotisation = new Cotisation();
+
+            // Read inputs directly (no JSON/quote normalization)
             $matricule = $request->request->get('value');
             $JeuneId = $request->request->get('JeuneId');
-            //dump(trim($JeuneId,'"'));
-            //get jeune information
-            $Jeune = $this->JeuneLayer->findOneBy(["id"=>trim($JeuneId,'"')]);
-           // dump($Jeune);
-            $cotisation->setMatricule($matricule)
-                ->setJeune($Jeune)
-                ->setUserCreation('Admin')
-                ->setAnneePastorale($activeYear[0])
-                ->setDateCreation( new \DateTime());
+             
+            
+            // Minimal trimming for whitespace
+            $matricule = $matricule !== null ? trim((string)$matricule) : null;
+            $JeuneId = $JeuneId !== null ? trim((string)$JeuneId) : null;
 
-            $manager=$this->getDoctrine()->getManager();
-            $manager->persist($cotisation);
-            $manager->flush();
-               return new Response('success',200);
+            if (empty($JeuneId) || $matricule === null || $matricule === '') {
+                return new JsonResponse(["Ok"=>false,"message"=>"Paramètres manquants"], Response::HTTP_BAD_REQUEST);
+            }
+            
+            // find jeune (works for int id or uuid)
+            $Jeune = $this->JeuneLayer->findOneById($JeuneId);
+            if (!$Jeune) {
+                return new JsonResponse(["Ok"=>false,"message"=>"Jeune introuvable"], Response::HTTP_NOT_FOUND);
+            }
+           
+            // prevent duplicate
+            // $existing = $this->em->getRepository(Cotisation::class)->findOneBy(['jeune' => $Jeune, 'anneePastorale' => $activeYear]);
+            // dump($existing);
+            // if ($existing) {
+            //     return new JsonResponse(["Ok"=>false,"message"=>"Cotisation déjà existante pour ce jeune cette année"], Response::HTTP_CONFLICT);
+            // }
+      
+            $cotisation = new Cotisation();
+           $cotisation->setMatricule($matricule)
+                ->setJeune($Jeune)
+                ->setResponsable(null)
+                 ->setUserCreation('Admin')
+                 ->setAnneePastorale($activeYear[0])
+                 ->setDateCreation(new \DateTime());
+            
+           $this->em->persist($cotisation);
+            $this->em->flush();
+
+            return new JsonResponse(["ok"=>true,"message"=>"Opération réussie"], Response::HTTP_CREATED);
         }
         catch (\Exception $e){
-             return new Response('fail',200);
+            return new JsonResponse(["ok"=>false,"message"=>$e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-
-       // return new Response($result,200);
     }
 
 
@@ -192,17 +213,14 @@ class CotisationController extends AbstractController
                 ->setAnneePastorale($activeYear[0])
                 ->setDateCreation( new \DateTime());
 
-            $manager=$this->getDoctrine()->getManager();
-            $manager->persist($cotisation);
-            $manager->flush();
-            return new Response('success',200);
+            
+            $this->em->persist($cotisation);
+            $this->em->flush();
+            return new JsonResponse(["ok"=>true,"message"=>"Opération réussie"]);
         }
         catch (\Exception $e){
-            return new Response('fail',200);
+            return new JsonResponse(["ok"=>false,"message"=>$e->getMessage()]);
         }
-
-
-        // return new Response($result,200);
     }
 
 

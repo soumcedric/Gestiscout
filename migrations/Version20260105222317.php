@@ -1,0 +1,34 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DoctrineMigrations;
+
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
+
+/**
+ * Auto-generated Migration: Please modify to your needs!
+ */
+final class Version20260105222317 extends AbstractMigration
+{
+    public function getDescription(): string
+    {
+        return '';
+    }
+
+    public function up(Schema $schema): void
+    {
+        // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('ALTER TABLE cotisation MODIFY COLUMN jeune_id CHAR(36)  NULL');
+        $this->addSql('ALTER TABLE cotisation MODIFY COLUMN id CHAR(36) NOT NULL');
+        $this->addSql('ALTER TABLE jeune MODIFY COLUMN id CHAR(36) NOT NULL');
+
+    }
+
+    public function down(Schema $schema): void
+    {
+        // this down() migration is auto-generated, please modify it to your needs
+
+    }
+}

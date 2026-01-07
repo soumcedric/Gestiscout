@@ -266,8 +266,8 @@
                         url:"{{ path('SaveCotisationResponsable') }}",
                         data:{"value" : matricule, "RespoId" : jeuneId},
                         success:function(res){
-debugger
-                            if (res=="success"){
+                            debugger
+                            if (res.ok==true){
                                 //loadingClose();
                                 swal({
                                     title : "",
@@ -280,8 +280,9 @@ debugger
                             }else{
                                 loadingClose();
                                 swal({
+                                    title : "",
                                     type:"error",
-                                    text:"Echec de l'opération"
+                                    text: res.message
                                 },function(){
                                     $("#modalmodif").modal("hide");
                                     loadData();

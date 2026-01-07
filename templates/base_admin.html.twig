@@ -26,6 +26,8 @@
                 ul {
                     list-style-type: none;
                 }
+                /* Keep left sidebar above the overlay so the menu stays clickable */
+                #left-sidebar { z-index: 99999; }
             </style>
         {% endblock %}
     </head>

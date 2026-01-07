@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Uid\Uuid;
 
 class DistrictController extends AbstractController
 {
@@ -192,7 +193,8 @@ class DistrictController extends AbstractController
            
             $date = new \DateTime($request->request->get('dob'));
             $district = new District();
-            $district->setNom($request->request->get('nom'))
+            $district->setId(Uuid::v4()->toRfc4122())
+            ->setNom($request->request->get('nom'))
             ->setPrenoms($request->request->get('prenoms'))
             ->setTelephone($request->request->get('telephone'))
             ->setDob($request->request->get('dob'))
@@ -205,7 +207,7 @@ class DistrictController extends AbstractController
             //get fonction
             $fonction = $request->request->get('fonction');
             $selectedfonction = $fonctionRep->findOneBy(["id" => $fonction]);
-           // dump($selectedfonction);
+           
             $exercerfonction = new ExercerFonction();
             $exercerfonction->setDateDebut(new \DateTime())
                 ->setDateFin(new \DateTime())
@@ -214,10 +216,8 @@ class DistrictController extends AbstractController
                 ->setFonction($selectedfonction)
                 ->addDistrict($district);
 
-            dump($concernedCommissariat);
-            dump($district);
-            dump($selectedfonction);
             dump($exercerfonction);
+        
 
             //$manager = $this->getDoctrine()->getManager();
             $this->em->persist($district);
