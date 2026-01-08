@@ -98,8 +98,16 @@ class FormationController extends AbstractController
     {
         try
         {
-           
-            $data = $request->request->get("value");
+           // Récupère les données POST en évitant l'exception "Input value \"value\" contains a non-scalar value"
+           $post = $request->request->all();
+           if (array_key_exists('value', $post)) {
+               $data = $post['value'];
+           } else {
+               $data = $post;
+           }
+           if (!is_array($data)) {
+               throw new \InvalidArgumentException('Données de session invalides');
+           }
             $sessionToCreate = new SessionFormation();
             $sessionToCreate->setLieu($data["Lieu"])
                             ->setDirecteurStage($data["DirecteurStage"])
@@ -152,10 +160,18 @@ class FormationController extends AbstractController
     {
         try
         {
-          //Get Session Id
-          $sessionId = $request->request->get("value");
+           // Récupère les données POST en évitant l'exception "Input value \"value\" contains a non-scalar value"
+           $post = $request->request->all();
+           if (array_key_exists('value', $post)) {
+               $data = $post['value'];
+           } else {
+               $data = $post;
+           }
+           if (!is_array($data)) {
+               throw new \InvalidArgumentException('Données de session invalides');
+           }
           //Get Formation
-          $session = $repoSession->findOneBy(["id"=>$sessionId]);
+          $session = $repoSession->findOneBy(["id"=>$data]);
           
           $formation = $session->getStageFormation();
          
@@ -173,7 +189,7 @@ class FormationController extends AbstractController
         //   }
           $qClass = new QueryClass($this->em);
           $listeResponsable = $qClass->GetListParticipantformation($formationToConsider->getId());
-          //dump($listeResponsable);
+          dump($listeResponsable);
         // return new JsonResponse(['ok' => true, 'data' => $serializer->serialize($listeResponsable,'json')]);
         return new JsonResponse(['ok' => true, 'data' => $listeResponsable, 'idFormation'=>$session->getId()]);
         }

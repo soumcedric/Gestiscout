@@ -1044,13 +1044,13 @@ class QueryClass
         $query = "select session_formation.id id, Lieu,date_debut DateDebut,date_fin DateFin,directeur_stage DirecteurStage, formation.libelle Stage
         from session_formation, formation
         where session_formation.stage_formation_id = formation.id";
-        $stmt = $this->em->getConnection()->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAllAssociative();
+          $connection = $this->em->getConnection();    
+            // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+            $result = $connection->executeQuery($query); 
+        return $result->fetchAllAssociative();
     }
 
-    /**/
-
+    
 
 
     /*GET POTENTIAL PARTICIPANTS*/
@@ -1061,12 +1061,21 @@ class QueryClass
         and responsable.id = responsable_formation.responsable_id_id
         and responsable.id = exercer_fonction.responsable_id
         and exercer_fonction.fonction_id = fonction.id
-        and responsable_formation.formation_id_id = '" . $formationid . "'
+      
         and responsable.id not in (select responsable_id_id from session_formation_responsable)
-        and exercer_fonction.annee_pastorale_id = '" . $this->activeYear->getId() . "' ";
-        $stmt = $this->em->getConnection()->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAllAssociative();
+        and exercer_fonction.annee_pastorale_id = :anneeId;";
+          $connection = $this->em->getConnection();    
+            // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
+            $result = $connection->executeQuery(
+                $query,
+                [
+                    'anneeId' => $this->activeYear->getId()
+                    
+                ]
+            ); 
+
+             return $result->fetchAllAssociative(); 
+        
     }
 
     /**/
