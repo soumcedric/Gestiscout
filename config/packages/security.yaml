@@ -65,8 +65,8 @@ security:
         - { path: /DashAdmin, roles: [ROLE_CONFIG,ROLE_CD,PUBLIC_ACCESS]}
         - { path: /GetDistrictUnique, roles: [ROLE_CONFIG]}
         - { path: /SoumettreActivite, roles: [ROLE_CG]}
-        - { path: /SaveSession, roles: [ROLE_CD,ROLE_FORMATION]}
-        - { path: /Sessions, roles: [ROLE_CD,ROLE_FORMATION,ROLE_CD_FINANCE]}
+        - { path: /SaveSession, roles: [ROLE_CD,ROLE_FORMATION, ROLE_DISTRICT_USER]}
+        - { path: /Sessions, roles: [ROLE_CD,ROLE_FORMATION,ROLE_CD_FINANCE, ROLE_DISTRICT_USER]}
         - { path: /ConfigurerResponsable, roles: [PUBLIC_ACCESS]}
         - { path: /AddFormation, roles: [PUBLIC_ACCESS]}
         - { path: /Caisse, roles: [ROLE_CD,ROLE_CD_FINANCE,ROLE_CG_FINANCE]}
