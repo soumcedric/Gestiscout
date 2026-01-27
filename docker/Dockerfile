@@ -10,16 +10,20 @@ RUN apk add --no-cache nodejs npm git bash
 
 WORKDIR /var/www
 
+COPY composer.json composer.lock ./
+
+RUN composer config --no-interaction allow-plugins.symfony/flex true
+
 COPY . .
 
 # New step: Force update symfony/flex to a compatible version (v2.0+)
 # NOTE: Use 'composer update --no-scripts' to prevent other scripts from running during this update.
 #RUN composer update symfony/flex --no-scripts --no-interaction
-RUN composer config --no-interaction allow-plugins.symfony/flex true
+
 #RUN composer config --no-interaction allow-plugins.symfony/flex true
 
 RUN composer clear-cache
-RUN composer install --no-scripts --no-interaction  --optimize-autoloader
+RUN composer install --no-scripts --no-interaction  
 
 EXPOSE 8000
 CMD ["php", "-S", "0.0.0.0:8081", "-t", "/var/www/public"]
