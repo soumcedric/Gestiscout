@@ -14,7 +14,7 @@ COPY composer.json composer.lock ./
 
 RUN composer config --no-interaction allow-plugins.symfony/flex true
 
-COPY . .
+
 
 # New step: Force update symfony/flex to a compatible version (v2.0+)
 # NOTE: Use 'composer update --no-scripts' to prevent other scripts from running during this update.
@@ -23,7 +23,11 @@ COPY . .
 #RUN composer config --no-interaction allow-plugins.symfony/flex true
 
 RUN composer clear-cache
-RUN composer install --no-scripts --no-interaction  
+RUN composer install --no-interaction --no-scripts --no-autoloader --prefer-dist
+
+COPY . .
+
+RUN composer dump-autoload --optimize --no-scripts
 
 EXPOSE 8000
 CMD ["php", "-S", "0.0.0.0:8081", "-t", "/var/www/public"]
