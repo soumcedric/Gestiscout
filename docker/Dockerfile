@@ -18,7 +18,8 @@ COPY . .
 RUN composer config --no-interaction allow-plugins.symfony/flex true
 #RUN composer config --no-interaction allow-plugins.symfony/flex true
 
-RUN composer update --no-scripts --no-interaction
+RUN composer clear-cache
+RUN composer install --no-scripts --no-interaction
 
 EXPOSE 8000
 CMD ["php", "-S", "0.0.0.0:8081", "-t", "/var/www/public"]
