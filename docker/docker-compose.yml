@@ -1,21 +1,17 @@
 name: gestiscout
 services:    
     db:
-        image: mysql:8.0
+        image: postgres:15
         restart: always
-        container_name: mysql_database
-        command: --default-authentication-plugin=mysql_native_password
+        container_name: postgres_database
         environment:
-            MYSQL_ROOT_PASSWORD: "root"
-            MYSQL_DATABASE: gestiscout_db
-            MYSQL_USER: symfony
-            MYSQL_PASSWORD: symfony
-        
+            POSTGRES_PASSWORD: "root"
+            POSTGRES_DB: gestiscout_db
+            POSTGRES_USER: symfony
         ports:
-        - "3307:3306"
-         
+        - "5432:5432"
         volumes:
-        - db_data:/var/lib/mysql
+        - pg_data:/var/lib/postgresql/data
         # networks:
         # - backend
     
@@ -37,5 +33,5 @@ services:
         # - frontend
    
 volumes:
-    db_data:
+    pg_data:
 
