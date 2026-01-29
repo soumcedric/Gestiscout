@@ -33,5 +33,5 @@ RUN composer dump-autoload --optimize --no-scripts
 RUN chmod +x entrypoint.sh
 
 EXPOSE 8000
-CMD ["php", "-S", "0.0.0.0:8081", "-t", "/var/www/public"]
-# ENTRYPOINT ["./entrypoint.sh"]
+# CMD ["php", "-S", "0.0.0.0:8081", "-t", "/var/www/public"]
+ENTRYPOINT ["./entrypoint.sh"]
