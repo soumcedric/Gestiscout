@@ -9,6 +9,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\Table(name="users")
  */
  class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -52,7 +53,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
     /**
      * @ORM\OneToOne(targetEntity=Responsable::class, inversedBy="user", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+        * @ORM\JoinColumn(nullable=true)
      */
     private $responsable;
 

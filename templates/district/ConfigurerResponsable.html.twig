@@ -235,12 +235,12 @@
             },
             columns: [
                
-                { "data": "id" },
+                 { "data": "id" },
                  { "data": "Nom" }  , 
                   { "data": "Prenoms" },
                   { "data": "Dob" },
                   { "data": "Telephone" },
-                  { "data": "fonction" },
+                  { "data": "Fonction" },
                    { "data": "Action" },
                  
               
@@ -254,10 +254,7 @@
                 //     targets: 5,
                 //     visible: true
                 // },
-                {
-                    targets: 4,
-                    visible: false
-                },
+          
                 {
                     targets:6,
                     //visible:false,
@@ -290,14 +287,14 @@
             }
 
            $("#seldistrict").change(function(){
-            debugger
+            
              let Id = $(this).val();
              $.get("/GroupeByDistrict/"+Id,function(res)
              {
-                debugger
+                
                 if(res)
                 {
-                    debugger
+                    
                     $("#groupe").empty;
                     $("#groupe").append("<option value=0 selected>---sélectionner un groupe---</option>");
                  //   let liste = JSON.parse(res.data);
@@ -316,12 +313,12 @@
                 type:"GET",
                 url:"{{ path("GetListeGenre")}}",
                 success:function(resp){
-                    debugger
+                    
                     var defaultline = '<option value=selected>---selectionner genre---</option>';
                     $("#genre").append(defaultline);
                     var liste = JSON.parse(resp);
                     $.each(liste,function(i,n){
-                        debugger
+                        
                         var line = '<option value='+n.id+'>'+n.Libelle+'</option>';
                         $("#genre").append(line);
 
@@ -330,7 +327,7 @@
             });
 
                 $("#checkgroup").change(function(){
-                    debugger
+                    
                     let checked = $(this).is(':checked');
                     if(checked)
                         $(".selectgroupe").show();
@@ -341,8 +338,7 @@
 
 
             $("#save").click(function(){
-                
-                debugger
+              
                 var  responsable={
                     nom : $("#Nom").val(),
                     prenoms : $("#prenoms").val(),
@@ -377,7 +373,7 @@
                     url:"{{ path('AddResponsable') }}",
                     data: responsable,
                     success:function(res){
-                        debugger;
+                        
                         if (res.ok){
 
                             swal({
@@ -402,7 +398,7 @@
                         }
                     },
                     error: function(res){
-                        debugger
+                        
                         swal({
                             type:"error",
                             title:"RESPONSABLE",
@@ -423,7 +419,7 @@
                     url:"{{ path('InsertRespoDistrict') }}",
                     data: responsable,
                     success:function(res){
-                        debugger;
+                        
                         if (res.ok == true){
 
                             swal({
@@ -447,7 +443,7 @@
                         }
                     },
                     error: function(res){
-                        debugger
+                        
                         swal({
                             type:"error",
                             title:"RESPONSABLE",
@@ -475,14 +471,14 @@
                     type:"GET",
                     url:"{{ path("GetListeFormation") }}",
                     success:function(res){
-                        debugger
+                        
                         var liste = JSON.parse(res.data);
                         if (liste.length>0){
                             $("#formation").empty();
                             var defaultline="<option value=0 selected>---Choisir une formation---</option>";
                             $("#formation").append(defaultline);
                             $.each(liste,function(i,n) {
-                                debugger
+                                
                                 var option = "<option value="+n.id+">"+n.libelle+"</option>";
                                 $("#formation").append(option);
                             });
@@ -508,7 +504,7 @@
                     confirmButtonText: 'Oui annuler!',
                     cancelButtonText:"Non"
                 },function(res){
-                    debugger
+                    
                     if(res==true)
                         reset();
 
@@ -523,14 +519,14 @@
                     type:"GET",
                     url:"{{ path("GetListeFonction") }}",
                     success:function(res){
-                        debugger
+                        
                         var liste = JSON.parse(res);
                         if (liste.length>0){
                             $("#fonction").empty();
                             var defaultline="<option value=selected>---Choisir une fonction---</option>";
                             $("#fonction").append(defaultline);
                             $.each(liste,function(i,n) {
-                                debugger
+                                
                                 var option = "<option value="+n.id+">"+n.Code+"</option>";
                                 $("#fonction").append(option);
                             });
@@ -551,14 +547,14 @@
                     type:"GET",
                     url:"{{ path("GetListGroupe") }}",
                     success:function(res){
-                        debugger
+                        
                         //var liste = JSON.parse(res.data);
                         // if (liste.length>0){
                             $("#groupe").empty();
                             var defaultline="<option value=selected>---Choisir un groupe---</option>";
                             $("#groupe").append(defaultline);
                             $.each(res.data,function(i,n) {
-                                debugger
+                                
                                 var option = "<option value="+n.id+">"+n.Nom+"</option>";
                                 $("#groupe").append(option);
                             });
@@ -578,16 +574,15 @@
 
             function LoadDistrict()
             {
-                debugger
                 $.get("/GetListDistrict",function(res)
                 {
-                    debugger
+                    
                     if(res)
                     {
                         $("#seldistrict").append("<option value=0 selected>---sélectionner un district---</option>");
                         let liste = JSON.parse(res.data);
                         $.each(liste,function(i,n){
-                            debugger
+                            
                             $("#seldistrict").append("<option value="+n.id+">"+n.nom+"</option>");
                         });
                     }
@@ -596,7 +591,7 @@
 
 
 $("#saveuser").click(function(){
-    debugger
+    
                 var user = {
                    // username : $("#Username").val(),
                   //  roles : [],
@@ -613,7 +608,7 @@ $("#saveuser").click(function(){
                 success:function(res)
                 {
                      $("#modalcompte").modal("hide");
-                    debugger
+                    
                     if (res.ok)
                     {
                         swal({
@@ -648,7 +643,7 @@ $("#saveuser").click(function(){
 
         function CreateUser(r, district)
             {
-                debugger
+                
                 let url = "";
                 if(district ==1)
                     url = "{{ path("AddUserFromDistrict") }}";
@@ -656,7 +651,7 @@ $("#saveuser").click(function(){
                     url = "{{ path("Addutilisateur") }}";
                 $("#modalcompte").modal("show");
                 $("#respoId").val(r);
-                 debugger
+                 
                 var user = {
                    // username : $("#Username").val(),
                   //  roles : [],
@@ -673,7 +668,7 @@ $("#saveuser").click(function(){
                 success:function(res)
                 {
                      $("#modalcompte").modal("hide");
-                    debugger
+                    
                     if (res.ok)
                     {
                         swal({

@@ -139,15 +139,13 @@ class UtilisateurController extends AbstractController
           //  dump($ConcernedRespo);
             $qClass = new QueryClass($this->em);
             $role = $qClass->GetFunctionDistrict($req->request->get("respoid"));
-            //dump($info);
-        //     $role = $qClass->GetRespoRole($ConcernedRespo->getId());
-        //     //dump($role);
+            dump($ConcernedRespo->getEx); 
 
              $user = new User();
 
 
              $randonpass = $this->RandomPassword();
-        //     //dump($randonpass);
+        
              $cryptedPass = $encoder->hashPassword($user, $randonpass);
              $roles = array($role);
              $user->setPassword($cryptedPass)
@@ -160,11 +158,11 @@ class UtilisateurController extends AbstractController
                 ->setFirstConnection(true)
                 ->setUserCreation("Admin");
 
-            
+            dump($user);
             $this->em->persist($user);
             $this->em->flush();
-        //     //send mail to the user with his default password
-        //     //get email
+            //send mail to the user with his default password
+             //get email
              $respo = $district->findOneBy(["id" => $ConcernedRespo->getId()]);
             // dump($respo);
              $email = $respo->getEmail();
@@ -174,7 +172,7 @@ class UtilisateurController extends AbstractController
              $email = (new Email())
                 ->from($this->getParameter('app.admin_email'))
                 ->to($email)
-                ->subject('Création de compte')
+                ->subject('Gestiscout - Création de compte')
                 ->html('Bonjour ' . $nom . ' ' . $prenoms . ', <br/>Votre inscription à la plateforme Gestiscout à été effectuée avec succès. <br\>Afin de vous connecter, veuillez utiliser
                     les identifiants ci-dessous: <br/>
                     nom utilisateur : ' . $user->getUserIdentifier()

@@ -280,25 +280,18 @@ class QueryClass
         return $res;
     }
 
-
-
-
-
-
-
-
     public  function CheckUserExist($username)
     {
-        $query = "SELECT * FROM user u where u.username = :username";
-        $connection = $this->em->getConnection();    
-    // Utilisation de executeQuery() avec des paramètres liés (:anneeId, :respoId)
-        $result = $connection->executeQuery(
-        $query,
-        [
+        $query = 'SELECT u.* FROM "users" u WHERE u.username = :username';
+        $connection = $this->em->getConnection();
+
+        // executeQuery retourne un ResultStatement; fetchAssociative renvoie la première ligne sous forme de tableau associatif
+        $stmt = $connection->executeQuery($query, [
             'username' => $username
-        ]
-    );      
-    return $result->fetchOne();
+        ]);
+
+        $row = $stmt->fetchAssociative();
+        return $row !== false ? $row : null;
     }
 
 
@@ -1275,16 +1268,16 @@ class QueryClass
     }
     public function GetAllMembreDistrict()
     {
-        $query = "select d.id, d.Nom, d.Prenoms, d.dob Dob , f.libelle fonction, d.telephone Telephone, d.id 'Action', 1 as 'district'
+        $query = 'select d.id "id", d.Nom "Nom", d.Prenoms "Prenoms", d.dob::DATE "Dob" , f.libelle "Fonction", d.telephone "Telephone", d.id "Action", 1 as "district"
             from district d, exercer_fonction ef, exercer_fonction_district efd, fonction f
             where d.id = efd.district_id
             and efd.exercer_fonction_id = ef.id
             and ef.fonction_id = f.id
             UNION
-            SELECT r.id, r.nom Nom, r.prenoms Prenoms, r.dob Dob, f.libelle fonction, r.telephone, r.id 'Action', 0 as 'district'
+            SELECT r.id "id", r.nom "Nom", r.prenoms "Prenoms", r.dob::DATE "Dob", f.libelle "Fonction", r.telephone "Telephone", r.id "Action", 0 as "district"
             FROM responsable r, exercer_fonction ef, fonction f
             where r.id = ef.responsable_id 
-            and ef.fonction_id = f.id";
+            and ef.fonction_id = f.id';
         $stmt = $this->em->getConnection();
         $result = $stmt->executeQuery($query);
         return $result->fetchAllAssociative();

@@ -49,6 +49,7 @@ return array(
     'Symfony\\Component\\OptionsResolver\\' => array($vendorDir . '/symfony/options-resolver'),
     'Symfony\\Component\\Notifier\\' => array($vendorDir . '/symfony/notifier'),
     'Symfony\\Component\\Mime\\' => array($vendorDir . '/symfony/mime'),
+    'Symfony\\Component\\Mailer\\Bridge\\Mailjet\\' => array($vendorDir . '/symfony/mailjet-mailer'),
     'Symfony\\Component\\Mailer\\Bridge\\Google\\' => array($vendorDir . '/symfony/google-mailer'),
     'Symfony\\Component\\Mailer\\' => array($vendorDir . '/symfony/mailer'),
     'Symfony\\Component\\Intl\\' => array($vendorDir . '/symfony/intl'),
