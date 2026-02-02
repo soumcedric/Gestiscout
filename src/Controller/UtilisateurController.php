@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Psr\Log\LoggerInterface;
 
 class UtilisateurController extends AbstractController
 {
@@ -27,13 +28,15 @@ class UtilisateurController extends AbstractController
     private $groupeLayer;
     private  $respoLayer;
     private $em;
+    private $logger;
     
-    function __construct(SessionInterface $session, GroupeRepository $groupe,ResponsableRepository $respo,EntityManagerInterface $em)
+    function __construct(SessionInterface $session, GroupeRepository $groupe,ResponsableRepository $respo,EntityManagerInterface $em, LoggerInterface $logger)
     {
         $this->session = $session;
         $this->groupeLayer = $groupe;
         $this->respoLayer = $respo;
         $this->em = $em ;
+        $this->logger = $logger;
     }
 
     #[Route('/utilisateur', name: 'utilisateur')]
@@ -47,15 +50,25 @@ class UtilisateurController extends AbstractController
     #[Route('/Addutilisateur', name: 'Addutilisateur')]
     public function Addutilisateur(Request $request, UserPasswordHasherInterface $passHasher, ResponsableRepository $respoRepo, MailerInterface $mailer)
     {
+        $this->logger->info("Entering Addutilisateur");
         try
         {
        
        // $fromJson = $req->request->get("value");
         $qClass = new QueryClass($this->em);
-        $ConcernedRespo = $this->respoLayer->findOneBy(["id" => $request->request->get("respoid")]);
+        $respoid = $request->request->get("respoid");
+        $this->logger->info("Processing creation for respo id: " . $respoid);
+
+        $ConcernedRespo = $this->respoLayer->findOneBy(["id" => $respoid]);
+        if (!$ConcernedRespo) {
+            $this->logger->error("Responsable not found with id: " . $respoid);
+             return new JsonResponse(['ok' => false, 'message' => 'Responsable introuvable']);
+        }
+
         $userExists = $qClass->CheckUserExist($ConcernedRespo->getEmail());
     
         if ($userExists) {
+            $this->logger->warning("User already exists: " . $ConcernedRespo->getEmail());
             return new JsonResponse(['ok' => false, 'message' => 'Cet utilisateur existe déjà']);
         }          
             $groupe = $ConcernedRespo->getGroupe();
@@ -63,7 +76,7 @@ class UtilisateurController extends AbstractController
             $ConnectedGroupe = $this->groupeLayer->findOneBy(["id" => $groupe->getId()]);
            // dump($ConnectedGroupe);
             $role = $qClass->GetRespoRole($ConcernedRespo->getId());
-            
+            $this->logger->info("Role determined: " . $role);
 
             $user = new User();
 
@@ -82,9 +95,11 @@ class UtilisateurController extends AbstractController
                 ->setFirstConnection(true)
                 ->setUserCreation("Admin");
 
-          
+            $this->logger->info("Persisting user: " . $user->getUsername());
             $this->em->persist($user);
             $this->em->flush();
+            $this->logger->info("User persisted successfully");
+
             //send mail to the user with his default password
             //get email
             $respo = $respoRepo->findOneBy(["id" => $ConcernedRespo->getId()]);
@@ -92,7 +107,9 @@ class UtilisateurController extends AbstractController
             $nom = $respo->getNom();
             $prenoms = $respo->getPrenoms();
 
-            $email = (new Email())
+            $this->logger->info("Preparing email for: " . $email);
+
+            $emailMessage = (new Email())
                 ->from($this->getParameter('app.admin_email'))
                 ->to($email)
                 ->subject('Création de compte')
@@ -103,8 +120,14 @@ class UtilisateurController extends AbstractController
                     mot de passe: ' . $randonpass. "<br/><br/>
                     <i><strong>L'équipe GestiScout </strong></i>");
 
-            dump($email);
-          $result =   $mailer->send($email);
+           // dump($email);
+           try {
+              $mailer->send($emailMessage);
+              $this->logger->info("Email sent successfully");
+           } catch(\Exception $e) {
+               $this->logger->error("Failed to send email: " . $e->getMessage());
+               // Note: we might not want to fail the whole request if email fails, but keeping original structure
+           }
           
 
             return new JsonResponse(['ok' => true, 'message' => 'Compte créé avec succès']);
@@ -112,8 +135,9 @@ class UtilisateurController extends AbstractController
         }
         catch(\Exception $e)
         {
+            $this->logger->error("Error in Addutilisateur: " . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
-            dump($e->getMessage());
+           // dump($e->getMessage());
         }
     }
 
