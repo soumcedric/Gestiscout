@@ -152,10 +152,10 @@ class UtilisateurController extends AbstractController
         $ConcernedRespo = $district->findOneBy(["id" => $req->request->get("respoid")]);
         dump($ConcernedRespo);
         $userExists = $qClass->CheckUserExist($ConcernedRespo->getEmail());
-        if ($userExists){
-            return new JsonResponse(['ok' => false, 'message' => 'Cet utilisateur existe déja!']);
-        }else
-        {
+        // if ($userExists){
+        //     return new JsonResponse(['ok' => false, 'message' => 'Cet utilisateur existe déja!']);
+        // }else
+        // {
 
             
             //get excercer_fonction_id en fonction de districtid
@@ -212,7 +212,7 @@ class UtilisateurController extends AbstractController
             return new JsonResponse(['ok' => true, 'message' => 'Compte créé avec succès']);
 
            return new Response();
-        }
+       // }
 
     }
 
