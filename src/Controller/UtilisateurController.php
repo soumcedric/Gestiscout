@@ -147,6 +147,9 @@ class UtilisateurController extends AbstractController
     #[Route('/AddUserFromDistrict', name: 'AddUserFromDistrict')]
     public function AddUserFromDistrict(Request $req, UserPasswordHasherInterface $encoder, ResponsableRepository $respo, DistrictRepository $district, ExercerFonctionRepository $exercer, MailerInterface $mailer)
     {
+        try{
+
+      
         $qClass = new QueryClass($this->em);
         //$fromJson = $req->request->get("value");
         $ConcernedRespo = $district->findOneBy(["id" => $req->request->get("respoid")]);
@@ -163,7 +166,7 @@ class UtilisateurController extends AbstractController
           //  dump($ConcernedRespo);
             $qClass = new QueryClass($this->em);
             $role = $qClass->GetFunctionDistrict($req->request->get("respoid"));
-            dump($ConcernedRespo->getEx); 
+           // dump($ConcernedRespo->getEx); 
 
              $user = new User();
 
@@ -211,8 +214,14 @@ class UtilisateurController extends AbstractController
 
             return new JsonResponse(['ok' => true, 'message' => 'Compte créé avec succès']);
 
-           return new Response();
        // }
+         }
+        catch(\Exception $e)
+        {
+            $this->logger->error("Error in Addutilisateur: " . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return new JsonResponse(['ok' => false, 'message' => $e->getMessage()]);
+           // dump($e->getMessage());
+        }
 
     }
 
