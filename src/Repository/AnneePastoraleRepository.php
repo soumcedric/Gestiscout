@@ -54,7 +54,8 @@ class AnneePastoraleRepository extends ServiceEntityRepository
     public function findActiveYear()
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.bActif = 1')
+            ->andWhere('a.bActif = :status')
+            ->setParameter('status', true)
            // ->setParameter('val', $value)
           //  ->orderBy('a.id', 'ASC')
           //  ->setMaxResults(10)
