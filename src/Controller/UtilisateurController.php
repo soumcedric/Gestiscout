@@ -56,12 +56,17 @@ class UtilisateurController extends AbstractController
        
        // $fromJson = $req->request->get("value");
         $qClass = new QueryClass($this->em);
-        $respoid = $request->request->get("respoid");
-        $this->logger->info("Processing creation for respo id: " . $respoid);
+        $respoid = trim($request->request->get("respoid")); 
+        $this->logger->info("Processing creation for respo id: '" . $respoid . "'");
+
+        if (empty($respoid)) {
+            $this->logger->error("Responsable ID is empty");
+            return new JsonResponse(['ok' => false, 'message' => 'ID Responsable manquant']);
+        }
 
         $ConcernedRespo = $this->respoLayer->findOneBy(["id" => $respoid]);
         if (!$ConcernedRespo) {
-            $this->logger->error("Responsable not found with id: " . $respoid);
+            $this->logger->error("Responsable not found with id: '" . $respoid . "'");
              return new JsonResponse(['ok' => false, 'message' => 'Responsable introuvable']);
         }
 
@@ -152,8 +157,15 @@ class UtilisateurController extends AbstractController
       
         $qClass = new QueryClass($this->em);
         //$fromJson = $req->request->get("value");
-        $ConcernedRespo = $district->findOneBy(["id" => $req->request->get("respoid")]);
+        $respoid = trim($req->request->get("respoid")); 
+        $ConcernedRespo = $district->findOneBy(["id" => $respoid]);
         dump($ConcernedRespo);
+        
+        if (!$ConcernedRespo) {
+            $this->logger->error("District/Responsable not found with id: '" . $respoid . "' in AddUserFromDistrict");
+             return new JsonResponse(['ok' => false, 'message' => 'Responsable introuvable']);
+        }
+
        // $userExists = $qClass->CheckUserExist($ConcernedRespo->getEmail());
         // if ($userExists){
         //     return new JsonResponse(['ok' => false, 'message' => 'Cet utilisateur existe déja!']);

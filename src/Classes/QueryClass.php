@@ -282,7 +282,7 @@ class QueryClass
 
     public  function CheckUserExist($username)
     {
-        $query = 'SELECT u.* FROM "users" u WHERE u.username = :username';
+        $query = 'SELECT u.* FROM "users" u WHERE LOWER(u.username) = LOWER(:username)';
         $connection = $this->em->getConnection();
 
         // executeQuery retourne un ResultStatement; fetchAssociative renvoie la première ligne sous forme de tableau associatif
